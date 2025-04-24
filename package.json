@@ -1,5 +1,5 @@
 {
-  "name": "POSBOK",
+  "name": "posbok",
   "version": "1.0.0",
   "description": "POSBOK webpage",
   "main": "index.js",
