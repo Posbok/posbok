@@ -15,7 +15,7 @@
   \*********************/
 /***/ (() => {
 
-eval("// // Dummy first login before full page\n// localStorage.setItem('isLoggedIn', true);\n\n// const signUpButton = document.getElementById('signUp');\n// const signInButton = document.getElementById('signIn');\n// const container = document.getElementById('container');\n\n// if (container) {\n//   signUpButton.addEventListener('click', () => {\n//     container.classList.add('right-panel-active');\n//   });\n\n//   signInButton.addEventListener('click', () => {\n//     container.classList.remove('right-panel-active');\n//   });\n// }\n// function redirectToIndex() {\n//   window.location.href = 'index.html';\n// }\n\n//# sourceURL=webpack://arot/./JS/login.js?");
+eval("// // Dummy first login before full page\n// localStorage.setItem('isLoggedIn', true);\n\n// const signUpButton = document.getElementById('signUp');\n// const signInButton = document.getElementById('signIn');\n// const container = document.getElementById('container');\n\n// if (container) {\n//   signUpButton.addEventListener('click', () => {\n//     container.classList.add('right-panel-active');\n//   });\n\n//   signInButton.addEventListener('click', () => {\n//     container.classList.remove('right-panel-active');\n//   });\n// }\n// function redirectToIndex() {\n//   window.location.href = 'index.html';\n// }\n\n//# sourceURL=webpack://POSBOK/./JS/login.js?");
 
 /***/ })
 

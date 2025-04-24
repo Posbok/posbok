@@ -6,27 +6,30 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-/******/ (() => { // webpackBootstrap
-/******/ 	var __webpack_modules__ = ({
-
-/***/ "./JS/script.js":
-/*!**********************!*\
+/******/ (() => {
+  // webpackBootstrap
+  /******/ var __webpack_modules__ = {
+    /***/ './JS/script.js':
+      /*!**********************!*\
   !*** ./JS/script.js ***!
   \**********************/
-/***/ (() => {
+      /***/ () => {
+        eval(
+          "// Toggle the active class for sideNavs\nconst sideNavs = document.querySelectorAll('.side-nav_item');\nsideNavs.forEach(nav => {\n  nav.addEventListener('click', () => {\n    nav.classList.add('active');\n    sideNavs.forEach(otherNav => {\n      if (otherNav !== nav) {\n        otherNav.classList.remove('active');\n      }\n    });\n  });\n});\n\n//# sourceURL=webpack://POSBOK/./JS/script.js?"
+        );
 
-eval("// Toggle the active class for sideNavs\nconst sideNavs = document.querySelectorAll('.side-nav_item');\nsideNavs.forEach(nav => {\n  nav.addEventListener('click', () => {\n    nav.classList.add('active');\n    sideNavs.forEach(otherNav => {\n      if (otherNav !== nav) {\n        otherNav.classList.remove('active');\n      }\n    });\n  });\n});\n\n//# sourceURL=webpack://arot/./JS/script.js?");
+        /***/
+      },
 
-/***/ })
-
-/******/ 	});
-/************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__["./JS/script.js"]();
-/******/ 	
-/******/ })()
-;
+    /******/
+  };
+  /************************************************************************/
+  /******/
+  /******/ // startup
+  /******/ // Load entry module and return exports
+  /******/ // This entry module can't be inlined because the eval devtool is used.
+  /******/ var __webpack_exports__ = {};
+  /******/ __webpack_modules__['./JS/script.js']();
+  /******/
+  /******/
+})();

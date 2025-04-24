@@ -1,3 +1,4 @@
+import flatpickr from 'flatpickr';
 import './apiServices/product';
 
 // Toggle the active class for sideNavs
@@ -97,7 +98,9 @@ document.addEventListener('DOMContentLoaded', function () {
 // }
 
 document.addEventListener('DOMContentLoaded', () => {
-  flatpickr('#dateOfBirth', {
-    dateFormat: 'Y-m-d', // Customize format as needed
-  });
+  if (flatpickr) {
+    flatpickr('#dateOfBirth', {
+      dateFormat: 'Y-m-d', // Customize format as needed
+    });
+  }
 });
