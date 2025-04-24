@@ -84,3 +84,20 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 });
+
+// JS for Date of Birth Input
+// const dobInput = document.getElementById('dateOfBirth');
+
+// if (dobInput) {
+//   dobInput.addEventListener('click', () => {
+//     if (dobInput.showPicker) {
+//       dobInput.showPicker();
+//     }
+//   });
+// }
+
+document.addEventListener('DOMContentLoaded', () => {
+  flatpickr('#dateOfBirth', {
+    dateFormat: 'Y-m-d', // Customize format as needed
+  });
+});

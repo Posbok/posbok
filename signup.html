@@ -20,6 +20,10 @@
    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+
    <script defer src="https://unpkg.com/smoothscroll-polyfill@0.4.4/dist/smoothscroll.min.js"></script>
 
    <!-- <script defer type="module" src="JS/script.js"></script> -->
@@ -46,7 +50,7 @@
                <h2 class="heading-subtext">Admin Account Creation</h2>
             </div>
 
-            <form name="signup form" class="signup-form" netlify>
+            <form name="signupForm" id="signupForm" class="signup-form" netlify>
 
                <!-- First Name -->
                <div class="signup-form_input">
@@ -74,7 +78,10 @@
                <div class="signup-form_input">
                   <label for="dateOfBirth">Date of Birth</label>
 
-                  <input id="dateOfBirth" type="date" name="dateOfBirth" required>
+                  <!-- <input id="dateOfBirth" type="date" name="dateOfBirth" required> -->
+
+                  <input id="dateOfBirth" type="text" placeholder="Select Date of Birth">
+
                </div>
 
                <!-- State of Origin -->
@@ -101,10 +108,10 @@
 
                <!-- Phone Number -->
                <div class="signup-form_input">
-                  <label for="businessPhoneNumber">Phone Number </label>
+                  <label for="phoneNumber">Phone Number </label>
 
-                  <input id="businessPhoneNumber" type="text" placeholder="Enter Business Phone No."
-                     name="businessPhoneNumber" required>
+                  <input id="phoneNumber" type="text" placeholder="Enter Business Phone No." name="phoneNumber"
+                     required>
                </div>
 
                <!-- Password -->
@@ -118,6 +125,9 @@
                <div class="signup-form_input">
                   <label for="password">Confirm Password</label>
                   <input id="confirm-password" type="password" placeholder="Confirm password" required>
+                  <small id="password-error" class="error-text" style="color: red; display: none;">
+                     Passwords do not match
+                  </small>
                </div>
 
                <!-- Guarantor Name -->
@@ -144,7 +154,7 @@
                      name="guarantorAddress" required>
                </div>
 
-               <button class="hero-btn-dark mt-2" type="submit" onclick="redirect()">Sign Up</button>
+               <button class="hero-btn-dark mt-2" type="submit">Sign Up</button>
 
                <p class="heading-subtext  mb-1">Do you have an account? <a href="/login.html">Login</a></p>
 
@@ -153,6 +163,7 @@
       </div>
    </div>
 
+   <div id="toast" class="toast">This is a toast message!</div>
 
 </body>
 

@@ -27,6 +27,7 @@
 
    <script src="dist/main.bundle.js" defer></script>
    <script src="dist/login.bundle.js" defer></script>
+   <script src="dist/signup.bundle.js" defer></script>
 
    <title>AROT &mdash;BUSINESS SYSTEM 1.0</title>
    <link rel="icon" type="image/x-icon" href="/img/favicon.png">
@@ -45,7 +46,7 @@
                <h2 class="heading-subtext">Business Creation</h2>
             </div>
 
-            <form name="signup form" class="signup-form" netlify>
+            <form name="createBusinessForm" id="createBusinessForm" class="signup-form" netlify>
 
                <!-- Business Name -->
                <div class="signup-form_input">
@@ -105,17 +106,17 @@
 
                   <div class="checkbox">
                      <div class="checkbox-container">
-                        <input id="posCheckbox" type="checkbox" name="posCheckbox">
+                        <input id="posCheckbox" type="checkbox" name="businessType" value="POS">
                         <label for="posCheckbox">POS</label>
                      </div>
 
                      <div class="checkbox-container">
-                        <input id="sellCheckbox" type="checkbox" name="sellCheckbox">
+                        <input id="sellCheckbox" type="checkbox" name="businessType" value="POS">
                         <label for="sellCheckbox">SELL</label>
                      </div>
 
                      <div class="checkbox-container">
-                        <input id="posAndSellCheckbox" type="checkbox" name="posAndSellCheckbox">
+                        <input id="posAndSellCheckbox" type="checkbox" name="businessType" value="BOTH">
                         <label for="posAndSellCheckbox">POS & SELL</label>
                      </div>
                   </div>
@@ -131,21 +132,21 @@
 
                <!-- Version Preference -->
                <div class="signup-form_input  mb-1">
-                  <label for="accountType" class="heading-subtext">Version Preference</label>
+                  <label for="versionPreference" class="heading-subtext">Version Preference</label>
 
                   <div class="checkbox">
                      <div class="checkbox-container">
-                        <input id="webCheckbox" type="checkbox" name="webCheckbox">
+                        <input id="webCheckbox" type="checkbox" name="versionPreference" value="WEB">
                         <label for="webCheckbox">Web</label>
                      </div>
 
                      <div class="checkbox-container">
-                        <input id="mobileCheckbox" type="checkbox" name="mobileCheckbox">
+                        <input id="mobileCheckbox" type="checkbox" name="versionPreference" value="MOBILE">
                         <label for="mobileCheckbox">Mobile</label>
                      </div>
 
                      <div class="checkbox-container">
-                        <input id="standaloneCheckbox" type="checkbox" name="standaloneCheckbox">
+                        <input id="standaloneCheckbox" type="checkbox" name="versionPreference" value="STANDALONE">
                         <label for="standaloneCheckbox">Standalone</label>
                      </div>
                   </div>
@@ -159,9 +160,7 @@
                   </div>
                </div>
 
-               <button class="hero-btn-dark mt-2" type="submit"> <a class="heading-subtext mt-2"
-                     href="/login.html">Create Business
-                  </a></button>
+               <button class="hero-btn-dark mt-2" type="submit">Create Business</button>
 
                <p class="heading-subtext mb-1">Forgot password? <a href="#">Click here</a></p>
 

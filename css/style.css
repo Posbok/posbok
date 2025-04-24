@@ -334,6 +334,12 @@ select {
     background-color: #eef1f6;
     box-shadow: 0 0 0.3rem 0.5rem rgba(16, 171, 43, 0.36); }
 
+.input-match {
+  box-shadow: 0 0 0.3rem 0.5rem rgba(16, 171, 43, 0.36) !important; }
+
+.input-mismatch {
+  box-shadow: 0 0 0.3rem 0.4rem rgba(255, 0, 0, 0.5) !important; }
+
 .reports-method .double-input {
   display: block;
   width: max-content;
