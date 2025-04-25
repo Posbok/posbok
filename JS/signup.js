@@ -8,10 +8,8 @@ import {
 // Create Business Registration Form
 const createBusinessForm = document.getElementById('createBusinessForm');
 const businessId = localStorage.getItem('businessId');
-console.log('📌 Retrieved Business ID:', businessId);
 
 const generatedBusinessOwnerId = generateBusinessOwnerId();
-// console.log(generatedBusinessOwnerId); // Only numeric ID
 
 if (createBusinessForm) {
   createBusinessForm.addEventListener('submit', function (e) {
@@ -60,7 +58,7 @@ if (createBusinessForm) {
       versionPreference: versionPreferenceValue,
     };
 
-    console.log('📦 Business Details:', businessDetails);
+    //  console.log('📦 Business Details:', businessDetails);
 
     registerBusiness(businessDetails)
       .then((data) => {
@@ -174,7 +172,7 @@ if (signupForm) {
       servicePermission: 'BOTH',
     };
 
-    console.log('📦 Admin Details:', adminDetails);
+    //  console.log('📦 Admin Details:', adminDetails);
 
     if (!dateOfBirth.value) {
       alert('Date of Birth is required.');
@@ -183,7 +181,7 @@ if (signupForm) {
 
     registerAdmin(adminDetails)
       .then((data) => {
-        console.log('✅ Registered successfully:', data);
+        //   console.log('✅ Registered successfully:', data);
         showToast('success', `✅ ${data.message}`);
 
         redirectWithDelay('Login Page', 'login.html', 1000);

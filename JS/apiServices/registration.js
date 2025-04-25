@@ -23,7 +23,7 @@ export async function registerBusiness(businessDetails) {
       throw new Error(data.message || 'Something went wrong');
     }
 
-    console.log('detail added successfully:', data);
+    //  console.log('detail added successfully:', data);
     return data;
   } catch (error) {
     console.error('Error Adding detail:', data.message);
@@ -52,7 +52,7 @@ export async function registerAdmin(adminDetails) {
       throw new Error(data.message || 'Something went wrong');
     }
 
-    console.log('Admin created successfully:', data);
+    //  console.log('Admin created successfully:', data);
     return data;
   } catch (error) {
     console.error('Error creating Admin:', error);

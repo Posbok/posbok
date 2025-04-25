@@ -15,7 +15,7 @@ if (loginForm) {
       password,
     };
 
-    console.log('📦 User Details:', userDetails);
+    //  console.log('📦 User Details:', userDetails);
 
     loginUser(userDetails)
       .then((data) => {

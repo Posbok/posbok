@@ -158,7 +158,7 @@ const currentPage = window.location.pathname;
 
 if (token) {
   // Token exists, user is logged in
-  console.log('User is logged in');
+  //   console.log('User is logged in');
 
   if (
     currentPage === '/login.html' ||
@@ -174,10 +174,10 @@ if (token) {
     currentPage !== '/signup.html' &&
     currentPage !== '/createBusiness.html'
   ) {
-    console.log('User needs to log in');
+    //  console.log('User needs to log in');
     window.location.href = 'login.html'; // Redirect to login page
   } else {
-    console.log('User is on login or signup page, no redirect needed');
+    //  console.log('User is on login or signup page, no redirect needed');
   }
 }
 
@@ -207,5 +207,5 @@ if (userData) {
     userNameDisplay.textContent = parsedUserData.firstName;
   }
 } else {
-  console.log('No user data found in localStorage');
+  //   console.log('No user data found in localStorage');
 }
