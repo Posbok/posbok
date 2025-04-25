@@ -38,15 +38,16 @@ if (createBusinessForm) {
     const versionPreferenceValue = versionPreference[0] || null;
 
     const businessDetails = {
+      businessOwnerId: 67,
       businessName,
-      businessAddress,
-      businessPhoneNumber,
-      businessState,
+      address: businessAddress,
+      phoneNumber: businessPhoneNumber,
+      stateOfOperation: businessState,
       cacRegNo,
       taxId,
       nin,
       businessType: businessTypeValue,
-      businessStaffSize,
+      staffSize: businessStaffSize,
       versionPreference: versionPreferenceValue,
     };
 
