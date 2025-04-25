@@ -120,3 +120,13 @@ export function generateBusinessOwnerId(length = 8) {
   }
   return id;
 }
+
+// Redirect Helper function
+export function redirectWithDelay(message, redirectedPage, delay) {
+  setTimeout(() => {
+    showToast('success', ` 👍Redirecting to ${message}...`);
+    setTimeout(() => {
+      window.location.href = `${redirectedPage}`;
+    }, delay); // delay = 0000
+  }, 3000); // 3 seconds delay before showing the toast message
+}

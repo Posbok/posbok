@@ -1,5 +1,9 @@
 import { registerAdmin, registerBusiness } from './apiServices/registration';
-import { generateBusinessOwnerId, showToast } from './script';
+import {
+  generateBusinessOwnerId,
+  redirectWithDelay,
+  showToast,
+} from './script';
 
 // Create Business Registration Form
 const createBusinessForm = document.getElementById('createBusinessForm');
@@ -64,11 +68,10 @@ if (createBusinessForm) {
         localStorage.setItem('businessId', businessId);
         showToast('success', `✅ ${data.message}`);
 
-        // Redirect to admin registration page
-        window.location.href = 'signup.html';
+        redirectWithDelay('Admin Creation Page', 'signup.html', 3000);
       })
       .catch((data) => {
-        showToast('fail', `❎  ${data.message}`);
+        showToast('fail', `❎ ${data.message}`);
         console.error('❎ Failed to register:', data);
       });
   });
@@ -176,6 +179,9 @@ if (signupForm) {
     registerAdmin(adminDetails)
       .then((data) => {
         console.log('✅ Registered successfully:', data);
+        showToast('success', `✅ ${data.message}`);
+
+        redirectWithDelay('Login Page', 'login.html', 3000);
       })
       .catch((data) => {
         console.error('❎ Failed to register:', data.message);
