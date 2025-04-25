@@ -163,7 +163,7 @@ if (token) {
   if (
     currentPage === '/login.html' ||
     currentPage === '/signup.html' ||
-    currentPage === '/createBusiness.html'
+    currentPage === '/createbusiness.html'
   ) {
     window.location.href = 'index.html';
   }
@@ -172,7 +172,7 @@ if (token) {
   if (
     currentPage !== '/login.html' &&
     currentPage !== '/signup.html' &&
-    currentPage !== '/createBusiness.html'
+    currentPage !== '/createbusiness.html'
   ) {
     //  console.log('User needs to log in');
     window.location.href = 'login.html'; // Redirect to login page
