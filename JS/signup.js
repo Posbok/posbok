@@ -1,8 +1,13 @@
 import { registerAdmin, registerBusiness } from './apiServices/registration';
-import { showToast } from './script';
+import { generateBusinessOwnerId, showToast } from './script';
 
 // Create Business Registration Form
 const createBusinessForm = document.getElementById('createBusinessForm');
+const businessId = localStorage.getItem('businessId');
+console.log('📌 Retrieved Business ID:', businessId);
+
+const generatedBusinessOwnerId = generateBusinessOwnerId();
+// console.log(generatedBusinessOwnerId); // Only numeric ID
 
 if (createBusinessForm) {
   createBusinessForm.addEventListener('submit', function (e) {
@@ -38,7 +43,7 @@ if (createBusinessForm) {
     const versionPreferenceValue = versionPreference[0] || null;
 
     const businessDetails = {
-      businessOwnerId: 67,
+      businessOwnerId: generatedBusinessOwnerId,
       businessName,
       address: businessAddress,
       phoneNumber: businessPhoneNumber,
@@ -55,10 +60,16 @@ if (createBusinessForm) {
 
     registerBusiness(businessDetails)
       .then((data) => {
-        console.log('✅ Registered successfully:', data);
+        const businessId = data.data.id; // the business ID returned from backend
+        localStorage.setItem('businessId', businessId);
+        showToast('success', `✅ ${data.message}`);
+
+        // Redirect to admin registration page
+        window.location.href = 'signup.html';
       })
-      .catch((err) => {
-        console.error('❌ Failed to register:', err);
+      .catch((data) => {
+        showToast('fail', `❎  ${data.message}`);
+        console.error('❎ Failed to register:', data);
       });
   });
 }
@@ -68,33 +79,48 @@ const signupForm = document.getElementById('signupForm');
 
 if (signupForm) {
   // Password Validation
+  // Wait for input in the password and confirm password fields
+  document.getElementById('password').addEventListener('input', () => {
+    const passwordInput = document.getElementById('password');
+    const pass = passwordInput.value;
+    const lengthErrorText = document.getElementById('password-length');
+
+    // Check if password is at least 6 characters long
+    if (pass.length < 6) {
+      passwordInput.classList.add('input-mismatch');
+      lengthErrorText.textContent =
+        'Password must be at least 6 characters long.';
+      lengthErrorText.style.display = 'block';
+      lengthErrorText.style.textAlign = 'left';
+    } else {
+      // Hide the length error message when password length is valid
+      passwordInput.classList.remove('input-mismatch');
+      lengthErrorText.style.display = 'none';
+    }
+  });
+
   document.getElementById('confirm-password').addEventListener('input', () => {
     const passwordInput = document.getElementById('password');
     const confirmPasswordInput = document.getElementById('confirm-password');
+    const pass = passwordInput.value;
+    const confirmVal = confirmPasswordInput.value;
 
-    confirmPasswordInput.addEventListener('input', () => {
-      const pass = passwordInput.value;
-      const confirmVal = confirmPasswordInput.value;
-      const errorText = document.getElementById('password-error');
+    const mismatchErrorText = document.getElementById('password-mismatch');
 
-      confirmPasswordInput.classList.remove('input-match', 'input-mismatch');
+    // Reset mismatch error text and input styling
+    confirmPasswordInput.classList.remove('input-match', 'input-mismatch');
+    mismatchErrorText.style.display = 'none';
 
-      if (confirmVal && pass !== confirmVal) {
-        confirmPasswordInput.classList.add('input-mismatch');
-      } else if (confirmVal && pass === confirmVal) {
-        confirmPasswordInput.classList.add('input-match');
-      }
-
-      if (confirmVal && pass !== confirmVal) {
-        confirmPasswordInput.classList.add('input-mismatch');
-        errorText.style.display = 'block';
-        errorText.style.textAlign = 'left';
-      } else {
-        confirmPasswordInput.classList.remove('input-mismatch');
-        confirmPasswordInput.classList.add('input-match');
-        errorText.style.display = 'none';
-      }
-    });
+    // If password length is sufficient, check if the passwords match
+    if (confirmVal && pass !== confirmVal) {
+      confirmPasswordInput.classList.add('input-mismatch');
+      mismatchErrorText.textContent = 'Passwords do not match.';
+      mismatchErrorText.style.display = 'block';
+      mismatchErrorText.style.textAlign = 'left';
+    } else if (confirmVal && pass === confirmVal) {
+      // If passwords match, remove the mismatch class and add the match class
+      confirmPasswordInput.classList.add('input-match');
+    }
   });
 
   signupForm.addEventListener('submit', function (e) {
@@ -105,7 +131,7 @@ if (signupForm) {
     const confirmPassword = document.getElementById('confirm-password').value;
 
     if (pass !== confirmPassword) {
-      showToast('fail', '❌ Passwords do not match.');
+      showToast('fail', '❎ Passwords do not match.');
       return;
     }
 
@@ -126,9 +152,10 @@ if (signupForm) {
     const guarantorAddress = document.getElementById('guarantorAddress').value;
 
     const adminDetails = {
+      businessId: Number(businessId),
       firstName,
       lastName,
-      residentialAddress,
+      address: residentialAddress,
       dateOfBirth,
       stateOfOrigin,
       lga,
@@ -150,8 +177,9 @@ if (signupForm) {
       .then((data) => {
         console.log('✅ Registered successfully:', data);
       })
-      .catch((err) => {
-        console.error('❌ Failed to register:', err);
+      .catch((data) => {
+        console.error('❎ Failed to register:', data.message);
+        showToast('fail', `❎ ${data.message}`);
       });
   });
 }

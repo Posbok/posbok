@@ -21,6 +21,12 @@ sideNavs.forEach((nav) => {
 // JavaScript to show toast
 export function showToast(type, message) {
   const toast = document.getElementById('toast');
+
+  if (!toast) {
+    console.warn('⚠️ Toast element not found in DOM.');
+    return;
+  }
+
   toast.textContent = message;
 
   // Reset class to clear previous toast type
@@ -87,16 +93,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // JS for Date of Birth Input
-// const dobInput = document.getElementById('dateOfBirth');
-
-// if (dobInput) {
-//   dobInput.addEventListener('click', () => {
-//     if (dobInput.showPicker) {
-//       dobInput.showPicker();
-//     }
-//   });
-// }
-
 document.addEventListener('DOMContentLoaded', () => {
   if (flatpickr) {
     flatpickr('#dateOfBirth', {
@@ -104,3 +100,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+// // JS for Business ID Generation
+// export function generateBusinessId(length = 10) {
+//   const chars =
+//     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+//   let id = '';
+//   for (let i = 0; i < length; i++) {
+//     id += chars.charAt(Math.floor(Math.random() * chars.length));
+//   }
+//   return id;
+// }
+
+// JS to generate numeric Business Owner ID (e.g., random number from 1000000000 to 9999999999)
+export function generateBusinessOwnerId(length = 8) {
+  let id = '';
+  for (let i = 0; i < length; i++) {
+    id += Math.floor(Math.random() * 10); // Generates a digit (0-9)
+  }
+  return id;
+}

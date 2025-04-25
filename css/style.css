@@ -62,8 +62,8 @@ body {
 .toast {
   visibility: hidden;
   min-width: 25rem;
-  background-color: #51cf66;
-  color: #ebfbee;
+  background-color: #10AB2B;
+  color: #fff;
   text-align: center;
   border-radius: 10px;
   padding: 1.2rem;
@@ -76,7 +76,7 @@ body {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
 
 .toast.success {
-  background-color: #51cf66; }
+  background-color: #10AB2B; }
 
 .toast.fail {
   background-color: #ec1a23; }
@@ -338,6 +338,9 @@ select {
   box-shadow: 0 0 0.3rem 0.5rem rgba(16, 171, 43, 0.36) !important; }
 
 .input-mismatch {
+  box-shadow: 0 0 0.3rem 0.4rem rgba(255, 0, 0, 0.5) !important; }
+
+.input-length {
   box-shadow: 0 0 0.3rem 0.4rem rgba(255, 0, 0, 0.5) !important; }
 
 .reports-method .double-input {

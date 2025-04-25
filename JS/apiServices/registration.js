@@ -16,16 +16,18 @@ export async function registerBusiness(businessDetails) {
     });
 
     console.log('Response received...');
+    const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      // throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(data.message || 'Something went wrong');
     }
 
-    const data = await response.json();
     console.log('detail added successfully:', data);
     return data;
   } catch (error) {
-    console.error('Error Adding detail:', error);
+    console.error('Error Adding detail:', data.message);
+    throw error;
   }
 }
 
@@ -33,7 +35,8 @@ export async function registerBusiness(businessDetails) {
 export async function registerAdmin(adminDetails) {
   try {
     console.log('Sending POST request...');
-    const response = await fetch(`${baseUrl}/api/business`, {
+
+    const response = await fetch(`${baseUrl}/api/auth/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -42,15 +45,17 @@ export async function registerAdmin(adminDetails) {
     });
 
     console.log('Response received...');
+    const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      // throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(data.message || 'Something went wrong');
     }
 
-    const data = await response.json();
     console.log('Admin created successfully:', data);
     return data;
   } catch (error) {
-    console.error('Error Adding Admin:', error);
+    console.error('Error creating Admin:', error);
+    throw error;
   }
 }
