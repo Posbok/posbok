@@ -6,13 +6,13 @@ import {
 } from './script';
 
 // Create Business Registration Form
-const createBusinessForm = document.getElementById('createBusinessForm');
+const createbusinessForm = document.getElementById('createbusinessForm');
 const businessId = localStorage.getItem('businessId');
 
 const generatedBusinessOwnerId = generateBusinessOwnerId();
 
-if (createBusinessForm) {
-  createBusinessForm.addEventListener('submit', function (e) {
+if (createbusinessForm) {
+  createbusinessForm.addEventListener('submit', function (e) {
     e.preventDefault(); // stop page refresh
 
     const businessName = document.getElementById('businessName').value;
