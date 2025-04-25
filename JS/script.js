@@ -153,32 +153,21 @@ export function redirectWithDelay(message, redirectedPage, delay) {
 // Functioin to check if user is logged in
 const token = localStorage.getItem('accessToken');
 
-// Get the current page name from the URL
-const currentPage = window.location.pathname;
+// Normalize current page name from pathname
+const currentPage = window.location.pathname.toLowerCase();
 
-if (token) {
-  // Token exists, user is logged in
-  //   console.log('User is logged in');
+// Llist of all  public/auth pages & check if on auth page
+const authPages = ['login', 'signup', 'createbusiness'];
+const onAuthPage = authPages.some((page) => currentPage.includes(page));
 
-  if (
-    currentPage === '/login.html' ||
-    currentPage === '/signup.html' ||
-    currentPage === '/createbusiness.html'
-  ) {
-    window.location.href = 'index.html';
-  }
-} else {
-  // No token, check if we're not on the login/signup page
-  if (
-    currentPage !== '/login.html' &&
-    currentPage !== '/signup.html' &&
-    currentPage !== '/createbusiness.html'
-  ) {
-    //  console.log('User needs to log in');
-    window.location.href = 'login.html'; // Redirect to login page
-  } else {
-    //  console.log('User is on login or signup page, no redirect needed');
-  }
+// If token exists and user is on an auth page, redirect to index
+if (token && onAuthPage) {
+  window.location.href = 'index.html';
+}
+
+// If no token and user is on a protected page, redirect to login
+if (!token && !onAuthPage) {
+  window.location.href = 'login.html';
 }
 
 // Logout Function
