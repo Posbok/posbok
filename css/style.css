@@ -81,6 +81,9 @@ body {
 .toast.fail {
   background-color: #ec1a23; }
 
+.toast.redirect {
+  background-color: #F89942; }
+
 .toast.show {
   visibility: visible;
   animation: fadein 0.5s, fadeout 0.5s 2.5s; }

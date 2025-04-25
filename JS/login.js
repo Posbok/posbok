@@ -1,3 +1,36 @@
+import { loginUser } from './apiServices/login';
+import { redirectWithDelay, showToast } from './script';
+
+const loginForm = document.getElementById('loginForm');
+
+if (loginForm) {
+  loginForm.addEventListener('submit', function (e) {
+    e.preventDefault(); // stop page refresh
+
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    const userDetails = {
+      email,
+      password,
+    };
+
+    console.log('📦 User Details:', userDetails);
+
+    loginUser(userDetails)
+      .then((data) => {
+        //   Stores the access token in local storage
+        localStorage.setItem('accessToken', data.data.accessToken);
+
+        redirectWithDelay('Homepage', 'index.html', 500);
+      })
+      .catch((data) => {
+        showToast('fail', `❎ ${data.message}`);
+        console.error('❎ Failed to login:', data.message);
+      });
+  });
+}
+
 // // Dummy first login before full page
 // localStorage.setItem('isLoggedIn', true);
 

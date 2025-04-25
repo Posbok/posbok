@@ -96,7 +96,26 @@ document.addEventListener('DOMContentLoaded', function () {
 document.addEventListener('DOMContentLoaded', () => {
   if (flatpickr) {
     flatpickr('#dateOfBirth', {
-      dateFormat: 'Y-m-d', // Customize format as needed
+      dateFormat: 'Y-m-d',
+      allowInput: true, // Enable input so validation works
+      onReady: function (selectedDates, dateStr, instance) {
+        const el = instance.element;
+
+        // Prevent user typing but keep field focusable & validatable
+        el.onkeydown =
+          el.onkeypress =
+          el.onkeyup =
+            function (e) {
+              e.preventDefault();
+            };
+        el.onpaste = function (e) {
+          e.preventDefault();
+        };
+
+        el.style.caretColor = 'transparent'; // Hide text cursor
+        el.style.cursor = 'pointer'; // UI/UX feedback
+        el.style.backgroundColor = '#f7f7f7'; // Optional style
+      },
     });
   }
 });
@@ -124,9 +143,45 @@ export function generateBusinessOwnerId(length = 8) {
 // Redirect Helper function
 export function redirectWithDelay(message, redirectedPage, delay) {
   setTimeout(() => {
-    showToast('success', ` 👍Redirecting to ${message}...`);
+    showToast('redirect', ` 👍Redirecting to ${message}...`);
     setTimeout(() => {
       window.location.href = `${redirectedPage}`;
     }, delay); // delay = 0000
   }, 3000); // 3 seconds delay before showing the toast message
+}
+
+// Functioin to check if user is logged in
+const token = localStorage.getItem('accessToken');
+
+// Get the current page name from the URL
+const currentPage = window.location.pathname;
+
+if (token) {
+  // Token exists, user is logged in
+  console.log('User is logged in');
+} else {
+  // No token, check if we're not on the login/signup page
+  if (
+    currentPage !== '/login.html' &&
+    currentPage !== '/signup.html' &&
+    currentPage !== '/createBusiness.html'
+  ) {
+    console.log('User needs to log in');
+    window.location.href = 'login.html'; // Redirect to login page
+  } else {
+    console.log('User is on login or signup page, no redirect needed');
+  }
+}
+
+// Logout Function
+const logoutButton = document.querySelector('.logoutButton');
+
+if (logoutButton) {
+  logoutButton.addEventListener('click', function () {
+    localStorage.removeItem('accessToken');
+    showToast('success', '✅ Logging Out...!');
+    setTimeout(() => {
+      window.location.href = 'login.html'; // Redirect to login page
+    }, 1000);
+  });
 }

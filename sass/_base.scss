@@ -140,6 +140,11 @@ body {
    background-color: $color-danger;
 }
 
+// Failure redirect
+.toast.redirect {
+   background-color: $color-secondary-light;
+}
+
 // Toast visibility
 .toast.show {
    visibility: visible;

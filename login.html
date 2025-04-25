@@ -25,7 +25,7 @@
    <!-- <script defer type="module" src="JS/script.js"></script> -->
    <!-- <script defer type="module" src="JS/login.js"></script> -->
 
-   <script src="dist/main.bundle.js" defer></script>
+   <!-- <script src="dist/main.bundle.js" defer></script> -->
    <script src="dist/login.bundle.js" defer></script>
 
    <title>POSBOK &mdash;BUSINESS SYSTEM 1.0</title>
@@ -43,13 +43,13 @@
             <h2 class="heading-subtext">A product of EAROT TELECOMS 2024</h2>
          </div>
 
-         <form name="login form" netlify>
+         <form name="loginForm" id="loginForm" netlify>
 
-            <input type="email" name="Login Up Email " placeholder="Email" required />
+            <input type="email" id="email" name="Email " placeholder="Email" value="demodev@gmail.com" required />
 
-            <input type="password" name="Login Up Password " placeholder="Password" required />
+            <input type="password" id="password" name="password " placeholder="Password" value="123456" />
 
-            <button class="hero-btn-dark mt-2 mb-1" type="submit" onclick="redirect()">Sign In</button>
+            <button class="hero-btn-dark mt-2 mb-1" type="submit">Sign In</button>
 
             <p class="heading-subtext mb-1 ">Forgot password? <a href="#">Click here</a></p>
 
@@ -62,6 +62,7 @@
       </div>
    </div>
 
+   <div id="toast" class="toast">This is a toast message!</div>
 
 </body>
 
