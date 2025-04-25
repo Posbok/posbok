@@ -19,10 +19,15 @@ if (loginForm) {
 
     loginUser(userDetails)
       .then((data) => {
-        //   Stores the access token in local storage
-        localStorage.setItem('accessToken', data.data.accessToken);
+        const user = data.data.user;
+        const token = data.data.accessToken;
 
-        redirectWithDelay('Homepage', 'index.html', 500);
+        //   Stores the access token in local storage
+        localStorage.setItem('accessToken', token);
+        localStorage.setItem('userData', JSON.stringify(user));
+
+        //   redirectWithDelay('Homepage', 'index.html', 500);
+        window.location.href = 'index.html';
       })
       .catch((data) => {
         showToast('fail', `❎ ${data.message}`);

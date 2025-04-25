@@ -84,10 +84,13 @@
             }
          }
 
+         .logoutButton {
+            margin-bottom: 0;
+         }
+
          .main-heading-profile--image {
-            width: 4rem;
-            height: 4rem;
-            border-radius: 10px;
+            font-size: 4rem;
+            border-radius: 100px;
             border: 3px solid $color-primary;
 
             @media only screen and (max-width:$bp-small) {

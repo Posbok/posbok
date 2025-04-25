@@ -159,6 +159,14 @@ const currentPage = window.location.pathname;
 if (token) {
   // Token exists, user is logged in
   console.log('User is logged in');
+
+  if (
+    currentPage === '/login.html' ||
+    currentPage === '/signup.html' ||
+    currentPage === '/createBusiness.html'
+  ) {
+    window.location.href = 'index.html';
+  }
 } else {
   // No token, check if we're not on the login/signup page
   if (
@@ -179,9 +187,25 @@ const logoutButton = document.querySelector('.logoutButton');
 if (logoutButton) {
   logoutButton.addEventListener('click', function () {
     localStorage.removeItem('accessToken');
+    localStorage.removeItem('userData');
+
     showToast('success', '✅ Logging Out...!');
     setTimeout(() => {
       window.location.href = 'login.html'; // Redirect to login page
     }, 1000);
   });
+}
+
+//  JS for User Name display
+const userNameDisplay = document.querySelector('.user-name');
+const userData = localStorage.getItem('userData');
+
+if (userData) {
+  const parsedUserData = JSON.parse(userData);
+
+  if (userNameDisplay) {
+    userNameDisplay.textContent = parsedUserData.firstName;
+  }
+} else {
+  console.log('No user data found in localStorage');
 }
