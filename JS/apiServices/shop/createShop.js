@@ -1,5 +1,5 @@
 import config from '../../../config.js';
-import { closeModal } from '../../script.js';
+import { closeModal, showToast } from '../../script.js';
 
 const baseUrl = config.baseUrl;
 const userToken = config.token;
@@ -85,8 +85,8 @@ export function setupCreateShopForm() {
     form.addEventListener('submit', async function (e) {
       e.preventDefault();
 
-      const shopName = document.querySelector('#shopName').value;
-      const shopAddress = document.querySelector('#shopAddress').value;
+      const shopNameInput = document.querySelector('#shopName');
+      const shopAddressInput = document.querySelector('#shopAddress');
 
       const serviceTypeCheckboxes = document.querySelectorAll(
         'input[name="serviceType"]:checked'
@@ -97,8 +97,8 @@ export function setupCreateShopForm() {
       const serviceTypeValue = serviceType[0] || null;
 
       const shopDetails = {
-        shopName,
-        location: shopAddress,
+        shopName: shopNameInput.value,
+        location: shopAddressInput.value,
         serviceType: serviceTypeValue,
       };
 
@@ -106,6 +106,17 @@ export function setupCreateShopForm() {
         createShop(shopDetails)
           .then((data) => {
             closeModal();
+
+            // Clear inputs and checkboxes
+            shopNameInput.value = '';
+            shopAddressInput.value = '';
+            document
+              .querySelectorAll('input[name="serviceType"]')
+              .forEach((cb) => (cb.checked = false));
+            // serviceTypeCheckboxes.forEach(
+            //   (checkbox) => (checkbox.checked = false)
+            // );
+
             //   redirectWithDelay('Homepage', 'manage.html', 500);
             // window.location.href = 'manage.html';
           })
