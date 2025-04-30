@@ -31,6 +31,8 @@ export async function registerBusiness(businessDetails) {
   }
 }
 
+// function to create a shop during Business registration
+
 // Function to register an Admin - API
 export async function registerAdmin(adminDetails) {
   try {

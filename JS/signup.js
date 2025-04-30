@@ -66,7 +66,8 @@ if (createbusinessForm) {
         localStorage.setItem('businessId', businessId);
         showToast('success', `✅ ${data.message}`);
 
-        redirectWithDelay('Admin Creation Page', 'signup.html', 1000);
+        //   redirectWithDelay('Admin Creation Page', 'signup.html', 1000);
+        window.location.href = 'signup.html';
       })
       .catch((data) => {
         showToast('fail', `❎ ${data.message}`);
@@ -174,7 +175,7 @@ if (signupForm) {
 
     //  console.log('📦 Admin Details:', adminDetails);
 
-    if (!dateOfBirth.value) {
+    if (!dateOfBirth) {
       alert('Date of Birth is required.');
       return; // Prevent form submission
     }

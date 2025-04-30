@@ -1,5 +1,6 @@
 import flatpickr from 'flatpickr';
 import './apiServices/product';
+import { logoutUser } from './apiServices/login';
 
 // Toggle the active class for sideNavs
 const sideNavs = document.querySelectorAll('.side-nav_item');
@@ -175,25 +176,88 @@ const logoutButton = document.querySelector('.logoutButton');
 
 if (logoutButton) {
   logoutButton.addEventListener('click', function () {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('userData');
+    logoutUser()
+      .then((data) => {
+        console.log(data);
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('userData');
 
-    showToast('success', '✅ Logging Out...!');
-    setTimeout(() => {
-      window.location.href = 'login.html'; // Redirect to login page
-    }, 1000);
+        showToast('success', '✅ Logging Out...!');
+        setTimeout(() => {
+          window.location.href = 'login.html'; // Redirect to login page
+        }, 1000);
+      })
+      .catch((data) => {
+        showToast('fail', `❎ ${data.message}`);
+        console.error('❎ Failed to login:', data.message);
+      });
   });
 }
 
-//  JS for User Name display
+//  JS for DOM Manioulation and Dynamic data e.g.
 const userNameDisplay = document.querySelector('.user-name');
+const businessNameDisplay = document.querySelector('.business-name');
+
+const sellIndexTab = document.getElementById('sellIndexTab');
+const posIndexTab = document.getElementById('posIndexTab');
+const reportIndexTab = document.getElementById('reportIndexTab');
+const manageIndexTab = document.getElementById('manageIndexTab');
+
 const userData = localStorage.getItem('userData');
 
 if (userData) {
   const parsedUserData = JSON.parse(userData);
 
+  //    User Name
   if (userNameDisplay) {
-    userNameDisplay.textContent = parsedUserData.firstName;
+    if (userNameDisplay) userNameDisplay.textContent = parsedUserData.firstName;
+  }
+
+  // Business Name display
+  if (userNameDisplay) {
+    if (businessNameDisplay)
+      businessNameDisplay.textContent = parsedUserData.businessName;
+  }
+
+  // Account Type - services display
+
+  if (parsedUserData.accountType === 'ADMIN') {
+    if (sellIndexTab) sellIndexTab.style.display = 'none';
+    if (posIndexTab) posIndexTab.style.display = 'none';
+    if (reportIndexTab) reportIndexTab.style.display = 'block';
+    if (manageIndexTab) manageIndexTab.style.display = 'block';
+
+    // Normalize current page name from pathname
+    const currentPage = window.location.pathname.toLowerCase();
+
+    //  List of pages not open to admin
+    const RestrictedAdminPage = ['pos', 'sell'];
+    const isOnRestrictedAdminPage = RestrictedAdminPage.some((page) =>
+      currentPage.includes(page)
+    );
+
+    // If admin is on a protected page, redirect to login
+    if (isOnRestrictedAdminPage) {
+      window.location.href = 'index.html';
+    }
+  }
+
+  if (parsedUserData.accountType === 'STAFF') {
+    if (sellIndexTab) sellIndexTab.style.display = 'block';
+    if (posIndexTab) posIndexTab.style.display = 'block';
+    if (reportIndexTab) reportIndexTab.style.display = 'block';
+    if (manageIndexTab) manageIndexTab.style.display = 'none';
+
+    //  List of pages not open to Staff
+    const restrictedStaffPage = ['manage'];
+    const isOnRestrictedStaffPage = restrictedStaffPage.some((page) =>
+      currentPage.includes(page)
+    );
+
+    // If Staff is on a protected page, redirect to login
+    if (isOnRestrictedStaffPage) {
+      window.location.href = 'index.html';
+    }
   }
 } else {
   //   console.log('No user data found in localStorage');
