@@ -233,12 +233,15 @@ select {
    cursor: pointer;
 }
 
-
+.modal-form .modal .heading-text {
+   color: $color-grey-dark-2;
+}
 
 .addProduct,
 .sellProduct,
 .updateProduct,
 .depositPosCapital,
+.modal,
 .signup,
 .addUser {
    .checkbox {
@@ -325,6 +328,16 @@ select {
       margin: 0;
    }
 
+}
+
+.modal-form_input {
+   .checkbox {
+      display: block;
+
+      &-container {
+         margin-top: 1rem;
+      }
+   }
 }
 
 

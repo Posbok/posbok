@@ -211,6 +211,57 @@
 
    </main>
 
+
+   <form class="modal-form createShopModal" name="modal" netlify>
+      <div class="card createShop modal ">
+         <div>
+            <h1 class="heading-text">Create Your First Shop</h1>
+         </div>
+
+         <!-- Shop Name -->
+         <div class="modal-form_input">
+            <label for="shopName">Shop Name</label>
+
+            <input id="shopName" type="text" placeholder="Enter Shop Name" name="shopName" required>
+         </div>
+
+         <!-- Shop Address -->
+         <div class="modal-form_input">
+            <label for="shopAddress">Shop Address</label>
+
+            <input id="shopAddress" type="text" placeholder="Enter Shop Address" name="shopAddress" required>
+         </div>
+
+         <!-- Service Type -->
+         <div class="modal-form_input mb-1">
+            <label for="serviceType" class="heading-subtext">Service Type</label>
+
+            <div class="checkbox">
+               <div class="checkbox-container">
+                  <input id="posShopCheckbox" type="checkbox" name="serviceType" value="POS_TRANSACTIONS">
+                  <label for="posShopCheckbox">POS</label>
+               </div>
+
+               <div class="checkbox-container">
+                  <input id="sellShopCheckbox" type="checkbox" name="serviceType" value="INVENTORY_SALES">
+                  <label for="sellShopCheckbox">SELL</label>
+               </div>
+
+               <div class="checkbox-container">
+                  <input id="posAndSellShopCheckbox" type="checkbox" name="serviceType" value="BOTH">
+                  <label for="posAndSellShopCheckbox">POS & SELL</label>
+               </div>
+            </div>
+         </div>
+
+         <div class="center-button">
+            <button class="hero-btn-dark" type="submit">Create SHop</button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
    <!--  -->
 </body>
 

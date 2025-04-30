@@ -1,6 +1,16 @@
+import config from '../config.js';
 import flatpickr from 'flatpickr';
 import './apiServices/product';
 import { logoutUser } from './apiServices/login';
+import {
+  checkAndPromptCreateShop,
+  openCreateShopModal,
+  setupCreateShopForm,
+  setupModalCloseButtons,
+} from './apiServices/shop/createShop';
+import { fetchBusinessDetails } from './apiServices/business/getBusinessDetails.js';
+
+const userData = config.userData;
 
 // Toggle the active class for sideNavs
 const sideNavs = document.querySelectorAll('.side-nav_item');
@@ -55,7 +65,7 @@ export function formatAmountWithCommas(amount) {
 // JS For Modal
 
 const main = document.querySelector('.main');
-// const sidebar = document.querySelector('.sidebar');
+const sidebar = document.querySelector('.sidebar');
 const closeModalButton = document.querySelectorAll('.closeModal');
 
 closeModalButton.forEach((closeButton) => {
@@ -64,16 +74,21 @@ closeModalButton.forEach((closeButton) => {
   });
 });
 
-function closeModal() {
+export function closeModal() {
   const depositPosCapitalContainer =
     document.querySelector('.depositPosCapital');
+  const createShop = document.querySelector('.createShop');
 
   if (depositPosCapitalContainer) {
     depositPosCapitalContainer.classList.remove('active');
   }
 
+  if (createShop) {
+    createShop.classList.remove('active');
+  }
+
   main.classList.remove('blur');
-  //   sidebar.classList.remove('blur');
+  if (sidebar) sidebar.classList.remove('blur');
   main.classList.remove('no-scroll');
 }
 
@@ -203,8 +218,6 @@ const posIndexTab = document.getElementById('posIndexTab');
 const reportIndexTab = document.getElementById('reportIndexTab');
 const manageIndexTab = document.getElementById('manageIndexTab');
 
-const userData = localStorage.getItem('userData');
-
 if (userData) {
   const parsedUserData = JSON.parse(userData);
 
@@ -261,4 +274,52 @@ if (userData) {
   }
 } else {
   //   console.log('No user data found in localStorage');
+}
+
+// JS to Check and prompt cretae shop
+document.addEventListener('DOMContentLoaded', () => {
+  setupCreateShopForm();
+  setupModalCloseButtons();
+  document
+    .querySelector('#openShopModalBtn')
+    ?.addEventListener('click', openCreateShopModal);
+
+  if (userData) {
+    checkAndPromptCreateShop();
+  }
+});
+
+// function to Use business info to fill in the Create SHop Form
+const useBusinessInfoCheckbox = document.querySelector('#useBusinessInfo');
+
+if (useBusinessInfoCheckbox) {
+  useBusinessInfoCheckbox.addEventListener('change', async function () {
+    const shopNameInput = document.querySelector('#shopName');
+    const shopAddressInput = document.querySelector('#shopAddress');
+    const serviceTypeCheckboxes = document.querySelectorAll(
+      'input[name="serviceType"]'
+    );
+
+    if (useBusinessInfoCheckbox.checked) {
+      const businessData = await fetchBusinessDetails();
+
+      shopNameInput.value = businessData.data.business_name || '';
+      shopAddressInput.value = businessData.data.address || '';
+
+      // Clear all checkboxes first
+      serviceTypeCheckboxes.forEach((checkbox) => (checkbox.checked = false));
+
+      // Match and check the appropriate checkbox
+      const serviceType = businessData.data.business_type;
+      const matchedCheckbox = [...serviceTypeCheckboxes].find(
+        (checkbox) => checkbox.value === serviceType
+      );
+      if (matchedCheckbox) matchedCheckbox.checked = true;
+    } else {
+      // Clear inputs and checkboxes
+      shopNameInput.value = '';
+      shopAddressInput.value = '';
+      serviceTypeCheckboxes.forEach((checkbox) => (checkbox.checked = false));
+    }
+  });
 }
