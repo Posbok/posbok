@@ -13,6 +13,7 @@ module.exports = {
     simReg: './JS/simReg.js',
     signup: './JS/signup.js',
     shops: './JS/shops.js',
+    user: './JS/user.js',
     main: './JS/script.js', // Common JS for the main page if needed
   },
 

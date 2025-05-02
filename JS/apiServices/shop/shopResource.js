@@ -41,7 +41,8 @@ export async function createShop(shopDetails) {
         );
         if (proceed) {
           // Open staff creation modal or navigate to staff creation page
-          console.log('Proceed to staff creation');
+
+          window.location.href = 'staff-profile.html';
         }
       }, 600);
     }
