@@ -27,7 +27,8 @@
    <!-- <script defer type="module" src="JS/goods.js"></script> -->
 
 
-   <script src="dist/main.bundle.js" defer></script>
+   <script src="/dist/main.bundle.js" defer></script>
+   <script src="/dist/shops.bundle.js" defer></script>
    <!-- <script src="dist/reports.bundle.js" defer></script> -->
 
    <title>POSBOK &mdash;BUSINESS SYSTEM 1.0</title>
@@ -47,7 +48,7 @@
          </div>
 
          <ul class="side-nav">
-            <a href="/pos.html" class="side-nav_link">
+            <a href="/pos.html" class="side-nav_link" id="posNav">
                <li class="side-nav_item ">
                   <i class="fas fa-exchange-alt icon"></i>
                   <span>POS</span>
@@ -56,7 +57,7 @@
          </ul>
 
          <ul class="side-nav">
-            <a href="/sell.html" class="side-nav_link">
+            <a href="/sell.html" class="side-nav_link" id="sellNav">
                <li class="side-nav_item ">
                   <i class="fas fa-cart-shopping icon"></i>
                   <span>SELL</span>
@@ -84,7 +85,7 @@
          </ul> -->
 
          <ul class="side-nav">
-            <a href="/reports.html" class="side-nav_link">
+            <a href="/reports.html" class="side-nav_link" id="reportsNav">
                <li class="side-nav_item ">
                   <i class="fas fa-chart-pie icon"></i>
                   <span>REPORTS</span>
@@ -93,7 +94,7 @@
          </ul>
 
          <ul class="side-nav">
-            <a href="/manage.html" class="side-nav_link">
+            <a href="/manage.html" class="side-nav_link" id="manageNav">
                <li class="side-nav_item active">
                   <i class="fa-solid fa-users-gear icon"></i>
                   <span>MANAGE</span>
@@ -137,15 +138,93 @@
 
                <button class="hero-btn-dark add-user">Add User</button>
 
-
-               <button class="hero-btn-dark openShopModalBtn" id="openShopModalBtn">Create Shop</button>
-
             </div>
 
          </div>
       </div>
 
       <!-- <button id="openShopModalBtn">Create Shop</button> -->
+
+
+      <section class="shops card">
+         <div class="shops-method">
+            <h2 class="heading-text" style="margin-bottom: 1.5rem;">
+               Available SHops
+            </h2>
+
+            <!-- <div class="table-header" style="display: flex; flex-direction: column; width: max-content;"> -->
+            <div class="adminHeader">
+
+               <button class="hero-btn-dark openShopModalBtn" id="openShopModalBtn">Create Shop</button>
+
+               <button class="hero-btn-dark add-user">Add Staff</button>
+            </div>
+            <!-- <h2 class="heading-subtext"> Staff Informations</h2> -->
+            <!-- </div> -->
+
+            <div class="shops-table-container">
+               <table class="shops-table">
+                  <thead>
+                     <tr class="table-header-row">
+                        <th class="py-1">S/N</th>
+                        <th class="py-1">Shop Name</th>
+                        <th class="py-1">Shop Location</th>
+                        <th class="py-1">Service Type</th>
+                        <th class="py-1">Shop Manager</th>
+                        <th class="py-1">Action</th>
+                     </tr>
+                  </thead>
+
+                  <tbody>
+
+                     <tr class="loading-row">
+                        <td colspan="6" class="table-error-text"></td>
+                     </tr>
+
+                     <!-- <tr class="table-body-row" id="item-list">
+                        <td class="py-1 shopSerialNumber">1</td>
+                        <td class="py-1 shopName">Shop 1
+                        <td class="py-1 shopLocation">Shop Address</td>
+                        <td class="py-1 shopServiceType">POS & SELL</td>
+                        <td class="py-1 shopManager">Shop Manager Name</td>
+
+                        <td class="py-1 action-buttons">
+
+                           <button class="hero-btn-outline editShopButton"><i
+                                 class="fa-solid fa-pen-to-square"></i></button>
+
+                           <button class="hero-btn-outline deleteShopButton"><i
+                                 class="fa-solid fa-trash-can"></i></button>
+                        </td>
+                     </tr>
+
+                     <tr class="table-body-row" id="item-list">
+                        <td class="py-1 shopSerialNumber">2</td>
+                        <td class="py-1 shopName">Shop 2
+                        <td class="py-1 shopLocation">Shop Address</td>
+                        <td class="py-1 shopServiceType">POS</td>
+                        <td class="py-1 shopManager">Shop Manager Name</td>
+
+                        <td class="py-1 action-buttons">
+
+                           <button class="hero-btn-outline editShopButton"><i
+                                 class="fa-solid fa-pen-to-square"></i></button>
+
+                           <button class="hero-btn-outline deleteShopButton"><i
+                                 class="fa-solid fa-trash-can"></i></button>
+                        </td>
+                     </tr> -->
+
+                  </tbody>
+               </table>
+
+               <!-- <div class="center-button mt-2">
+                  <button id="loadMoreButton" class="hero-btn-dark">Load More</button>
+               </div> -->
+
+            </div>
+         </div>
+      </section>
 
    </main>
 
@@ -197,10 +276,21 @@
 
 
    <form class="modal-form createShopModal" name="modal" netlify>
-      <div class="card createShop modal ">
+      <div class="card createShop modal">
          <div>
-            <h1 class="heading-text">Create Your First Shop</h1>
+            <h1 class="heading-text">Create Shop</h1>
          </div>
+
+         <!-- Use my Business Info -->
+         <div class="modal-form_input mb-1">
+            <div class="checkbox">
+               <div class="checkbox-container">
+                  <input id="useBusinessInfo" type="checkbox" name="useBusinessInfo">
+                  <label for="useBusinessInfo">Use my Business Info</label>
+               </div>
+            </div>
+         </div>
+
 
          <!-- Shop Name -->
          <div class="modal-form_input">
@@ -238,6 +328,16 @@
             </div>
          </div>
 
+         <!-- Assign Staff Checkbox -->
+         <div class="modal-form_input mb-1">
+            <div class="checkbox">
+               <div class="checkbox-container">
+                  <input id="assignStaffCheckbox" type="checkbox" name="assignStaff">
+                  <label for="assignStaffCheckbox">Assign a staff to this shop after creation</label>
+               </div>
+            </div>
+         </div>
+
          <div class="center-button">
             <button class="hero-btn-dark" type="submit">Create SHop</button>
          </div>
@@ -246,6 +346,7 @@
       </div>
    </form>
 
+   <div id="toast" class="toast">This is a toast message!</div>
 </body>
 
 </html>

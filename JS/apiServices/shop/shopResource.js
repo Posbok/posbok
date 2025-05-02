@@ -1,5 +1,6 @@
 import config from '../../../config.js';
 import { closeModal, showToast } from '../../script.js';
+import { populateShopsTable } from '../../shops.js';
 
 const baseUrl = config.baseUrl;
 const userToken = config.token;
@@ -9,7 +10,7 @@ const parsedUserData = userData ? JSON.parse(userData) : null;
 
 export async function createShop(shopDetails) {
   try {
-    console.log('Sending POST request...');
+    //  console.log('Sending POST request...');
 
     const response = await fetch(`${baseUrl}/api/shop`, {
       method: 'POST',
@@ -20,7 +21,7 @@ export async function createShop(shopDetails) {
       body: JSON.stringify(shopDetails),
     });
 
-    console.log('Response received...');
+    //  console.log('Response received...');
     const data = await response.json();
 
     if (!response.ok) {
@@ -28,7 +29,22 @@ export async function createShop(shopDetails) {
       throw new Error(data.message || 'Something went wrong');
     }
 
-    console.log('Shop created successfully:', data);
+    //  console.log('Shop created successfully:', data);
+    showToast('success', `✅ ${data.message}`);
+    checkAndPromptCreateShop(); // Refresh the shop list after creation
+
+    if (document.querySelector('#assignStaffCheckbox').checked) {
+      console.log('objectcbbbbbb');
+      setTimeout(() => {
+        const proceed = confirm(
+          'You chose to assign a staff to this shop. Would you like to do that now?'
+        );
+        if (proceed) {
+          // Open staff creation modal or navigate to staff creation page
+          console.log('Proceed to staff creation');
+        }
+      }, 600);
+    }
     return data;
   } catch (error) {
     console.error('Error creating Admin:', error);
@@ -36,7 +52,21 @@ export async function createShop(shopDetails) {
   }
 }
 
+// The functions below are used to check if the user has a shop and prompt them to creat one if they don't - checkAndPromptCreateShop, openCreateShopModal, setupCreateShopForm, and setupModalCloseButtons
+
 export async function checkAndPromptCreateShop() {
+  function showLoadingRow() {
+    const tbody = document.querySelector('.shops-table tbody');
+    if (tbody)
+      tbody.innerHTML = `
+   <tr class="loading-row">
+     <td colspan="6" class="table-error-text">Loading shops...</td>
+   </tr>
+ `;
+  }
+
+  showLoadingRow();
+
   try {
     const response = await fetch(`${baseUrl}/api/shop`, {
       method: 'GET',
@@ -51,7 +81,9 @@ export async function checkAndPromptCreateShop() {
       (shop) => shop.business_id === parsedUserData.businessId
     );
 
-    console.log(userShops);
+    populateShopsTable(userShops);
+
+    //  console.log('checkAndPromptCreateShop data', userShops);
 
     if (userShops.length === 0) {
       openCreateShopModal();
@@ -80,6 +112,10 @@ export function openCreateShopModal() {
 
 export function setupCreateShopForm() {
   const form = document.querySelector('.createShopModal');
+
+  if (!form || form.dataset.bound === 'true') return;
+
+  form.dataset.bound = 'true';
 
   if (form) {
     form.addEventListener('submit', async function (e) {
@@ -124,7 +160,7 @@ export function setupCreateShopForm() {
             showToast('fail', `❎ ${data.message}`);
             console.error('❎ Failed to create shop:', data.message);
           });
-        console.log('Creating shop with:', shopDetails);
+        //   console.log('Creating shop with:', shopDetails);
         // closeModal(); // close modal after success
       } catch (err) {
         console.error('Error creating shop:', err.message);
@@ -148,87 +184,4 @@ export function setupModalCloseButtons() {
   });
 }
 
-// // Function to Check and prompt cretae shop
-// export async function checkAndPromptCreateShop(shopDetails) {
-//   try {
-//     console.log('Sending POST request...');
-//     const response = await fetch(`${baseUrl}/api/shop`, {
-//       method: 'GET',
-//       headers: {
-//         Authorization: `Bearer ${userToken}`,
-//         //   'Content-Type': 'application/json',
-//       },
-//     });
-
-//     console.log('Response received...');
-//     const data = await response.json();
-//     console.log(data);
-
-//     const userShops = data.data.filter(
-//       (shop) => shop.business_id === parsedUserData.businessId
-//     );
-
-//     if (userShops.length === 0) {
-//       const main = document.querySelector('.main');
-//       const sidebar = document.querySelector('.sidebar');
-
-//       // JS for create Shop Modal
-//       document.addEventListener('DOMContentLoaded', function () {
-//         const createShopModal = document.querySelector('.createShopModal');
-//         const createShopContainer = document.querySelector('.createShop');
-
-//         createShopContainer.classList.add('active');
-//         main.classList.add('blur');
-//         sidebar.classList.add('blur');
-
-//         if (createShopModal) {
-//           createShopModal.addEventListener('submit', function (e) {
-//             e.preventDefault();
-
-//             const shopName = document.querySelector('.shopName').value;
-//             const shopAddress = document.querySelector('.shopName').value;
-
-//             const serviceTypeCheckboxes = document.querySelectorAll(
-//               'input[name="serviceType"]:checked'
-//             );
-//             const serviceType = Array.from(serviceTypeCheckboxes).map(
-//               (cb) => cb.value
-//             );
-//             const serviceTypeValue = serviceType[0] || null;
-
-//             const shopDetails = {
-//               shopName,
-//               shopAddress,
-//               serviceType: serviceTypeValue,
-//             };
-
-//             checkAndPromptCreateShop(shopDetails);
-//           });
-//         }
-//       });
-//     }
-
-//     console.log('User Shop:', userShops);
-//     console.log(parsedUserData.businessId);
-
-//     if (!response.ok) {
-//       // throw new Error(`HTTP error! status: ${response.status}`);
-//       throw new Error(data.message || 'Something went wrong');
-//     }
-
-//     //  console.log('detail added successfully:', data);
-//     return data;
-//   } catch (error) {
-//     console.error('Error Adding detail:', data.message);
-//     throw error;
-//   }
-// }
-
-// const closeModalButton = document.querySelectorAll('.closeModal');
-
-// closeModalButton.forEach((closeButton) => {
-//   closeButton.addEventListener('click', function () {
-//     closeModal();
-//     console.log('object');
-//   });
-// });
+// More Shop functions for shop functionality

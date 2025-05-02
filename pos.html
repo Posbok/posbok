@@ -46,7 +46,7 @@
          </div>
 
          <ul class="side-nav">
-            <a href="/pos.html" class="side-nav_link">
+            <a href="/pos.html" class="side-nav_link" id="posNav">
                <li class="side-nav_item active">
                   <i class="fas fa-exchange-alt icon"></i>
                   <span>POS</span>
@@ -55,7 +55,7 @@
          </ul>
 
          <ul class="side-nav">
-            <a href="/sell.html" class="side-nav_link">
+            <a href="/sell.html" class="side-nav_link" id="sellNav">
                <li class="side-nav_item ">
                   <i class="fas fa-cart-shopping icon"></i>
                   <span>SELL</span>
@@ -83,7 +83,7 @@
          </ul> -->
 
          <ul class="side-nav">
-            <a href="/reports.html" class="side-nav_link">
+            <a href="/reports.html" class="side-nav_link" id="reportsNav">
                <li class="side-nav_item ">
                   <i class="fas fa-chart-pie icon"></i>
                   <span>REPORTS</span>
@@ -92,7 +92,7 @@
          </ul>
 
          <ul class="side-nav">
-            <a href="/manage.html" class="side-nav_link">
+            <a href="/manage.html" class="side-nav_link" id="manageNav">
                <li class="side-nav_item ">
                   <i class="fa-solid fa-users-gear icon"></i>
                   <span>MANAGE</span>
@@ -235,10 +235,21 @@
 
 
    <form class="modal-form createShopModal" name="modal" netlify>
-      <div class="card createShop modal ">
+      <div class="card createShop modal">
          <div>
-            <h1 class="heading-text">Create Your First Shop</h1>
+            <h1 class="heading-text">Create Shop</h1>
          </div>
+
+         <!-- Use my Business Info -->
+         <div class="modal-form_input mb-1">
+            <div class="checkbox">
+               <div class="checkbox-container">
+                  <input id="useBusinessInfo" type="checkbox" name="useBusinessInfo">
+                  <label for="useBusinessInfo">Use my Business Info</label>
+               </div>
+            </div>
+         </div>
+
 
          <!-- Shop Name -->
          <div class="modal-form_input">

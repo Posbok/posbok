@@ -1149,22 +1149,31 @@ body.authentication {
     background-color: none; } }
 
 .reports,
-.goods {
+.goods,
+.shops {
   height: min-content;
   color: #205329; }
   .reports-method,
-  .goods-method {
+  .goods-method,
+  .shops-method {
     margin: 0 auto;
     overflow: hidden; }
     .reports-method .table-header,
-    .goods-method .table-header {
+    .goods-method .table-header,
+    .shops-method .table-header {
       margin-bottom: 2rem; }
     .reports-method .reports-table-container,
     .reports-method .product-table-container,
+    .reports-method .shops-table-container,
     .reports-method .staff-table-container,
     .goods-method .reports-table-container,
     .goods-method .product-table-container,
-    .goods-method .staff-table-container {
+    .goods-method .shops-table-container,
+    .goods-method .staff-table-container,
+    .shops-method .reports-table-container,
+    .shops-method .product-table-container,
+    .shops-method .shops-table-container,
+    .shops-method .staff-table-container {
       overflow-x: auto;
       max-height: 40rem;
       height: 100%;
@@ -1173,46 +1182,82 @@ body.authentication {
       box-shadow: 0px 1px 5px rgba(15, 122, 137, 0.3); }
       .reports-method .reports-table-container::-webkit-scrollbar,
       .reports-method .product-table-container::-webkit-scrollbar,
+      .reports-method .shops-table-container::-webkit-scrollbar,
       .reports-method .staff-table-container::-webkit-scrollbar,
       .goods-method .reports-table-container::-webkit-scrollbar,
       .goods-method .product-table-container::-webkit-scrollbar,
-      .goods-method .staff-table-container::-webkit-scrollbar {
+      .goods-method .shops-table-container::-webkit-scrollbar,
+      .goods-method .staff-table-container::-webkit-scrollbar,
+      .shops-method .reports-table-container::-webkit-scrollbar,
+      .shops-method .product-table-container::-webkit-scrollbar,
+      .shops-method .shops-table-container::-webkit-scrollbar,
+      .shops-method .staff-table-container::-webkit-scrollbar {
         width: .5rem;
         height: rem; }
       .reports-method .reports-table-container::-webkit-scrollbar-thumb,
       .reports-method .product-table-container::-webkit-scrollbar-thumb,
+      .reports-method .shops-table-container::-webkit-scrollbar-thumb,
       .reports-method .staff-table-container::-webkit-scrollbar-thumb,
       .goods-method .reports-table-container::-webkit-scrollbar-thumb,
       .goods-method .product-table-container::-webkit-scrollbar-thumb,
-      .goods-method .staff-table-container::-webkit-scrollbar-thumb {
+      .goods-method .shops-table-container::-webkit-scrollbar-thumb,
+      .goods-method .staff-table-container::-webkit-scrollbar-thumb,
+      .shops-method .reports-table-container::-webkit-scrollbar-thumb,
+      .shops-method .product-table-container::-webkit-scrollbar-thumb,
+      .shops-method .shops-table-container::-webkit-scrollbar-thumb,
+      .shops-method .staff-table-container::-webkit-scrollbar-thumb {
         background-color: #51cf66;
         border-radius: 10px; }
         .reports-method .reports-table-container::-webkit-scrollbar-thumb:active,
         .reports-method .product-table-container::-webkit-scrollbar-thumb:active,
+        .reports-method .shops-table-container::-webkit-scrollbar-thumb:active,
         .reports-method .staff-table-container::-webkit-scrollbar-thumb:active,
         .goods-method .reports-table-container::-webkit-scrollbar-thumb:active,
         .goods-method .product-table-container::-webkit-scrollbar-thumb:active,
-        .goods-method .staff-table-container::-webkit-scrollbar-thumb:active {
+        .goods-method .shops-table-container::-webkit-scrollbar-thumb:active,
+        .goods-method .staff-table-container::-webkit-scrollbar-thumb:active,
+        .shops-method .reports-table-container::-webkit-scrollbar-thumb:active,
+        .shops-method .product-table-container::-webkit-scrollbar-thumb:active,
+        .shops-method .shops-table-container::-webkit-scrollbar-thumb:active,
+        .shops-method .staff-table-container::-webkit-scrollbar-thumb:active {
           background-color: #10AB2B; }
       .reports-method .reports-table-container::-webkit-scrollbar-track,
       .reports-method .product-table-container::-webkit-scrollbar-track,
+      .reports-method .shops-table-container::-webkit-scrollbar-track,
       .reports-method .staff-table-container::-webkit-scrollbar-track,
       .goods-method .reports-table-container::-webkit-scrollbar-track,
       .goods-method .product-table-container::-webkit-scrollbar-track,
-      .goods-method .staff-table-container::-webkit-scrollbar-track {
+      .goods-method .shops-table-container::-webkit-scrollbar-track,
+      .goods-method .staff-table-container::-webkit-scrollbar-track,
+      .shops-method .reports-table-container::-webkit-scrollbar-track,
+      .shops-method .product-table-container::-webkit-scrollbar-track,
+      .shops-method .shops-table-container::-webkit-scrollbar-track,
+      .shops-method .staff-table-container::-webkit-scrollbar-track {
         background-color: #eef1f6; }
       .reports-method .reports-table-container .product-table,
       .reports-method .reports-table-container .reports-table,
       .reports-method .product-table-container .product-table,
       .reports-method .product-table-container .reports-table,
+      .reports-method .shops-table-container .product-table,
+      .reports-method .shops-table-container .reports-table,
       .reports-method .staff-table-container .product-table,
       .reports-method .staff-table-container .reports-table,
       .goods-method .reports-table-container .product-table,
       .goods-method .reports-table-container .reports-table,
       .goods-method .product-table-container .product-table,
       .goods-method .product-table-container .reports-table,
+      .goods-method .shops-table-container .product-table,
+      .goods-method .shops-table-container .reports-table,
       .goods-method .staff-table-container .product-table,
-      .goods-method .staff-table-container .reports-table {
+      .goods-method .staff-table-container .reports-table,
+      .shops-method .reports-table-container .product-table,
+      .shops-method .reports-table-container .reports-table,
+      .shops-method .product-table-container .product-table,
+      .shops-method .product-table-container .reports-table,
+      .shops-method .shops-table-container .product-table,
+      .shops-method .shops-table-container .reports-table,
+      .shops-method .staff-table-container .product-table,
+      .shops-method .staff-table-container .reports-table {
         margin: 0 auto;
         width: 100%;
         border-collapse: collapse; }
@@ -1220,24 +1265,42 @@ body.authentication {
         .reports-method .reports-table-container .reports-table thead,
         .reports-method .product-table-container .product-table thead,
         .reports-method .product-table-container .reports-table thead,
+        .reports-method .shops-table-container .product-table thead,
+        .reports-method .shops-table-container .reports-table thead,
         .reports-method .staff-table-container .product-table thead,
         .reports-method .staff-table-container .reports-table thead,
         .goods-method .reports-table-container .product-table thead,
         .goods-method .reports-table-container .reports-table thead,
         .goods-method .product-table-container .product-table thead,
         .goods-method .product-table-container .reports-table thead,
+        .goods-method .shops-table-container .product-table thead,
+        .goods-method .shops-table-container .reports-table thead,
         .goods-method .staff-table-container .product-table thead,
-        .goods-method .staff-table-container .reports-table thead {
+        .goods-method .staff-table-container .reports-table thead,
+        .shops-method .reports-table-container .product-table thead,
+        .shops-method .reports-table-container .reports-table thead,
+        .shops-method .product-table-container .product-table thead,
+        .shops-method .product-table-container .reports-table thead,
+        .shops-method .shops-table-container .product-table thead,
+        .shops-method .shops-table-container .reports-table thead,
+        .shops-method .staff-table-container .product-table thead,
+        .shops-method .staff-table-container .reports-table thead {
           position: sticky;
           top: 0;
           background-color: #ebfbee;
           z-index: 1; }
       .reports-method .reports-table-container .table-header-row,
       .reports-method .product-table-container .table-header-row,
+      .reports-method .shops-table-container .table-header-row,
       .reports-method .staff-table-container .table-header-row,
       .goods-method .reports-table-container .table-header-row,
       .goods-method .product-table-container .table-header-row,
-      .goods-method .staff-table-container .table-header-row {
+      .goods-method .shops-table-container .table-header-row,
+      .goods-method .staff-table-container .table-header-row,
+      .shops-method .reports-table-container .table-header-row,
+      .shops-method .product-table-container .table-header-row,
+      .shops-method .shops-table-container .table-header-row,
+      .shops-method .staff-table-container .table-header-row {
         color: #0F7A89;
         font-size: 1.6rem;
         text-align: left;
@@ -1247,14 +1310,26 @@ body.authentication {
       .reports-method .reports-table-container .table-foot-row,
       .reports-method .product-table-container .table-body-row,
       .reports-method .product-table-container .table-foot-row,
+      .reports-method .shops-table-container .table-body-row,
+      .reports-method .shops-table-container .table-foot-row,
       .reports-method .staff-table-container .table-body-row,
       .reports-method .staff-table-container .table-foot-row,
       .goods-method .reports-table-container .table-body-row,
       .goods-method .reports-table-container .table-foot-row,
       .goods-method .product-table-container .table-body-row,
       .goods-method .product-table-container .table-foot-row,
+      .goods-method .shops-table-container .table-body-row,
+      .goods-method .shops-table-container .table-foot-row,
       .goods-method .staff-table-container .table-body-row,
-      .goods-method .staff-table-container .table-foot-row {
+      .goods-method .staff-table-container .table-foot-row,
+      .shops-method .reports-table-container .table-body-row,
+      .shops-method .reports-table-container .table-foot-row,
+      .shops-method .product-table-container .table-body-row,
+      .shops-method .product-table-container .table-foot-row,
+      .shops-method .shops-table-container .table-body-row,
+      .shops-method .shops-table-container .table-foot-row,
+      .shops-method .staff-table-container .table-body-row,
+      .shops-method .staff-table-container .table-foot-row {
         color: #0F7A89;
         font-weight: 500;
         font-size: 1.5rem;
@@ -1264,58 +1339,106 @@ body.authentication {
         .reports-method .reports-table-container .table-foot-row .hero-btn-light,
         .reports-method .product-table-container .table-body-row .hero-btn-light,
         .reports-method .product-table-container .table-foot-row .hero-btn-light,
+        .reports-method .shops-table-container .table-body-row .hero-btn-light,
+        .reports-method .shops-table-container .table-foot-row .hero-btn-light,
         .reports-method .staff-table-container .table-body-row .hero-btn-light,
         .reports-method .staff-table-container .table-foot-row .hero-btn-light,
         .goods-method .reports-table-container .table-body-row .hero-btn-light,
         .goods-method .reports-table-container .table-foot-row .hero-btn-light,
         .goods-method .product-table-container .table-body-row .hero-btn-light,
         .goods-method .product-table-container .table-foot-row .hero-btn-light,
+        .goods-method .shops-table-container .table-body-row .hero-btn-light,
+        .goods-method .shops-table-container .table-foot-row .hero-btn-light,
         .goods-method .staff-table-container .table-body-row .hero-btn-light,
-        .goods-method .staff-table-container .table-foot-row .hero-btn-light {
+        .goods-method .staff-table-container .table-foot-row .hero-btn-light,
+        .shops-method .reports-table-container .table-body-row .hero-btn-light,
+        .shops-method .reports-table-container .table-foot-row .hero-btn-light,
+        .shops-method .product-table-container .table-body-row .hero-btn-light,
+        .shops-method .product-table-container .table-foot-row .hero-btn-light,
+        .shops-method .shops-table-container .table-body-row .hero-btn-light,
+        .shops-method .shops-table-container .table-foot-row .hero-btn-light,
+        .shops-method .staff-table-container .table-body-row .hero-btn-light,
+        .shops-method .staff-table-container .table-foot-row .hero-btn-light {
           margin: 0; }
         .reports-method .reports-table-container .table-body-row strong,
         .reports-method .reports-table-container .table-foot-row strong,
         .reports-method .product-table-container .table-body-row strong,
         .reports-method .product-table-container .table-foot-row strong,
+        .reports-method .shops-table-container .table-body-row strong,
+        .reports-method .shops-table-container .table-foot-row strong,
         .reports-method .staff-table-container .table-body-row strong,
         .reports-method .staff-table-container .table-foot-row strong,
         .goods-method .reports-table-container .table-body-row strong,
         .goods-method .reports-table-container .table-foot-row strong,
         .goods-method .product-table-container .table-body-row strong,
         .goods-method .product-table-container .table-foot-row strong,
+        .goods-method .shops-table-container .table-body-row strong,
+        .goods-method .shops-table-container .table-foot-row strong,
         .goods-method .staff-table-container .table-body-row strong,
-        .goods-method .staff-table-container .table-foot-row strong {
+        .goods-method .staff-table-container .table-foot-row strong,
+        .shops-method .reports-table-container .table-body-row strong,
+        .shops-method .reports-table-container .table-foot-row strong,
+        .shops-method .product-table-container .table-body-row strong,
+        .shops-method .product-table-container .table-foot-row strong,
+        .shops-method .shops-table-container .table-body-row strong,
+        .shops-method .shops-table-container .table-foot-row strong,
+        .shops-method .staff-table-container .table-body-row strong,
+        .shops-method .staff-table-container .table-foot-row strong {
           font-size: 1.6rem; }
       .reports-method .reports-table-container .table-body-row:hover,
       .reports-method .product-table-container .table-body-row:hover,
+      .reports-method .shops-table-container .table-body-row:hover,
       .reports-method .staff-table-container .table-body-row:hover,
       .goods-method .reports-table-container .table-body-row:hover,
       .goods-method .product-table-container .table-body-row:hover,
-      .goods-method .staff-table-container .table-body-row:hover {
+      .goods-method .shops-table-container .table-body-row:hover,
+      .goods-method .staff-table-container .table-body-row:hover,
+      .shops-method .reports-table-container .table-body-row:hover,
+      .shops-method .product-table-container .table-body-row:hover,
+      .shops-method .shops-table-container .table-body-row:hover,
+      .shops-method .staff-table-container .table-body-row:hover {
         background-color: #0F7A89;
         color: #ebfbee; }
         .reports-method .reports-table-container .table-body-row:hover .hero-btn-light,
         .reports-method .product-table-container .table-body-row:hover .hero-btn-light,
+        .reports-method .shops-table-container .table-body-row:hover .hero-btn-light,
         .reports-method .staff-table-container .table-body-row:hover .hero-btn-light,
         .goods-method .reports-table-container .table-body-row:hover .hero-btn-light,
         .goods-method .product-table-container .table-body-row:hover .hero-btn-light,
-        .goods-method .staff-table-container .table-body-row:hover .hero-btn-light {
+        .goods-method .shops-table-container .table-body-row:hover .hero-btn-light,
+        .goods-method .staff-table-container .table-body-row:hover .hero-btn-light,
+        .shops-method .reports-table-container .table-body-row:hover .hero-btn-light,
+        .shops-method .product-table-container .table-body-row:hover .hero-btn-light,
+        .shops-method .shops-table-container .table-body-row:hover .hero-btn-light,
+        .shops-method .staff-table-container .table-body-row:hover .hero-btn-light {
           background-color: #ebfbee;
           color: #0F7A89; }
         .reports-method .reports-table-container .table-body-row:hover .hero-btn-outline,
         .reports-method .product-table-container .table-body-row:hover .hero-btn-outline,
+        .reports-method .shops-table-container .table-body-row:hover .hero-btn-outline,
         .reports-method .staff-table-container .table-body-row:hover .hero-btn-outline,
         .goods-method .reports-table-container .table-body-row:hover .hero-btn-outline,
         .goods-method .product-table-container .table-body-row:hover .hero-btn-outline,
-        .goods-method .staff-table-container .table-body-row:hover .hero-btn-outline {
+        .goods-method .shops-table-container .table-body-row:hover .hero-btn-outline,
+        .goods-method .staff-table-container .table-body-row:hover .hero-btn-outline,
+        .shops-method .reports-table-container .table-body-row:hover .hero-btn-outline,
+        .shops-method .product-table-container .table-body-row:hover .hero-btn-outline,
+        .shops-method .shops-table-container .table-body-row:hover .hero-btn-outline,
+        .shops-method .staff-table-container .table-body-row:hover .hero-btn-outline {
           background-color: #ebfbee;
           color: #0F7A89; }
           .reports-method .reports-table-container .table-body-row:hover .hero-btn-outline:active,
           .reports-method .product-table-container .table-body-row:hover .hero-btn-outline:active,
+          .reports-method .shops-table-container .table-body-row:hover .hero-btn-outline:active,
           .reports-method .staff-table-container .table-body-row:hover .hero-btn-outline:active,
           .goods-method .reports-table-container .table-body-row:hover .hero-btn-outline:active,
           .goods-method .product-table-container .table-body-row:hover .hero-btn-outline:active,
-          .goods-method .staff-table-container .table-body-row:hover .hero-btn-outline:active {
+          .goods-method .shops-table-container .table-body-row:hover .hero-btn-outline:active,
+          .goods-method .staff-table-container .table-body-row:hover .hero-btn-outline:active,
+          .shops-method .reports-table-container .table-body-row:hover .hero-btn-outline:active,
+          .shops-method .product-table-container .table-body-row:hover .hero-btn-outline:active,
+          .shops-method .shops-table-container .table-body-row:hover .hero-btn-outline:active,
+          .shops-method .staff-table-container .table-body-row:hover .hero-btn-outline:active {
             background-color: #eef1f6; }
 
 .action-buttons {

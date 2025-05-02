@@ -12,6 +12,7 @@ module.exports = {
     staff: './JS/staff.js',
     simReg: './JS/simReg.js',
     signup: './JS/signup.js',
+    shops: './JS/shops.js',
     main: './JS/script.js', // Common JS for the main page if needed
   },
 
@@ -20,10 +21,17 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
   },
 
+  //   devServer: {
+  //     contentBase: path.join(__dirname, 'dist'),
+  //     compress: true,
+  //     port: 8080,
+  //   },
+
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
+    static: path.join(__dirname, 'dist'),
     compress: true,
     port: 8080,
+    hot: false, // Disable Hot Module Replacement
   },
 
   module: {

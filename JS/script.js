@@ -7,8 +7,8 @@ import {
   openCreateShopModal,
   setupCreateShopForm,
   setupModalCloseButtons,
-} from './apiServices/shop/createShop';
-import { fetchBusinessDetails } from './apiServices/business/getBusinessDetails.js';
+} from './apiServices/shop/shopResource.js';
+import { fetchBusinessDetails } from './apiServices/business/businessResource.js';
 
 const userData = config.userData;
 
@@ -218,6 +218,11 @@ const posIndexTab = document.getElementById('posIndexTab');
 const reportIndexTab = document.getElementById('reportIndexTab');
 const manageIndexTab = document.getElementById('manageIndexTab');
 
+const sellNav = document.getElementById('sellNav');
+const posNav = document.getElementById('posNav');
+const reportsNav = document.getElementById('reportsNav');
+const manageNav = document.getElementById('manageNav');
+
 if (userData) {
   const parsedUserData = JSON.parse(userData);
 
@@ -237,8 +242,13 @@ if (userData) {
   if (parsedUserData.accountType === 'ADMIN') {
     if (sellIndexTab) sellIndexTab.style.display = 'none';
     if (posIndexTab) posIndexTab.style.display = 'none';
+    if (posNav) posNav.style.display = 'none';
+    if (sellNav) sellNav.style.display = 'none';
+
     if (reportIndexTab) reportIndexTab.style.display = 'block';
     if (manageIndexTab) manageIndexTab.style.display = 'block';
+    if (reportsNav) reportsNav.style.display = 'block';
+    if (manageNav) manageNav.style.display = 'block';
 
     // Normalize current page name from pathname
     const currentPage = window.location.pathname.toLowerCase();
@@ -259,7 +269,12 @@ if (userData) {
     if (sellIndexTab) sellIndexTab.style.display = 'block';
     if (posIndexTab) posIndexTab.style.display = 'block';
     if (reportIndexTab) reportIndexTab.style.display = 'block';
+    if (sellNav) sellNav.style.display = 'block';
+    if (posNav) posNav.style.display = 'block';
+    if (reportsNav) reportsNav.style.display = 'block';
+
     if (manageIndexTab) manageIndexTab.style.display = 'none';
+    if (manageNav) manageNav.style.display = 'none';
 
     //  List of pages not open to Staff
     const restrictedStaffPage = ['manage'];
