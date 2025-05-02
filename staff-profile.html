@@ -23,6 +23,10 @@
 
    <script defer src="https://unpkg.com/smoothscroll-polyfill@0.4.4/dist/smoothscroll.min.js"></script>
 
+   <!-- flatpickr - DateOfBirth -->
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
    <!-- <script defer type="module" src="JS/script.js"></script>
    <script defer type="module" src="JS/goods.js"></script> -->
 
@@ -157,7 +161,7 @@
                         <td colspan="6" class="table-error-text"></td>
                      </tr>
 
-
+                     <!-- 
                      <tr class="table-body-row" id="item-list">
                         <td class="py-1 staffSerialNumber">1</td>
                         <td class="py-1 staffName">Oghenero Priscilia</td>
@@ -190,7 +194,7 @@
                            <button class="hero-btn-outline deleteStaffButton"><i
                                  class="fa-solid fa-trash-can"></i></button>
                         </td>
-                     </tr>
+                     </tr> -->
 
 
                   </tbody>
@@ -211,6 +215,16 @@
       <div class="card addUser modal">
          <div>
             <h1 class="heading-text  addItemName">Add Staff Profile</h1>
+         </div>
+
+         <!-- Assign to shop -->
+         <div class="addUser-form_input">
+            <label for="shopDropdown">Assign to shop</label>
+
+            <select id="shopDropdown" class="form-control">
+               <option value="">Select a shop</option>
+            </select>
+
          </div>
 
          <!-- Surname -->
@@ -236,10 +250,13 @@
 
          <!-- Date of Birth -->
          <div class="addUser-form_input">
-            <label for="dob">Date of Birth</label>
+            <label for="dateOfBirth">Date of Birth</label>
 
-            <input id="dob" type="date" placeholder="Enter Phone No."
-               oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="dob" required>
+            <!-- <input id="dateOfBirth" type="date" placeholder="Enter Phone No."
+               oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="dateOfBirth" required> -->
+
+
+            <input id="dateOfBirth" type="text" placeholder="Select Date of Birth">
          </div>
 
          <!-- State of origin -->

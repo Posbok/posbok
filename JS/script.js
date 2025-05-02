@@ -193,7 +193,6 @@ if (logoutButton) {
   logoutButton.addEventListener('click', function () {
     logoutUser()
       .then((data) => {
-        console.log(data);
         localStorage.removeItem('accessToken');
         localStorage.removeItem('userData');
 

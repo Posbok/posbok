@@ -36,7 +36,7 @@ export async function registerBusiness(businessDetails) {
 // Function to register an Admin - API
 export async function registerAdmin(adminDetails) {
   try {
-    console.log('Sending POST request...');
+    //  console.log('Sending POST request...');
 
     const response = await fetch(`${baseUrl}/api/auth/register`, {
       method: 'POST',
@@ -46,7 +46,7 @@ export async function registerAdmin(adminDetails) {
       body: JSON.stringify(adminDetails),
     });
 
-    console.log('Response received...');
+    //  console.log('Response received...');
     const data = await response.json();
 
     if (!response.ok) {

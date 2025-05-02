@@ -8,9 +8,13 @@ const userData = config.userData;
 
 const parsedUserData = userData ? JSON.parse(userData) : null;
 
+const params = new URLSearchParams(window.location.search);
+const shopId = params.get('shopId');
+const from = params.get('from');
+
 export async function createStaff(staffDetails) {
   try {
-    console.log('Sending POST request...');
+    //  console.log('Sending POST request...');
 
     const response = await fetch(`${baseUrl}/api/users`, {
       method: 'POST',
@@ -21,7 +25,7 @@ export async function createStaff(staffDetails) {
       body: JSON.stringify(staffDetails),
     });
 
-    console.log('Response received...');
+    //  console.log('Response received...');
     const data = await response.json();
 
     if (!response.ok) {
@@ -29,7 +33,7 @@ export async function createStaff(staffDetails) {
       throw new Error(data.message || 'Something went wrong');
     }
 
-    console.log('Staff created successfully:', data);
+    //  console.log('Staff created successfully:', data);
     showToast('success', `✅ ${data.message}`);
     checkAndPromptCreateStaff(); // Refresh the Staff list after creation
 
@@ -70,9 +74,8 @@ export async function checkAndPromptCreateStaff() {
       (staff) => staff.business_id === parsedUserData.businessId
     );
 
-    if (businessStaff.length === 0) {
+    if (businessStaff.length === 0 || from === 'shop-creation') {
       openCreateStaffModal();
-      console.log('no staff');
     }
 
     populateStaffTable(businessStaff);
@@ -148,7 +151,7 @@ export function setupCreateStaffForm() {
             showToast('fail', `❎ ${data.message}`);
             console.error('❎ Failed to create shop:', data.message);
           });
-        console.log('Creating shop with:', staffDetails);
+        //   console.log('Creating shop with:', staffDetails);
         // closeModal(); // close modal after success
       } catch (err) {
         console.error('Error creating Staff:', err.message);

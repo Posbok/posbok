@@ -1,12 +1,16 @@
 import config from '../../../config.js';
 import { closeModal, showToast } from '../../script.js';
 import { populateShopsTable } from '../../shops.js';
+import { populateShopDropdown } from '../../staff.js';
 
 const baseUrl = config.baseUrl;
 const userToken = config.token;
 const userData = config.userData;
 
 const parsedUserData = userData ? JSON.parse(userData) : null;
+
+const urlParams = new URLSearchParams(window.location.search);
+const preselectedShopId = urlParams.get('shopId');
 
 export async function createShop(shopDetails) {
   try {
@@ -34,7 +38,6 @@ export async function createShop(shopDetails) {
     checkAndPromptCreateShop(); // Refresh the shop list after creation
 
     if (document.querySelector('#assignStaffCheckbox').checked) {
-      console.log('objectcbbbbbb');
       setTimeout(() => {
         const proceed = confirm(
           'You chose to assign a staff to this shop. Would you like to do that now?'
@@ -42,7 +45,7 @@ export async function createShop(shopDetails) {
         if (proceed) {
           // Open staff creation modal or navigate to staff creation page
 
-          window.location.href = 'staff-profile.html';
+          window.location.href = `staff-profile.html?from=shop-creation&shopId=${data.data.id}`;
         }
       }, 600);
     }
@@ -83,6 +86,7 @@ export async function checkAndPromptCreateShop() {
     );
 
     populateShopsTable(userShops);
+    populateShopDropdown(userShops, Number(preselectedShopId));
 
     //  console.log('checkAndPromptCreateShop data', userShops);
 

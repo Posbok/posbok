@@ -35,7 +35,7 @@ export async function loginUser(userDetails) {
 // Function to Logout a User - API
 export async function logoutUser() {
   try {
-    console.log('Sending POST request...');
+    //  console.log('Sending POST request...');
     const response = await fetch(`${baseUrl}/api/auth/logout`, {
       method: 'POST',
       headers: {
@@ -43,7 +43,7 @@ export async function logoutUser() {
       },
     });
 
-    console.log('Response received...');
+    //  console.log('Response received...');
     const data = await response.json();
 
     if (!response.ok) {
@@ -51,7 +51,7 @@ export async function logoutUser() {
       throw new Error(data.message || 'Something went wrong');
     }
 
-    console.log('Logout successfully:', data);
+    //  console.log('Logout successfully:', data);
     return data;
   } catch (error) {
     console.error('Logout Error detail:', error.message);

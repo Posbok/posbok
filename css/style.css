@@ -554,7 +554,7 @@ select {
   .modal-form_input select,
   .signup-form_input select,
   .addUser-form_input select {
-    width: max-content; }
+    width: 100%; }
 
 .addProduct .hero-btn-dark,
 .sellProduct .hero-btn-dark,

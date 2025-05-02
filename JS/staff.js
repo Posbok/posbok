@@ -55,6 +55,26 @@ export function populateStaffTable(staffData = []) {
   });
 }
 
+export function populateShopDropdown(shopList = [], preselectedShopId = '') {
+  const dropdown = document.getElementById('shopDropdown');
+  if (!dropdown) return;
+
+  // Clear existing options except the default
+  dropdown.innerHTML = `<option value="">Select a shop</option>`;
+
+  shopList.forEach((shop) => {
+    const option = document.createElement('option');
+    option.value = shop.id;
+    option.textContent = `${shop.shop_name} - ${shop.location}`; // or `${shop.shop_name} - ${shop.location}` if you want more details
+
+    if (shop.id === preselectedShopId) {
+      option.selected = true;
+    }
+
+    dropdown.appendChild(option);
+  });
+}
+
 // JS to Check and prompt cretae Staff
 document.addEventListener('DOMContentLoaded', () => {
   setupCreateStaffForm();
