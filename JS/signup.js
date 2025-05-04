@@ -69,7 +69,7 @@ if (createbusinessForm) {
 
         showToast('success', `✅ ${data.message}`);
 
-        console.log(data);
+        //   console.log(data);
         //   redirectWithDelay('Admin Creation Page', 'signup.html', 1000);
         window.location.href = 'signup.html';
       })
@@ -132,8 +132,6 @@ if (signupForm) {
   const businessData = await fetchBusinessDetails();
   const businessId = businessData.data.id;
   const businessType = businessData.data.business_type;
-
-  console.log(businessId);
 
   signupForm.addEventListener('submit', function (e) {
     e.preventDefault();
