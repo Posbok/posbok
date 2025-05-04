@@ -495,6 +495,32 @@ select {
     .signup-form_input.sellStatus label,
     .addUser-form_input.sellStatus label {
       width: min-content; }
+  .addProduct-form_input .password-container,
+  .sellProduct-form_input .password-container,
+  .updateProduct-form_input .password-container,
+  .depositPosCapital-form_input .password-container,
+  .modal-form_input .password-container,
+  .signup-form_input .password-container,
+  .addUser-form_input .password-container {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    width: 100%; }
+    .addProduct-form_input .password-container #password-length,
+    .addProduct-form_input .password-container #password-mismatch,
+    .sellProduct-form_input .password-container #password-length,
+    .sellProduct-form_input .password-container #password-mismatch,
+    .updateProduct-form_input .password-container #password-length,
+    .updateProduct-form_input .password-container #password-mismatch,
+    .depositPosCapital-form_input .password-container #password-length,
+    .depositPosCapital-form_input .password-container #password-mismatch,
+    .modal-form_input .password-container #password-length,
+    .modal-form_input .password-container #password-mismatch,
+    .signup-form_input .password-container #password-length,
+    .signup-form_input .password-container #password-mismatch,
+    .addUser-form_input .password-container #password-length,
+    .addUser-form_input .password-container #password-mismatch {
+      font-size: medium; }
   @media only screen and (max-width: 30.5em) {
     .addProduct-form_input,
     .sellProduct-form_input,

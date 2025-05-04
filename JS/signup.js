@@ -7,7 +7,7 @@ import {
 
 // Create Business Registration Form
 const createbusinessForm = document.getElementById('createbusinessForm');
-const businessId = localStorage.getItem('businessId');
+// const businessId = localStorage.getItem('businessId');
 
 const generatedBusinessOwnerId = generateBusinessOwnerId();
 
@@ -64,6 +64,8 @@ if (createbusinessForm) {
       .then((data) => {
         const businessId = data.data.id; // the business ID returned from backend
         localStorage.setItem('businessId', businessId);
+        localStorage.setItem('businessData', data.data);
+
         showToast('success', `✅ ${data.message}`);
 
         //   redirectWithDelay('Admin Creation Page', 'signup.html', 1000);
@@ -125,6 +127,10 @@ if (signupForm) {
     }
   });
 
+  const businessData = await fetchBusinessDetails();
+  const businessId = businessData.data.id;
+  const businessType = businessData.data.business_type;
+
   signupForm.addEventListener('submit', function (e) {
     e.preventDefault();
 
@@ -147,7 +153,7 @@ if (signupForm) {
     const email = document.getElementById('email').value;
     const phoneNumber = document.getElementById('phoneNumber').value;
     const password = document.getElementById('password').value;
-    const guarantorName = document.getElementById('phoneNumber').value;
+    const guarantorName = document.getElementById('guarantorName').value;
     const guarantorPhoneNumber = document.getElementById(
       'guarantorPhoneNumber'
     ).value;

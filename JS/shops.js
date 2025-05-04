@@ -11,7 +11,7 @@ export function populateShopsTable(shopData = []) {
     emptyRow.innerHTML = `
        <td colspan="6" class="table-error-text">No shops found.</td>
      `;
-    tbody.appendChild(emptyRow);
+    if (tbody) tbody.appendChild(emptyRow);
     return;
   }
 

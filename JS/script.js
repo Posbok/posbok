@@ -9,6 +9,10 @@ import {
   setupModalCloseButtons,
 } from './apiServices/shop/shopResource.js';
 import { fetchBusinessDetails } from './apiServices/business/businessResource.js';
+import {
+  checkAndPromptCreateStaff,
+  setupCreateStaffForm,
+} from './apiServices/user/userResource.js';
 
 const userData = config.userData;
 
@@ -300,6 +304,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (userData) {
     checkAndPromptCreateShop();
+  }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  setupCreateStaffForm();
+  setupModalCloseButtons();
+  document
+    .querySelector('#openStaffModalBtn')
+    ?.addEventListener('click', openCreateStaffModal);
+
+  if (userData) {
+    checkAndPromptCreateStaff();
   }
 });
 
