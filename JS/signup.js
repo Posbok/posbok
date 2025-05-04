@@ -1,3 +1,4 @@
+import { fetchBusinessDetails } from './apiServices/business/businessResource';
 import { registerAdmin, registerBusiness } from './apiServices/registration';
 import {
   generateBusinessOwnerId,
@@ -7,7 +8,7 @@ import {
 
 // Create Business Registration Form
 const createbusinessForm = document.getElementById('createbusinessForm');
-// const businessId = localStorage.getItem('businessId');
+const businessId = localStorage.getItem('businessId');
 
 const generatedBusinessOwnerId = generateBusinessOwnerId();
 
@@ -64,10 +65,11 @@ if (createbusinessForm) {
       .then((data) => {
         const businessId = data.data.id; // the business ID returned from backend
         localStorage.setItem('businessId', businessId);
-        localStorage.setItem('businessData', data.data);
+        localStorage.setItem('businessData', JSON.stringify(data));
 
         showToast('success', `✅ ${data.message}`);
 
+        console.log(data);
         //   redirectWithDelay('Admin Creation Page', 'signup.html', 1000);
         window.location.href = 'signup.html';
       })
@@ -130,6 +132,8 @@ if (signupForm) {
   const businessData = await fetchBusinessDetails();
   const businessId = businessData.data.id;
   const businessType = businessData.data.business_type;
+
+  console.log(businessId);
 
   signupForm.addEventListener('submit', function (e) {
     e.preventDefault();

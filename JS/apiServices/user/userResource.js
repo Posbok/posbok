@@ -12,6 +12,7 @@ const parsedUserData = userData ? JSON.parse(userData) : null;
 const params = new URLSearchParams(window.location.search);
 const shopId = params.get('shopId');
 const from = params.get('from');
+const isStaffProfilePage = window.location.href.includes('staff-profile');
 
 export async function createStaff(staffDetails) {
   try {
@@ -69,23 +70,27 @@ export async function checkAndPromptCreateStaff() {
     });
 
     const data = await response.json();
-    console.log(data);
+    const allStaffs = data.data.users || [];
 
-    const allStaffs = data.data.users;
-
-    const businessStaffIsAdmin = data.data.users.filter(
-      (staff) => staff.accountType === 'ADMIN'
+    // Filter out admins
+    const nonAdminStaff = allStaffs.filter(
+      (staff) => staff.accountType !== 'ADMIN'
     );
-    const isStaffProfilePage = window.location.href.includes('staff-profile');
 
-    // Show modal if:
-    // (1) Only ADMIN exists, and we're on the staff-profile page
-    // (2) Redirected from shop creation
-    if (
-      (allStaffs.length === 1 && businessStaffIsAdmin && isStaffProfilePage) ||
-      (from === 'shop-creation' && isStaffProfilePage)
-    ) {
+    // If we’re on staff-profile and there is only one staff (admin)
+    const onlyAdminExists =
+      allStaffs.length === 1 && allStaffs[0].accountType === 'ADMIN';
+
+    const shouldOpenModal =
+      (onlyAdminExists && isStaffProfilePage) ||
+      (from === 'shop-creation' && isStaffProfilePage);
+
+    if (shouldOpenModal) {
       openCreateStaffModal();
+
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete('from');
+      window.history.replaceState({}, '', newUrl);
     }
 
     // Populate the table with all business staff
@@ -100,6 +105,46 @@ export async function checkAndPromptCreateStaff() {
     console.error('Error checking Staff:', error.message);
     throw error;
   }
+
+  //   try {
+  //     const response = await fetch(`${baseUrl}/api/users?page=1&limit=10`, {
+  //       method: 'GET',
+  //       headers: {
+  //         Authorization: `Bearer ${userToken}`,
+  //       },
+  //     });
+
+  //     const data = await response.json();
+  //     console.log(data);
+
+  //     const allStaffs = data.data.users || [];
+
+  //     const businessStaffIsAdmin = data.data.users.filter(
+  //       (staff) => staff.accountType === 'ADMIN'
+  //     );
+
+  //     // Show modal if:
+  //     // (1) Only ADMIN exists, and we're on the staff-profile page
+  //     // (2) Redirected from shop creation
+  //     if (
+  //       (allStaffs.length === 0 && businessStaffIsAdmin && isStaffProfilePage) ||
+  //       (from === 'shop-creation' && isStaffProfilePage)
+  //     ) {
+  //       openCreateStaffModal();
+  //     }
+
+  //     // Populate the table with all business staff
+  //     populateStaffTable(allStaffs);
+
+  //     if (!response.ok) {
+  //       throw new Error(data.message || 'Something went wrong');
+  //     }
+
+  //     return data;
+  //   } catch (error) {
+  //     console.error('Error checking Staff:', error.message);
+  //     throw error;
+  //   }
 }
 
 export function openCreateStaffModal() {
@@ -260,6 +305,7 @@ export function setupCreateStaffForm() {
             console.log('✅ Registered Staff successfully:', data);
             showToast('success', `✅ ${data.message}`);
             closeModal();
+            window.location.reload();
           })
           .catch((data) => {
             console.error('❎ Failed to register:', data.message);
@@ -274,7 +320,7 @@ export function setupCreateStaffForm() {
 
 export function setupModalCloseButtons() {
   const closeModalButtons = document.querySelectorAll('.closeModal');
-  const createStaffContainer = document.querySelector('.createStaff');
+  const createStaffContainer = document.querySelector('.addUser');
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
 

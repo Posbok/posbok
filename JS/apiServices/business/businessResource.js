@@ -5,18 +5,16 @@ const userToken = config.token;
 const userData = config.userData;
 
 const parsedUserData = userData ? JSON.parse(userData) : null;
+const businessId = localStorage.getItem('businessId');
 
 export async function fetchBusinessDetails() {
   try {
-    const response = await fetch(
-      `${baseUrl}/api/business/${parsedUserData.businessId}`,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      }
-    );
+    const response = await fetch(`${baseUrl}/api/business/${businessId}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
 
     const data = await response.json();
 

@@ -8,7 +8,7 @@ import {
   openCreateStaffModal,
   setupCreateStaffForm,
 } from './apiServices/user/userResource';
-import { showToast } from './script';
+import { closeModal, showToast } from './script';
 
 const userData = config.userData;
 
@@ -259,16 +259,6 @@ closeModalButton.forEach((closeButton) => {
     closeModal();
   });
 });
-
-function closeModal() {
-  const addUserContainer = document.querySelector('.addUser');
-
-  addUserContainer.classList.remove('active');
-
-  main.classList.remove('blur');
-  sidebar.classList.remove('blur');
-  main.classList.remove('no-scroll');
-}
 
 // JS for Modal
 document.addEventListener('DOMContentLoaded', function () {

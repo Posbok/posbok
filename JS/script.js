@@ -82,6 +82,7 @@ export function closeModal() {
   const depositPosCapitalContainer =
     document.querySelector('.depositPosCapital');
   const createShop = document.querySelector('.createShop');
+  const addUser = document.querySelector('.addUser');
 
   if (depositPosCapitalContainer) {
     depositPosCapitalContainer.classList.remove('active');
@@ -89,6 +90,10 @@ export function closeModal() {
 
   if (createShop) {
     createShop.classList.remove('active');
+  }
+
+  if (addUser) {
+    addUser.classList.remove('active');
   }
 
   main.classList.remove('blur');
