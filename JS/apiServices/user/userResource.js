@@ -44,6 +44,35 @@ export async function createStaff(staffDetails) {
   }
 }
 
+export async function fetchStaffDetail(staffId) {
+  try {
+    //  console.log('Sending POST request...');
+
+    const receivedStaffDetail = await safeFetch(
+      `${baseUrl}/api/users/${staffId}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    //  console.log('Response received...');
+
+    if (!receivedStaffDetail) {
+      // console.log('Staff detail received successfully:', receivedStaffDetail);
+      // showToast('success', `✅ ${receivedStaffDetail.message}`);
+      return;
+    }
+
+    return receivedStaffDetail;
+  } catch (error) {
+    console.error('Error creating Admin:', error);
+    throw error;
+  }
+}
+
 // The functions below are used to check if the user has a Staff and prompt them to creat one if they don't - checkAndPromptCreateStaff, openCreateStaffModal, setupCreateStaffForm, and setupModalCloseButtons
 
 export async function checkAndPromptCreateStaff() {
@@ -151,6 +180,16 @@ export function openCreateStaffModal() {
   const createStaffContainer = document.querySelector('.addUser');
 
   if (createStaffContainer) createStaffContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
+export function openUpdateStaffModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const updateStaffContainer = document.querySelector('.adminUpdateUserData');
+
+  if (updateStaffContainer) updateStaffContainer.classList.add('active');
   if (main) main.classList.add('blur');
   if (sidebar) sidebar.classList.add('blur');
 }
@@ -336,12 +375,14 @@ export function setupCreateStaffForm() {
 export function setupModalCloseButtons() {
   const closeModalButtons = document.querySelectorAll('.closeModal');
   const createStaffContainer = document.querySelector('.addUser');
+  const updateStaffContainer = document.querySelector('.adminUpdateUserData');
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
 
   closeModalButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
       if (createStaffContainer) createStaffContainer.classList.remove('active');
+      if (updateStaffContainer) updateStaffContainer.classList.remove('active');
       if (main) main.classList.remove('blur');
       if (sidebar) sidebar.classList.remove('blur');
     });
@@ -407,32 +448,29 @@ export async function assignUserToShop(user_id, staffAssigningDetails) {
   }
 }
 
-export async function updateUser(user_id, staffAssigningDetails) {
+export async function updateUser(user_id, staffUpdatedDetails) {
   try {
-    console.log('Sending POST request...');
+    //  console.log('Sending POST request...');
 
-    const assignUserToShopData = await safeFetch(
-      `${baseUrl}/api/users/${user_id}/shops`,
-      {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(staffAssigningDetails),
-      }
-    );
+    const updateStaffData = await safeFetch(`${baseUrl}/api/users/${user_id}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(staffUpdatedDetails),
+    });
 
-    if (assignUserToShopData) {
-      // console.log('Staff assigned to shop successfully:', assignUserToShopData);
-      showToast('success', `✅ ${assignUserToShopData.message}`);
+    if (updateStaffData) {
+      // console.log('Staff info Updated successfully:', updateStaffData);
+      showToast('success', `✅ ${updateStaffData.message}`);
       checkAndPromptCreateStaff(); // Refresh list or update UI
     }
 
-    return assignUserToShopData;
+    return updateStaffData;
   } catch (error) {
-    console.error('Error Assigning Staff', error);
-    showToast('error', '❌ Failed to Assign staff');
+    console.error('Error Updating Staff Info', error);
+    showToast('error', '❌ Failed to Update staff info');
     throw error;
   }
 }

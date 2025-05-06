@@ -5,8 +5,11 @@ import {
   checkAndPromptCreateStaff,
   createStaff,
   deleteUser,
+  fetchStaffDetail,
   openCreateStaffModal,
+  openUpdateStaffModal,
   setupCreateStaffForm,
+  updateUser,
 } from './apiServices/user/userResource';
 import { closeModal, showToast } from './script';
 
@@ -67,8 +70,35 @@ export function populateStaffTable(staffData = []) {
       const staffId = deleteBtn.dataset.staffId;
       await deleteUser(staffId);
     });
+
+    const updateStaffBtn = row.querySelector('.editStaffButton');
+    updateStaffBtn?.addEventListener('click', async () => {
+      const staffId = updateStaffBtn.dataset.staffId;
+
+      const adminUpdateUserDataContainer = document.querySelector(
+        '.adminUpdateUserData'
+      );
+
+      if (adminUpdateUserDataContainer) {
+        // Store staffId in modal container for reference
+        adminUpdateUserDataContainer.dataset.staffId = staffId;
+
+        // Fetch staff detail
+        const staffDetail = await fetchStaffDetail(staffId);
+
+        // Call function to prefill modal inputs
+        if (staffDetail?.data?.user) {
+          openUpdateStaffModal(); // Show modal after data is ready
+          setupUpdateStaffForm(staffDetail.data.user);
+        } else {
+          showToast('fail', '❌ Failed to fetch staff details.');
+        }
+      }
+    });
   });
 }
+
+function populateUpdateModalFields(user) {}
 
 export function populateShopDropdown(shopList = [], preselectedShopId = '') {
   const dropdown = document.getElementById('shopDropdown');
@@ -76,11 +106,10 @@ export function populateShopDropdown(shopList = [], preselectedShopId = '') {
 
   dropdown.addEventListener('change', function () {
     const selectedShopId = dropdown.value;
-    console.log('Selected shop ID:', selectedShopId);
+    //  console.log('Selected shop ID:', selectedShopId);
     // Perform any action you want with the selected shop ID
+    // already using another method already but i am still keeping this here.
   });
-
-  console.log('Selected shop ID:', dropdown.value);
 
   // Clear existing options except the default
   dropdown.innerHTML = `<option value="">Select a shop</option>`;
@@ -96,6 +125,93 @@ export function populateShopDropdown(shopList = [], preselectedShopId = '') {
 
     dropdown.appendChild(option);
   });
+}
+
+export function setupUpdateStaffForm(user) {
+  const form = document.querySelector('.adminUpdateUserDataModal');
+
+  //   if (!form || form.dataset.bound === 'true') return;
+
+  form.dataset.bound = 'true';
+
+  document.getElementById('updateStaffFirstName').value = user.firstName || '';
+  document.getElementById('updateStaffLastName').value = user.lastName || '';
+  document.getElementById('updateStaffPhoneNumber').value =
+    user.phoneNumber || '';
+  document.getElementById('updateStaffAddress').value = user.address || '';
+
+  const updateAccessTypeCheckboxes = document.querySelectorAll(
+    'input[name="updateStaffAccessType"]'
+  );
+  updateAccessTypeCheckboxes.forEach((checkbox) => (checkbox.checked = false));
+
+  // Match and check the appropriate checkbox
+  const serviceType = user.servicePermission;
+  const matchedCheckbox = [...updateAccessTypeCheckboxes].find(
+    (checkbox) => checkbox.value === serviceType
+  );
+  if (matchedCheckbox) matchedCheckbox.checked = true;
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const updateStaffLastName = document.getElementById(
+        'updateStaffLastName'
+      ).value;
+      const updateStaffFirstName = document.getElementById(
+        'updateStaffFirstName'
+      ).value;
+      const updateStaffAddress =
+        document.getElementById('updateStaffAddress').value;
+      const updateStaffPhoneNumber = document.getElementById(
+        'updateStaffPhoneNumber'
+      ).value;
+
+      //  Access type checkboxes
+      const updateAccessTypeCheckboxes = document.querySelectorAll(
+        'input[name="updateStaffAccessType"]:checked'
+      );
+      const updateAccessType = Array.from(updateAccessTypeCheckboxes).map(
+        (cb) => cb.value
+      );
+      const updateAccessTypeValue = updateAccessType[0] || null;
+
+      const updateAccessTimeStart =
+        document.getElementById('update-start-time').value;
+      const updateAccessTimeEnd =
+        document.getElementById('update-end-time').value;
+
+      const staffUpdatedDetails = {
+        firstName: updateStaffFirstName,
+        lastName: updateStaffLastName,
+        address: updateStaffAddress,
+        phoneNumber: updateStaffPhoneNumber,
+        accountType: 'STAFF',
+        accessTimeStart: updateAccessTimeStart,
+        accessTimeEnd: updateAccessTimeEnd,
+        servicePermission: updateAccessTypeValue,
+      };
+
+      // console.log('📦 Staff New Details:', staffUpdatedDetails);
+
+      try {
+        const data = await updateUser(user.id, staffUpdatedDetails);
+
+        if (data) {
+          closeModal();
+        }
+
+        //   if (!data || !data.data || !data.data.user) {
+        //     //  showToast('fail', `❎ Failed to register staff.`);
+        //     return;
+        //   }
+      } catch (err) {
+        // err.message will contain the "Email already in use"
+        showToast('fail', `❎ ${err.message}`);
+      }
+    });
+  }
 }
 
 // JS to Check and prompt cretae Staff

@@ -14,6 +14,7 @@ import {
   openCreateStaffModal,
   setupCreateStaffForm,
 } from './apiServices/user/userResource.js';
+import { clearFormInputs } from './helper/helper.js';
 
 const userData = config.userData;
 
@@ -86,6 +87,7 @@ export function closeModal() {
     document.querySelector('.depositPosCapital');
   const createShop = document.querySelector('.createShop');
   const addUser = document.querySelector('.addUser');
+  const adminUpdateUserData = document.querySelector('.adminUpdateUserData');
 
   if (depositPosCapitalContainer) {
     depositPosCapitalContainer.classList.remove('active');
@@ -98,6 +100,13 @@ export function closeModal() {
   if (addUser) {
     addUser.classList.remove('active');
   }
+
+  if (adminUpdateUserData) {
+    adminUpdateUserData.classList.remove('active');
+    delete adminUpdateUserData.dataset.staffId;
+  }
+
+  clearFormInputs();
 
   main.classList.remove('blur');
   if (sidebar) sidebar.classList.remove('blur');

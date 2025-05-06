@@ -278,8 +278,7 @@
             <label for="staffPhoneNumber">Phone No.</label>
 
             <input id="staffPhoneNumber" type="text" placeholder="Enter Phone No."
-               oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="staffPhoneNumber"
-               value=`Math.floor(Math.random() * 10)` required>
+               oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="staffPhoneNumber" required>
          </div>
 
          <!-- Staff Email -->
@@ -453,6 +452,97 @@
       </div>
    </form>
 
+   <form class="modal-form adminUpdateUserDataModal" name="modal" netlify>
+      <div class="card adminUpdateUserData modal ">
+         <div>
+            <h1 class="heading-text">Update User Data</h1>
+         </div>
+
+         <!-- FIrst name -->
+         <div class="addUser-form_input">
+            <label for="updateStaffFirstName">First Name</label>
+
+            <input id="updateStaffFirstName" type="text" placeholder="Enter First Name" name="updateStaffFirstName">
+         </div>
+
+         <!-- Last Name -->
+         <div class="addUser-form_input">
+            <label for="updateStaffLastName">LastName Name</label>
+
+            <input id="updateStaffLastName" type="text" placeholder="Enter LastName" name="updateStaffLastName">
+         </div>
+
+         <!-- staff Address -->
+         <div class="addUser-form_input">
+            <label for="updateStaffAddress">Staff Address</label>
+
+            <input id="updateStaffAddress" type="text" placeholder="Enter Staff Address" name="updateStaffAddress">
+         </div>
+
+         <!-- Staff Phone Number -->
+         <div class="addUser-form_input">
+            <label for="updateStaffPhoneNumber">Phone No.</label>
+
+            <input id="updateStaffPhoneNumber" type="text" placeholder="Enter Phone No."
+               oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="updateStaffPhoneNumber">
+         </div>
+
+         <!--  Staff Access Time -->
+         <div class="addUser-form_input flex-gap-2">
+            <div class="double-input mb-2 mt-2">
+               <label for="update-start-time">Access Time</label>
+
+               <div class="access-time_input">
+                  <div class="mb-1">
+                     <label for="update-start-time">Start</label>
+                     <input id="update-start-time" type="time" name="update-start-time" class="mr-2" required>
+                  </div>
+                  <!-- </div> -->
+
+                  <!-- <div class="addUser-form_input"> -->
+                  <!-- <label for="end-time">Access End Time</label> -->
+
+                  <div class="mb-1">
+                     <label for="update-end-time">End</label>
+                     <input id="update-end-time" type="time" name="end-time" required>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+         <!-- Staff Access Service -->
+         <div class="addUser-form_input mb-1">
+            <label for="updateStaffAccessType" class="heading-subtext">Access Type</label>
+
+            <div class="checkbox">
+               <div class="checkbox-container mb-1">
+                  <input id="updateStaffPosCheckbox" type="checkbox" name="updateStaffAccessType"
+                     value="POS_TRANSACTIONS">
+                  <label for="updateStaffPosCheckbox">POS</label>
+               </div>
+
+               <div class="checkbox-container mb-1">
+                  <input id="updateStaffSellCheckbox" type="checkbox" name="updateStaffAccessType"
+                     value="INVENTORY_SALES">
+                  <label for="updateStaffSellCheckbox">SELL</label>
+               </div>
+
+               <div class="checkbox-container mb-1">
+                  <input id="updateStaffPosAndSellCheckbox" type="checkbox" name="updateStaffAccessType" value="BOTH">
+                  <label for="updateStaffPosAndSellCheckbox">POS & SELL</label>
+               </div>
+            </div>
+         </div>
+         <!-- staff Address -->
+
+         <div class="center-button">
+            <button class="hero-btn-dark" type="submit">Update User</button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
 </body>
 
 <script>
@@ -469,6 +559,7 @@
    // Set it as default value
    document.getElementById('staffPhoneNumber').value = generateRandomPhoneNumber();
    document.getElementById('staffGuarantorPhoneNumber').value = generateRandomPhoneNumber();
+   // document.getElementById('updateStaffPhoneNumber').value = generateRandomPhoneNumber();
 
    function generateRandomEmail() {
       const names = ['john', 'favour', 'mitch', 'amaka', 'felix', 'blessing'];
@@ -481,7 +572,20 @@
       return `${name}${number}@${domain}`;
    }
 
-   document.getElementById('staffEmail').value = generateRandomEmail();
+   function generateRandomAddress() {
+      const streets = ['Ovie', 'Abank', 'Owogo', 'Peter Odia', 'Odia', 'Okolo'];
+      const towns = ['Ozoro', 'Oleh', 'Agbarho', 'Irri'];
+
+      const street = streets[Math.floor(Math.random() * streets.length)];
+      const number = Math.floor(10 + Math.random() * 90); // Random 2-digit number
+      const town = towns[Math.floor(Math.random() * towns.length)];
+
+      return `No. ${number}, ${street} street, ${town} town`;
+   }
+
+   document.getElementById('staffAddress').value = generateRandomAddress();
+   // document.getElementById('updateStaffAddress').value = generateRandomAddress();
+   document.getElementById('staffGuarantorAddress').value = generateRandomAddress();
 
    function generateRandomName() {
       const names = ['john', 'favour', 'mitch', 'amaka', 'felix', 'blessing', 'ochuko'];
@@ -495,6 +599,8 @@
 
    document.getElementById('staffFirstName').value = generateRandomName();
    document.getElementById('staffLastName').value = generateRandomName();
+   // document.getElementById('updateStaffLastName').value = generateRandomName();
+   // document.getElementById('updateStaffFirstName').value = generateRandomName();
    document.getElementById('staffGuarantorName').value = generateRandomName();
 </script>
 
