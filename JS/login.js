@@ -26,6 +26,9 @@ if (loginForm) {
         localStorage.setItem('accessToken', token);
         localStorage.setItem('userData', JSON.stringify(user));
 
+        const today = new Date().toISOString().split('T')[0]; // e.g., "2025-05-04"
+        localStorage.setItem('loginDate', today);
+
         //   redirectWithDelay('Homepage', 'index.html', 500);
         window.location.href = 'index.html';
       })

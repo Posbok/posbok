@@ -2,6 +2,7 @@ import config from '../../../config.js';
 import { closeModal, showToast } from '../../script.js';
 import { populateStaffTable } from '../../staff.js';
 import { fetchBusinessDetails } from '../business/businessResource.js';
+import { safeFetch } from '../utility/safeFetch.js';
 
 const baseUrl = config.baseUrl;
 const userToken = config.token;
@@ -18,7 +19,7 @@ export async function createStaff(staffDetails) {
   try {
     console.log('Sending POST request...');
 
-    const response = await fetch(`${baseUrl}/api/users`, {
+    const createStaffData = await safeFetch(`${baseUrl}/api/users`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${userToken}`,
@@ -28,18 +29,14 @@ export async function createStaff(staffDetails) {
     });
 
     console.log('Response received...');
-    const data = await response.json();
 
-    if (!response.ok) {
-      // throw new Error(`HTTP error! status: ${response.status}`);
-      throw new Error(data.message || 'Something went wrong');
+    if (createStaffData) {
+      console.log('Staff created successfully:', createStaffData);
+      showToast('success', `✅ ${createStaffData.message}`);
+      checkAndPromptCreateStaff(); // Refresh the Staff list after creation
     }
 
-    console.log('Staff created successfully:', data);
-    showToast('success', `✅ ${data.message}`);
-    checkAndPromptCreateStaff(); // Refresh the Staff list after creation
-
-    return data;
+    return createStaffData;
   } catch (error) {
     console.error('Error creating Admin:', error);
     throw error;
@@ -164,6 +161,55 @@ export function setupCreateStaffForm() {
 
   form.dataset.bound = 'true';
 
+  // Password Validation start
+  // Wait for input in the password and confirm password fields
+  document.getElementById('staffPassword').addEventListener('input', () => {
+    const passwordInput = document.getElementById('staffPassword');
+    const pass = passwordInput.value;
+    const lengthErrorText = document.getElementById('password-length');
+
+    // Check if password is at least 6 characters long
+    if (pass.length < 6) {
+      passwordInput.classList.add('input-mismatch');
+      lengthErrorText.textContent =
+        'Password must be at least 6 characters long.';
+      lengthErrorText.style.display = 'block';
+      lengthErrorText.style.textAlign = 'left';
+    } else {
+      // Hide the length error message when password length is valid
+      passwordInput.classList.remove('input-mismatch');
+      lengthErrorText.style.display = 'none';
+    }
+  });
+
+  document
+    .getElementById('staffConfirmPassword')
+    .addEventListener('input', () => {
+      const passwordInput = document.getElementById('staffPassword');
+      const confirmPasswordInput = document.getElementById(
+        'staffConfirmPassword'
+      );
+      const pass = passwordInput.value;
+      const confirmVal = confirmPasswordInput.value;
+
+      const mismatchErrorText = document.getElementById('password-mismatch');
+
+      // Reset mismatch error text and input styling
+      confirmPasswordInput.classList.remove('input-match', 'input-mismatch');
+      mismatchErrorText.style.display = 'none';
+
+      // If password length is sufficient, check if the passwords match
+      if (confirmVal && pass !== confirmVal) {
+        confirmPasswordInput.classList.add('input-mismatch');
+        mismatchErrorText.textContent = 'Passwords do not match.';
+        mismatchErrorText.style.display = 'block';
+        mismatchErrorText.style.textAlign = 'left';
+      } else if (confirmVal && pass === confirmVal) {
+        // If passwords match, remove the mismatch class and add the match class
+        confirmPasswordInput.classList.add('input-match');
+      }
+    });
+
   if (form) {
     form.addEventListener('submit', async function (e) {
       e.preventDefault();
@@ -171,61 +217,6 @@ export function setupCreateStaffForm() {
       const businessData = await fetchBusinessDetails();
       const businessId = businessData.data.id;
       const businessType = businessData.data.business_type;
-
-      console.log('Form triggered');
-
-      // Password Validation start
-      // Wait for input in the password and confirm password fields
-      document.getElementById('staffPassword').addEventListener('input', () => {
-        const passwordInput = document.getElementById('staffPassword');
-        const pass = passwordInput.value;
-        const lengthErrorText = document.getElementById('password-length');
-
-        // Check if password is at least 6 characters long
-        if (pass.length < 6) {
-          passwordInput.classList.add('input-mismatch');
-          lengthErrorText.textContent =
-            'Password must be at least 6 characters long.';
-          lengthErrorText.style.display = 'block';
-          lengthErrorText.style.textAlign = 'left';
-        } else {
-          // Hide the length error message when password length is valid
-          passwordInput.classList.remove('input-mismatch');
-          lengthErrorText.style.display = 'none';
-        }
-      });
-
-      document
-        .getElementById('staffConfirmPassword')
-        .addEventListener('input', () => {
-          const passwordInput = document.getElementById('staffPassword');
-          const confirmPasswordInput = document.getElementById(
-            'staffConfirmPassword'
-          );
-          const pass = passwordInput.value;
-          const confirmVal = confirmPasswordInput.value;
-
-          const mismatchErrorText =
-            document.getElementById('password-mismatch');
-
-          // Reset mismatch error text and input styling
-          confirmPasswordInput.classList.remove(
-            'input-match',
-            'input-mismatch'
-          );
-          mismatchErrorText.style.display = 'none';
-
-          // If password length is sufficient, check if the passwords match
-          if (confirmVal && pass !== confirmVal) {
-            confirmPasswordInput.classList.add('input-mismatch');
-            mismatchErrorText.textContent = 'Passwords do not match.';
-            mismatchErrorText.style.display = 'block';
-            mismatchErrorText.style.textAlign = 'left';
-          } else if (confirmVal && pass === confirmVal) {
-            // If passwords match, remove the mismatch class and add the match class
-            confirmPasswordInput.classList.add('input-match');
-          }
-        });
 
       // Password Validation Ctnd
       const pass = document.getElementById('staffPassword').value;
@@ -237,9 +228,9 @@ export function setupCreateStaffForm() {
         showToast('fail', '❎ Passwords do not match.');
         return;
       }
-
       // Password Validation end
 
+      const shopDropdown = document.getElementById('shopDropdown').value;
       const staffLastName = document.getElementById('staffLastName').value;
       const staffFirstName = document.getElementById('staffFirstName').value;
       const staffAddress = document.getElementById('staffAddress').value;
@@ -292,7 +283,10 @@ export function setupCreateStaffForm() {
         servicePermission: accessTypeValue,
       };
 
+      const staffAssigningDetails = { shopId: Number(shopDropdown) };
+
       console.log('📦 Staff Details:', staffDetails);
+      console.log('📦 Shop Details:', staffAssigningDetails);
 
       if (!dateOfBirth) {
         alert('Date of Birth is required.');
@@ -300,19 +294,33 @@ export function setupCreateStaffForm() {
       }
 
       try {
-        createStaff(staffDetails)
-          .then((data) => {
-            console.log('✅ Registered Staff successfully:', data);
-            showToast('success', `✅ ${data.message}`);
-            closeModal();
-            window.location.reload();
-          })
-          .catch((data) => {
-            console.error('❎ Failed to register:', data.message);
-            showToast('fail', `❎ ${data.message}`);
-          });
+        const data = await createStaff(staffDetails);
+
+        if (!data || !data.data || !data.data.user) {
+          //  showToast('fail', `❎ Failed to register staff.`);
+          return;
+        }
+
+        const userId = data.data.user.id;
+
+        console.log(userId, 'User ID');
+
+        try {
+          const assigned = await assignUserToShop(
+            userId,
+            staffAssigningDetails
+          );
+          showToast('success', `✅ ${assigned.message}`);
+          closeModal();
+        } catch (assignErr) {
+          showToast(
+            'fail',
+            `❎ ${assignErr.message || 'Failed to assign user'}`
+          );
+        }
       } catch (err) {
-        console.error('Error creating shop:', err.message);
+        // err.message will contain the "Email already in use"
+        showToast('fail', `❎ ${err.message}`);
       }
     });
   }
@@ -358,6 +366,36 @@ export async function deleteUser(user_id) {
   } catch (error) {
     console.error('Error deleting Staff', error);
     showToast('error', '❌ Failed to delete staff');
+    throw error;
+  }
+}
+
+export async function assignUserToShop(user_id, staffAssigningDetails) {
+  try {
+    console.log('Sending POST request...');
+
+    const assignUserToShopData = await safeFetch(
+      `${baseUrl}/api/users/${user_id}/shops`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(staffAssigningDetails),
+      }
+    );
+
+    if (assignUserToShopData) {
+      console.log('Staff assigned to shop successfully:', assignUserToShopData);
+      showToast('success', `✅ ${assignUserToShopData.message}`);
+      checkAndPromptCreateStaff(); // Refresh list or update UI
+    }
+
+    return assignUserToShopData;
+  } catch (error) {
+    console.error('Error Assigning Staff', error);
+    showToast('error', '❌ Failed to Assign staff');
     throw error;
   }
 }

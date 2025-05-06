@@ -2,6 +2,7 @@ import config from '../../../config.js';
 import { closeModal, showToast } from '../../script.js';
 import { populateShopsTable } from '../../shops.js';
 import { populateShopDropdown } from '../../staff.js';
+import { safeFetch } from '../utility/safeFetch.js';
 
 const baseUrl = config.baseUrl;
 const userToken = config.token;
@@ -16,7 +17,7 @@ export async function createShop(shopDetails) {
   try {
     //  console.log('Sending POST request...');
 
-    const response = await fetch(`${baseUrl}/api/shop`, {
+    const fetchedData = await safeFetch(`${baseUrl}/api/shop`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${userToken}`,
@@ -25,17 +26,22 @@ export async function createShop(shopDetails) {
       body: JSON.stringify(shopDetails),
     });
 
-    //  console.log('Response received...');
-    const data = await response.json();
-
-    if (!response.ok) {
-      // throw new Error(`HTTP error! status: ${response.status}`);
-      throw new Error(data.message || 'Something went wrong');
+    if (fetchedData) {
+      console.log('Shop created successfully:', fetchedData);
+      showToast('success', `✅ ${fetchedData.message}`);
+      checkAndPromptCreateShop(); // Refresh the shop list after creation
     }
 
-    //  console.log('Shop created successfully:', data);
-    showToast('success', `✅ ${data.message}`);
-    checkAndPromptCreateShop(); // Refresh the shop list after creation
+    //  //  console.log('Response received...');
+
+    //  if (!response.ok) {
+    //    // throw new Error(`HTTP error! status: ${response.status}`);
+    //    throw new Error(data.message || 'Something went wrong');
+    //  }
+
+    //  //  console.log('Shop created successfully:', data);
+    //  showToast('success', `✅ ${data.message}`);
+    //  checkAndPromptCreateShop(); // Refresh the shop list after creation
 
     if (document.querySelector('#assignStaffCheckbox').checked) {
       setTimeout(() => {
@@ -45,13 +51,13 @@ export async function createShop(shopDetails) {
         if (proceed) {
           // Open staff creation modal or navigate to staff creation page
 
-          window.location.href = `staff-profile.html?from=shop-creation&shopId=${data.data.id}`;
+          window.location.href = `staff-profile.html?from=shop-creation&shopId=${fetchedData.data.id}`;
         }
       }, 600);
     }
-    return data;
+    return fetchedData;
   } catch (error) {
-    console.error('Error creating Admin:', error);
+    console.error('Error creating Shop:', error);
     throw error;
   }
 }

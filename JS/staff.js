@@ -74,6 +74,14 @@ export function populateShopDropdown(shopList = [], preselectedShopId = '') {
   const dropdown = document.getElementById('shopDropdown');
   if (!dropdown) return;
 
+  dropdown.addEventListener('change', function () {
+    const selectedShopId = dropdown.value;
+    console.log('Selected shop ID:', selectedShopId);
+    // Perform any action you want with the selected shop ID
+  });
+
+  console.log('Selected shop ID:', dropdown.value);
+
   // Clear existing options except the default
   dropdown.innerHTML = `<option value="">Select a shop</option>`;
 
@@ -261,16 +269,16 @@ closeModalButton.forEach((closeButton) => {
 });
 
 // JS for Modal
-document.addEventListener('DOMContentLoaded', function () {
-  const addButton = document.querySelector('.add-user');
-  const addUserContainer = document.querySelector('.addUser');
+// document.addEventListener('DOMContentLoaded', function () {
+//   const addButton = document.querySelector('.add-user');
+//   const addUserContainer = document.querySelector('.addUser');
 
-  if (addButton) {
-    addButton.addEventListener('click', function () {
-      addUserContainer.classList.add('active');
-      main.classList.add('blur');
-      sidebar.classList.add('blur');
-      main.classList.add('no-scroll');
-    });
-  }
-});
+//   if (addButton) {
+//     addButton.addEventListener('click', function () {
+//       addUserContainer.classList.add('active');
+//       main.classList.add('blur');
+//       sidebar.classList.add('blur');
+//       main.classList.add('no-scroll');
+//     });
+//   }
+// });

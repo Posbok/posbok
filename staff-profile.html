@@ -138,7 +138,7 @@
                   Manage
                </button>
 
-               <button class="hero-btn-dark add-user">Add Staff</button>
+               <button class="hero-btn-dark add-user" id="openStaffModalBtn">Add Staff</button>
             </div>
             <!-- <h2 class="heading-subtext"> Staff Informations</h2> -->
             <!-- </div> -->
@@ -212,7 +212,7 @@
    <div id="toast" class="toast">This is a toast message!</div>
 
    <form class="modal-form createStaffModal" id="createStaffModal" name="add-user" netlify>
-      <div class="card addUser modal">
+      <div class="card addUser modal active">
          <div>
             <h1 class="heading-text  addItemName">Add Staff Profile</h1>
          </div>
@@ -221,10 +221,9 @@
          <div class="addUser-form_input">
             <label for="shopDropdown">Assign to shop</label>
 
-            <select id="shopDropdown" class="form-control">
+            <select id="shopDropdown" class="form-control" required>
                <option value="">Select a shop</option>
             </select>
-
          </div>
 
          <!-- FIrst name -->
@@ -240,8 +239,6 @@
 
             <input id="staffLastName" type="text" placeholder="Enter LastName" name="staffLastName" required>
          </div>
-
-
 
          <!-- staff Address -->
          <div class="addUser-form_input">
@@ -281,7 +278,8 @@
             <label for="staffPhoneNumber">Phone No.</label>
 
             <input id="staffPhoneNumber" type="text" placeholder="Enter Phone No."
-               oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="staffPhoneNumber" required>
+               oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="staffPhoneNumber"
+               value=`Math.floor(Math.random() * 10)` required>
          </div>
 
          <!-- Staff Email -->
@@ -347,7 +345,7 @@
 
                <div class="access-time_input">
                   <div class="mb-1">
-                     <label for="">Start</label>
+                     <label for="start-time">Start</label>
                      <input id="start-time" type="time" name="start-time" class="mr-2" required>
                   </div>
                   <!-- </div> -->
@@ -356,7 +354,7 @@
                   <!-- <label for="end-time">Access End Time</label> -->
 
                   <div class="mb-1">
-                     <label for="">Start</label>
+                     <label for="end-time">End</label>
                      <input id="end-time" type="time" name="end-time" required>
                   </div>
                </div>
@@ -456,5 +454,48 @@
    </form>
 
 </body>
+
+<script>
+   // Sample prefixes for Nigerian numbers
+   const prefixes = ['079', '089', '089', '099', '093'];
+
+   // Generate random number
+   function generateRandomPhoneNumber() {
+      const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+      const randomDigits = Math.floor(10000000 + Math.random() * 90000000); // 8 digits
+      return prefix + randomDigits;
+   }
+
+   // Set it as default value
+   document.getElementById('staffPhoneNumber').value = generateRandomPhoneNumber();
+   document.getElementById('staffGuarantorPhoneNumber').value = generateRandomPhoneNumber();
+
+   function generateRandomEmail() {
+      const names = ['john', 'favour', 'mitch', 'amaka', 'felix', 'blessing'];
+      const domains = ['gmail.com', 'yahoo.com', 'outlook.com', 'example.com'];
+
+      const name = names[Math.floor(Math.random() * names.length)];
+      const number = Math.floor(1000 + Math.random() * 9000); // Random 4-digit number
+      const domain = domains[Math.floor(Math.random() * domains.length)];
+
+      return `${name}${number}@${domain}`;
+   }
+
+   document.getElementById('staffEmail').value = generateRandomEmail();
+
+   function generateRandomName() {
+      const names = ['john', 'favour', 'mitch', 'amaka', 'felix', 'blessing', 'ochuko'];
+
+
+      const name = names[Math.floor(Math.random() * names.length)];
+
+
+      return `${name}`;
+   }
+
+   document.getElementById('staffFirstName').value = generateRandomName();
+   document.getElementById('staffLastName').value = generateRandomName();
+   document.getElementById('staffGuarantorName').value = generateRandomName();
+</script>
 
 </html>

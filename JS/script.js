@@ -11,6 +11,7 @@ import {
 import { fetchBusinessDetails } from './apiServices/business/businessResource.js';
 import {
   checkAndPromptCreateStaff,
+  openCreateStaffModal,
   setupCreateStaffForm,
 } from './apiServices/user/userResource.js';
 
@@ -212,10 +213,24 @@ if (logoutButton) {
       })
       .catch((data) => {
         showToast('fail', `❎ ${data.message}`);
-        console.error('❎ Failed to login:', data.message);
+        console.error('❎ Failed to logout:', data.message);
       });
   });
 }
+
+function checkIfTokenExpiredDaily() {
+  const savedDate = localStorage.getItem('loginDate');
+  const today = new Date().toISOString().split('T')[0];
+
+  if (savedDate && savedDate !== today) {
+    logoutUser().finally(() => {
+      localStorage.clear();
+      window.location.href = 'login.html';
+    });
+  }
+}
+
+checkIfTokenExpiredDaily();
 
 //  JS for DOM Manioulation and Dynamic data e.g.
 const userNameDisplay = document.querySelector('.user-name');
