@@ -1,7 +1,10 @@
-import config from '../../config.js';
+import config from '../../../config.js';
 
 const baseUrl = config.baseUrl;
-const userToken = localStorage.getItem('accessToken');
+const userToken = config.token;
+const userData = config.userData;
+
+const parsedUserData = userData ? JSON.parse(userData) : null;
 
 function getCurrentDateISO() {
   const now = new Date();
@@ -11,6 +14,34 @@ function getCurrentDateISO() {
     now.getDate()
   ); // Local midnight
   return localMidnight.toISOString();
+}
+
+export async function addPosCapital(posCapital) {
+  try {
+     console.log('Sending POST request...');
+
+    const addPosCapitalData = await safeFetch(`${baseUrl}/api/capital`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+        //   'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(posCapital),
+    });
+
+     console.log('Response received...');
+
+    if (addPosCapitalData) {
+      console.log('POS Capital added successfully:', addPosCapitalData);
+      showToast('success', `✅ ${addPosCapitalData.message}`);
+      // checkAndPromptaddPosCapital(); // Refresh the Staff list after creation
+    }
+
+    return addPosCapitalData;
+  } catch (error) {
+    console.error('Error creating Admin:', error);
+    throw error;
+  }
 }
 
 export async function createPosTransaction(transactionDetail) {

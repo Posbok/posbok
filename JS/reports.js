@@ -3,7 +3,7 @@
 import {
   deleteAllTransactions,
   getPosTransactions,
-} from './apiServices/pos-transactions';
+} from './apiServices/pos/posResources';
 import { formatAmountWithCommas } from './script';
 
 function toTitleCase(value) {

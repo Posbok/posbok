@@ -46,8 +46,8 @@ export function populateShopsTable(shopData = []) {
 
     const deleteBtn = row.querySelector('.deleteShopButton');
     deleteBtn.addEventListener('click', async () => {
-      const staffId = deleteBtn.dataset.shopId;
-      await deleteShop(staffId);
+      const shopId = deleteBtn.dataset.shopId;
+      await deleteShop(shopId);
     });
   });
 }

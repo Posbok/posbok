@@ -310,7 +310,7 @@
 
    <div id="toast" class="toast">This is a toast message!</div>
 
-   <form class="depositPosCapital-form" name="depositPosCapital" netlify>
+   <form class="depositPosCapital-form depositPosCapitalModal" name="depositPosCapital" netlify>
       <div class="card depositPosCapital modal ">
          <div>
             <h1 class="heading-text addItemName">Deposit POS Capital</h1>
@@ -318,21 +318,14 @@
 
 
          <div class="depositPosCapital-form_input">
-            <label for="newItemSellingPrice">Enter Amount</label>
+            <label for="posCapitalAmount">Enter Amount</label>
 
             <div class="naira-input-container">
-               <input id="newItemSellingPrice" type="text" placeholder="Enter Amount"
-                  oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="newItemSellingPrice" required>
+               <input id="posCapitalAmount" type="text" placeholder="Enter Amount"
+                  oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="posCapitalAmount" required>
                <span class="naira">&#x20A6;</span>
             </div>
          </div>
-
-         <!-- <div class="depositPosCapital-form_input">
-            <label for="newItemQuantity">New Item Quantity</label>
-
-            <input id="newItemQuantity" type="text" placeholder="Enter New Quantity" name="newItemQuantity">
-
-         </div> -->
 
          <div class="center-button">
             <button class="hero-btn-dark saveProductButton">DEPOSIT</button>

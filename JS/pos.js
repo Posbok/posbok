@@ -1,10 +1,117 @@
 import {
   getPosTransactions,
   createPosTransaction,
-} from './apiServices/pos-transactions';
+} from './apiServices/pos/posResources';
 import { showToast } from './script';
 
-getPosTransactions();
+export function depositPosCapitalForm() {
+  const form = document.querySelector('.depositPosCapital');
+
+  if (!form || form.dataset.bound === 'true') return;
+
+  form.dataset.bound = 'true';
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const posDepositAmount = document.querySelector('#posCapitalAmount');
+
+      const shopDetails = {
+        amount: Number(posDepositAmount.value),
+      };
+
+      try {
+        createShop(shopDetails)
+          .then((data) => {
+            closeModal();
+
+            // Clear inputs and checkboxes
+            shopNameInput.value = '';
+            shopAddressInput.value = '';
+            document
+              .querySelectorAll('input[name="serviceType"]')
+              .forEach((cb) => (cb.checked = false));
+            // serviceTypeCheckboxes.forEach(
+            //   (checkbox) => (checkbox.checked = false)
+            // );
+
+            //   redirectWithDelay('Homepage', 'manage.html', 500);
+            // window.location.href = 'manage.html';
+          })
+          .catch((data) => {
+            showToast('fail', `❎ ${data.message}`);
+            console.error('❎ Failed to create shop:', data.message);
+          });
+        //   console.log('Creating shop with:', shopDetails);
+        // closeModal(); // close modal after success
+      } catch (err) {
+        console.error('Error creating shop:', err.message);
+      }
+    });
+  }
+}
+
+export function setupCreateShopForm() {
+  const form = document.querySelector('.createShopModal');
+
+  if (!form || form.dataset.bound === 'true') return;
+
+  form.dataset.bound = 'true';
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const shopNameInput = document.querySelector('#shopName');
+      const shopAddressInput = document.querySelector('#shopAddress');
+
+      const serviceTypeCheckboxes = document.querySelectorAll(
+        'input[name="serviceType"]:checked'
+      );
+      const serviceType = Array.from(serviceTypeCheckboxes).map(
+        (cb) => cb.value
+      );
+      const serviceTypeValue = serviceType[0] || null;
+
+      const shopDetails = {
+        shopName: shopNameInput.value,
+        location: shopAddressInput.value,
+        serviceType: serviceTypeValue,
+      };
+
+      try {
+        createShop(shopDetails)
+          .then((data) => {
+            closeModal();
+
+            // Clear inputs and checkboxes
+            shopNameInput.value = '';
+            shopAddressInput.value = '';
+            document
+              .querySelectorAll('input[name="serviceType"]')
+              .forEach((cb) => (cb.checked = false));
+            // serviceTypeCheckboxes.forEach(
+            //   (checkbox) => (checkbox.checked = false)
+            // );
+
+            //   redirectWithDelay('Homepage', 'manage.html', 500);
+            // window.location.href = 'manage.html';
+          })
+          .catch((data) => {
+            showToast('fail', `❎ ${data.message}`);
+            console.error('❎ Failed to create shop:', data.message);
+          });
+        //   console.log('Creating shop with:', shopDetails);
+        // closeModal(); // close modal after success
+      } catch (err) {
+        console.error('Error creating shop:', err.message);
+      }
+    });
+  }
+}
+
+// getPosTransactions();
 
 // JavaScript to toggle withdrawal methods
 
