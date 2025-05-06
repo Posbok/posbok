@@ -17,6 +17,8 @@ import {
 
 const userData = config.userData;
 
+const parsedUserData = userData ? JSON.parse(userData) : null;
+
 // Toggle the active class for sideNavs
 const sideNavs = document.querySelectorAll('.side-nav_item');
 
@@ -314,30 +316,34 @@ if (userData) {
   //   console.log('No user data found in localStorage');
 }
 
-// JS to Check and prompt cretae shop & staff
-document.addEventListener('DOMContentLoaded', () => {
-  setupCreateShopForm();
-  setupModalCloseButtons();
-  document
-    .querySelector('#openShopModalBtn')
-    ?.addEventListener('click', openCreateShopModal);
+const isAdmin = parsedUserData?.accountType === 'ADMIN';
 
-  if (userData) {
-    checkAndPromptCreateShop();
-  }
-});
+if (isAdmin) {
+  // JS to Check and prompt cretae shop & staff
+  document.addEventListener('DOMContentLoaded', () => {
+    setupCreateShopForm();
+    setupModalCloseButtons();
+    document
+      .querySelector('#openShopModalBtn')
+      ?.addEventListener('click', openCreateShopModal);
 
-document.addEventListener('DOMContentLoaded', () => {
-  setupCreateStaffForm();
-  setupModalCloseButtons();
-  document
-    .querySelector('#openStaffModalBtn')
-    ?.addEventListener('click', openCreateStaffModal);
+    if (userData) {
+      checkAndPromptCreateShop();
+    }
+  });
 
-  if (userData) {
-    checkAndPromptCreateStaff();
-  }
-});
+  document.addEventListener('DOMContentLoaded', () => {
+    setupCreateStaffForm();
+    setupModalCloseButtons();
+    document
+      .querySelector('#openStaffModalBtn')
+      ?.addEventListener('click', openCreateStaffModal);
+
+    if (userData) {
+      checkAndPromptCreateStaff();
+    }
+  });
+}
 
 // function to Use business info to fill in the Create Shop Form
 const useBusinessInfoCheckbox = document.querySelector('#useBusinessInfo');

@@ -316,7 +316,9 @@ export function setupCreateStaffForm() {
           const newUrl = new URL(window.location.href);
           newUrl.searchParams.delete('from');
 
-          location.reload();
+          setTimeout(() => {
+            location.reload();
+          }, 1000);
         } catch (assignErr) {
           showToast(
             'fail',
@@ -383,6 +385,36 @@ export async function assignUserToShop(user_id, staffAssigningDetails) {
       `${baseUrl}/api/users/${user_id}/shops`,
       {
         method: 'POST',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(staffAssigningDetails),
+      }
+    );
+
+    if (assignUserToShopData) {
+      // console.log('Staff assigned to shop successfully:', assignUserToShopData);
+      showToast('success', `✅ ${assignUserToShopData.message}`);
+      checkAndPromptCreateStaff(); // Refresh list or update UI
+    }
+
+    return assignUserToShopData;
+  } catch (error) {
+    console.error('Error Assigning Staff', error);
+    showToast('error', '❌ Failed to Assign staff');
+    throw error;
+  }
+}
+
+export async function updateUser(user_id, staffAssigningDetails) {
+  try {
+    console.log('Sending POST request...');
+
+    const assignUserToShopData = await safeFetch(
+      `${baseUrl}/api/users/${user_id}/shops`,
+      {
+        method: 'PUT',
         headers: {
           Authorization: `Bearer ${userToken}`,
           'Content-Type': 'application/json',
