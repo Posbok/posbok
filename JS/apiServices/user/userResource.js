@@ -1,4 +1,5 @@
 import config from '../../../config.js';
+import { clearFormInputs } from '../../helper/helper.js';
 import { closeModal, showToast } from '../../script.js';
 import { populateStaffTable } from '../../staff.js';
 import { fetchBusinessDetails } from '../business/businessResource.js';
@@ -17,7 +18,7 @@ const isStaffProfilePage = window.location.href.includes('staff-profile');
 
 export async function createStaff(staffDetails) {
   try {
-    console.log('Sending POST request...');
+    //  console.log('Sending POST request...');
 
     const createStaffData = await safeFetch(`${baseUrl}/api/users`, {
       method: 'POST',
@@ -28,10 +29,10 @@ export async function createStaff(staffDetails) {
       body: JSON.stringify(staffDetails),
     });
 
-    console.log('Response received...');
+    //  console.log('Response received...');
 
     if (createStaffData) {
-      console.log('Staff created successfully:', createStaffData);
+      // console.log('Staff created successfully:', createStaffData);
       showToast('success', `✅ ${createStaffData.message}`);
       checkAndPromptCreateStaff(); // Refresh the Staff list after creation
     }
@@ -285,8 +286,8 @@ export function setupCreateStaffForm() {
 
       const staffAssigningDetails = { shopId: Number(shopDropdown) };
 
-      console.log('📦 Staff Details:', staffDetails);
-      console.log('📦 Shop Details:', staffAssigningDetails);
+      // console.log('📦 Staff Details:', staffDetails);
+      // console.log('📦 Shop Details:', staffAssigningDetails);
 
       if (!dateOfBirth) {
         alert('Date of Birth is required.');
@@ -303,8 +304,6 @@ export function setupCreateStaffForm() {
 
         const userId = data.data.user.id;
 
-        console.log(userId, 'User ID');
-
         try {
           const assigned = await assignUserToShop(
             userId,
@@ -312,6 +311,12 @@ export function setupCreateStaffForm() {
           );
           showToast('success', `✅ ${assigned.message}`);
           closeModal();
+          clearFormInputs();
+
+          const newUrl = new URL(window.location.href);
+          newUrl.searchParams.delete('from');
+
+          location.reload();
         } catch (assignErr) {
           showToast(
             'fail',
@@ -343,7 +348,7 @@ export function setupModalCloseButtons() {
 
 export async function deleteUser(user_id) {
   try {
-    console.log('Sending POST request...');
+    //  console.log('Sending POST request...');
 
     const response = await fetch(`${baseUrl}/api/users/${user_id}`, {
       method: 'DELETE',
@@ -358,7 +363,7 @@ export async function deleteUser(user_id) {
       throw new Error(data.message || 'Something went wrong');
     }
 
-    console.log('Staff deleted successfully:', data);
+    //  console.log('Staff deleted successfully:', data);
     showToast('success', `✅ ${data.message}`);
     checkAndPromptCreateStaff(); // Refresh list or update UI
 
@@ -372,7 +377,7 @@ export async function deleteUser(user_id) {
 
 export async function assignUserToShop(user_id, staffAssigningDetails) {
   try {
-    console.log('Sending POST request...');
+    //  console.log('Sending POST request...');
 
     const assignUserToShopData = await safeFetch(
       `${baseUrl}/api/users/${user_id}/shops`,
@@ -387,7 +392,7 @@ export async function assignUserToShop(user_id, staffAssigningDetails) {
     );
 
     if (assignUserToShopData) {
-      console.log('Staff assigned to shop successfully:', assignUserToShopData);
+      // console.log('Staff assigned to shop successfully:', assignUserToShopData);
       showToast('success', `✅ ${assignUserToShopData.message}`);
       checkAndPromptCreateStaff(); // Refresh list or update UI
     }

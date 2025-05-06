@@ -262,59 +262,59 @@ if (userData) {
 
   // Account Type - services display
 
-  //   if (parsedUserData.accountType === 'ADMIN') {
-  //     if (sellIndexTab) sellIndexTab.style.display = 'none';
-  //     if (posIndexTab) posIndexTab.style.display = 'none';
-  //     if (posNav) posNav.style.display = 'none';
-  //     if (sellNav) sellNav.style.display = 'none';
+  if (parsedUserData.accountType === 'ADMIN') {
+    if (sellIndexTab) sellIndexTab.style.display = 'none';
+    if (posIndexTab) posIndexTab.style.display = 'none';
+    if (posNav) posNav.style.display = 'none';
+    if (sellNav) sellNav.style.display = 'none';
 
-  //     if (reportIndexTab) reportIndexTab.style.display = 'block';
-  //     if (manageIndexTab) manageIndexTab.style.display = 'block';
-  //     if (reportsNav) reportsNav.style.display = 'block';
-  //     if (manageNav) manageNav.style.display = 'block';
+    if (reportIndexTab) reportIndexTab.style.display = 'block';
+    if (manageIndexTab) manageIndexTab.style.display = 'block';
+    if (reportsNav) reportsNav.style.display = 'block';
+    if (manageNav) manageNav.style.display = 'block';
 
-  //     // Normalize current page name from pathname
-  //     const currentPage = window.location.pathname.toLowerCase();
+    // Normalize current page name from pathname
+    const currentPage = window.location.pathname.toLowerCase();
 
-  //     //  List of pages not open to admin
-  //     const RestrictedAdminPage = ['pos', 'sell'];
-  //     const isOnRestrictedAdminPage = RestrictedAdminPage.some((page) =>
-  //       currentPage.includes(page)
-  //     );
+    //  List of pages not open to admin
+    const RestrictedAdminPage = ['pos', 'sell'];
+    const isOnRestrictedAdminPage = RestrictedAdminPage.some((page) =>
+      currentPage.includes(page)
+    );
 
-  //     // If admin is on a protected page, redirect to login
-  //     if (isOnRestrictedAdminPage) {
-  //       window.location.href = 'index.html';
-  //     }
-  //   }
+    // If admin is on a protected page, redirect to login
+    if (isOnRestrictedAdminPage) {
+      window.location.href = 'index.html';
+    }
+  }
 
-  //   if (parsedUserData.accountType === 'STAFF') {
-  //     if (sellIndexTab) sellIndexTab.style.display = 'block';
-  //     if (posIndexTab) posIndexTab.style.display = 'block';
-  //     if (reportIndexTab) reportIndexTab.style.display = 'block';
-  //     if (sellNav) sellNav.style.display = 'block';
-  //     if (posNav) posNav.style.display = 'block';
-  //     if (reportsNav) reportsNav.style.display = 'block';
+  if (parsedUserData.accountType === 'STAFF') {
+    if (sellIndexTab) sellIndexTab.style.display = 'block';
+    if (posIndexTab) posIndexTab.style.display = 'block';
+    if (reportIndexTab) reportIndexTab.style.display = 'block';
+    if (sellNav) sellNav.style.display = 'block';
+    if (posNav) posNav.style.display = 'block';
+    if (reportsNav) reportsNav.style.display = 'block';
 
-  //     if (manageIndexTab) manageIndexTab.style.display = 'none';
-  //     if (manageNav) manageNav.style.display = 'none';
+    if (manageIndexTab) manageIndexTab.style.display = 'none';
+    if (manageNav) manageNav.style.display = 'none';
 
-  //     //  List of pages not open to Staff
-  //     const restrictedStaffPage = ['manage'];
-  //     const isOnRestrictedStaffPage = restrictedStaffPage.some((page) =>
-  //       currentPage.includes(page)
-  //     );
+    //  List of pages not open to Staff
+    const restrictedStaffPage = ['manage'];
+    const isOnRestrictedStaffPage = restrictedStaffPage.some((page) =>
+      currentPage.includes(page)
+    );
 
-  //     // If Staff is on a protected page, redirect to login
-  //     if (isOnRestrictedStaffPage) {
-  //       window.location.href = 'index.html';
-  //     }
-  //   }
+    // If Staff is on a protected page, redirect to login
+    if (isOnRestrictedStaffPage) {
+      window.location.href = 'index.html';
+    }
+  }
 } else {
   //   console.log('No user data found in localStorage');
 }
 
-// JS to Check and prompt cretae shop
+// JS to Check and prompt cretae shop & staff
 document.addEventListener('DOMContentLoaded', () => {
   setupCreateShopForm();
   setupModalCloseButtons();
@@ -339,7 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// function to Use business info to fill in the Create SHop Form
+// function to Use business info to fill in the Create Shop Form
 const useBusinessInfoCheckbox = document.querySelector('#useBusinessInfo');
 
 if (useBusinessInfoCheckbox) {

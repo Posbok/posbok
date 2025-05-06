@@ -1,3 +1,5 @@
+import { deleteShop } from './apiServices/shop/shopResource';
+
 export function populateShopsTable(shopData = []) {
   const tbody = document.querySelector('.shops-table tbody');
   const loadingRow = document.querySelector('.loading-row');
@@ -41,5 +43,11 @@ export function populateShopsTable(shopData = []) {
      `;
 
     if (tbody) tbody.appendChild(row);
+
+    const deleteBtn = row.querySelector('.deleteShopButton');
+    deleteBtn.addEventListener('click', async () => {
+      const staffId = deleteBtn.dataset.shopId;
+      await deleteShop(staffId);
+    });
   });
 }

@@ -196,3 +196,32 @@ export function setupModalCloseButtons() {
 }
 
 // More Shop functions for shop functionality
+
+export async function deleteShop(shopId) {
+  try {
+    console.log('Sending POST request...');
+
+    const response = await fetch(`${baseUrl}/api/shop/${shopId}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Something went wrong');
+    }
+
+    console.log('Shop deleted successfully:', data);
+    showToast('success', `✅ ${data.message}`);
+    checkAndPromptCreateShop(); // Refresh list or update UI
+
+    return data;
+  } catch (error) {
+    console.error('Error deleting Shop', error);
+    showToast('error', '❌ Failed to delete Shop');
+    throw error;
+  }
+}
