@@ -33,6 +33,7 @@ export function populateStaffTable(staffData = []) {
   }
 
   staffData.forEach((staff, index) => {
+    console.log(staff);
     const row = document.createElement('tr');
     row.classList.add('table-body-row');
 
