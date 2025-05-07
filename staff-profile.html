@@ -150,8 +150,9 @@
                         <th class="py-1">S/N</th>
                         <th class="py-1">Staff Name</th>
                         <th class="py-1">Staff Number</th>
-                        <th class="py-1">Guarantor</th>
-                        <th class="py-1">Guarantor Number</th>
+                        <th class="py-1">Staff Email</th>
+                        <th class="py-1">Account Type</th>
+                        <th class="py-1">Service Permission</th>
                         <th class="py-1">Action</th>
                      </tr>
                   </thead>
@@ -235,7 +236,7 @@
 
          <!-- Last Name -->
          <div class="addUser-form_input">
-            <label for="staffLastName">LastName Name</label>
+            <label for="staffLastName">Last Name</label>
 
             <input id="staffLastName" type="text" placeholder="Enter LastName" name="staffLastName" required>
          </div>
@@ -467,7 +468,7 @@
 
          <!-- Last Name -->
          <div class="addUser-form_input">
-            <label for="updateStaffLastName">LastName Name</label>
+            <label for="updateStaffLastName">Last Name</label>
 
             <input id="updateStaffLastName" type="text" placeholder="Enter LastName" name="updateStaffLastName">
          </div>
@@ -572,6 +573,19 @@
       return `${name}${number}@${domain}`;
    }
 
+   document.getElementById('staffEmail').value = generateRandomEmail();
+
+   function generateRandomState() {
+      const states = ['Delta', 'Edo', 'Rivers', 'Lagos'];
+
+      const state = states[Math.floor(Math.random() * states.length)];
+
+      return `${state}`;
+
+   }
+
+   document.getElementById('staffStateOfOrigin').value = generateRandomState();
+
    function generateRandomAddress() {
       const streets = ['Ovie', 'Abank', 'Owogo', 'Peter Odia', 'Odia', 'Okolo'];
       const towns = ['Ozoro', 'Oleh', 'Agbarho', 'Irri'];
@@ -584,11 +598,12 @@
    }
 
    document.getElementById('staffAddress').value = generateRandomAddress();
+
    // document.getElementById('updateStaffAddress').value = generateRandomAddress();
    document.getElementById('staffGuarantorAddress').value = generateRandomAddress();
 
    function generateRandomName() {
-      const names = ['john', 'favour', 'mitch', 'amaka', 'felix', 'blessing', 'ochuko'];
+      const names = ['John', 'Favour', 'Mitch', 'Amaka', 'Felix', 'Blessing', 'Ochuko'];
 
 
       const name = names[Math.floor(Math.random() * names.length)];

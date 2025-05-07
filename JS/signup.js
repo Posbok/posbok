@@ -1,3 +1,4 @@
+import { parse } from 'postcss';
 import { fetchBusinessDetails } from './apiServices/business/businessResource';
 import { registerAdmin, registerBusiness } from './apiServices/registration';
 import {
@@ -129,9 +130,15 @@ if (signupForm) {
     }
   });
 
-  const businessData = await fetchBusinessDetails();
-  const businessId = businessData.data.id;
-  const businessType = businessData.data.business_type;
+  const businessData = localStorage.getItem('businessData');
+  const parseBusinessData = JSON.parse(businessData);
+
+  const businessId = parseBusinessData.data.id;
+  parseBusinessData
+    ? (document.querySelector(
+        '.adminBusinessName'
+      ).textContent = `Admin Account Creation (${parseBusinessData.data.business_name})`)
+    : nul`Admin Account Creation `;
 
   signupForm.addEventListener('submit', function (e) {
     e.preventDefault();
@@ -155,11 +162,11 @@ if (signupForm) {
     const email = document.getElementById('email').value;
     const phoneNumber = document.getElementById('phoneNumber').value;
     const password = document.getElementById('password').value;
-    const guarantorName = document.getElementById('guarantorName').value;
-    const guarantorPhoneNumber = document.getElementById(
-      'guarantorPhoneNumber'
-    ).value;
-    const guarantorAddress = document.getElementById('guarantorAddress').value;
+    //  const guarantorName = document.getElementById('guarantorName').value;
+    //  const guarantorPhoneNumber = document.getElementById(
+    //    'guarantorPhoneNumber'
+    //  ).value;
+    //  const guarantorAddress = document.getElementById('guarantorAddress').value;
 
     const adminDetails = {
       businessId: Number(businessId),
@@ -172,11 +179,11 @@ if (signupForm) {
       email,
       phoneNumber,
       password,
-      guarantor: {
-        name: guarantorName,
-        phoneNumber: guarantorPhoneNumber,
-        address: guarantorAddress,
-      },
+      // guarantor: {
+      //   name: guarantorName,
+      //   phoneNumber: guarantorPhoneNumber,
+      //   address: guarantorAddress,
+      // },
       accountType: 'ADMIN',
       servicePermission: 'BOTH',
     };

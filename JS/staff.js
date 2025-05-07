@@ -41,14 +41,10 @@ export function populateStaffTable(staffData = []) {
         <td class="py-1 staffSerialNumber">${index + 1}</td>
         <td class="py-1 staffName">${staff.firstName} ${staff.lastName}</td>
         <td class="py-1 staffPhoneNumber">${staff.phoneNumber}</td>
-        <td class="py-1 staffGuarantorName">${
-          //  staff.guarantor.name ? staff.guarantor.name : '—'
-          '-'
-        }</td>
-        <td class="py-1 staffGuarantorPhoneNumber">${
-          //  staff.guarantor.phoneNumber ? staff.guarantor.phoneNumber : '—'
-          '-'
-        }</td>
+        <td class="py-1 staffEmail">${staff.email}
+          </td>
+        <td class="py-1 staffAccountType">${staff.accountType}</td>
+        <td class="py-1 staffServicePermission">${staff.servicePermission}</td>
         <td class="py-1 action-buttons">
           <button class="hero-btn-outline editStaffButton" data-staff-id="${
             staff.id

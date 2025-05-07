@@ -2,13 +2,14 @@ import config from '../../../config.js';
 import { closeModal, showToast } from '../../script.js';
 import { populateShopsTable } from '../../shops.js';
 import { populateShopDropdown } from '../../staff.js';
+import { fetchBusinessDetails } from '../business/businessResource.js';
 import { safeFetch } from '../utility/safeFetch.js';
 
 const baseUrl = config.baseUrl;
 const userToken = config.token;
 const userData = config.userData;
 
-const parsedUserData = userData ? JSON.parse(userData) : null;
+// const parsedUserData = userData ? JSON.parse(userData) : null;
 
 const urlParams = new URLSearchParams(window.location.search);
 const preselectedShopId = urlParams.get('shopId');
@@ -27,7 +28,7 @@ export async function createShop(shopDetails) {
     });
 
     if (fetchedData) {
-      console.log('Shop created successfully:', fetchedData);
+      // console.log('Shop created successfully:', fetchedData);
       showToast('success', `✅ ${fetchedData.message}`);
       checkAndPromptCreateShop(); // Refresh the shop list after creation
     }
@@ -65,8 +66,8 @@ export async function createShop(shopDetails) {
 // The functions below are used to check if the user has a shop and prompt them to creat one if they don't - checkAndPromptCreateShop, openCreateShopModal, setupCreateShopForm, and setupModalCloseButtons
 
 export async function checkAndPromptCreateShop() {
+  const tbody = document.querySelector('.shops-table tbody');
   function showLoadingRow() {
-    const tbody = document.querySelector('.shops-table tbody');
     if (tbody)
       tbody.innerHTML = `
    <tr class="loading-row">
@@ -78,33 +79,63 @@ export async function checkAndPromptCreateShop() {
   showLoadingRow();
 
   try {
-    const response = await fetch(`${baseUrl}/api/shop`, {
+    const businessData = await fetchBusinessDetails();
+    const businessId = businessData?.data?.id;
+
+    if (!businessId) throw new Error('Business ID not found');
+
+    const fetchedData = await safeFetch(`${baseUrl}/api/shop`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${userToken}`,
       },
     });
 
-    const data = await response.json();
+    //  console.log('fetchedData', fetchedData);
 
-    const userShops = data.data.filter(
-      (shop) => shop.business_id === parsedUserData.businessId
-    );
+    if (fetchedData) {
+      const userShops = fetchedData.data.filter(
+        (shop) => shop.business_id === businessId
+      );
 
-    populateShopsTable(userShops);
-    populateShopDropdown(userShops, Number(preselectedShopId));
+      // Get staff data for each shop in parallel
+      const enrichedShopData = await Promise.all(
+        userShops.map(async (shop) => {
+          const staffResponse = await safeFetch(
+            `${baseUrl}/api/shop/${shop.id}/staff`,
+            {
+              method: 'GET',
+              headers: {
+                Authorization: `Bearer ${userToken}`,
+              },
+            }
+          );
 
-    //  console.log('checkAndPromptCreateShop data', userShops);
+          const staffList = staffResponse?.data || [];
+          const staffNames = staffList
+            .map(
+              (staff, i) => `${i + 1}. ${staff.first_name} ${staff.last_name}`
+            )
+            .join('<br>');
 
-    if (userShops.length === 0) {
-      openCreateShopModal();
+          return {
+            ...shop,
+            manager_name: staffNames || '—',
+          };
+        })
+      );
+
+      populateShopsTable(enrichedShopData);
+      populateShopDropdown(enrichedShopData, Number(preselectedShopId));
+
+      //  console.log('checkAndPromptCreateShop data', enrichedShopData);
+
+      if (enrichedShopData.length === 0) {
+        openCreateShopModal();
+      }
     }
 
-    if (!response.ok) {
-      throw new Error(data.message || 'Something went wrong');
-    }
-
-    return data;
+    return fetchedData;
   } catch (error) {
     console.error('Error checking shop:', error.message);
     throw error;
@@ -223,5 +254,26 @@ export async function deleteShop(shopId) {
     console.error('Error deleting Shop', error);
     showToast('error', '❌ Failed to delete Shop');
     throw error;
+  }
+}
+
+export async function getShopStaff(shopId) {
+  // console.log('Fetching shop staff for shopId:', shopId);
+  try {
+    const fetchedData = await safeFetch(`${baseUrl}/api/shop/${shopId}/staff`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
+
+    // If data was fetched successfully, return it
+    if (fetchedData) {
+      return fetchedData.data;
+    }
+    return []; // If no data, return empty array
+  } catch (error) {
+    console.error('Error fetching shop staff:', error);
+    return []; // Return empty array on error
   }
 }

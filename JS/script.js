@@ -328,8 +328,8 @@ if (userData) {
 const isAdmin = parsedUserData?.accountType === 'ADMIN';
 
 if (isAdmin) {
-  // JS to Check and prompt cretae shop & staff
   document.addEventListener('DOMContentLoaded', () => {
+    // Setup for Shops
     setupCreateShopForm();
     setupModalCloseButtons();
     document
@@ -339,11 +339,9 @@ if (isAdmin) {
     if (userData) {
       checkAndPromptCreateShop();
     }
-  });
 
-  document.addEventListener('DOMContentLoaded', () => {
+    // Setup for Staff
     setupCreateStaffForm();
-    setupModalCloseButtons();
     document
       .querySelector('#openStaffModalBtn')
       ?.addEventListener('click', openCreateStaffModal);
@@ -352,6 +350,28 @@ if (isAdmin) {
       checkAndPromptCreateStaff();
     }
   });
+
+  //   // JS to Check and prompt cretae shop & staff
+  //   document.addEventListener('DOMContentLoaded', () => {
+  //     setupCreateShopForm();
+  //     setupModalCloseButtons();
+  //     document
+  //       .querySelector('#openShopModalBtn')
+  //       ?.addEventListener('click', openCreateShopModal);
+  //     if (userData) {
+  //       checkAndPromptCreateShop();
+  //     }
+  //   });
+  //   document.addEventListener('DOMContentLoaded', () => {
+  //     setupCreateStaffForm();
+  //     setupModalCloseButtons();
+  //     document
+  //       .querySelector('#openStaffModalBtn')
+  //       ?.addEventListener('click', openCreateStaffModal);
+  //     if (userData) {
+  //       checkAndPromptCreateStaff();
+  //     }
+  //   });
 }
 
 // function to Use business info to fill in the Create Shop Form

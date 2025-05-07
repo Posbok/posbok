@@ -5,7 +5,8 @@ const userToken = config.token;
 const userData = config.userData;
 
 const parsedUserData = userData ? JSON.parse(userData) : null;
-const businessId = localStorage.getItem('businessId');
+
+const businessId = parsedUserData ? parsedUserData.businessId || null : null; // Get the business ID from user data
 
 export async function fetchBusinessDetails() {
   try {
