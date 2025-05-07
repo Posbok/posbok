@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const balanceCheckbox = document.getElementById('balanceCheckbox');
   const balancePayment = document.querySelector('.balancePayment');
   const balancePaymentInput = document.getElementById('productBalancePrice');
-  const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+  const checkboxes = document.querySelectorAll('input[type="radio"]');
 
   function updateStatus() {
     if (completedCheckbox.checked) {

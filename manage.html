@@ -271,7 +271,6 @@
       </div>
    </form>
 
-
    <form class="modal-form createShopModal" name="modal" netlify>
       <div class="card createShop modal">
          <div>
@@ -282,7 +281,7 @@
          <div class="modal-form_input mb-1">
             <div class="checkbox">
                <div class="checkbox-container">
-                  <input id="useBusinessInfo" type="checkbox" name="useBusinessInfo">
+                  <input id="useBusinessInfo" type="radio" name="useBusinessInfo">
                   <label for="useBusinessInfo">Use my Business Info</label>
                </div>
             </div>
@@ -309,17 +308,17 @@
 
             <div class="checkbox">
                <div class="checkbox-container">
-                  <input id="posShopCheckbox" type="checkbox" name="serviceType" value="POS_TRANSACTIONS">
+                  <input id="posShopCheckbox" type="radio" name="serviceType" value="POS_TRANSACTIONS">
                   <label for="posShopCheckbox">POS</label>
                </div>
 
                <div class="checkbox-container">
-                  <input id="sellShopCheckbox" type="checkbox" name="serviceType" value="INVENTORY_SALES">
+                  <input id="sellShopCheckbox" type="radio" name="serviceType" value="INVENTORY_SALES">
                   <label for="sellShopCheckbox">SELL</label>
                </div>
 
                <div class="checkbox-container">
-                  <input id="posAndSellShopCheckbox" type="checkbox" name="serviceType" value="BOTH">
+                  <input id="posAndSellShopCheckbox" type="radio" name="serviceType" value="BOTH">
                   <label for="posAndSellShopCheckbox">POS & SELL</label>
                </div>
             </div>
@@ -329,7 +328,7 @@
          <div class="modal-form_input mb-1">
             <div class="checkbox">
                <div class="checkbox-container">
-                  <input id="assignStaffCheckbox" type="checkbox" name="assignStaff">
+                  <input id="assignStaffCheckbox" type="radio" name="assignStaff">
                   <label for="assignStaffCheckbox">Assign a staff to this shop after creation</label>
                </div>
             </div>
@@ -337,6 +336,57 @@
 
          <div class="center-button">
             <button class="hero-btn-dark" type="submit">Create SHop</button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+
+   <form class="modal-form adminUpdateShopDataModal" name="modal" netlify>
+      <div class="card adminUpdateShopData modal">
+         <div>
+            <h1 class="heading-text">Update Shop Data</h1>
+         </div>
+
+         <!-- Shop name -->
+         <div class="modal-form_input">
+            <label for="updateShopName">Shop Name</label>
+
+            <input id="updateShopName" type="text" placeholder="Enter Shop Name" name="updateShopName">
+         </div>
+
+         <!-- Shop Address -->
+         <div class="modal-form_input">
+            <label for="updateShopAddress">Shop Address</label>
+
+            <input id="updateShopAddress" type="text" placeholder="Enter Shop Address" name="updateShopAddress">
+         </div>
+
+         <!-- Shop Access Service -->
+         <div class="modal-form_input mb-1">
+            <label for="updateShopAccessType" class="heading-subtext">Access Type</label>
+
+            <div class="checkbox">
+               <div class="checkbox-container mb-1">
+                  <input id="updateShopPosCheckbox" type="radio" name="updateShopAccessType" value="POS_TRANSACTIONS">
+                  <label for="updateShopPosCheckbox">POS</label>
+               </div>
+
+               <div class="checkbox-container mb-1">
+                  <input id="updateShopSellCheckbox" type="radio" name="updateShopAccessType" value="INVENTORY_SALES">
+                  <label for="updateShopSellCheckbox">SELL</label>
+               </div>
+
+               <div class="checkbox-container mb-1">
+                  <input id="updateShopPosAndSellCheckbox" type="radio" name="updateShopAccessType" value="BOTH">
+                  <label for="updateShopPosAndSellCheckbox">POS & SELL</label>
+               </div>
+            </div>
+         </div>
+
+         <div class="center-button">
+            <button class="hero-btn-dark" type="submit">Update Shop Details</button>
          </div>
 
          <div class="close closeModal" id="">&times;</div>

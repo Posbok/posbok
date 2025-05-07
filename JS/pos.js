@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const posPendingCheckbox = document.getElementById('posPendingCheckbox');
   const posRemarksDiv = document.querySelector('.posRemarksDiv');
   const posTransactionRemark = document.getElementById('posTransactionRemark');
-  const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+  const checkboxes = document.querySelectorAll('input[type="radio"]');
 
   function updateStatus() {
     if (posSuccessfulCheckbox.checked) {

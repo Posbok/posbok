@@ -36,7 +36,7 @@ export function populateStaffTable(staffData = []) {
     const row = document.createElement('tr');
     row.classList.add('table-body-row');
 
-    if (row)
+    if (row && staff.accountType === 'STAFF') {
       row.innerHTML = `
         <td class="py-1 staffSerialNumber">${index + 1}</td>
         <td class="py-1 staffName">${staff.firstName} ${staff.lastName}</td>
@@ -58,6 +58,29 @@ export function populateStaffTable(staffData = []) {
           </button>
         </td>
       `;
+    } else {
+      row.innerHTML = `
+    <td class="py-1 staffSerialNumber">${index + 1}</td>
+    <td class="py-1 staffName">${staff.firstName} ${staff.lastName}</td>
+    <td class="py-1 staffPhoneNumber">${staff.phoneNumber}</td>
+    <td class="py-1 staffEmail">${staff.email}
+      </td>
+    <td class="py-1 staffAccountType">${staff.accountType}</td>
+    <td class="py-1 staffServicePermission">${staff.servicePermission}</td>
+    <td class="py-1 action-buttons">
+      <button class="hero-btn-outline editStaffButton" disabled data-staff-id="${
+        staff.id
+      }">
+        <i class="fa-solid fa-pen-to-square"></i>
+      </button>
+      <button class="hero-btn-outline deleteStaffButton" disabled data-staff-id="${
+        staff.id
+      }">
+        <i class="fa-solid fa-trash-can"></i>
+      </button>
+    </td>
+  `;
+    }
 
     if (tbody) tbody.appendChild(row);
 
@@ -94,8 +117,6 @@ export function populateStaffTable(staffData = []) {
   });
 }
 
-function populateUpdateModalFields(user) {}
-
 export function populateShopDropdown(shopList = [], preselectedShopId = '') {
   const dropdown = document.getElementById('shopDropdown');
   if (!dropdown) return;
@@ -126,7 +147,7 @@ export function populateShopDropdown(shopList = [], preselectedShopId = '') {
 export function setupUpdateStaffForm(user) {
   const form = document.querySelector('.adminUpdateUserDataModal');
 
-  //   if (!form || form.dataset.bound === 'true') return;
+  if (!form || form.dataset.bound === 'true') return;
 
   form.dataset.bound = 'true';
 

@@ -3,7 +3,7 @@
 // document.addEventListener('DOMContentLoaded', function () {
 //   const successfulCheckbox = document.getElementById('successfulCheckbox');
 //   const unSuccessfulCheckbox = document.getElementById('unSuccessfulCheckbox');
-//   const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+//   const checkboxes = document.querySelectorAll('input[type="radio"]');
 
 //   function updateStatus() {
 //     if (successfulCheckbox.checked) {

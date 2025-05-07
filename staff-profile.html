@@ -367,17 +367,17 @@
 
             <div class="checkbox">
                <div class="checkbox-container mb-1">
-                  <input id="staffPosCheckbox" type="checkbox" name="accessType" value="POS_TRANSACTIONS">
+                  <input id="staffPosCheckbox" type="radio" name="accessType" value="POS_TRANSACTIONS">
                   <label for="staffPosCheckbox">POS</label>
                </div>
 
                <div class="checkbox-container mb-1">
-                  <input id="staffSellCheckbox" type="checkbox" name="accessType" value="INVENTORY_SALES">
+                  <input id="staffSellCheckbox" type="radio" name="accessType" value="INVENTORY_SALES">
                   <label for="staffSellCheckbox">SELL</label>
                </div>
 
                <div class="checkbox-container mb-1">
-                  <input id="staffPosAndSellCheckbox" type="checkbox" name="accessType" value="BOTH">
+                  <input id="staffPosAndSellCheckbox" type="radio" name="accessType" value="BOTH">
                   <label for="staffPosAndSellCheckbox">POS & SELL</label>
                </div>
             </div>
@@ -391,7 +391,6 @@
       </div>
    </form>
 
-
    <form class="modal-form createShopModal" name="modal" netlify>
       <div class="card createShop modal">
          <div>
@@ -402,7 +401,7 @@
          <div class="modal-form_input mb-1">
             <div class="checkbox">
                <div class="checkbox-container">
-                  <input id="useBusinessInfo" type="checkbox" name="useBusinessInfo">
+                  <input id="useBusinessInfo" type="radio" name="useBusinessInfo">
                   <label for="useBusinessInfo">Use my Business Info</label>
                </div>
             </div>
@@ -429,17 +428,17 @@
 
             <div class="checkbox">
                <div class="checkbox-container">
-                  <input id="posShopCheckbox" type="checkbox" name="serviceType" value="POS_TRANSACTIONS">
+                  <input id="posShopCheckbox" type="radio" name="serviceType" value="POS_TRANSACTIONS">
                   <label for="posShopCheckbox">POS</label>
                </div>
 
                <div class="checkbox-container">
-                  <input id="sellShopCheckbox" type="checkbox" name="serviceType" value="INVENTORY_SALES">
+                  <input id="sellShopCheckbox" type="radio" name="serviceType" value="INVENTORY_SALES">
                   <label for="sellShopCheckbox">SELL</label>
                </div>
 
                <div class="checkbox-container">
-                  <input id="posAndSellShopCheckbox" type="checkbox" name="serviceType" value="BOTH">
+                  <input id="posAndSellShopCheckbox" type="radio" name="serviceType" value="BOTH">
                   <label for="posAndSellShopCheckbox">POS & SELL</label>
                </div>
             </div>
@@ -517,19 +516,17 @@
 
             <div class="checkbox">
                <div class="checkbox-container mb-1">
-                  <input id="updateStaffPosCheckbox" type="checkbox" name="updateStaffAccessType"
-                     value="POS_TRANSACTIONS">
+                  <input id="updateStaffPosCheckbox" type="radio" name="updateStaffAccessType" value="POS_TRANSACTIONS">
                   <label for="updateStaffPosCheckbox">POS</label>
                </div>
 
                <div class="checkbox-container mb-1">
-                  <input id="updateStaffSellCheckbox" type="checkbox" name="updateStaffAccessType"
-                     value="INVENTORY_SALES">
+                  <input id="updateStaffSellCheckbox" type="radio" name="updateStaffAccessType" value="INVENTORY_SALES">
                   <label for="updateStaffSellCheckbox">SELL</label>
                </div>
 
                <div class="checkbox-container mb-1">
-                  <input id="updateStaffPosAndSellCheckbox" type="checkbox" name="updateStaffAccessType" value="BOTH">
+                  <input id="updateStaffPosAndSellCheckbox" type="radio" name="updateStaffAccessType" value="BOTH">
                   <label for="updateStaffPosAndSellCheckbox">POS & SELL</label>
                </div>
             </div>
@@ -537,7 +534,7 @@
          <!-- staff Address -->
 
          <div class="center-button">
-            <button class="hero-btn-dark" type="submit">Update User</button>
+            <button class="hero-btn-dark" type="submit">Update User Details</button>
          </div>
 
          <div class="close closeModal" id="">&times;</div>

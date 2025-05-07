@@ -63,6 +63,35 @@ export async function createShop(shopDetails) {
   }
 }
 
+export async function fetchShopDetail(shopId) {
+  try {
+    console.log('Sending POST request...');
+
+    const receivedShopDetail = await safeFetch(
+      `${baseUrl}/api/shop/${shopId}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    console.log('Response received...');
+
+    if (!receivedShopDetail) {
+      console.log('Shop detail NOT received :', receivedShopDetail);
+      // showToast('success', `✅ ${receivedShopDetail.message}`);
+      return;
+    }
+
+    return receivedShopDetail;
+  } catch (error) {
+    console.error('Error creating Admin:', error);
+    throw error;
+  }
+}
+
 // The functions below are used to check if the user has a shop and prompt them to creat one if they don't - checkAndPromptCreateShop, openCreateShopModal, setupCreateShopForm, and setupModalCloseButtons
 
 export async function checkAndPromptCreateShop() {
@@ -125,6 +154,8 @@ export async function checkAndPromptCreateShop() {
         })
       );
 
+      // console.log(enrichedShopData);
+
       populateShopsTable(enrichedShopData);
       populateShopDropdown(enrichedShopData, Number(preselectedShopId));
 
@@ -148,6 +179,16 @@ export function openCreateShopModal() {
   const createShopContainer = document.querySelector('.createShop');
 
   if (createShopContainer) createShopContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
+export function openUpdateShopModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const updateShopContainer = document.querySelector('.adminUpdateShopData');
+
+  if (updateShopContainer) updateShopContainer.classList.add('active');
   if (main) main.classList.add('blur');
   if (sidebar) sidebar.classList.add('blur');
 }
@@ -214,12 +255,14 @@ export function setupCreateShopForm() {
 export function setupModalCloseButtons() {
   const closeModalButtons = document.querySelectorAll('.closeModal');
   const createShopContainer = document.querySelector('.createShop');
+  const updateShopContainer = document.querySelector('.adminUpdateShopData');
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
 
   closeModalButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
       if (createShopContainer) createShopContainer.classList.remove('active');
+      if (updateShopContainer) updateShopContainer.classList.remove('active');
       if (main) main.classList.remove('blur');
       if (sidebar) sidebar.classList.remove('blur');
     });
@@ -275,5 +318,32 @@ export async function getShopStaff(shopId) {
   } catch (error) {
     console.error('Error fetching shop staff:', error);
     return []; // Return empty array on error
+  }
+}
+
+export async function updateShop(shop_id, shopUpdatedDetails) {
+  try {
+    console.log('Sending POST request...');
+
+    const updateShopData = await safeFetch(`${baseUrl}/api/shop/${shop_id}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(shopUpdatedDetails),
+    });
+
+    if (updateShopData) {
+      console.log('Shop info Updated successfully:', updateShopData);
+      showToast('success', `✅ ${updateShopData.message}`);
+      checkAndPromptCreateShop(); // Refresh list or update UI
+    }
+
+    return updateShopData;
+  } catch (error) {
+    console.error('Error Updating Shop Info', error);
+    showToast('error', '❌ Failed to Update Shop info');
+    throw error;
   }
 }

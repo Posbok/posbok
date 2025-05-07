@@ -409,7 +409,8 @@ select {
     display: flex;
     gap: .5rem;
     align-items: center; }
-    .checkbox-container input[type="checkbox"] {
+    .checkbox-container input[type="checkbox"],
+    .checkbox-container input[type="radio"] {
       appearance: none;
       -webkit-appearance: none;
       -moz-appearance: none;
@@ -599,7 +600,8 @@ select {
   margin-top: 0rem; }
   .signup-form_input label {
     width: 22rem; }
-  .signup-form_input .checkbox-container input[type="checkbox"] {
+  .signup-form_input .checkbox-container input[type="checkbox"],
+  .signup-form_input .checkbox-container input[type="radio"] {
     width: max-content;
     margin: 0; }
 
@@ -617,6 +619,23 @@ select {
     width: 100%; }
   .addUser-form_input .double-input input {
     width: 80%; }
+
+button:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  border-color: #aaa;
+  opacity: 0.6;
+  pointer-events: none;
+  transition: none; }
+
+button:disabled i {
+  color: #888; }
+
+button:disabled:hover {
+  transform: none;
+  box-shadow: none;
+  background-color: #ccc; }
 
 .hero-btn-dark,
 .hero-btn-light,
