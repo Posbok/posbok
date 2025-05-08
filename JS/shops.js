@@ -28,13 +28,24 @@ export function populateShopsTable(shopData = []) {
     const row = document.createElement('tr');
     row.classList.add('table-body-row');
 
+    //  console.log('shop', shop);
+
+    let staffNames = '—';
+    if (Array.isArray(shop.staff)) {
+      staffNames = shop.staff
+        .map((staff, i) => `${i + 1}. ${staff.first_name} ${staff.last_name}`)
+        .join('<br>');
+    } else if (shop.staff) {
+      staffNames = `${shop.staff.first_name} ${shop.staff.last_name}`;
+    }
+
     if (row)
       row.innerHTML = `
         <td class="py-1 shopSerialNumber">${index + 1}</td>
         <td class="py-1 shopName">${shop.shop_name}</td>
         <td class="py-1 shopLocation">${shop.location}</td>
         <td class="py-1 shopServiceType">${shop.service_type}</td>
-        <td class="py-1 shopManager">${shop.manager_name || '—'}</td>
+        <td class="py-1 shopManager">${staffNames || '—'}</td>
         <td class="py-1 action-buttons">
           <button class="hero-btn-outline editShopButton" data-shop-id="${
             shop.id

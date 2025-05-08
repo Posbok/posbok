@@ -135,6 +135,7 @@ export async function checkAndPromptCreateShop() {
       // Get staff data for each shop in parallel
       enrichedShopData = await Promise.all(
         userShops.map(async (shop) => {
+          //  console.log('shop', shop);
           const staffResponse = await safeFetch(
             `${baseUrl}/api/shop/${shop.id}/staff`,
             {
@@ -145,24 +146,36 @@ export async function checkAndPromptCreateShop() {
             }
           );
 
-          const staffList = staffResponse?.data || [];
+          const staff = staffResponse?.data || [];
+          //  const staffList = staffResponse?.data || [];
 
-          //  console.log(staffList);
+          //  console.log('staffList', staffList);
+          //  console.log('staffList', staff);
 
-          const staffNames = staffList
-            .map(
-              (staff, i) => `${i + 1}. ${staff.first_name} ${staff.last_name}`
-            )
-            .join('<br>');
+          //  const staffNames = staffList
+          //    .map(
+          //      (staff, i) => `${i + 1}. ${staff.first_name} ${staff.last_name}`
+          //    )
+          //    .join('<br>');
+
+          //  const staffId = staffList.map((staff) => staff.id);
+
+          // Enrich staff with shopId
+          const enrichedStaff = staff.map((staffMember) => ({
+            ...staffMember,
+            shopId: shop.id, // Add the shopId to each staff member
+          }));
 
           return {
             ...shop,
-            manager_name: staffNames || '—',
+            staff: enrichedStaff,
+            // manager_name: staffNames || '—',
+            // staffId: staffId,
           };
         })
       );
 
-      // console.log('enrichedShopData ssss', enrichedShopData);
+      // console.log('ShopResources.js enrichedShopData', enrichedShopData);
 
       populateShopsTable(enrichedShopData);
       populateShopDropdown(enrichedShopData, Number(preselectedShopId));

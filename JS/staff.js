@@ -34,8 +34,8 @@ window.addEventListener('DOMContentLoaded', async () => {
     enrichedShopData = data.enrichedShopData;
     businessId = data.businessId;
 
-    console.log('Shops loaded:', userShops);
-    console.log('enrichedShopData loaded:', enrichedShopData);
+    //  console.log('Shops loaded:', userShops);
+    //  console.log('enrichedShopData loaded:', enrichedShopData);
 
     // ✅ Now that data is available, call populateStaffTable here
     //  populateStaffTable();
@@ -46,14 +46,32 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-export function populateStaffTable(staffData = []) {
+export function populateStaffTable(staffData = [], enrichedShopData = []) {
   const tbody = document.querySelector('.staff-table tbody');
   const loadingRow = document.querySelector('.loading-row');
 
-  //   console.log('Shops loaded:', userShops);
+  //   console.log('staffData loaded:', staffData);
   //   console.log('enrichedShopData loaded:', enrichedShopData);
 
   // Remove static rows and loading
+
+  let staffShopName = 'Unassigned';
+
+  enrichedShopData.forEach((shop) => {
+    staffData.forEach((staffData) => {
+      if (shop.staff) {
+        const staff = shop.staff.find(
+          (staffMember) => staffMember.id === staffData.id
+        );
+        if (staff) {
+          staffShopName = `${shop.shop_name}`;
+          staffData.shop_name = staffShopName; // Add shop name to staff data
+        }
+      } else {
+        staffData.shop_name = 'No Shop ID'; // Default value if no shop found
+      }
+    });
+  });
 
   if (tbody) tbody.innerHTML = '';
 
@@ -108,7 +126,7 @@ export function populateStaffTable(staffData = []) {
       </td>
     <td class="py-1 staffAccountType">${staff.accountType}</td>
     <td class="py-1 staffServicePermission">${staff.servicePermission}</td>
-       <td class="py-1 staffshop">${staff.shop_name || '-'}</td>
+       <td class="py-1 staffshop">ADMIN</td>
     <td class="py-1 action-buttons">
       <button class="hero-btn-outline editStaffButton" disabled data-staff-id="${
         staff.id
@@ -175,6 +193,8 @@ export function populateStaffTable(staffData = []) {
         // Fetch staff detail
         const staffDetail = await fetchStaffDetail(staffId);
 
+        //   console.log(staffDetail.data.user);
+
         // Call function to prefill modal inputs
         if (staffDetail?.data?.user) {
           openManageStaffModal(); // Show modal after data is ready
@@ -236,6 +256,8 @@ export function populateShopDropdown(shopList = [], preselectedShopId = '') {
 
 export function setupUpdateStaffForm(user) {
   const form = document.querySelector('.adminUpdateUserDataModal');
+
+  //   console.log('Clicked user data passed to this function', user);
 
   if (!form || form.dataset.bound === 'true') return;
 
@@ -329,16 +351,28 @@ export async function setupManageStaffForm(user) {
   const form = document.querySelector('.staffManage');
   if (!form) return;
 
+  //   console.log('Clicked user data passed to this function', user);
+
   form.dataset.staffId = user.id; // Store the ID to use during submission
 
   document.getElementById('staffManage-name').innerText =
     ` ${user.firstName} ${user.lastName}` || '';
 
   // Find current assigned shop
-  const currentShop = enrichedShopData.find((shop) => shop.id === user.shop_id); // assumes user has `shop_id`
+  //   const currentShop = enrichedShopData.find(
+  //     (shop) => shop.id === shop.staff.shopId && user.id === shop.staff.id
+  //   );
+
+  const currentShop = enrichedShopData.find((shop) =>
+    shop.staff.some(
+      (staffMember) =>
+        staffMember.id === user.id && staffMember.shopId === shop.id
+    )
+  );
+
   const currentAssignedShop = document.getElementById('currentAssignedShop');
 
-  console.log(currentShop);
+  //   console.log(currentShop);
 
   if (currentAssignedShop) {
     currentAssignedShop.innerText = currentShop
@@ -364,7 +398,7 @@ export async function setupManageStaffForm(user) {
         staffManageShopDropdown: staffManageShopDropdown,
       };
 
-      console.log('📦 Staff Store Details:', staffUpdatedDetails);
+      // console.log('📦 Staff Store Details:', staffUpdatedDetails);
 
       // try {
       //   const data = await updateUser(user.id, staffUpdatedDetails);

@@ -3,6 +3,7 @@ import { clearFormInputs } from '../../helper/helper.js';
 import { closeModal, showToast } from '../../script.js';
 import { populateStaffTable } from '../../staff.js';
 import { fetchBusinessDetails } from '../business/businessResource.js';
+import { checkAndPromptCreateShop } from '../shop/shopResource.js';
 import { safeFetch } from '../utility/safeFetch.js';
 
 const baseUrl = config.baseUrl;
@@ -15,6 +16,30 @@ const params = new URLSearchParams(window.location.search);
 const shopId = params.get('shopId');
 const from = params.get('from');
 const isStaffProfilePage = window.location.href.includes('staff-profile');
+
+let enrichedShopData = [];
+
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const shopData = await checkAndPromptCreateShop();
+
+    // Assign to outer variables
+
+    //  enrichedShopData = shopData.enrichedShopData;
+
+    //  await checkAndPromptCreateStaff();
+
+    //  console.log('Shops loaded:', userShops);
+    //  console.log('enrichedShopData loaded:', enrichedShopData);
+
+    // ✅ Now that data is available, call populateStaffTable here
+    //  populateStaffTable();
+
+    // Now you can safely call functions below that depend on them
+  } catch (err) {
+    console.error('Failed to load shop data:', err.message);
+  }
+});
 
 export async function createStaff(staffDetails) {
   try {
@@ -65,7 +90,7 @@ export async function fetchStaffDetail(staffId) {
       return;
     }
 
-    console.log('Staff detail received successfully:', receivedStaffDetail);
+    //  console.log('Staff detail received successfully:', receivedStaffDetail);
 
     return receivedStaffDetail;
   } catch (error) {
@@ -146,7 +171,12 @@ export async function checkAndPromptCreateStaff() {
 
   showLoadingRow();
 
+  //   console.log('enrichedShopData', enrichedShopData);
+
   try {
+    const { enrichedShopData: loadedShops } = await checkAndPromptCreateShop();
+    enrichedShopData = loadedShops;
+
     const response = await fetch(`${baseUrl}/api/users?page=1&limit=10`, {
       method: 'GET',
       headers: {
@@ -180,7 +210,9 @@ export async function checkAndPromptCreateStaff() {
 
     // Populate the table with all business staff
     //  console.log('allStaffs', allStaffs);
-    populateStaffTable(allStaffs);
+    //  console.log('enrichedShopData', enrichedShopData);
+
+    populateStaffTable(allStaffs, enrichedShopData);
 
     if (!response.ok) {
       throw new Error(data.message || 'Something went wrong');
