@@ -153,6 +153,7 @@
                         <th class="py-1">Staff Email</th>
                         <th class="py-1">Account Type</th>
                         <th class="py-1">Service Permission</th>
+                        <th class="py-1">Shop</th>
                         <th class="py-1">Action</th>
                      </tr>
                   </thead>
@@ -535,6 +536,46 @@
 
          <div class="center-button">
             <button class="hero-btn-dark" type="submit">Update User Details</button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <form class="modal-form staffManageModal" name="modal" netlify>
+      <div class="card staffManage modal ">
+         <div>
+            <h1 class="heading-text">Manage Shop for <span id="staffManage-name">John Doe</span></h1>
+         </div>
+
+         <!-- Current name -->
+         <div class="">
+            <label for="staffManageCurrentShop">Current Shop: </label>
+            <h2 class="heading-subtext" id="currentAssignedShop">Shop A</h2>
+         </div>
+
+         <!-- Assign to shop -->
+         <div class="modal-form_input">
+            <label for="staffManageShopDropdown">Assign New shop</label>
+
+            <select id="staffManageShopDropdown" class="form-control">
+               <option value="">Select a shop</option>
+               <option value="1">Shop A</option>
+               <option value="2">Shop B</option>
+               <option value="3">Shop C</option>
+               <!-- Add Main shops dynamically -->
+            </select>
+         </div>
+
+         <div class="btn-container">
+
+            <div class="center-button">
+               <button class="hero-btn-danger">Remove from shop</button>
+            </div>
+
+            <div class="center-button">
+               <button class="hero-btn-dark">Assign New SHop</button>
+            </div>
          </div>
 
          <div class="close closeModal" id="">&times;</div>

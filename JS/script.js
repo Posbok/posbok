@@ -89,6 +89,7 @@ export function closeModal() {
   const addUser = document.querySelector('.addUser');
   const adminUpdateUserData = document.querySelector('.adminUpdateUserData');
   const adminUpdateShopData = document.querySelector('.adminUpdateShopData');
+  const staffManage = document.querySelector('.staffManage');
 
   if (depositPosCapitalContainer) {
     depositPosCapitalContainer.classList.remove('active');
@@ -110,6 +111,11 @@ export function closeModal() {
   if (adminUpdateShopData) {
     adminUpdateShopData.classList.remove('active');
     delete adminUpdateShopData.dataset.staffId;
+  }
+
+  if (staffManage) {
+    staffManage.classList.remove('active');
+    delete staffManage.dataset.staffId;
   }
 
   clearFormInputs();

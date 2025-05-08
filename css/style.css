@@ -584,12 +584,19 @@ select {
     width: 100%; }
 
 .addProduct .hero-btn-dark,
+.addProduct .hero-btn-danger,
 .sellProduct .hero-btn-dark,
+.sellProduct .hero-btn-danger,
 .updateProduct .hero-btn-dark,
+.updateProduct .hero-btn-danger,
 .depositPosCapital .hero-btn-dark,
+.depositPosCapital .hero-btn-danger,
 .modal .hero-btn-dark,
+.modal .hero-btn-danger,
 .signup .hero-btn-dark,
-.addUser .hero-btn-dark {
+.signup .hero-btn-danger,
+.addUser .hero-btn-dark,
+.addUser .hero-btn-danger {
   display: inline;
   margin-top: 3rem;
   align-self: center;
@@ -641,6 +648,7 @@ button:disabled:hover {
 .hero-btn-light,
 .hero-btn-outline,
 .hero-btn-dark_square,
+.hero-btn-danger,
 .deposit-btn {
   position: relative;
   background-color: #0F7A89;
@@ -661,6 +669,7 @@ button:disabled:hover {
   .hero-btn-light:not(:last-child),
   .hero-btn-outline:not(:last-child),
   .hero-btn-dark_square:not(:last-child),
+  .hero-btn-danger:not(:last-child),
   .deposit-btn:not(:last-child) {
     margin-right: 1.5rem; }
     @media only screen and (max-width: 75em) {
@@ -668,12 +677,14 @@ button:disabled:hover {
       .hero-btn-light:not(:last-child),
       .hero-btn-outline:not(:last-child),
       .hero-btn-dark_square:not(:last-child),
+      .hero-btn-danger:not(:last-child),
       .deposit-btn:not(:last-child) {
         margin-bottom: 1.5rem; } }
   .hero-btn-dark:hover,
   .hero-btn-light:hover,
   .hero-btn-outline:hover,
   .hero-btn-dark_square:hover,
+  .hero-btn-danger:hover,
   .deposit-btn:hover {
     transform: scale(1.03);
     box-shadow: inset 0 0 0 2px #51cf66; }
@@ -681,6 +692,7 @@ button:disabled:hover {
   .hero-btn-light:active,
   .hero-btn-outline:active,
   .hero-btn-dark_square:active,
+  .hero-btn-danger:active,
   .deposit-btn:active {
     transform: scale(1);
     background-color: #0F7A89; }
@@ -688,6 +700,7 @@ button:disabled:hover {
   .hero-btn-light .button-link,
   .hero-btn-outline .button-link,
   .hero-btn-dark_square .button-link,
+  .hero-btn-danger .button-link,
   .deposit-btn .button-link {
     position: absolute;
     top: 0;
@@ -699,6 +712,9 @@ button:disabled:hover {
     justify-content: center;
     color: inherit;
     text-decoration: none; }
+
+.hero-btn-danger {
+  background-color: #ec1a23; }
 
 .hero-btn-outline {
   color: #fff;
@@ -1164,6 +1180,11 @@ body.authentication {
         color: inherit;
         background: linear-gradient(to bottom, #fff, #eef1f6);
         margin-bottom: 0; }
+  .modal .btn-container {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem; }
 
 .main.blur,
 .sidebar.blur {

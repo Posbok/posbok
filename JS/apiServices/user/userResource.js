@@ -61,10 +61,11 @@ export async function fetchStaffDetail(staffId) {
     //  console.log('Response received...');
 
     if (!receivedStaffDetail) {
-      // console.log('Staff detail received successfully:', receivedStaffDetail);
-      // showToast('success', `✅ ${receivedStaffDetail.message}`);
+      // showToast('fail', `✅ ${receivedStaffDetail.message}`);
       return;
     }
+
+    console.log('Staff detail received successfully:', receivedStaffDetail);
 
     return receivedStaffDetail;
   } catch (error) {
@@ -72,6 +73,63 @@ export async function fetchStaffDetail(staffId) {
     throw error;
   }
 }
+
+// export async function fetchAndDisplayAllShopStaff() {
+//   try {
+//     const businessData = await fetchBusinessDetails();
+//     const businessId = businessData?.data?.id;
+
+//     if (!businessId) throw new Error('Business ID not found');
+
+//     const fetchedShops = await safeFetch(`${baseUrl}/api/shop`, {
+//       method: 'GET',
+//       headers: {
+//         Authorization: `Bearer ${userToken}`,
+//       },
+//     });
+
+//     if (!fetchedShops || !fetchedShops.data) return;
+
+//     const userShops = fetchedShops.data.filter(
+//       (shop) => shop.business_id === businessId
+//     );
+
+//     // Fetch staff for each shop and attach shopId
+//     const allStaffWithShopId = [];
+
+//     for (const shop of userShops) {
+//       const staffResponse = await safeFetch(
+//         `${baseUrl}/api/shop/${shop.id}/staff`,
+//         {
+//           method: 'GET',
+//           headers: {
+//             Authorization: `Bearer ${userToken}`,
+//           },
+//         }
+//       );
+
+//       const staffList = staffResponse?.data || [];
+
+//       const enrichedStaff = staffList.map((staff) => ({
+//         ...staff,
+//         shopId: shop.id,
+//         shopName: shop.shop_name,
+//       }));
+
+//       allStaffWithShopId.push(...enrichedStaff);
+//     }
+
+//     console.log('allStaffWithShopId', allStaffWithShopId);
+
+//     // Display the enriched staff list in the staff table
+//     populateStaffTable(allStaffWithShopId);
+//   } catch (error) {
+//     console.error('Error fetching staff across shops:', error.message);
+//     throw error;
+//   }
+// }
+
+// fetchAndDisplayAllShopStaff();
 
 // The functions below are used to check if the user has a Staff and prompt them to creat one if they don't - checkAndPromptCreateStaff, openCreateStaffModal, setupCreateStaffForm, and setupModalCloseButtons
 
@@ -121,6 +179,7 @@ export async function checkAndPromptCreateStaff() {
     }
 
     // Populate the table with all business staff
+    //  console.log('allStaffs', allStaffs);
     populateStaffTable(allStaffs);
 
     if (!response.ok) {
@@ -190,6 +249,16 @@ export function openUpdateStaffModal() {
   const updateStaffContainer = document.querySelector('.adminUpdateUserData');
 
   if (updateStaffContainer) updateStaffContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
+export function openManageStaffModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const ManageStaffContainer = document.querySelector('.staffManage');
+
+  if (ManageStaffContainer) ManageStaffContainer.classList.add('active');
   if (main) main.classList.add('blur');
   if (sidebar) sidebar.classList.add('blur');
 }

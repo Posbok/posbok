@@ -120,15 +120,20 @@ export async function checkAndPromptCreateShop() {
       },
     });
 
+    let userShops = [];
+    let enrichedShopData = [];
+
     //  console.log('fetchedData', fetchedData);
 
     if (fetchedData) {
-      const userShops = fetchedData.data.filter(
+      userShops = fetchedData.data.filter(
         (shop) => shop.business_id === businessId
       );
 
+      // console.log(userShops);
+
       // Get staff data for each shop in parallel
-      const enrichedShopData = await Promise.all(
+      enrichedShopData = await Promise.all(
         userShops.map(async (shop) => {
           const staffResponse = await safeFetch(
             `${baseUrl}/api/shop/${shop.id}/staff`,
@@ -141,6 +146,9 @@ export async function checkAndPromptCreateShop() {
           );
 
           const staffList = staffResponse?.data || [];
+
+          //  console.log(staffList);
+
           const staffNames = staffList
             .map(
               (staff, i) => `${i + 1}. ${staff.first_name} ${staff.last_name}`
@@ -154,10 +162,11 @@ export async function checkAndPromptCreateShop() {
         })
       );
 
-      // console.log(enrichedShopData);
+      // console.log('enrichedShopData ssss', enrichedShopData);
 
       populateShopsTable(enrichedShopData);
       populateShopDropdown(enrichedShopData, Number(preselectedShopId));
+      // populateUserShop(userShops);
 
       //  console.log('checkAndPromptCreateShop data', enrichedShopData);
 
@@ -166,7 +175,12 @@ export async function checkAndPromptCreateShop() {
       }
     }
 
-    return fetchedData;
+    return {
+      fetchedData,
+      userShops,
+      enrichedShopData,
+      businessId,
+    };
   } catch (error) {
     console.error('Error checking shop:', error.message);
     throw error;

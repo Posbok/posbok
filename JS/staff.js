@@ -1,23 +1,57 @@
 import config from '../config';
 import { fetchBusinessDetails } from './apiServices/business/businessResource';
-import { setupModalCloseButtons } from './apiServices/shop/shopResource';
+import {
+  checkAndPromptCreateShop,
+  setupModalCloseButtons,
+} from './apiServices/shop/shopResource';
 import {
   checkAndPromptCreateStaff,
   createStaff,
   deleteUser,
   fetchStaffDetail,
   openCreateStaffModal,
+  openManageStaffModal,
   openUpdateStaffModal,
   setupCreateStaffForm,
   updateUser,
 } from './apiServices/user/userResource';
+import { safeFetch } from './apiServices/utility/safeFetch';
 import { closeModal, showToast } from './script';
 
 const userData = config.userData;
+const baseUrl = config.baseUrl;
+
+let userShops = [];
+let enrichedShopData = [];
+let businessId = null;
+
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const data = await checkAndPromptCreateShop();
+
+    // Assign to outer variables
+    userShops = data.userShops;
+    enrichedShopData = data.enrichedShopData;
+    businessId = data.businessId;
+
+    console.log('Shops loaded:', userShops);
+    console.log('enrichedShopData loaded:', enrichedShopData);
+
+    // ✅ Now that data is available, call populateStaffTable here
+    //  populateStaffTable();
+
+    // Now you can safely call functions below that depend on them
+  } catch (err) {
+    console.error('Failed to load shop data:', err.message);
+  }
+});
 
 export function populateStaffTable(staffData = []) {
   const tbody = document.querySelector('.staff-table tbody');
   const loadingRow = document.querySelector('.loading-row');
+
+  //   console.log('Shops loaded:', userShops);
+  //   console.log('enrichedShopData loaded:', enrichedShopData);
 
   // Remove static rows and loading
 
@@ -33,7 +67,7 @@ export function populateStaffTable(staffData = []) {
   }
 
   staffData.forEach((staff, index) => {
-    console.log(staff);
+    //  console.log(staff);
     const row = document.createElement('tr');
     row.classList.add('table-body-row');
 
@@ -46,6 +80,7 @@ export function populateStaffTable(staffData = []) {
           </td>
         <td class="py-1 staffAccountType">${staff.accountType}</td>
         <td class="py-1 staffServicePermission">${staff.servicePermission}</td>
+        <td class="py-1 staffshop">${staff.shop_name || 'No Shop ID'}</td>
         <td class="py-1 action-buttons">
           <button class="hero-btn-outline editStaffButton" data-staff-id="${
             staff.id
@@ -57,6 +92,11 @@ export function populateStaffTable(staffData = []) {
           }">
             <i class="fa-solid fa-trash-can"></i>
           </button>
+            <button class="hero-btn-outline manageShopButton" data-staff-id="${
+              staff.id
+            }">
+          <i class="fa-solid fa-shop"></i> <!-- Shop manage icon -->
+        </button>
         </td>
       `;
     } else {
@@ -68,6 +108,7 @@ export function populateStaffTable(staffData = []) {
       </td>
     <td class="py-1 staffAccountType">${staff.accountType}</td>
     <td class="py-1 staffServicePermission">${staff.servicePermission}</td>
+       <td class="py-1 staffshop">${staff.shop_name || '-'}</td>
     <td class="py-1 action-buttons">
       <button class="hero-btn-outline editStaffButton" disabled data-staff-id="${
         staff.id
@@ -79,6 +120,11 @@ export function populateStaffTable(staffData = []) {
       }">
         <i class="fa-solid fa-trash-can"></i>
       </button>
+        <button class="hero-btn-outline manageShopButton" disabled data-staff-id="${
+          staff.id
+        }">
+          <i class="fa-solid fa-shop"></i> <!-- Shop manage icon -->
+        </button>
     </td>
   `;
     }
@@ -115,12 +161,39 @@ export function populateStaffTable(staffData = []) {
         }
       }
     });
+
+    const manageStaffBtn = row.querySelector('.manageShopButton');
+    manageStaffBtn?.addEventListener('click', async () => {
+      const staffId = manageStaffBtn.dataset.staffId;
+
+      const staffManageContainer = document.querySelector('.staffManage');
+
+      if (staffManageContainer) {
+        // Store staffId in modal container for reference
+        staffManageContainer.dataset.staffId = staffId;
+
+        // Fetch staff detail
+        const staffDetail = await fetchStaffDetail(staffId);
+
+        // Call function to prefill modal inputs
+        if (staffDetail?.data?.user) {
+          openManageStaffModal(); // Show modal after data is ready
+          setupManageStaffForm(staffDetail.data.user);
+        } else {
+          showToast('fail', '❌ Failed to fetch staff details.');
+        }
+      }
+    });
   });
 }
 
 export function populateShopDropdown(shopList = [], preselectedShopId = '') {
+  //   console.log('shopList', shopList);
   const dropdown = document.getElementById('shopDropdown');
-  if (!dropdown) return;
+  const staffManageShopDropdown = document.getElementById(
+    'staffManageShopDropdown'
+  );
+  if (!dropdown || !staffManageShopDropdown) return;
 
   dropdown.addEventListener('change', function () {
     const selectedShopId = dropdown.value;
@@ -131,18 +204,34 @@ export function populateShopDropdown(shopList = [], preselectedShopId = '') {
 
   // Clear existing options except the default
   dropdown.innerHTML = `<option value="">Select a shop</option>`;
+  staffManageShopDropdown.innerHTML = `<option value="">Select a shop</option>`;
 
   shopList.forEach((shop) => {
-    const option = document.createElement('option');
-    option.value = shop.id;
-    option.textContent = `${shop.shop_name} - ${shop.location}`; // or `${shop.shop_name} - ${shop.location}` if you want more details
+    const option1 = document.createElement('option');
+    option1.value = shop.id;
+    option1.textContent = `${shop.shop_name} - ${shop.location}`;
+    if (shop.id === preselectedShopId) option1.selected = true;
+    if (dropdown) dropdown.appendChild(option1);
 
-    if (shop.id === preselectedShopId) {
-      option.selected = true;
-    }
-
-    dropdown.appendChild(option);
+    const option2 = document.createElement('option');
+    option2.value = shop.id;
+    option2.textContent = `${shop.shop_name} - ${shop.location}`;
+    if (shop.id === preselectedShopId) option2.selected = true;
+    if (staffManageShopDropdown) staffManageShopDropdown.appendChild(option2);
   });
+
+  //   shopList.forEach((shop) => {
+  //     const option = document.createElement('option');
+  //     option.value = shop.id;
+  //     option.textContent = `${shop.shop_name} - ${shop.location}`; // or `${shop.shop_name} - ${shop.location}` if you want more details
+
+  //     if (shop.id === preselectedShopId) {
+  //       option.selected = true;
+  //     }
+
+  //     if (dropdown) dropdown.appendChild(option);
+  //     if (staffManageShopDropdown) staffManageShopDropdown.appendChild(option);
+  //   });
 }
 
 export function setupUpdateStaffForm(user) {
@@ -161,7 +250,11 @@ export function setupUpdateStaffForm(user) {
   const updateAccessTypeCheckboxes = document.querySelectorAll(
     'input[name="updateStaffAccessType"]'
   );
-  updateAccessTypeCheckboxes.forEach((checkbox) => (checkbox.checked = false));
+
+  if (updateAccessTypeCheckboxes)
+    updateAccessTypeCheckboxes.forEach(
+      (checkbox) => (checkbox.checked = false)
+    );
 
   // Match and check the appropriate checkbox
   const serviceType = user.servicePermission;
@@ -228,6 +321,68 @@ export function setupUpdateStaffForm(user) {
         // err.message will contain the "Email already in use"
         showToast('fail', `❎ ${err.message}`);
       }
+    });
+  }
+}
+
+export async function setupManageStaffForm(user) {
+  const form = document.querySelector('.staffManage');
+  if (!form) return;
+
+  form.dataset.staffId = user.id; // Store the ID to use during submission
+
+  document.getElementById('staffManage-name').innerText =
+    ` ${user.firstName} ${user.lastName}` || '';
+
+  // Find current assigned shop
+  const currentShop = enrichedShopData.find((shop) => shop.id === user.shop_id); // assumes user has `shop_id`
+  const currentAssignedShop = document.getElementById('currentAssignedShop');
+
+  console.log(currentShop);
+
+  if (currentAssignedShop) {
+    currentAssignedShop.innerText = currentShop
+      ? `${currentShop.shop_name} - ${currentShop.location}`
+      : 'No Shop Assigned';
+  }
+
+  // Populate the shop dropdown (for reassignment)
+  //   populateShopDropdown(enrichedShopData, user.shop_id);
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const currentShopDisplay = document.querySelector(
+        '#currentAssignedShop'
+      ).value;
+      const staffManageShopDropdown = document.querySelector(
+        '#staffManageShopDropdown'
+      ).value;
+
+      const staffUpdatedDetails = {
+        staffManageShopDropdown: staffManageShopDropdown,
+      };
+
+      console.log('📦 Staff Store Details:', staffUpdatedDetails);
+
+      // try {
+      //   const data = await updateUser(user.id, staffUpdatedDetails);
+
+      //   if (data) {
+      //     closeModal();
+      //   }
+
+      //   //   if (!data || !data.data || !data.data.user) {
+      //   //     //  showToast('fail', `❎ Failed to register staff.`);
+      //   //     return;
+      //   //   }
+      // } catch (err) {
+      //   // err.message will contain the "Email already in use"
+      //   showToast('fail', `❎ ${err.message}`);
+      // }
+
+      return;
     });
   }
 }
