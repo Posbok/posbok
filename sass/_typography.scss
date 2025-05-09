@@ -401,7 +401,7 @@ button:disabled:hover {
 .hero-btn-outline,
 .hero-btn-dark_square,
 .hero-btn-danger,
-.deposit-btn {
+.depositPosCapitalBtn {
    position: relative;
    background-color: $color-grey-dark-1;
    color: $color-grey-light-1;
@@ -466,7 +466,7 @@ button:disabled:hover {
    }
 }
 
-.deposit-btn {
+.depositPosCapitalBtn {
    background-color: $color-grey-light-1;
    color: $color-grey-dark-1;
    font-size: 1.6rem;

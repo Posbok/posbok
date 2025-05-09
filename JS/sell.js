@@ -1,5 +1,5 @@
 import { getProducts } from './apiServices/product';
-import { formatAmountWithCommas } from './script';
+import { formatAmountWithCommas } from './helper/helper';
 
 const phoneAccessories = [
   { name: 'Phone Case', price: '₦1000' },

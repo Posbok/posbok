@@ -1,4 +1,5 @@
 import config from '../../../config.js';
+import { safeFetch } from '../utility/safeFetch.js';
 
 const baseUrl = config.baseUrl;
 const userToken = config.token;
@@ -9,23 +10,33 @@ const parsedUserData = userData ? JSON.parse(userData) : null;
 const businessId = parsedUserData ? parsedUserData.businessId || null : null; // Get the business ID from user data
 
 export async function fetchBusinessDetails() {
-  try {
-    const response = await fetch(`${baseUrl}/api/business/${businessId}`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-      },
-    });
+  if (!businessId) {
+    console.warn('⚠️ No businessId found — skipping fetchBusinessDetails.');
+    return;
+  }
 
-    const data = await response.json();
+  try {
+    const fetchedData = await safeFetch(
+      `${baseUrl}/api/business/${businessId}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    //  const data = await fetchedData.json();
 
     //  console.log(data);
 
-    if (!response.ok) {
-      throw new Error(data.message || 'Something went wrong');
-    }
+    //  if (!fetchedData.ok) {
+    //    throw new Error(fetchedData.message || 'Something went wrong');
+    //  }
 
-    return data;
+    //  console.log(fetchedData);
+
+    return fetchedData;
   } catch (error) {
     console.error('Error checking shop:', error.message);
     throw error;

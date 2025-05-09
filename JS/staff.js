@@ -1,9 +1,6 @@
 import config from '../config';
 import { fetchBusinessDetails } from './apiServices/business/businessResource';
-import {
-  checkAndPromptCreateShop,
-  setupModalCloseButtons,
-} from './apiServices/shop/shopResource';
+import { checkAndPromptCreateShop } from './apiServices/shop/shopResource';
 import {
   assignStaffToShop,
   assignUserToShop,
@@ -37,6 +34,11 @@ window.addEventListener('DOMContentLoaded', async () => {
     enrichedShopData = data.enrichedShopData;
     businessId = data.businessId;
 
+    if (!userShops) {
+      console.warn('⚠️ No businessId found — skipping fetchBusinessDetails.');
+      return;
+    }
+
     //  console.log('Shops loaded:', userShops);
     //  console.log('enrichedShopData loaded:', enrichedShopData);
 
@@ -45,7 +47,11 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     // Now you can safely call functions below that depend on them
   } catch (err) {
-    console.error('Failed to load shop data:', err.message);
+    if (!userShops) {
+      console.warn('⚠️ No businessId found — skipping fetchBusinessDetails.');
+      return;
+    }
+    console.warn('Failed to load shop data:', err.message);
   }
 });
 

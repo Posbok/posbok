@@ -111,7 +111,10 @@ export async function checkAndPromptCreateShop() {
     const businessData = await fetchBusinessDetails();
     const businessId = businessData?.data?.id;
 
-    if (!businessId) throw new Error('Business ID not found');
+    if (!businessId) {
+      console.warn('⚠️ No businessId found — skipping fetchBusinessDetails.');
+      return;
+    }
 
     const fetchedData = await safeFetch(`${baseUrl}/api/shop`, {
       method: 'GET',

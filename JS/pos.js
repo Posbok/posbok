@@ -1,56 +1,15 @@
 import {
   getPosTransactions,
   createPosTransaction,
+  addPosCapital,
 } from './apiServices/pos/posResources';
-import { showToast } from './script';
+import { closeModal, showToast } from './script';
+import config from '../config.js';
 
-export function depositPosCapitalForm() {
-  const form = document.querySelector('.depositPosCapital');
+const userData = config.userData;
+const dummyShopId = config.dummyShopId;
 
-  if (!form || form.dataset.bound === 'true') return;
-
-  form.dataset.bound = 'true';
-
-  if (form) {
-    form.addEventListener('submit', async function (e) {
-      e.preventDefault();
-
-      const posDepositAmount = document.querySelector('#posCapitalAmount');
-
-      const shopDetails = {
-        amount: Number(posDepositAmount.value),
-      };
-
-      try {
-        createShop(shopDetails)
-          .then((data) => {
-            closeModal();
-
-            // Clear inputs and checkboxes
-            shopNameInput.value = '';
-            shopAddressInput.value = '';
-            document
-              .querySelectorAll('input[name="serviceType"]')
-              .forEach((cb) => (cb.checked = false));
-            // serviceTypeCheckboxes.forEach(
-            //   (checkbox) => (checkbox.checked = false)
-            // );
-
-            //   redirectWithDelay('Homepage', 'manage.html', 500);
-            // window.location.href = 'manage.html';
-          })
-          .catch((data) => {
-            showToast('fail', `❎ ${data.message}`);
-            console.error('❎ Failed to create shop:', data.message);
-          });
-        //   console.log('Creating shop with:', shopDetails);
-        // closeModal(); // close modal after success
-      } catch (err) {
-        console.error('Error creating shop:', err.message);
-      }
-    });
-  }
-}
+const shopId = userData?.shopId || dummyShopId;
 
 export function setupCreateShopForm() {
   const form = document.querySelector('.createShopModal');

@@ -6,7 +6,6 @@ import {
   checkAndPromptCreateShop,
   openCreateShopModal,
   setupCreateShopForm,
-  setupModalCloseButtons,
 } from './apiServices/shop/shopResource.js';
 import { fetchBusinessDetails } from './apiServices/business/businessResource.js';
 import {
@@ -14,11 +13,17 @@ import {
   openCreateStaffModal,
   setupCreateStaffForm,
 } from './apiServices/user/userResource.js';
-import { clearFormInputs } from './helper/helper.js';
+import { clearFormInputs, getAmountForSubmission } from './helper/helper.js';
+import {
+  addPosCapital,
+  openDepositPosCapitalModal,
+} from './apiServices/pos/posResources.js';
 
 const userData = config.userData;
+const dummyShopId = config.dummyShopId;
 
 const parsedUserData = userData ? JSON.parse(userData) : null;
+const shopId = parsedUserData?.shopId || dummyShopId;
 
 // Toggle the active class for sideNavs
 const sideNavs = document.querySelectorAll('.side-nav_item');
@@ -60,14 +65,42 @@ export function showToast(type, message) {
   }, 3000);
 }
 
-// function to format amounts with commas
-export function formatAmountWithCommas(amount) {
-  if (amount === null || amount === undefined) {
-    return amount; // return an empty string if amount is null or undefined
-  }
+// Function to deposit POS Capital - Added to script.js because of scope.
+export function depositPosCapitalForm() {
+  const form = document.querySelector('.depositPosCapitalModal');
 
-  const amountString = amount.toString();
-  return amountString.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  if (!form || form.dataset.bound === 'true') return;
+
+  form.dataset.bound = 'true';
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const posDepositAmount = document.querySelector('#posCapitalAmount');
+
+      const posCapitalDetails = {
+        shopId: shopId,
+        amount: getAmountForSubmission(posDepositAmount),
+      };
+
+      try {
+        addPosCapital(posCapitalDetails)
+          .then((data) => {
+            closeModal();
+          })
+          .catch((data) => {
+            showToast('fail', `❎ ${data.message}`);
+            console.error('❎ Failed to Add Pos Capital:', data.message);
+          });
+        //   console.log('Sending POS Capital with:', posCapitalDetails);
+
+        // closeModal(); // close modal after success
+      } catch (err) {
+        console.error('Error creating shop:', err.message);
+      }
+    });
+  }
 }
 
 // JS For Modal
@@ -124,22 +157,6 @@ export function closeModal() {
   if (sidebar) sidebar.classList.remove('blur');
   main.classList.remove('no-scroll');
 }
-
-// JS for Modal
-document.addEventListener('DOMContentLoaded', function () {
-  const depositButton = document.querySelector('.deposit-btn');
-  const depositPosCapitalContainer =
-    document.querySelector('.depositPosCapital');
-
-  if (depositButton && depositPosCapitalContainer) {
-    depositButton.addEventListener('click', function () {
-      depositPosCapitalContainer.classList.add('active');
-      main.classList.add('blur');
-      // sidebar.classList.add('blur');
-      main.classList.add('no-scroll');
-    });
-  }
-});
 
 // JS for Date of Birth Input
 document.addEventListener('DOMContentLoaded', () => {
@@ -259,6 +276,8 @@ checkIfTokenExpiredDaily();
 const userNameDisplay = document.querySelector('.user-name');
 const businessNameDisplay = document.querySelector('.business-name');
 
+const posDepositButton = document.querySelector('.depositPosCapitalBtn');
+
 const sellIndexTab = document.getElementById('sellIndexTab');
 const posIndexTab = document.getElementById('posIndexTab');
 const reportIndexTab = document.getElementById('reportIndexTab');
@@ -296,6 +315,8 @@ if (userData) {
     if (reportsNav) reportsNav.style.display = 'block';
     if (manageNav) manageNav.style.display = 'block';
 
+    if (posDepositButton) posDepositButton.style.display = 'none';
+
     // Normalize current page name from pathname
     const currentPage = window.location.pathname.toLowerCase();
 
@@ -322,8 +343,10 @@ if (userData) {
     if (manageIndexTab) manageIndexTab.style.display = 'none';
     if (manageNav) manageNav.style.display = 'none';
 
+    if (posDepositButton) posDepositButton.style.display = 'block';
+
     //  List of pages not open to Staff
-    const restrictedStaffPage = ['manage'];
+    const restrictedStaffPage = ['manage', 'staff-profile'];
     const isOnRestrictedStaffPage = restrictedStaffPage.some((page) =>
       currentPage.includes(page)
     );
@@ -334,10 +357,12 @@ if (userData) {
     }
   }
 } else {
+  window.location.href = 'login.html';
   //   console.log('No user data found in localStorage');
 }
 
 const isAdmin = parsedUserData?.accountType === 'ADMIN';
+const isStaff = parsedUserData?.accountType === 'STAFF';
 
 if (isAdmin) {
   document.addEventListener('DOMContentLoaded', () => {
@@ -362,28 +387,34 @@ if (isAdmin) {
       checkAndPromptCreateStaff();
     }
   });
+}
 
-  //   // JS to Check and prompt cretae shop & staff
-  //   document.addEventListener('DOMContentLoaded', () => {
-  //     setupCreateShopForm();
-  //     setupModalCloseButtons();
-  //     document
-  //       .querySelector('#openShopModalBtn')
-  //       ?.addEventListener('click', openCreateShopModal);
-  //     if (userData) {
-  //       checkAndPromptCreateShop();
-  //     }
-  //   });
-  //   document.addEventListener('DOMContentLoaded', () => {
-  //     setupCreateStaffForm();
-  //     setupModalCloseButtons();
-  //     document
-  //       .querySelector('#openStaffModalBtn')
-  //       ?.addEventListener('click', openCreateStaffModal);
-  //     if (userData) {
-  //       checkAndPromptCreateStaff();
-  //     }
-  //   });
+if (isStaff) {
+  document.addEventListener('DOMContentLoaded', () => {
+    // Setup for Opening Pos Deposit Capital Modal
+
+    setupModalCloseButtons();
+    document
+      .querySelector('#depositPosCapitalBtn')
+      ?.addEventListener('click', openDepositPosCapitalModal);
+  });
+}
+
+export function setupModalCloseButtons() {
+  const closeModalButtons = document.querySelectorAll('.closeModal');
+  const createShopContainer = document.querySelector('.createShop');
+  const updateShopContainer = document.querySelector('.adminUpdateShopData');
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+
+  closeModalButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if (createShopContainer) createShopContainer.classList.remove('active');
+      if (updateShopContainer) updateShopContainer.classList.remove('active');
+      if (main) main.classList.remove('blur');
+      if (sidebar) sidebar.classList.remove('blur');
+    });
+  });
 }
 
 // function to Use business info to fill in the Create Shop Form

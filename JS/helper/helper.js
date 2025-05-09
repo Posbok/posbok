@@ -6,6 +6,10 @@ export function clearFormInputs() {
   const updateShopForm = document.querySelector('.adminUpdateShopDataModal');
   const staffManageForm = document.querySelector('.staffManageModal');
 
+  const depositPosCapitalForm = document.querySelector(
+    '.depositPosCapitalModal'
+  );
+
   //   console.log('activated');
 
   //   if (createStaffForm || updateStaffForm) {
@@ -68,16 +72,18 @@ export function clearFormInputs() {
   }
 
   // Clear Create Shop Form Inputs
-  if (createShopForm) {
-    createShopForm.querySelectorAll('input, textarea, select').forEach((el) => {
-      if (el.type === 'checkbox' || el.type === 'radio') {
-        el.checked = false;
-      } else {
-        el.value = '';
-      }
-    });
+  if (depositPosCapitalForm) {
+    depositPosCapitalForm
+      .querySelectorAll('input, textarea, select')
+      .forEach((el) => {
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          el.checked = false;
+        } else {
+          el.value = '';
+        }
+      });
 
-    delete createShopForm.dataset.bound;
+    delete depositPosCapitalForm.dataset.bound;
   }
 
   // Clear Create Shop Form Inputs
@@ -105,4 +111,37 @@ export function clearFormInputs() {
 
     delete staffManageForm.dataset.bound;
   }
+}
+
+// function to format amounts with commas
+export function formatAmountWithCommas(amount) {
+  if (amount === null || amount === undefined) {
+    return amount; // return an empty string if amount is null or undefined
+  }
+
+  const amountString = amount.toString();
+  return amountString.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+// Function to handle input formatting and remove commas when submitting
+export function formatAmountWithCommasOnInput(input) {
+  console.log('object');
+  let value = input.value;
+  value = value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+  input.value = formatAmountWithCommas(value);
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  const input = document.getElementById('posCapitalAmount');
+  input.addEventListener('input', function () {
+    formatAmountWithCommasOnInput(input);
+  });
+});
+
+// Make the function globally available
+window.formatAmountWithCommasOnInput = formatAmountWithCommasOnInput;
+
+// When submitting, remove commas from the value before processing
+export function getAmountForSubmission(input) {
+  return input.value.replace(/,/g, ''); // Remove commas for backend submission
 }

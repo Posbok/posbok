@@ -1,8 +1,11 @@
 import config from '../../../config.js';
+import { depositPosCapitalForm, showToast } from '../../script.js';
+import { safeFetch } from '../utility/safeFetch.js';
 
 const baseUrl = config.baseUrl;
 const userToken = config.token;
 const userData = config.userData;
+const dummyShopId = config.dummyShopId; // Dummy user data for testing
 
 const parsedUserData = userData ? JSON.parse(userData) : null;
 
@@ -16,20 +19,21 @@ function getCurrentDateISO() {
   return localMidnight.toISOString();
 }
 
-export async function addPosCapital(posCapital) {
+export async function addPosCapital(posCapitalDetails) {
+  console.log(posCapitalDetails);
   try {
-     console.log('Sending POST request...');
+    console.log('Sending POST request...');
 
-    const addPosCapitalData = await safeFetch(`${baseUrl}/api/capital`, {
+    const addPosCapitalData = await safeFetch(`${baseUrl}/api/pos/capital`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${userToken}`,
-        //   'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(posCapital),
+      body: JSON.stringify(posCapitalDetails),
     });
 
-     console.log('Response received...');
+    console.log('Response received...');
 
     if (addPosCapitalData) {
       console.log('POS Capital added successfully:', addPosCapitalData);
@@ -39,9 +43,53 @@ export async function addPosCapital(posCapital) {
 
     return addPosCapitalData;
   } catch (error) {
-    console.error('Error creating Admin:', error);
+    console.error('Error Add POS Capital:', error);
     throw error;
   }
+}
+
+export async function getPosCapital(shopId) {
+  try {
+    console.log('Sending POST request...');
+
+    const posCapital = await safeFetch(
+      `${baseUrl}/api/pos/capital?shopId=${shopId}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          //  'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    console.log('Response received...');
+
+    if (posCapital) {
+      console.log('POS Capital received successfully:', posCapital);
+      showToast('success', `✅ ${posCapital.message}`);
+      // checkAndPromptaddPosCapital(); // Refresh the Staff list after creation
+    }
+
+    return posCapital;
+  } catch (error) {
+    console.error('Error receiving POS Capital:', error);
+    throw error;
+  }
+}
+
+export function openDepositPosCapitalModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const depositPosCapitalContainer =
+    document.querySelector('.depositPosCapital');
+
+  if (depositPosCapitalContainer)
+    depositPosCapitalContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  depositPosCapitalForm();
 }
 
 export async function createPosTransaction(transactionDetail) {
