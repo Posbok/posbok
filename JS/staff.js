@@ -5,6 +5,8 @@ import {
   setupModalCloseButtons,
 } from './apiServices/shop/shopResource';
 import {
+  assignStaffToShop,
+  assignUserToShop,
   checkAndPromptCreateStaff,
   createStaff,
   deleteUser,
@@ -12,6 +14,7 @@ import {
   openCreateStaffModal,
   openManageStaffModal,
   openUpdateStaffModal,
+  removeStaffFromShop,
   setupCreateStaffForm,
   updateUser,
 } from './apiServices/user/userResource';
@@ -351,28 +354,41 @@ export async function setupManageStaffForm(user) {
   const form = document.querySelector('.staffManage');
   if (!form) return;
 
-  //   console.log('Clicked user data passed to this function', user);
+  const nameElem = document.getElementById('staffManage-name');
+  const currentAssignedShop = document.getElementById('currentAssignedShop');
 
-  form.dataset.staffId = user.id; // Store the ID to use during submission
+  if (nameElem) nameElem.innerText = 'Loading...';
+  if (currentAssignedShop) currentAssignedShop.innerText = 'Loading shop...';
+
+  // ✅ Refetch latest data
+  try {
+    const data = await checkAndPromptCreateShop();
+    enrichedShopData = data.enrichedShopData;
+    userShops = data.userShops;
+    businessId = data.businessId;
+  } catch (err) {
+    console.error('Failed to refresh data in modal:', err.message);
+    showToast('fail', '❎ Failed to refresh staff-shop data.');
+    return;
+  }
+
+  // Always set staff ID and update name
+  form.dataset.staffId = user.id;
 
   document.getElementById('staffManage-name').innerText =
     ` ${user.firstName} ${user.lastName}` || '';
 
-  // Find current assigned shop
   //   const currentShop = enrichedShopData.find(
   //     (shop) => shop.id === shop.staff.shopId && user.id === shop.staff.id
   //   );
 
+  // Find current assigned shop
   const currentShop = enrichedShopData.find((shop) =>
     shop.staff.some(
       (staffMember) =>
         staffMember.id === user.id && staffMember.shopId === shop.id
     )
   );
-
-  const currentAssignedShop = document.getElementById('currentAssignedShop');
-
-  //   console.log(currentShop);
 
   if (currentAssignedShop) {
     currentAssignedShop.innerText = currentShop
@@ -383,41 +399,108 @@ export async function setupManageStaffForm(user) {
   // Populate the shop dropdown (for reassignment)
   //   populateShopDropdown(enrichedShopData, user.shop_id);
 
-  if (form) {
-    form.addEventListener('submit', async function (e) {
-      e.preventDefault();
+  // Only bind event listener once
+  if (form.dataset.listenerBound !== 'true') {
+    form.dataset.listenerBound = 'true';
+    const removeShopButton = document.getElementById('removeShopButton');
+    const assignShopButton = document.getElementById('assignShopButton');
 
-      const currentShopDisplay = document.querySelector(
-        '#currentAssignedShop'
-      ).value;
-      const staffManageShopDropdown = document.querySelector(
-        '#staffManageShopDropdown'
-      ).value;
+    if (removeShopButton) {
+      removeShopButton.addEventListener('click', async function (e) {
+        e.preventDefault();
 
-      const staffUpdatedDetails = {
-        staffManageShopDropdown: staffManageShopDropdown,
-      };
+        const staffId = form.dataset.staffId;
+        const userId = parseInt(staffId);
 
-      // console.log('📦 Staff Store Details:', staffUpdatedDetails);
+        const currentShop = enrichedShopData.find((shop) =>
+          shop.staff.some(
+            (staffMember) =>
+              staffMember.id === userId && staffMember.shopId === shop.id
+          )
+        );
 
-      // try {
-      //   const data = await updateUser(user.id, staffUpdatedDetails);
+        console.log('userId =', userId, 'shopId =', currentShop?.id);
 
-      //   if (data) {
-      //     closeModal();
-      //   }
+        try {
+          const data = await removeStaffFromShop(userId, currentShop?.id);
+          if (data) {
+            closeModal();
+          }
+        } catch (err) {
+          // err.message will contain the "Email already in use"
+          showToast('fail', `❎ ${err.message}`);
+        }
 
-      //   //   if (!data || !data.data || !data.data.user) {
-      //   //     //  showToast('fail', `❎ Failed to register staff.`);
-      //   //     return;
-      //   //   }
-      // } catch (err) {
-      //   // err.message will contain the "Email already in use"
-      //   showToast('fail', `❎ ${err.message}`);
-      // }
+        return;
+      });
+    }
 
-      return;
-    });
+    if (assignShopButton) {
+      assignShopButton.addEventListener('click', async function (e) {
+        e.preventDefault();
+
+        const staffId = form.dataset.staffId;
+        const userId = parseInt(staffId);
+
+        const selectedShopId = document.querySelector(
+          '#staffManageShopDropdown'
+        ).value;
+
+        const staffDetailsForAssigningShop = {
+          shopId: selectedShopId,
+        };
+
+        console.log(
+          '📦 Staff Store Details:',
+          staffDetailsForAssigningShop,
+          'userId',
+          userId
+        );
+
+        // Find the user's current shop (if any)
+        const currentShop = enrichedShopData.find((shop) =>
+          shop.staff.some(
+            (staffMember) =>
+              staffMember.id === userId && staffMember.shopId === shop.id
+          )
+        );
+
+        // 💡 1. If user is already in the selected shop
+        if (currentShop && currentShop.id == selectedShopId) {
+          showToast('info', 'ℹ️ User is already assigned to this shop.');
+          return;
+        }
+
+        console.log('userId =', userId, 'shopId =', selectedShopId);
+        try {
+          if (currentShop) {
+            await removeStaffFromShop(staffId, currentShop.id);
+          }
+
+          const data = await assignUserToShop(
+            userId,
+            staffDetailsForAssigningShop
+          );
+          if (data) {
+            closeModal();
+          }
+
+          //  const data = await assignStaffToShop(userId, shopId);
+          //  if (data) {
+          //    closeModal();
+          //  }
+          //   if (!data || !data.data || !data.data.user) {
+          //     //  showToast('fail', `❎ Failed to register staff.`);
+          //     return;
+          //   }
+        } catch (err) {
+          // err.message will contain the "Email already in use"
+          showToast('fail', `❎ ${err.message}`);
+        }
+
+        return;
+      });
+    }
   }
 }
 

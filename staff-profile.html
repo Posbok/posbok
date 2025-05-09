@@ -33,7 +33,7 @@
    <script src="dist/main.bundle.js" defer></script>
    <script src="dist/staff.bundle.js" defer></script>
 
-   <title> &mdash;BUSINESS SYSTEM 1.0</title>
+   <title> POSBOK &mdash;BUSINESS SYSTEM 1.0</title>
    <link rel="icon" type="image/x-icon" href="/img/favicon.png">
 </head>
 
@@ -402,7 +402,7 @@
          <div class="modal-form_input mb-1">
             <div class="checkbox">
                <div class="checkbox-container">
-                  <input id="useBusinessInfo" type="radio" name="useBusinessInfo">
+                  <input id="useBusinessInfo" type="checkbox" name="useBusinessInfo">
                   <label for="useBusinessInfo">Use my Business Info</label>
                </div>
             </div>
@@ -441,6 +441,17 @@
                <div class="checkbox-container">
                   <input id="posAndSellShopCheckbox" type="radio" name="serviceType" value="BOTH">
                   <label for="posAndSellShopCheckbox">POS & SELL</label>
+               </div>
+            </div>
+         </div>
+
+
+         <!-- Assign Staff Checkbox -->
+         <div class="modal-form_input mb-1">
+            <div class="checkbox">
+               <div class="checkbox-container">
+                  <input id="assignStaffCheckbox" type="checkbox" name="assignStaff">
+                  <label for="assignStaffCheckbox">Assign a staff to this shop after creation</label>
                </div>
             </div>
          </div>
@@ -545,13 +556,14 @@
    <form class="modal-form staffManageModal" name="modal" netlify>
       <div class="card staffManage modal ">
          <div>
-            <h1 class="heading-text">Manage Shop for <span id="staffManage-name">John Doe</span></h1>
+            <h1 class="heading-text">Manage Shop</h1>
+            <h2 class="heading-text" id="staffManage-name">Staff Name</h2>
          </div>
 
          <!-- Current name -->
          <div class="">
             <label for="staffManageCurrentShop">Current Shop: </label>
-            <h2 class="heading-subtext" id="currentAssignedShop">Shop A</h2>
+            <h2 class="heading-subtext" id="currentAssignedShop">Shop Name - Shop Address</h2>
          </div>
 
          <!-- Assign to shop -->
@@ -560,9 +572,8 @@
 
             <select id="staffManageShopDropdown" class="form-control">
                <option value="">Select a shop</option>
-               <option value="1">Shop A</option>
-               <option value="2">Shop B</option>
-               <option value="3">Shop C</option>
+               <option value="1">Loading Shops...</option>
+
                <!-- Add Main shops dynamically -->
             </select>
          </div>
@@ -570,11 +581,11 @@
          <div class="btn-container">
 
             <div class="center-button">
-               <button class="hero-btn-danger">Remove from shop</button>
+               <button class="hero-btn-danger" id="removeShopButton">Remove from shop</button>
             </div>
 
             <div class="center-button">
-               <button class="hero-btn-dark">Assign New SHop</button>
+               <button class="hero-btn-dark" id="assignShopButton">Assign New SHop</button>
             </div>
          </div>
 

@@ -19,27 +19,27 @@ const isStaffProfilePage = window.location.href.includes('staff-profile');
 
 let enrichedShopData = [];
 
-window.addEventListener('DOMContentLoaded', async () => {
-  try {
-    const shopData = await checkAndPromptCreateShop();
+// window.addEventListener('DOMContentLoaded', async () => {
+//   try {
+//     const shopData = await checkAndPromptCreateShop();
 
-    // Assign to outer variables
+//     // Assign to outer variables
 
-    //  enrichedShopData = shopData.enrichedShopData;
+//     //  enrichedShopData = shopData.enrichedShopData;
 
-    //  await checkAndPromptCreateStaff();
+//     //  await checkAndPromptCreateStaff();
 
-    //  console.log('Shops loaded:', userShops);
-    //  console.log('enrichedShopData loaded:', enrichedShopData);
+//     //  console.log('Shops loaded:', userShops);
+//     //  console.log('enrichedShopData loaded:', enrichedShopData);
 
-    // ✅ Now that data is available, call populateStaffTable here
-    //  populateStaffTable();
+//     // ✅ Now that data is available, call populateStaffTable here
+//     //  populateStaffTable();
 
-    // Now you can safely call functions below that depend on them
-  } catch (err) {
-    console.error('Failed to load shop data:', err.message);
-  }
-});
+//     // Now you can safely call functions below that depend on them
+//   } catch (err) {
+//     console.error('Failed to load shop data:', err.message);
+//   }
+// });
 
 export async function createStaff(staffDetails) {
   try {
@@ -549,6 +549,37 @@ export async function assignUserToShop(user_id, staffAssigningDetails) {
   }
 }
 
+// CORS ISSUE WIH THIS ENDPOINT - NO ACCESS-CONTROL-ALLOW-ORIGIN HEADER
+// export async function assignStaffToShop(shop_id, staffDetailsForAssigningShop) {
+//   try {
+//     //  console.log('Sending POST request...');
+
+//     const assignStaffToShopData = await safeFetch(
+//       `${baseUrl}/api/users/${shop_id}/shops`,
+//       {
+//         method: 'POST',
+//         headers: {
+//           Authorization: `Bearer ${userToken}`,
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify(staffDetailsForAssigningShop),
+//       }
+//     );
+
+//     if (assignStaffToShopData) {
+//       // console.log('Staff assigned to shop successfully:', assignStaffToShopData);
+//       showToast('success', `✅ ${assignStaffToShopData.message}`);
+//       checkAndPromptCreateStaff(); // Refresh list or update UI
+//     }
+
+//     return assignStaffToShopData;
+//   } catch (error) {
+//     console.error('Error Assigning Staff', error);
+//     showToast('error', '❌ Failed to Assign staff');
+//     throw error;
+//   }
+// }
+
 export async function updateUser(user_id, staffUpdatedDetails) {
   try {
     //  console.log('Sending POST request...');
@@ -572,6 +603,37 @@ export async function updateUser(user_id, staffUpdatedDetails) {
   } catch (error) {
     console.error('Error Updating Staff Info', error);
     showToast('error', '❌ Failed to Update staff info');
+    throw error;
+  }
+}
+
+export async function removeStaffFromShop(user_id, shop_id) {
+  console.log(user_id, shop_id);
+  try {
+    console.log('Sending POST request...');
+
+    const fetchedData = await safeFetch(
+      `${baseUrl}/api/users/${user_id}/shops/${shop_id}`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    if (fetchedData) {
+      console.log('Staff removed from shop successfully:', fetchedData);
+      showToast('success', `✅ ${fetchedData.message}`);
+      checkAndPromptCreateStaff(); // Refresh list or update UI
+    } else {
+      console.log('Failed to remove staff from shop:', fetchedData);
+    }
+
+    return fetchedData;
+  } catch (error) {
+    console.error('Error removing Staff from shop', error);
+    showToast('error', '❌ Failed to remove Staff from shop');
     throw error;
   }
 }

@@ -192,7 +192,7 @@ export function generateBusinessOwnerId(length = 8) {
 // Redirect Helper function
 export function redirectWithDelay(message, redirectedPage, delay) {
   setTimeout(() => {
-    showToast('redirect', ` 👍Redirecting to ${message}...`);
+    showToast('info', ` 👍Redirecting to ${message}...`);
     setTimeout(() => {
       window.location.href = `${redirectedPage}`;
     }, delay); // delay = 0000

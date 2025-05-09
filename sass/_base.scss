@@ -10,6 +10,7 @@ $color-grey-dark-1: #0F7A89;
 $color-grey-dark-2: #15464C;
 $color-grey-dark-3: #6FC1CC;
 $color-danger: #ec1a23;
+$color-info: #4DA6FF;
 
 
 // FONT VARIABLES
@@ -140,8 +141,13 @@ body {
    background-color: $color-danger;
 }
 
-// Failure redirect
-.toast.redirect {
+// Info toast
+.toast.info {
+   background-color: $color-info;
+}
+
+// Warning toast
+.toast.warning {
    background-color: $color-secondary-light;
 }
 

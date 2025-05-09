@@ -81,7 +81,10 @@ body {
 .toast.fail {
   background-color: #ec1a23; }
 
-.toast.redirect {
+.toast.info {
+  background-color: #4DA6FF; }
+
+.toast.warning {
   background-color: #F89942; }
 
 .toast.show {
