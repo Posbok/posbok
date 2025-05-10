@@ -266,6 +266,7 @@ export async function handlePosFormSubmit() {
       const posRemarksDiv = document.querySelector('.posRemarksDiv').value;
       const paymentMethodTypeDiv =
         document.querySelector('.paymentMethodType').value;
+
       // const fee = document.getElementById('posTransactionFee').value;
       // const machineFeeContainer = document.querySelector('.machine-fee').value;
       // const machineFeeInput = document.getElementById('posMachineFee').value;

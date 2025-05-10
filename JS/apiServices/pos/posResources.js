@@ -10,6 +10,9 @@ const dummyShopId = config.dummyShopId; // Dummy user data for testing
 const parsedUserData = userData ? JSON.parse(userData) : null;
 
 const shopId = parsedUserData?.shopId || dummyShopId;
+
+// console.log(shopId);
+
 // console.log(shopId);
 function getCurrentDateISO() {
   const now = new Date();
@@ -40,7 +43,6 @@ export async function addPosCapital(posCapitalDetails) {
     if (addPosCapitalData) {
       console.log('POS Capital added successfully:', addPosCapitalData);
       showToast('success', `✅ ${addPosCapitalData.message}`);
-      // checkAndPromptaddPosCapital(); // Refresh the Staff list after creation
     }
 
     return addPosCapitalData;
@@ -120,6 +122,37 @@ export async function createPosTransaction(transactionDetail) {
     return posTransactionData;
   } catch (error) {
     console.error('Error posting product:', error);
+  }
+}
+
+export async function getPosTransactions(shopId) {
+  //   console.log(shopId);
+  try {
+    //  console.log('Sending POST request...');
+
+    const posTransactionsData = await safeFetch(
+      `${baseUrl}/api/pos/transactions?shopId=${shopId}&page=1&limit=10`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          //  'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    //  console.log('Response received...');
+
+    if (posTransactionsData) {
+      // console.log('POS Transactiion received successfully:', posTransactionsData);
+
+      showToast('success', `✅ ${posTransactionsData.message}`);
+    }
+
+    return posTransactionsData;
+  } catch (error) {
+    console.error('Error receiving POS Transactiion:', error);
+    throw error;
   }
 }
 
