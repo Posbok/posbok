@@ -133,9 +133,10 @@ export function formatAmountWithCommasOnInput(input) {
 
 document.addEventListener('DOMContentLoaded', function () {
   const input = document.getElementById('posCapitalAmount');
-  input.addEventListener('input', function () {
-    formatAmountWithCommasOnInput(input);
-  });
+  if (input)
+    input.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(input);
+    });
 });
 
 // Make the function globally available

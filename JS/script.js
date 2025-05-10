@@ -18,12 +18,18 @@ import {
   addPosCapital,
   openDepositPosCapitalModal,
 } from './apiServices/pos/posResources.js';
+import { initAccountOverview } from './apiServices/account/accountOverview.js';
 
 const userData = config.userData;
 const dummyShopId = config.dummyShopId;
 
-const parsedUserData = userData ? JSON.parse(userData) : null;
+let parsedUserData = null;
+
+parsedUserData = userData ? JSON.parse(userData) : null;
 const shopId = parsedUserData?.shopId || dummyShopId;
+
+// Normalize current page name from pathname
+const currentPage = window.location.pathname.toLowerCase();
 
 // Toggle the active class for sideNavs
 const sideNavs = document.querySelectorAll('.side-nav_item');
@@ -66,42 +72,46 @@ export function showToast(type, message) {
 }
 
 // Function to deposit POS Capital - Added to script.js because of scope.
-export function depositPosCapitalForm() {
-  const form = document.querySelector('.depositPosCapitalModal');
+// export function depositPosCapitalForm() {
+//   const form = document.querySelector('.depositPosCapitalModal');
 
-  if (!form || form.dataset.bound === 'true') return;
+//   if (!form || form.dataset.bound === 'true') return;
 
-  form.dataset.bound = 'true';
+//   form.dataset.bound = 'true';
 
-  if (form) {
-    form.addEventListener('submit', async function (e) {
-      e.preventDefault();
+//   if (form) {
+//     form.addEventListener('submit', async function (e) {
+//       e.preventDefault();
 
-      const posDepositAmount = document.querySelector('#posCapitalAmount');
+//       const posDepositAmount = document.querySelector('#posCapitalAmount');
 
-      const posCapitalDetails = {
-        shopId: shopId,
-        amount: getAmountForSubmission(posDepositAmount),
-      };
+//       const posCapitalDetails = {
+//         shopId: shopId,
+//         amount: Number(getAmountForSubmission(posDepositAmount)),
+//       };
 
-      try {
-        addPosCapital(posCapitalDetails)
-          .then((data) => {
-            closeModal();
-          })
-          .catch((data) => {
-            showToast('fail', `❎ ${data.message}`);
-            console.error('❎ Failed to Add Pos Capital:', data.message);
-          });
-        //   console.log('Sending POS Capital with:', posCapitalDetails);
+//       try {
+//         addPosCapital(posCapitalDetails)
+//           .then((data) => {
+//             closeModal();
+//           })
+//           .catch((data) => {
+//             showToast('fail', `❎ ${data.message}`);
+//             console.error('❎ Failed to Add Pos Capital:', data.message);
+//           });
+//         //   console.log('Sending POS Capital with:', posCapitalDetails);
 
-        // closeModal(); // close modal after success
-      } catch (err) {
-        console.error('Error creating shop:', err.message);
-      }
-    });
-  }
-}
+//         // closeModal(); // close modal after success
+//       } catch (err) {
+//         console.error('Error creating shop:', err.message);
+//       }
+//     });
+//   }
+// }
+
+// document.addEventListener('DOMContentLoaded', () => {
+//   initAccountOverview();
+// });
 
 // JS For Modal
 
@@ -220,7 +230,7 @@ export function redirectWithDelay(message, redirectedPage, delay) {
 const token = localStorage.getItem('accessToken');
 
 // Normalize current page name from pathname
-const currentPage = window.location.pathname.toLowerCase();
+// const currentPage = window.location.pathname.toLowerCase();
 
 // Llist of all  public/auth pages & check if on auth page
 const authPages = ['login', 'signup', 'createbusiness'];
@@ -232,8 +242,18 @@ if (token && onAuthPage) {
 }
 
 // If no token and user is on a protected page, redirect to login
-if (!token && !onAuthPage) {
-  window.location.href = 'login.html';
+// if (!token && !onAuthPage) {
+//   window.location.href = 'login.html';
+// }
+
+if (!token) {
+  if (!onAuthPage) {
+    window.location.href = 'login.html';
+    //  console.log('!onAuthPage');
+  } else {
+    // If you're already on an auth page, don't redirect again
+    //  console.log('On auth page, no token, staying put.');
+  }
 }
 
 // Logout Function
@@ -249,6 +269,7 @@ if (logoutButton) {
         showToast('success', '✅ Logging Out...!');
         setTimeout(() => {
           window.location.href = 'login.html'; // Redirect to login page
+          //  console.log('Logout Button');
         }, 1000);
       })
       .catch((data) => {
@@ -262,10 +283,16 @@ function checkIfTokenExpiredDaily() {
   const savedDate = localStorage.getItem('loginDate');
   const today = new Date().toISOString().split('T')[0];
 
+  //   console.log(today);
+
+  //   console.log('checkIfTokenExpiredDaily is reached');
+
   if (savedDate && savedDate !== today) {
     logoutUser().finally(() => {
-      localStorage.clear();
+      // localStorage.clear();
       window.location.href = 'login.html';
+
+      console.log('savedDate && savedDate !== today');
     });
   }
 }
@@ -288,9 +315,10 @@ const posNav = document.getElementById('posNav');
 const reportsNav = document.getElementById('reportsNav');
 const manageNav = document.getElementById('manageNav');
 
-if (userData) {
-  const parsedUserData = JSON.parse(userData);
-
+// Stop everything if no user is logged in
+if (!userData) {
+  //   console.log('❎❎❎❎ No user data found in localStorage');
+} else {
   //    User Name
   if (userNameDisplay) {
     if (userNameDisplay) userNameDisplay.textContent = parsedUserData.firstName;
@@ -316,9 +344,6 @@ if (userData) {
     if (manageNav) manageNav.style.display = 'block';
 
     if (posDepositButton) posDepositButton.style.display = 'none';
-
-    // Normalize current page name from pathname
-    const currentPage = window.location.pathname.toLowerCase();
 
     //  List of pages not open to admin
     const RestrictedAdminPage = ['pos', 'sell'];
@@ -356,9 +381,6 @@ if (userData) {
       window.location.href = 'index.html';
     }
   }
-} else {
-  window.location.href = 'login.html';
-  //   console.log('No user data found in localStorage');
 }
 
 const isAdmin = parsedUserData?.accountType === 'ADMIN';

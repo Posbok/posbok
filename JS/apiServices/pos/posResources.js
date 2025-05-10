@@ -9,6 +9,8 @@ const dummyShopId = config.dummyShopId; // Dummy user data for testing
 
 const parsedUserData = userData ? JSON.parse(userData) : null;
 
+const shopId = parsedUserData?.shopId || dummyShopId;
+// console.log(shopId);
 function getCurrentDateISO() {
   const now = new Date();
   const localMidnight = new Date(
@@ -49,8 +51,9 @@ export async function addPosCapital(posCapitalDetails) {
 }
 
 export async function getPosCapital(shopId) {
+  //   console.log(shopId);
   try {
-    console.log('Sending POST request...');
+    //  console.log('Sending POST request...');
 
     const posCapital = await safeFetch(
       `${baseUrl}/api/pos/capital?shopId=${shopId}`,
@@ -63,11 +66,11 @@ export async function getPosCapital(shopId) {
       }
     );
 
-    console.log('Response received...');
+    //  console.log('Response received...');
 
     if (posCapital) {
-      console.log('POS Capital received successfully:', posCapital);
-      showToast('success', `✅ ${posCapital.message}`);
+      // console.log('POS Capital received successfully:', posCapital);
+      // showToast('success', `✅ ${posCapital.message}`);
       // checkAndPromptaddPosCapital(); // Refresh the Staff list after creation
     }
 
