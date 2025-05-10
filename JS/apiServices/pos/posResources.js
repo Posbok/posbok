@@ -97,9 +97,9 @@ export function openDepositPosCapitalModal() {
 
 export async function createPosTransaction(transactionDetail) {
   try {
-    //  console.log('Sending POST request...');
-    const response = await fetch(
-      `${baseUrl}/api/pos-transactions?populate[transaction_type]=*&populate[withdrawal_type]=*`,
+    console.log('Sending POST request...');
+    const posTransactionData = await safeFetch(
+      `${baseUrl}/api/pos/transactions`,
       {
         method: 'POST',
         headers: {
@@ -110,15 +110,14 @@ export async function createPosTransaction(transactionDetail) {
       }
     );
 
-    //  console.log('Response received...');
+    console.log('Response received...');
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    if (posTransactionData) {
+      console.log('POS transaction added successfully:', posTransactionData);
+      showToast('success', `✅ ${posTransactionData.message}`);
     }
 
-    const data = await response.json();
-    //  console.log('Product added successfully:', data);
-    return data;
+    return posTransactionData;
   } catch (error) {
     console.error('Error posting product:', error);
   }

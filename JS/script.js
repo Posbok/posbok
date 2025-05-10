@@ -72,46 +72,46 @@ export function showToast(type, message) {
 }
 
 // Function to deposit POS Capital - Added to script.js because of scope.
-// export function depositPosCapitalForm() {
-//   const form = document.querySelector('.depositPosCapitalModal');
+export function depositPosCapitalForm() {
+  const form = document.querySelector('.depositPosCapitalModal');
 
-//   if (!form || form.dataset.bound === 'true') return;
+  if (!form || form.dataset.bound === 'true') return;
 
-//   form.dataset.bound = 'true';
+  form.dataset.bound = 'true';
 
-//   if (form) {
-//     form.addEventListener('submit', async function (e) {
-//       e.preventDefault();
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
 
-//       const posDepositAmount = document.querySelector('#posCapitalAmount');
+      const posDepositAmount = document.querySelector('#posCapitalAmount');
 
-//       const posCapitalDetails = {
-//         shopId: shopId,
-//         amount: Number(getAmountForSubmission(posDepositAmount)),
-//       };
+      const posCapitalDetails = {
+        shopId: shopId,
+        amount: Number(getAmountForSubmission(posDepositAmount)),
+      };
 
-//       try {
-//         addPosCapital(posCapitalDetails)
-//           .then((data) => {
-//             closeModal();
-//           })
-//           .catch((data) => {
-//             showToast('fail', `❎ ${data.message}`);
-//             console.error('❎ Failed to Add Pos Capital:', data.message);
-//           });
-//         //   console.log('Sending POS Capital with:', posCapitalDetails);
+      try {
+        //   addPosCapital(posCapitalDetails)
+        //     .then((data) => {
+        //       closeModal();
+        //     })
+        //     .catch((data) => {
+        //       showToast('fail', `❎ ${data.message}`);
+        //       console.error('❎ Failed to Add Pos Capital:', data.message);
+        //     });
+        console.log('Sending POS Capital with:', posCapitalDetails);
 
-//         // closeModal(); // close modal after success
-//       } catch (err) {
-//         console.error('Error creating shop:', err.message);
-//       }
-//     });
-//   }
-// }
+        // closeModal(); // close modal after success
+      } catch (err) {
+        console.error('Error creating shop:', err.message);
+      }
+    });
+  }
+}
 
-// document.addEventListener('DOMContentLoaded', () => {
-//   initAccountOverview();
-// });
+document.addEventListener('DOMContentLoaded', () => {
+  initAccountOverview();
+});
 
 // JS For Modal
 

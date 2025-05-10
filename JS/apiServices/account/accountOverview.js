@@ -36,8 +36,8 @@ export function updateCapitalUI(posCapitalData) {
   const posCapital = posCapitalData?.data?.totalCapital || 0;
 
   if (posCapitalData) {
-    cashInMachine.value = posCapital;
-    cashAtHand.textContent = posCapitalData.cashAtHand || 0;
-    totalPosCapital.textContent = posCapital || 0;
+    if (cashInMachine) cashInMachine.value = posCapital;
+    //  if (cashAtHand) cashAtHand.value = posCapitalData.cashAtHand || 0;
+    if (totalPosCapital) totalPosCapital.value = posCapital;
   }
 }

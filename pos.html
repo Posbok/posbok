@@ -130,7 +130,7 @@
                POS TRANSACTION
             </h2>
 
-            <form class="pos-method-form" id="myForm" name="pos-transaction" netlify>
+            <form class="pos-method-form" id="myForm" name="pos-transaction">
 
                <div class="pos-method-form_input">
                   <label for="transactionType">Select Transaction Type:</label>
@@ -138,16 +138,16 @@
                   <select id="transactionType" name="transactionType">
                      <option value="withdrawal">Withdraw</option>
                      <option value="deposit">Deposit</option>
-                     <option value="withdrawal/transfer">Withdrawal/Transfer</option>
-                     <option value="bill-Payment">Bill Payment</option>
+                     <option value="withdrawal_transfer">Withdrawal/Transfer</option>
+                     <option value="bill_Payment">Bill Payment</option>
                   </select>
                </div>
 
-               <div class="pos-method-form_input withdrawalTransactionType">
-                  <!-- The backend still uses withdrawalType -->
-                  <label for="withdrawalType">Transaction Payment Method:</label>
+               <div class="pos-method-form_input paymentMethodType">
+                  <!-- The backend still uses paymentMethod -->
+                  <label for="paymentMethod">Transaction Payment Method:</label>
 
-                  <select id="withdrawalType" name="withdrawalType">
+                  <select id="paymentMethod" name="paymentMethod">
                      <option value="card">Card</option>
                      <option value="transfer">Transfer</option>
                      <option value="cash">Cash</option>
@@ -211,17 +211,31 @@
                </div>
 
                <div class="pos-method-form_input">
-                  <label for="POS Remark">Recipt ID / Time Stamp</label>
+                  <label for="POSReceiptId">Recipt ID / Time Stamp</label>
 
                   <input id="posTransactionConfirmation" type="text" placeholder="Receipt ID / Time Stamp"
                      name="posTransactionConfirmation" required>
+               </div>
+
+               <div class="pos-method-form_input">
+                  <label for="customerName">Customer Name</label>
+
+                  <input id="posCustomerName" type="text" placeholder="Enter Customer Name" name="posCustomerName"
+                     required>
+               </div>
+
+               <div class="pos-method-form_input">
+                  <label for="posCustomerPhone">Customer Phone Numebr</label>
+
+                  <input id="posCustomerPhone" type="text" placeholder="Enter Customer Phone Number"
+                     name="posCustomerPhone" required>
                </div>
 
                <div class="pos-method-form_input posRemarksDiv">
                   <label for="POS Remark">Transaction Remarks</label>
 
                   <input id="posTransactionRemark" type="text" placeholder="Remarks" name="posTransactionRemark"
-                     required>
+                     value="Successful" required>
                </div>
 
                <div class="center-button">
@@ -306,5 +320,32 @@
       </div>
    </form>
 </body>
+
+<script>
+   // Sample prefixes for Nigerian numbers
+   const prefixes = ['079', '089', '089', '099', '093'];
+
+   // Generate random number
+   function generateRandomPhoneNumber() {
+      const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+      const randomDigits = Math.floor(10000000 + Math.random() * 90000000); // 8 digits
+      return prefix + randomDigits;
+   }
+
+   // Set it as default value
+   document.getElementById('posCustomerPhone').value = generateRandomPhoneNumber();
+   document.getElementById('posTransactionConfirmation').value = generateRandomPhoneNumber();
+
+   function generateRandomName() {
+      const names = ['Divine', 'Desmond', 'Susan', 'Gift', 'Precious', 'Onyeka', 'Brilliant'];
+
+      const name = names[Math.floor(Math.random() * names.length)];
+
+      return `${name}`;
+   }
+
+   document.getElementById('posCustomerName').value = generateRandomName();
+
+</script>
 
 </html>

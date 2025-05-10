@@ -10,6 +10,8 @@ export function clearFormInputs() {
     '.depositPosCapitalModal'
   );
 
+  const createPosTransactionForm = document.querySelector('.pos-method-form');
+
   //   console.log('activated');
 
   //   if (createStaffForm || updateStaffForm) {
@@ -110,6 +112,21 @@ export function clearFormInputs() {
     if (currentShopDisplay) currentShopDisplay.innerText = 'No Shop Assigned';
 
     delete staffManageForm.dataset.bound;
+  }
+
+  // Clear POS Transaction Form Inputs
+  if (createPosTransactionForm) {
+    createPosTransactionForm
+      .querySelectorAll('input, textarea, select')
+      .forEach((el) => {
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          el.checked = false;
+        } else {
+          el.value = '';
+        }
+      });
+
+    delete createPosTransactionForm.dataset.staffId;
   }
 }
 
