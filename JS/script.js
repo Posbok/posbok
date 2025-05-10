@@ -91,14 +91,14 @@ export function depositPosCapitalForm() {
       };
 
       try {
-        //   addPosCapital(posCapitalDetails)
-        //     .then((data) => {
-        //       closeModal();
-        //     })
-        //     .catch((data) => {
-        //       showToast('fail', `❎ ${data.message}`);
-        //       console.error('❎ Failed to Add Pos Capital:', data.message);
-        //     });
+        addPosCapital(posCapitalDetails)
+          .then((data) => {
+            closeModal();
+          })
+          .catch((data) => {
+            showToast('fail', `❎ ${data.message}`);
+            console.error('❎ Failed to Add Pos Capital:', data.message);
+          });
         console.log('Sending POS Capital with:', posCapitalDetails);
 
         // closeModal(); // close modal after success

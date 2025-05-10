@@ -142,17 +142,27 @@ export function formatAmountWithCommas(amount) {
 
 // Function to handle input formatting and remove commas when submitting
 export function formatAmountWithCommasOnInput(input) {
-  console.log('object');
+  //   console.log('formatAmountWithCommasOnInput() Reached');
+
   let value = input.value;
   value = value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
   input.value = formatAmountWithCommas(value);
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-  const input = document.getElementById('posCapitalAmount');
-  if (input)
-    input.addEventListener('input', function () {
-      formatAmountWithCommasOnInput(input);
+  const posCapitalAmountInput = document.getElementById('posCapitalAmount');
+  const posTransactionAmountInput = document.getElementById(
+    'posTransactionAmount'
+  );
+
+  if (posCapitalAmountInput)
+    posCapitalAmountInput.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(posCapitalAmountInput);
+    });
+
+  if (posTransactionAmountInput)
+    posTransactionAmountInput.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(posTransactionAmountInput);
     });
 });
 
@@ -160,6 +170,16 @@ document.addEventListener('DOMContentLoaded', function () {
 window.formatAmountWithCommasOnInput = formatAmountWithCommasOnInput;
 
 // When submitting, remove commas from the value before processing
-export function getAmountForSubmission(input) {
-  return input.value.replace(/,/g, ''); // Remove commas for backend submission
+// export function getAmountForSubmission(input) {
+//   console.log('This is the input received from call', input);
+//   return input.value.replace(/,/g, ''); // Remove commas for backend submission
+// }
+
+export function getAmountForSubmission(inputOrString) {
+  const rawValue =
+    typeof inputOrString === 'string'
+      ? inputOrString
+      : inputOrString?.value || '';
+
+  return rawValue.replace(/,/g, '');
 }

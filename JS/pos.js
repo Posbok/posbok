@@ -5,7 +5,7 @@ import {
 } from './apiServices/pos/posResources';
 import { closeModal, showToast } from './script';
 import config from '../config.js';
-import { clearFormInputs } from './helper/helper.js';
+import { clearFormInputs, getAmountForSubmission } from './helper/helper.js';
 
 const userData = config.userData;
 const dummyShopId = config.dummyShopId;
@@ -131,13 +131,13 @@ document.addEventListener('DOMContentLoaded', function () {
   const checkboxes = document.querySelectorAll('input[type="radio"]');
 
   function updateStatus() {
-    if (posSuccessfulCheckbox.checked) {
-      posRemarksDiv.style.display = 'none';
-      posTransactionRemark.value = 'Successful';
-      posTransactionRemark.disabled = true;
+    if (posSuccessfulCheckbox?.checked) {
+      if (posRemarksDiv) posRemarksDiv.style.display = 'none';
+      if (posTransactionRemark) posTransactionRemark.value = 'Successful';
+      if (posTransactionRemark) posTransactionRemark.disabled = true;
     } else {
-      posRemarksDiv.style.display = 'block';
-      posTransactionRemark.disabled = false;
+      if (posRemarksDiv) posRemarksDiv.style.display = 'block';
+      if (posTransactionRemark) posTransactionRemark.disabled = false;
     }
   }
 
@@ -254,30 +254,30 @@ export async function handlePosFormSubmit() {
       e.preventDefault();
 
       const amount = document.getElementById('posTransactionAmount').value;
-      const fee = document.getElementById('posTransactionFee').value;
       const customerName = document.getElementById('posCustomerName').value;
       const customerPhone = document.getElementById('posCustomerPhone').value;
       const posFeePaymentType =
         document.getElementById('posFeePaymentType').value;
-      const machineFeeContainer = document.querySelector('.machine-fee').value;
-      const machineFeeInput = document.getElementById('posMachineFee').value;
-      // const posMachineFee = document.getElementById('posMachineFee');
       const transactionType = document.getElementById('transactionType').value;
       const paymentMethod = document.getElementById('paymentMethod').value;
-      const posSuccessfulCheckbox = document.getElementById(
-        'posSuccessfulCheckbox'
-      ).value;
-      const posPendingCheckbox =
-        document.getElementById('posPendingCheckbox').value;
-      const posRemarksDiv = document.querySelector('.posRemarksDiv').value;
-      const paymentMethodTypeDiv =
-        document.querySelector('.paymentMethodType').value;
       const posTransactionRemark = document.getElementById(
         'posTransactionRemark'
       ).value;
-      const posTransactionConfirmation = document.getElementById(
-        'posTransactionConfirmation'
-      ).value;
+      const posRemarksDiv = document.querySelector('.posRemarksDiv').value;
+      const paymentMethodTypeDiv =
+        document.querySelector('.paymentMethodType').value;
+      // const fee = document.getElementById('posTransactionFee').value;
+      // const machineFeeContainer = document.querySelector('.machine-fee').value;
+      // const machineFeeInput = document.getElementById('posMachineFee').value;
+      // const posMachineFee = document.getElementById('posMachineFee');
+      // const posSuccessfulCheckbox = document.getElementById(
+      //   'posSuccessfulCheckbox'
+      // ).value;
+      // const posPendingCheckbox =
+      //   document.getElementById('posPendingCheckbox').value;
+      // const posTransactionConfirmation = document.getElementById(
+      //   'posTransactionConfirmation'
+      // ).value;
 
       //   isSubmitting = true;
 
@@ -290,39 +290,35 @@ export async function handlePosFormSubmit() {
       const posFormData = {
         shopId: shopId,
         transactionType: transactionType.toUpperCase(),
-        amount: Number(amount),
+        amount: Number(getAmountForSubmission(amount)),
         customerName: customerName,
         customerPhone: customerPhone,
         paymentMethod: paymentMethod.toUpperCase(),
-        //   transaction_fee: Number(fee),
-        //   machine_fee: Number(machineFeeInput),
         chargePaymentMethod: posFeePaymentType.toUpperCase(),
         remarks: posTransactionRemark,
+        //   transaction_fee: Number(fee),
+        //   machine_fee: Number(machineFeeInput),
       };
 
       try {
-        console.log('📦 POS Ttransaction Details:', posFormData);
+        //   console.log('📦 POS Ttransaction Details:', posFormData);
 
         const posTransactionCreated = await createPosTransaction(posFormData);
 
-        if (posTransactionCreated) {
-          //  isSubmitting = false;
-          console.log(
-            'POS transaction sent successfully:',
-            posTransactionCreated
-          );
-          showToast('success', 'POS transaction sent  successfully! ⭐');
-        } else {
-          showToast('fail', 'Failed to send POS transaction. ❎');
-          //  isSubmitting = false;
-        }
+        //   console.log(
+        //     'POS transaction sent successfully:',
+        //     posTransactionCreated
+        //   );
+        showToast('success', `✅ ${posTransactionCreated.message}`);
       } catch (error) {
-        console.error('Error sending POS transaction:', error);
-        showToast('fail', 'POS transaction not sent. ❎');
+        //   console.error('Error sending POS transaction:', error);
+        showToast(
+          'fail',
+          `❎ ${posTransactionCreated.message} || ❎ POS transaction not created.`
+        );
       } finally {
         // reset form inputs
         resetFormInputs();
-        //   clearFormInputs();
       }
 
       function resetFormInputs() {
@@ -330,49 +326,16 @@ export async function handlePosFormSubmit() {
         document.getElementById('paymentMethod').value = 'card';
         document.getElementById('posFeePaymentType').value = 'card';
         document.getElementById('posTransactionAmount').value = '';
-        document.getElementById('posTransactionFee').value = '';
-        document.getElementById('posMachineFee').value = '';
         document.getElementById('posTransactionRemark').value = '';
-        document.getElementById('posTransactionConfirmation').value = '';
-        document.getElementById('posSuccessfulCheckbox').checked = false;
-        document.getElementById('posPendingCheckbox').checked = false;
         document.querySelector('.paymentMethodType').style.display = 'block';
         document.querySelector('.posRemarksDiv').style.display = 'block';
+
+        //   document.getElementById('posTransactionFee').value = '';
+        //   document.getElementById('posMachineFee').value = '';
+        //   document.getElementById('posTransactionConfirmation').value = '';
+        //   document.getElementById('posSuccessfulCheckbox').checked = false;
+        //   document.getElementById('posPendingCheckbox').checked = false;
       }
-
-      console.log(posFormData);
-      // console.log(machineFeeInput.value);
-
-      // const storedData = JSON.parse(localStorage.getItem('posFormData')) || [];
-
-      // const allData = [posFormData, ...storedData];
-
-      // localStorage.setItem('posFormData', JSON.stringify(allData));
-
-      // handlePosFormSubmit(
-      //   e,
-      //   transactionType,
-      //   paymentMethod,
-      //   amount,
-      //   fee,
-      //   machineFeeInput,
-      //   posFeePaymentType,
-      //   posTransactionRemark,
-      //   posTransactionConfirmation
-      // );
-
-      //  transactionType.value = 'withdrawal';
-      //  paymentMethod.value = 'card';
-      //  posFeePaymentType.value = 'card';
-      //  amount.value = '';
-      //  fee.value = '';
-      //  machineFeeInput.value = '';
-      //  posTransactionRemark.value = '';
-      //  posTransactionConfirmation.value = '';
-      //  posSuccessfulCheckbox.checked = false;
-      //  posPendingCheckbox.checked = false;
-      //  Div.style.display = 'block';
-      //  posRemarksDiv.style.display = 'block';
     });
   }
 }

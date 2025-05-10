@@ -97,7 +97,7 @@ export function openDepositPosCapitalModal() {
 
 export async function createPosTransaction(transactionDetail) {
   try {
-    console.log('Sending POST request...');
+    //  console.log('Sending POST request...');
     const posTransactionData = await safeFetch(
       `${baseUrl}/api/pos/transactions`,
       {
@@ -110,10 +110,10 @@ export async function createPosTransaction(transactionDetail) {
       }
     );
 
-    console.log('Response received...');
+    //  console.log('Response received...');
 
     if (posTransactionData) {
-      console.log('POS transaction added successfully:', posTransactionData);
+      // console.log('POS transaction added successfully:', posTransactionData);
       showToast('success', `✅ ${posTransactionData.message}`);
     }
 

@@ -132,6 +132,7 @@
 
             <form class="pos-method-form" id="myForm" name="pos-transaction">
 
+               <!-- transaction Type -->
                <div class="pos-method-form_input">
                   <label for="transactionType">Select Transaction Type:</label>
 
@@ -143,8 +144,9 @@
                   </select>
                </div>
 
+               <!-- Payment Methos Type -->
                <div class="pos-method-form_input paymentMethodType">
-                  <!-- The backend still uses paymentMethod -->
+
                   <label for="paymentMethod">Transaction Payment Method:</label>
 
                   <select id="paymentMethod" name="paymentMethod">
@@ -154,28 +156,29 @@
                   </select>
                </div>
 
+               <!-- Transaction Amount -->
                <div class="pos-method-form_input">
-                  <label for="amount">Set Amount</label>
+                  <label for="amount">Transaction Amount</label>
 
                   <div class="naira-input-container">
                      <input id="posTransactionAmount" type="text" placeholder="Enter Amount" name="posTransactionAmount"
-                        oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
+                        required>
                      <span class="naira">&#x20A6;</span>
                   </div>
                </div>
 
                <!-- Machine Fee -->
-               <div class="pos-method-form_input machine-fee">
+               <!-- <div class="pos-method-form_input machine-fee">
                   <label for="Pos Machine Fee">Machine Fee</label>
 
                   <div class="naira-input-container">
                      <input class="posMachineFee" id="posMachineFee" type="text" name="posMachineFee" disabled>
                      <span class="naira">&#x20A6;</span>
                   </div>
-               </div>
+               </div> -->
 
-
-               <div class="pos-method-form_input">
+               <!-- POS FEES -->
+               <!-- <div class="pos-method-form_input">
                   <label for="fee">Set Fee</label>
 
                   <div class="naira-input-container">
@@ -183,8 +186,9 @@
                         oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="posTransactionFee" required>
                      <span class="naira">&#x20A6;</span>
                   </div>
-               </div>
+               </div> -->
 
+               <!-- FEE/CHARGE PAYMENT METHOD -->
                <div class="pos-method-form_input feePaymentType">
                   <label for="feePaymentType">Fee Payment Method:</label>
 
@@ -195,7 +199,8 @@
                   </select>
                </div>
 
-               <div class="simReg-method-form_input">
+               <!-- SUCCESSFUL / PENDING -->
+               <!-- <div class="simReg-method-form_input">
                   <div class="checkbox">
                      <label for="Status" class="heading-subtext">Status</label>
                      <div class="checkbox-container">
@@ -208,15 +213,17 @@
                         <label for="posPendingCheckbox">Pending</label>
                      </div>
                   </div>
-               </div>
+               </div> -->
 
-               <div class="pos-method-form_input">
-                  <label for="POSReceiptId">Recipt ID / Time Stamp</label>
+               <!-- RECEIPT / TIMESTAMP -->
+               <!-- <div class="pos-method-form_input">
+                  <label for="POSReceiptId">Receipt ID / Time Stamp</label>
 
                   <input id="posTransactionConfirmation" type="text" placeholder="Receipt ID / Time Stamp"
                      name="posTransactionConfirmation" required>
-               </div>
+               </div> -->
 
+               <!-- CUSTOMER NAME -->
                <div class="pos-method-form_input">
                   <label for="customerName">Customer Name</label>
 
@@ -224,6 +231,7 @@
                      required>
                </div>
 
+               <!-- CUSTOMER PHONE NUMBER -->
                <div class="pos-method-form_input">
                   <label for="posCustomerPhone">Customer Phone Numebr</label>
 
@@ -235,7 +243,7 @@
                   <label for="POS Remark">Transaction Remarks</label>
 
                   <input id="posTransactionRemark" type="text" placeholder="Remarks" name="posTransactionRemark"
-                     value="Successful" required>
+                     value="Successful Transaction - AUTO" required>
                </div>
 
                <div class="center-button">
@@ -334,7 +342,7 @@
 
    // Set it as default value
    document.getElementById('posCustomerPhone').value = generateRandomPhoneNumber();
-   document.getElementById('posTransactionConfirmation').value = generateRandomPhoneNumber();
+   // document.getElementById('posTransactionConfirmation').value = generateRandomPhoneNumber();
 
    function generateRandomName() {
       const names = ['Divine', 'Desmond', 'Susan', 'Gift', 'Precious', 'Onyeka', 'Brilliant'];
