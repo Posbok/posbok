@@ -125,36 +125,36 @@ export async function createPosTransaction(transactionDetail) {
   }
 }
 
-export async function getPosTransactions(shopId) {
-  //   console.log(shopId);
-  try {
-    //  console.log('Sending POST request...');
+// export async function getPosTransactions(shopId) {
+//   //   console.log(shopId);
+//   try {
+//     //  console.log('Sending POST request...');
 
-    const posTransactionsData = await safeFetch(
-      `${baseUrl}/api/pos/transactions?shopId=${shopId}&page=1&limit=10`,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-          //  'Content-Type': 'application/json',
-        },
-      }
-    );
+//     const posTransactionsData = await safeFetch(
+//       `${baseUrl}/api/pos/transactions?shopId=${shopId}&page=1&limit=10`,
+//       {
+//         method: 'GET',
+//         headers: {
+//           Authorization: `Bearer ${userToken}`,
+//           //  'Content-Type': 'application/json',
+//         },
+//       }
+//     );
 
-    //  console.log('Response received...');
+//     //  console.log('Response received...');
 
-    if (posTransactionsData) {
-      // console.log('POS Transactiion received successfully:', posTransactionsData);
+//     if (posTransactionsData) {
+//       // console.log('POS Transactiion received successfully:', posTransactionsData);
 
-      showToast('success', `✅ ${posTransactionsData.message}`);
-    }
+//       showToast('success', `✅ ${posTransactionsData.message}`);
+//     }
 
-    return posTransactionsData;
-  } catch (error) {
-    console.error('Error receiving POS Transactiion:', error);
-    throw error;
-  }
-}
+//     return posTransactionsData;
+//   } catch (error) {
+//     console.error('Error receiving POS Transactiion:', error);
+//     throw error;
+//   }
+// }
 
 // export async function getPosTransactions(page = 1, pageSize = 25) {
 //   const todayISO = getCurrentDateISO();
@@ -215,6 +215,45 @@ export async function getPosTransactions(shopId) {
 //     return [];
 //   }
 // }
+
+export async function getPosTransactions({
+  shopId,
+  page = 1,
+  limit = 10,
+  filters = {},
+}) {
+  try {
+    const queryParams = new URLSearchParams({
+      shopId,
+      page,
+      limit,
+    });
+
+    if (filters.startDate) queryParams.append('startDate', filters.startDate);
+    if (filters.endDate) queryParams.append('endDate', filters.endDate);
+    if (filters.type) queryParams.append('type', filters.type);
+    if (filters.status) queryParams.append('status', filters.status);
+
+    const posTransactionsData = await safeFetch(
+      `${baseUrl}/api/pos/transactions?${queryParams.toString()}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    if (posTransactionsData) {
+      showToast('success', `✅ ${posTransactionsData.message}`);
+    }
+
+    return posTransactionsData;
+  } catch (error) {
+    console.error('Error receiving POS Transaction:', error);
+    throw error;
+  }
+}
 
 export async function createPosTransactin(transactionDetail) {
   try {

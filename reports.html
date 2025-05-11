@@ -141,11 +141,50 @@
          </div>
       </div> -->
 
+      <!-- POS TABLE -->
       <div class="reports card">
          <div class="reports-method">
             <h2 class="heading-text mb-2">
                POS Reports
             </h2>
+
+            <p class="filter-heading">Filter Transactions</p>
+            <div class="filter-section mb-2">
+               <label>
+                  Start Date:
+                  <input type="date" id="startDateFilter">
+               </label>
+
+               <label>
+                  End Date:
+                  <input type="date" id="endDateFilter">
+               </label>
+
+               <label>
+                  Type:
+                  <select id="typeFilter">
+                     <option value="">All</option>
+                     <option value="deposit">Deposit</option>
+                     <option value="withdrawal">Withdrawal</option>
+                     <option value="transfer">Transfer</option>
+                     <option value="bill">Bill Payment</option>
+                  </select>
+               </label>
+
+               <label>
+                  Status:
+                  <select id="statusFilter">
+                     <option value="">All</option>
+                     <option value="successful">Successful</option>
+                     <option value="failed">Failed</option>
+                     <option value="pending">Pending</option>
+                  </select>
+               </label>
+
+               <button id="applyFiltersBtn" class="hero-btn-dark">Apply Filters</button>
+            </div>
+
+            <!-- <div id="transactionList" class="transaction-list mb-3"></div> -->
 
             <div class="table-header">
                <!-- <h2 class="heading-subtext"> POS </h2> -->
@@ -163,7 +202,7 @@
                         <th class="py-1">Amount</th>
                         <th class="py-1">Charges</th>
                         <th class="py-1">Machine Fee</th>
-                        <th class="py-1">Fee Payment Method</th>
+                        <th class="py-1">Charge Payment Method</th>
                         <th class="py-1">Payment Method</th>
                         <th class="py-1">Remarks</th>
                         <th class="py-1">Receipt ID</th>
@@ -173,18 +212,18 @@
                   <tbody>
 
                      <tr class="loading-row">
-                        <td colspan="6" class="table-error-text">Loading Transactions...</td>
+                        <td colspan="11" class="table-error-text">Loading Transactions...</td>
                      </tr>
                      <!-- 
-                     <tr class="table-body-row">
-                        <td class="py-1">3.</td>
-                        <td class="py-1">Demo Withdraw</td>
-                        <td class="py-1">&#x20A6;00,000</td>
-                        <td class="py-1">&#x20A6;0,000</td>
-                        <td class="py-1">cash</td>
-                        <td class="py-1">Transfer</td>
-                        <td class="py-1">Successful</td>
-                     </tr> -->
+                           <tr class="table-body-row">
+                              <td class="py-1">3.</td>
+                              <td class="py-1">Demo Withdraw</td>
+                              <td class="py-1">&#x20A6;00,000</td>
+                              <td class="py-1">&#x20A6;0,000</td>
+                              <td class="py-1">cash</td>
+                              <td class="py-1">Transfer</td>
+                              <td class="py-1">Successful</td>
+                           </tr> -->
                   </tbody>
 
                   <tfoot>
@@ -209,10 +248,22 @@
                         <td id="totalWithdrawalAmount" class="py-1 px-2">
                            <strong></strong>
                         </td>
+
+                        <td id="totalWithdrawalTransferAmount" class="py-1 px-2">
+                           <strong></strong>
+                        </td>
+
+                        <td id="totalBillPaymentAmount" class="py-1 px-2">
+                           <strong></strong>
+                        </td>
                         <!-- <td></td> -->
                      </tr>
                   </tfoot>
                </table>
+
+               <div id="paginationControls" class="pagination-controls mt-3">
+                  <!-- JS will generate buttons here -->
+               </div>
 
                <div class="center-button mt-2">
 
