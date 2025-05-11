@@ -150,27 +150,65 @@
 
             <p class="filter-heading">Filter Transactions</p>
             <div class="filter-section mb-2">
-               <label>
+
+               <div class="pos-method-form_input">
+                  <label for="startDateFilter">Start Date:</label>
+
+                  <input type="date" id="startDateFilter">
+               </div>
+
+               <div class="pos-method-form_input">
+                  <label for="endDateFilter">Start Date:</label>
+
+                  <input type="date" id="endDateFilter">
+               </div>
+
+               <div class="pos-method-form_input ">
+
+                  <label for="typeFilter">Transaction Type:</label>
+
+                  <select id="typeFilter" name="typeFilter">
+                     <option value="">All</option>
+                     <option value="DEPOSIT">Deposit</option>
+                     <option value="WITHDRAWAL">Withdrawal</option>
+                     <option value="WITHDRAWAL_TRANSFER">Withdrawal/Transfer</option>
+                     <option value="BILL_PAYMENT">Bill Payment</option>
+                  </select>
+               </div>
+
+               <div class="pos-method-form_input ">
+
+                  <label for="statusFilter">Status:</label>
+
+                  <select id="statusFilter" name="statusFilter">
+                     <option value="">All</option>
+                     <option value="SUCCESSFUL">Successful</option>
+                     <option value="FAILED">Failed</option>
+                     <option value="PENDING">Pending</option>
+                  </select>
+               </div>
+
+               <!-- <label>
                   Start Date:
                   <input type="date" id="startDateFilter">
-               </label>
+               </label> -->
 
-               <label>
+               <!-- <label>
                   End Date:
                   <input type="date" id="endDateFilter">
-               </label>
+               </label> -->
 
-               <label>
+               <!-- <label>
                   Type:
                   <select id="typeFilter">
                      <option value="">All</option>
-                     <option value="deposit">Deposit</option>
-                     <option value="withdrawal">Withdrawal</option>
-                     <option value="transfer">Transfer</option>
-                     <option value="bill">Bill Payment</option>
+                     <option value="DEPOSIT">Deposit</option>
+                     <option value="WITHDRAWAL">Withdrawal</option>
+                     <option value="WITHDRAWAL_TRANSFER">Withdrawal/Transfer</option>
+                     <option value="BILL_PAYMENT">Bill Payment</option>
                   </select>
-               </label>
-
+               </label> -->
+               <!-- 
                <label>
                   Status:
                   <select id="statusFilter">
@@ -179,7 +217,7 @@
                      <option value="failed">Failed</option>
                      <option value="pending">Pending</option>
                   </select>
-               </label>
+               </label> -->
 
                <button id="applyFiltersBtn" class="hero-btn-dark">Apply Filters</button>
             </div>
