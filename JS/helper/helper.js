@@ -1,3 +1,15 @@
+// isUserLoggedIn() - Used to make sure that a user is loggedin before running functions that needs to run automatically so that they don rn on Authenyication pages
+
+export function isUserLoggedIn() {
+  const token = localStorage.getItem('accessToken');
+  const user = localStorage.getItem('userData');
+  return Boolean(token && user);
+}
+
+// export function isUserLoggedIn() {
+//    return !!localStorage.getItem('accessToken') && !!localStorage.getItem('userData');
+//  }
+
 export function clearFormInputs() {
   // Select the form element and reset its inputs
   const createShopForm = document.querySelector('.createShopModal');

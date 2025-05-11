@@ -13,7 +13,11 @@ import {
   openCreateStaffModal,
   setupCreateStaffForm,
 } from './apiServices/user/userResource.js';
-import { clearFormInputs, getAmountForSubmission } from './helper/helper.js';
+import {
+  clearFormInputs,
+  getAmountForSubmission,
+  isUserLoggedIn,
+} from './helper/helper.js';
 import {
   addPosCapital,
   openDepositPosCapitalModal,
@@ -110,7 +114,10 @@ export function depositPosCapitalForm() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  initAccountOverview();
+  // isUserLoggedIN() is a conditional functions used for functions that needs to run automatically - it basically checks if the user is logged in before it fetchs. It is present in the helper.js file
+  if (isUserLoggedIn()) {
+    initAccountOverview();
+  }
 });
 
 // JS For Modal
@@ -289,7 +296,7 @@ function checkIfTokenExpiredDaily() {
 
   if (savedDate && savedDate !== today) {
     logoutUser().finally(() => {
-      // localStorage.clear();
+      localStorage.clear();
       window.location.href = 'login.html';
 
       console.log('savedDate && savedDate !== today');
