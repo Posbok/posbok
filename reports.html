@@ -157,13 +157,16 @@
                   <thead>
                      <tr class="table-header-row">
                         <th class="py-1">S/N</th>
+                        <th class="py-1">Date</th>
                         <th class="py-1">Transaction Type</th>
+                        <th class="py-1">Customer Info</th>
                         <th class="py-1">Amount</th>
-                        <th class="py-1">Fee</th>
+                        <th class="py-1">Charges</th>
                         <th class="py-1">Machine Fee</th>
                         <th class="py-1">Fee Payment Method</th>
                         <th class="py-1">Payment Method</th>
                         <th class="py-1">Remarks</th>
+                        <th class="py-1">Receipt ID</th>
                      </tr>
                   </thead>
 
@@ -186,7 +189,7 @@
 
                   <tfoot>
                      <tr class="table-foot-row px-2">
-                        <td colspan="2"></td>
+                        <td colspan="4"></td>
                         <td id="totalPosAmount" class="py-1 px-2">
                            <strong></strong>
                         </td>
@@ -200,6 +203,10 @@
                         </td>
 
                         <td id="totalDepositAmount" class="py-1 px-2">
+                           <strong></strong>
+                        </td>
+
+                        <td id="totalWithdrawalAmount" class="py-1 px-2">
                            <strong></strong>
                         </td>
                         <!-- <td></td> -->

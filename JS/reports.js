@@ -75,7 +75,7 @@ async function renderPosTable(page = 1, pageSize = 25) {
     totalItems = posTransactionData.data.totalItems;
     currentPage = posTransactionData.data.currentPage;
 
-    console.log('posTransactionData', posTransactionData);
+    //  console.log('posTransactionData', posTransactionData);
     console.log('posTransactions', posTransactions);
 
     // Append new transactions to the main array
@@ -101,39 +101,46 @@ async function renderPosTable(page = 1, pageSize = 25) {
         business_day,
         transaction_time,
         charges,
-        //   fees: { fee_amount },
+        fees,
 
         transaction_fee,
         machine_fee,
       } = posTransaction;
 
-      const feePaymentType = toTitleCase(fee_payment_type || 'N/A');
-      const transactionType = transaction_type?.type || 'N/A';
-      const withdrawalType = toTitleCase(withdrawal_type?.type || 'N/A');
+      const feeAmount = fees?.fee_amount || '-';
+
+      // console.log('Fee Amount:', feeAmount);
+
+      // const feePaymentType = toTitleCase(fee_payment_type || 'N/A');
+      // const transactionType = transaction_type?.type || 'N/A';
+      // const withdrawalType = toTitleCase(withdrawal_type?.type || 'N/A');
 
       const row = document.createElement('tr');
       row.classList.add('table-body-row');
       row.innerHTML = `
          <td class="py-1">${index + 1}.</td>
+         <td class="py-1">${business_day}</td>
          <td class="py-1 posTransTypeReport">${transaction_type}</td>
+         <td class="py-1 posCustomerInfo">${`${customer_name} - ${customer_phone}`}</td>
          <td class="py-1 posAmountReport">&#x20A6;${formatAmountWithCommas(
            amount
-         )}</td>
-         <td class="py-1 posFeeReport">&#x20A6;${formatAmountWithCommas(
-           transaction_fee
          )}</td>
          <td class="py-1 posMachineFeeReport">&#x20A6;${formatAmountWithCommas(
            machine_fee
          )}</td>
-         <td class="py-1 posFeePaymentMethodReport">${feePaymentType}</td>
+         <td class="py-1 posFeeReport">&#x20A6;${formatAmountWithCommas(
+           feeAmount
+         )}</td>
+         <td class="py-1 posFeePaymentMethodReport">${fee_payment_type}</td>
          <td class="py-1 posPaymentMethodReport">${payment_method}</td>
          <td class="py-1 posPaymentMethodRemark">${remarks}</td>
+         <td class="py-1 posPaymentMethodRemark">${receipt_id}</td>
        `;
       posTableBody.appendChild(row);
     });
 
     // Update total amounts
-    //  updateTotalPosAmounts(allPosTransactions);
+    updateTotalPosAmounts(allPosTransactions);
 
     // Handle Load More button visibility
     //  if (currentPage >= totalPages) {
@@ -331,6 +338,9 @@ function updateTotalPosAmounts(data) {
   const totalPosFee = document.getElementById('totalPosFee');
   const totalMachineFee = document.getElementById('totalMachineFee');
   const totalDepositAmount = document.getElementById('totalDepositAmount');
+  const totalWithdrawalAmount = document.getElementById(
+    'totalWithdrawalAmount'
+  );
 
   if (!data || data.length === 0) {
     if (totalPosAmount) {
@@ -348,34 +358,71 @@ function updateTotalPosAmounts(data) {
     return;
   }
 
+  //   Deposit Amount Sum
   const depositTransactions = data.filter(
-    (item) => item.transaction_type.type === 'deposit'
+    (item) => item.transaction_type === 'DEPOSIT'
   );
 
-  const withdrawalTransferTransactions = data.filter(
-    (item) => item.transaction_type.type === 'withdrawal/transfer'
-  );
-
-  const filteredTransactions = data.filter(
-    (item) =>
-      item.transaction_type.type !== 'deposit' &&
-      item.transaction_type.type !== 'withdrawal/transfer'
-  );
-
-  const DepositAmount = depositTransactions.reduce(
-    (sum, item) => sum + item.transaction_amount,
+  const depositAmount = depositTransactions.reduce(
+    (sum, item) => sum + Number(item.amount),
     0
+  );
+
+  //   console.log('object', depositTransactions);
+  console.log('Total deposit amount:', depositAmount);
+
+  //   Withdrawal Amount Sum
+  const withdrawalTransactions = data.filter(
+    (item) => item.transaction_type === 'WITHDRAWAL'
+  );
+
+  const withdrawalAmount = withdrawalTransactions.reduce(
+    (sum, item) => sum + Number(item.amount),
+    0
+  );
+
+  //   console.log('object', withdrawalTransactions);
+  console.log('Total withdrawal amount:', withdrawalAmount);
+
+  //   Withdrawal_Transfer Amount Sum
+  const withdrawalTransferTransactions = data.filter(
+    (item) => item.transaction_type === 'WITHDRAWAL_TRANSFER'
   );
 
   const withdrawalTransferAmount = withdrawalTransferTransactions.reduce(
-    (sum, item) => sum + item.transaction_amount,
+    (sum, item) => sum + Number(item.amount),
     0
   );
 
-  const totalAmount = filteredTransactions.reduce(
-    (sum, item) => sum + item.transaction_amount,
+  //   Bill Payment Amount Sum
+  const billPaymentTransactions = data.filter(
+    (item) => item.transaction_type === 'BILL_PAYMENT'
+  );
+
+  const billPaymentAmount = billPaymentTransactions.reduce(
+    (sum, item) => sum + Number(item.amount),
     0
   );
+
+  //   console.log('object', billPaymentTransactions);
+  console.log('Total Bill Payment amount:', billPaymentAmount);
+
+  //   Total Withdrawals and Bill Payment
+  const filteredTransactions = data.filter(
+    (item) =>
+      item.transaction_type !== 'DEPOSIT' &&
+      item.transaction_type !== 'WITHDRAWAL_TRANSFER'
+  );
+
+  const totalAmount = filteredTransactions.reduce(
+    (sum, item) => sum + Number(item.amount),
+    0
+  );
+
+  //   const totalAmount = filteredTransactions.reduce(
+  //     (sum, item) => sum + item.transaction_amount,
+  //     0
+  //   );
 
   const totalFee = data.reduce((sum, item) => sum + item.transaction_fee, 0);
 
@@ -401,7 +448,13 @@ function updateTotalPosAmounts(data) {
 
   if (totalDepositAmount) {
     totalDepositAmount.innerHTML = `<strong>Total Deposit = &nbsp;&#x20A6;${formatAmountWithCommas(
-      DepositAmount
+      depositAmount
+    )}</strong>`;
+  }
+
+  if (totalWithdrawalAmount) {
+    totalWithdrawalAmount.innerHTML = `<strong>Total Withdrawals = &nbsp;&#x20A6;${formatAmountWithCommas(
+      withdrawalAmount
     )}</strong>`;
   }
 }

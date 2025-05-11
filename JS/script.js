@@ -94,20 +94,19 @@ export function depositPosCapitalForm() {
         amount: Number(getAmountForSubmission(posDepositAmount)),
       };
 
+      console.log('Sending POS Capital with:', posCapitalDetails);
+
       try {
-        addPosCapital(posCapitalDetails)
-          .then((data) => {
-            closeModal();
-          })
-          .catch((data) => {
-            showToast('fail', `❎ ${data.message}`);
-            console.error('❎ Failed to Add Pos Capital:', data.message);
-          });
-        console.log('Sending POS Capital with:', posCapitalDetails);
+        const data = addPosCapital(posCapitalDetails);
+        if (data) {
+          closeModal();
+          initAccountOverview();
+        }
 
         // closeModal(); // close modal after success
       } catch (err) {
-        console.error('Error creating shop:', err.message);
+        console.error('Error adding POS Capital:', err.message);
+        showToast('fail', `❎ ${err.message}`);
       }
     });
   }
