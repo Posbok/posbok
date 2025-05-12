@@ -720,10 +720,10 @@ button:disabled:hover {
   background-color: #ec1a23; }
 
 .hero-btn-outline {
-  color: #fff;
+  background-color: transparent;
+  color: #15464C;
   font-size: 1.5rem;
-  margin: 0 !important;
-  padding: 1rem 1rem; }
+  margin: 0 !important; }
   .hero-btn-outline:hover {
     transform: scale(1.15); }
 
@@ -1630,12 +1630,6 @@ body.authentication {
   border-radius: 4px;
   font-weight: bold; }
 
-.filter-heading {
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
-  color: #333; }
-
 .filter-section {
   display: flex;
   flex-wrap: wrap;
@@ -1645,23 +1639,16 @@ body.authentication {
   padding: 1rem;
   border-radius: 0.5rem;
   border: 1px solid #ddd; }
+  .filter-section input {
+    box-shadow: none; }
+  .filter-section .filter-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; }
+    .filter-section .filter-buttons .hero-btn-dark {
+      margin-bottom: 0; }
 
 .filter-section label {
   display: flex;
   flex-direction: column;
-  font-size: 0.9rem;
-  color: #333; }
-
-.filter-section input[type="date"],
-.filter-section select {
-  padding: 0.4rem;
-  border: 1px solid #ccc;
-  border-radius: 0.3rem;
-  font-size: 0.9rem;
-  width: 160px; }
-
-#applyFiltersBtn {
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  cursor: pointer;
-  border-radius: 0.4rem; }
+  font-size: 1.5rem; }

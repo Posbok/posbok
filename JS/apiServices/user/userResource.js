@@ -435,31 +435,31 @@ export function setupCreateStaffForm() {
       }
 
       try {
-        //   const data = await createStaff(staffDetails);
-        //   if (!data || !data.data || !data.data.user) {
-        //     //  showToast('fail', `❎ Failed to register staff.`);
-        //     return;
-        //   }
-        //   const userId = data.data.user.id;
-        //   try {
-        //     const assigned = await assignUserToShop(
-        //       userId,
-        //       staffAssigningDetails
-        //     );
-        //     showToast('success', `✅ ${assigned.message}`);
-        //     closeModal();
-        //     clearFormInputs();
-        //     const newUrl = new URL(window.location.href);
-        //     newUrl.searchParams.delete('from');
-        //     setTimeout(() => {
-        //       location.reload();
-        //     }, 1000);
-        //   } catch (assignErr) {
-        //     showToast(
-        //       'fail',
-        //       `❎ ${assignErr.message || 'Failed to assign user'}`
-        //     );
-        //   }
+        const data = await createStaff(staffDetails);
+        if (!data || !data.data || !data.data.user) {
+          //  showToast('fail', `❎ Failed to register staff.`);
+          return;
+        }
+        const userId = data.data.user.id;
+        try {
+          const assigned = await assignUserToShop(
+            userId,
+            staffAssigningDetails
+          );
+          showToast('success', `✅ ${assigned.message}`);
+          closeModal();
+          clearFormInputs();
+          const newUrl = new URL(window.location.href);
+          newUrl.searchParams.delete('from');
+          setTimeout(() => {
+            location.reload();
+          }, 1000);
+        } catch (assignErr) {
+          showToast(
+            'fail',
+            `❎ ${assignErr.message || 'Failed to assign user'}`
+          );
+        }
       } catch (err) {
         // err.message will contain the "Email already in use"
         showToast('fail', `❎ ${err.message}`);

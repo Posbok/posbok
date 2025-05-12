@@ -165,13 +165,6 @@
    font-weight: bold;
 }
 
-.filter-heading {
-   font-weight: bold;
-   margin-bottom: 0.5rem;
-   font-size: 1rem;
-   color: #333;
-}
-
 .filter-section {
    display: flex;
    flex-wrap: wrap;
@@ -181,30 +174,43 @@
    padding: 1rem;
    border-radius: 0.5rem;
    border: 1px solid #ddd;
+
+   input {
+      box-shadow: none;
+   }
+
+   .filter-buttons {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      .hero-btn-dark {
+         margin-bottom: 0;
+      }
+   }
 }
 
 .filter-section label {
    display: flex;
    flex-direction: column;
-   font-size: 0.9rem;
-   color: #333;
+   font-size: 1.5rem;
 }
 
-.filter-section input[type="date"],
-.filter-section select {
-   padding: 0.4rem;
-   border: 1px solid #ccc;
-   border-radius: 0.3rem;
-   font-size: 0.9rem;
-   width: 160px;
-}
+// .filter-section input[type="date"],
+// .filter-section select {
+//    padding: 0.4rem;
+//    border: 1px solid #ccc;
+//    border-radius: 0.3rem;
+//    font-size: 0.9rem;
+//    width: 160px;
+// }
 
-#applyFiltersBtn {
-   padding: 0.5rem 1rem;
-   font-size: 0.9rem;
-   cursor: pointer;
-   border-radius: 0.4rem;
-}
+// #applyFiltersBtn {
+//    padding: 0.5rem 1rem;
+//    font-size: 0.9rem;
+//    cursor: pointer;
+//    border-radius: 0.4rem;
+// }
 
 
 

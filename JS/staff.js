@@ -335,17 +335,17 @@ export function setupUpdateStaffForm(user) {
         servicePermission: updateAccessTypeValue,
       };
 
-      console.log('📦 Staff New Details:', staffUpdatedDetails);
+      // console.log('📦 Staff New Details:', staffUpdatedDetails);
 
       try {
-        //   const data = await updateUser(user.id, staffUpdatedDetails);
-        //   if (data) {
-        //     closeModal();
-        //   }
-        //   if (!data || !data.data || !data.data.user) {
-        //     //  showToast('fail', `❎ Failed to register staff.`);
-        //     return;
-        //   }
+        const data = await updateUser(user.id, staffUpdatedDetails);
+        if (data) {
+          closeModal();
+        }
+        if (!data || !data.data || !data.data.user) {
+          //  showToast('fail', `❎ Failed to register staff.`);
+          return;
+        }
       } catch (err) {
         // err.message will contain the "Email already in use"
         showToast('fail', `❎ ${err.message}`);
