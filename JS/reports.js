@@ -112,7 +112,7 @@ async function renderPosTable(page = 1, pageSize, filters = {}) {
       filters,
     });
 
-    console.log(result);
+    //  console.log(result);
 
     if (!result) throw new Error(result.message || 'Failed to fetch');
 
@@ -149,7 +149,7 @@ async function renderPosTable(page = 1, pageSize, filters = {}) {
       groupedByDate[dateKey].push(tx);
     });
 
-    console.log(groupedByDate);
+    //  console.log(groupedByDate);
 
     let serialNumber = 1;
 
@@ -257,7 +257,7 @@ function updateTotalPosAmounts(transactions, totalRow, date) {
   );
 
   //   console.log('object', depositTransactions);
-  console.log('Total deposit amount:', depositAmount);
+  //   console.log('Total deposit amount:', depositAmount);
 
   //   Withdrawal Amount Sum
   const withdrawalTransactions = transactions.filter(
@@ -270,7 +270,7 @@ function updateTotalPosAmounts(transactions, totalRow, date) {
   );
 
   //   console.log('object', withdrawalTransactions);
-  console.log('Total withdrawal amount:', withdrawalAmount);
+  //   console.log('Total withdrawal amount:', withdrawalAmount);
 
   //   Withdrawal_Transfer Amount Sum
   const withdrawalTransferTransactions = transactions.filter(
@@ -293,7 +293,7 @@ function updateTotalPosAmounts(transactions, totalRow, date) {
   );
 
   //   console.log('object', billPaymentTransactions);
-  console.log('Total Bill Payment amount:', billPaymentAmount);
+  //   console.log('Total Bill Payment amount:', billPaymentAmount);
 
   //   POS charges Amount Sum
   const posCharges = transactions.filter((item) => item.charges);
@@ -306,7 +306,7 @@ function updateTotalPosAmounts(transactions, totalRow, date) {
   );
 
   //   console.log('object', posCharges);
-  console.log('Total POS Charges amount:', posChargesAmount);
+  //   console.log('Total POS Charges amount:', posChargesAmount);
 
   //   Total Machine
   const machineFeeItems = transactions.filter(
@@ -318,7 +318,7 @@ function updateTotalPosAmounts(transactions, totalRow, date) {
     0
   );
 
-  console.log('Total Machine fee:', totalMachineFeeAmount);
+  //   console.log('Total Machine fee:', totalMachineFeeAmount);
 
   //   total Amount Sum
   const totalAmount =
