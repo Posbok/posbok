@@ -20,9 +20,9 @@ function formatTransactionType(value) {
   switch (value.toLowerCase()) {
     case 'withdrawal':
       return 'Withdrawal';
-    case 'withdrawal/transfer':
+    case 'withdrawal_transfer':
       return 'Withdrawal & Transfer';
-    case 'bill-payment':
+    case 'bill_payment':
       return 'Bill Payment';
     case 'deposit':
       return 'Deposit';
@@ -58,13 +58,15 @@ document.getElementById('applyFiltersBtn').addEventListener('click', () => {
 });
 
 document.getElementById('resetFiltersBtn').addEventListener('click', () => {
-  document.getElementById('startDateFilter').value = '';
-  document.getElementById('endDateFilter').value = '';
-  document.getElementById('typeFilter').value = '';
-  document.getElementById('statusFilter').value = '';
+  currentFilters = {
+    startDate: (document.getElementById('startDateFilter').value = ''),
+    endDate: (document.getElementById('endDateFilter').value = ''),
+    type: (document.getElementById('typeFilter').value = ''),
+    status: (document.getElementById('statusFilter').value = ''),
+  };
 
-  // Optionally re-fetch all transactions
-  //   fetchAndDisplayTransactions(1);
+  currentPage = 1;
+  renderPosTable(currentPage, pageSize, currentFilters);
 });
 
 loadMoreButton.addEventListener('click', () => {
@@ -89,7 +91,6 @@ async function renderPosTable(page = 1, pageSize, filters = {}) {
       posTableBody.appendChild(loadingRow);
     }
 
-    //   if (loadingRow) loadMoreButton.style.display = 'none';
     loadMoreButton.style.display = 'none';
 
     // Build query with filters
@@ -110,6 +111,8 @@ async function renderPosTable(page = 1, pageSize, filters = {}) {
       limit: pageSize,
       filters,
     });
+
+    console.log(result);
 
     if (!result) throw new Error(result.message || 'Failed to fetch');
 
@@ -146,6 +149,8 @@ async function renderPosTable(page = 1, pageSize, filters = {}) {
       groupedByDate[dateKey].push(tx);
     });
 
+    console.log(groupedByDate);
+
     let serialNumber = 1;
 
     Object.entries(groupedByDate).forEach(([date, transactions]) => {
@@ -160,138 +165,6 @@ async function renderPosTable(page = 1, pageSize, filters = {}) {
      `;
       posTableBody.appendChild(groupRow);
 
-      // Insert total row (Footer for Daily Totals))
-      const totalRow = document.createElement('tr');
-      totalRow.className = 'total-row table-body-row ';
-
-      // const dailyTotal = transactions.reduce(
-      //   (sum, t) => sum + Number(t.amount),
-      //   0
-      // );
-
-      //   Deposit Amount Sum
-      const depositTransactions = transactions.filter(
-        (item) => item.transaction_type === 'DEPOSIT'
-      );
-
-      const depositAmount = depositTransactions.reduce(
-        (sum, item) => sum + Number(item.amount),
-        0
-      );
-
-      //   console.log('object', depositTransactions);
-      console.log('Total deposit amount:', depositAmount);
-
-      //   Withdrawal Amount Sum
-      const withdrawalTransactions = transactions.filter(
-        (item) => item.transaction_type === 'WITHDRAWAL'
-      );
-
-      const withdrawalAmount = withdrawalTransactions.reduce(
-        (sum, item) => sum + Number(item.amount),
-        0
-      );
-
-      //   console.log('object', withdrawalTransactions);
-      console.log('Total withdrawal amount:', withdrawalAmount);
-
-      //   Withdrawal_Transfer Amount Sum
-      const withdrawalTransferTransactions = transactions.filter(
-        (item) => item.transaction_type === 'WITHDRAWAL_TRANSFER'
-      );
-
-      const withdrawalTransferAmount = withdrawalTransferTransactions.reduce(
-        (sum, item) => sum + Number(item.amount),
-        0
-      );
-
-      //   Bill Payment Amount Sum
-      const billPaymentTransactions = transactions.filter(
-        (item) => item.transaction_type === 'BILL_PAYMENT'
-      );
-
-      const billPaymentAmount = billPaymentTransactions.reduce(
-        (sum, item) => sum + Number(item.amount || 0),
-        0
-      );
-
-      //   console.log('object', billPaymentTransactions);
-      console.log('Total Bill Payment amount:', billPaymentAmount);
-
-      //   POS charges Amount Sum
-      const posCharges = transactions.filter((item) => item.charges);
-
-      //   console.log('total pos Charge', posCharges);
-
-      const posChargesAmount = posCharges.reduce(
-        (sum, item) => sum + Number(item.charges || 0),
-        0
-      );
-
-      //   console.log('object', posCharges);
-      console.log('Total POS Charges amount:', posChargesAmount);
-
-      //   Total Machine
-      const machineFeeItems = transactions.filter(
-        (item) => item.fees && item.fees.fee_amount
-      );
-
-      const totalMachineFeeAmount = machineFeeItems.reduce(
-        (sum, item) => sum + Number(item.fees.fee_amount),
-        0
-      );
-
-      console.log('Total Machine fee:', totalMachineFeeAmount);
-
-      //   total Amount Sum
-      const totalAmount =
-        depositAmount +
-        withdrawalAmount +
-        billPaymentAmount +
-        withdrawalTransferAmount;
-
-      totalRow.innerHTML = `
-    <td colspan="4" class="date-header py-1 px-2 mt-1 mb-1">
-      <strong>${date} SUMMARY:</strong>
-    </td>
-    <td  class="date-header py-1 px-2 mt-1 mb-1">
-      <strong>Total Amount</strong> = ₦${formatAmountWithCommas(totalAmount)}
-    </td>
-
-    <td  class="date-header py-1 px-2 mt-1 mb-1">
-      <strong>Total POS Charges </strong> = ₦${formatAmountWithCommas(
-        posChargesAmount
-      )}
-    </td>
-
-    <td  class="date-header py-1 px-2 mt-1 mb-1">
-      <strong>Total Machine Fee </strong> = ₦${formatAmountWithCommas(
-        totalMachineFeeAmount
-      )}
-    </td>
-
-    <td  class="date-header py-1 px-2 mt-1 mb-1">
-      <strong>Total Deposit</strong> = ₦${formatAmountWithCommas(depositAmount)}
-    </td>
-
-    <td  class="date-header py-1 px-2 mt-1 mb-1">
-      <strong>Total Withdrawals</strong> = ₦${formatAmountWithCommas(
-        withdrawalAmount
-      )}
-    </td>
-
-    <td  class="date-header py-1 px-2 mt-1 mb-1">
-      <strong>Total Withdrawals/Transfer</strong> = ₦${formatAmountWithCommas(
-        withdrawalTransferAmount
-      )}
-    </td>
-
-    <td  class="date-header py-1 px-2 mt-1 mb-1">
-      <strong>Total Bill Paymen</strong> = ₦${formatAmountWithCommas(
-        billPaymentAmount
-      )}
-    </td>
-  `;
       //       groupRow.innerHTML = `
       //     <td colspan="11" class="date-header py-1 mt-1 mb-1">
       //       <strong>${date}</strong> — Total: ₦${formatAmountWithCommas(dailyTotal)}
@@ -323,7 +196,9 @@ async function renderPosTable(page = 1, pageSize, filters = {}) {
         row.innerHTML = `
        <td class="py-1">${serialNumber++}.</td>
        <td class="py-1">${business_day}</td>
-       <td class="py-1 posTransTypeReport">${transaction_type}</td>
+       <td class="py-1 posTransTypeReport">${formatTransactionType(
+         transaction_type
+       )}</td>
        <td class="py-1 posCustomerInfo">${`${customer_name} - ${customer_phone}`}</td>
        <td class="py-1 posAmountReport">&#x20A6;${formatAmountWithCommas(
          amount
@@ -341,26 +216,21 @@ async function renderPosTable(page = 1, pageSize, filters = {}) {
      `;
         posTableBody.appendChild(row);
       });
-      // posTableBody.appendChild(totalRow);
 
-      // Check if the current date appears in later pages
-      const isDateInFuturePages = posTransactions.some((tx) => {
-        const txDate = new Date(tx.business_day).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        });
-        return txDate === date;
-      });
+      // Insert total row (Footer for Daily Totals))
+      const totalRow = document.createElement('tr');
+      totalRow.className = 'total-row table-body-row ';
 
-      // Only append total row if no more transactions for this date in current fetch
-      if (!isDateInFuturePages) {
-        posTableBody.appendChild(totalRow);
-      }
+      // const dailyTotal = transactions.reduce(
+      //   (sum, t) => sum + Number(t.amount),
+      //   0
+      // );
+
+      // Update total amounts for each day startinf wth partial totals and ending the day with final Total.
+      updateTotalPosAmounts(transactions, totalRow, date);
+
+      posTableBody.appendChild(totalRow);
     });
-
-    // Update total amounts
-    //  updateTotalPosAmounts(allPosTransactions);
 
     // Handle Load More button visibility
     if (currentPage >= totalPages) {
@@ -375,269 +245,134 @@ async function renderPosTable(page = 1, pageSize, filters = {}) {
   }
 }
 
-// function updateTotalPosAmounts(data) {
-//   const totalPosAmount = document.getElementById('totalPosAmount');
-//   const totalPosFee = document.getElementById('totalPosFee');
-//   const totalMachineFee = document.getElementById('totalMachineFee');
-//   const totalDepositAmount = document.getElementById('totalDepositAmount');
-//   const totalWithdrawalAmount = document.getElementById(
-//     'totalWithdrawalAmount'
-//   );
-//   const totalWithdrawalTransferAmount = document.getElementById(
-//     'totalWithdrawalTransferAmount'
-//   );
-//   const totalBillPaymentAmount = document.getElementById(
-//     'totalBillPaymentAmount'
-//   );
+function updateTotalPosAmounts(transactions, totalRow, date) {
+  //   Deposit Amount Sum
+  const depositTransactions = transactions.filter(
+    (item) => item.transaction_type === 'DEPOSIT'
+  );
 
-//   //   console.log(data);
+  const depositAmount = depositTransactions.reduce(
+    (sum, item) => sum + Number(item.amount),
+    0
+  );
 
-//   if (!data || data.length === 0) {
-//     if (totalPosAmount) {
-//       totalPosAmount.innerHTML = `<strong>Total Amount = &nbsp;&#x20A6;0</strong>`;
-//     }
-//     if (totalPosFee) {
-//       totalPosFee.innerHTML = `<strong>Total Fees = &nbsp;&#x20A6;0</strong>`;
-//     }
-//     if (totalMachineFee) {
-//       totalMachineFee.innerHTML = `<strong>Machine Fees = &nbsp;&#x20A6;0</strong>`;
-//     }
-//     if (totalDepositAmount) {
-//       totalDepositAmount.innerHTML = `<strong>Total Deposit = &nbsp;&#x20A6;0</strong>`;
-//     }
-//     if (totalWithdrawalAmount) {
-//       totalWithdrawalAmount.innerHTML = `<strong>Total Withdrawal = &nbsp;&#x20A6;0</strong>`;
-//     }
-//     if (totalWithdrawalTransferAmount) {
-//       totalWithdrawalTransferAmount.innerHTML = `<strong>Total Withdrawal/Transfer = &nbsp;&#x20A6;0</strong>`;
-//     }
-//     if (totalBillPaymentAmount) {
-//       totalBillPaymentAmount.innerHTML = `<strong>Total Bill Payment = &nbsp;&#x20A6;0</strong>`;
-//     }
-//     return;
-//   }
+  //   console.log('object', depositTransactions);
+  console.log('Total deposit amount:', depositAmount);
 
-//   //   Deposit Amount Sum
-//   const depositTransactions = data.filter(
-//     (item) => item.transaction_type === 'DEPOSIT'
-//   );
+  //   Withdrawal Amount Sum
+  const withdrawalTransactions = transactions.filter(
+    (item) => item.transaction_type === 'WITHDRAWAL'
+  );
 
-//   const depositAmount = depositTransactions.reduce(
-//     (sum, item) => sum + Number(item.amount),
-//     0
-//   );
+  const withdrawalAmount = withdrawalTransactions.reduce(
+    (sum, item) => sum + Number(item.amount),
+    0
+  );
 
-//   //   console.log('object', depositTransactions);
-//   console.log('Total deposit amount:', depositAmount);
+  //   console.log('object', withdrawalTransactions);
+  console.log('Total withdrawal amount:', withdrawalAmount);
 
-//   //   Withdrawal Amount Sum
-//   const withdrawalTransactions = data.filter(
-//     (item) => item.transaction_type === 'WITHDRAWAL'
-//   );
+  //   Withdrawal_Transfer Amount Sum
+  const withdrawalTransferTransactions = transactions.filter(
+    (item) => item.transaction_type === 'WITHDRAWAL_TRANSFER'
+  );
 
-//   const withdrawalAmount = withdrawalTransactions.reduce(
-//     (sum, item) => sum + Number(item.amount),
-//     0
-//   );
+  const withdrawalTransferAmount = withdrawalTransferTransactions.reduce(
+    (sum, item) => sum + Number(item.amount),
+    0
+  );
 
-//   //   console.log('object', withdrawalTransactions);
-//   console.log('Total withdrawal amount:', withdrawalAmount);
+  //   Bill Payment Amount Sum
+  const billPaymentTransactions = transactions.filter(
+    (item) => item.transaction_type === 'BILL_PAYMENT'
+  );
 
-//   //   Withdrawal_Transfer Amount Sum
-//   const withdrawalTransferTransactions = data.filter(
-//     (item) => item.transaction_type === 'WITHDRAWAL_TRANSFER'
-//   );
+  const billPaymentAmount = billPaymentTransactions.reduce(
+    (sum, item) => sum + Number(item.amount || 0),
+    0
+  );
 
-//   const withdrawalTransferAmount = withdrawalTransferTransactions.reduce(
-//     (sum, item) => sum + Number(item.amount),
-//     0
-//   );
+  //   console.log('object', billPaymentTransactions);
+  console.log('Total Bill Payment amount:', billPaymentAmount);
 
-//   //   Bill Payment Amount Sum
-//   const billPaymentTransactions = data.filter(
-//     (item) => item.transaction_type === 'BILL_PAYMENT'
-//   );
+  //   POS charges Amount Sum
+  const posCharges = transactions.filter((item) => item.charges);
 
-//   const billPaymentAmount = billPaymentTransactions.reduce(
-//     (sum, item) => sum + Number(item.amount || 0),
-//     0
-//   );
+  //   console.log('total pos Charge', posCharges);
 
-//   //   console.log('object', billPaymentTransactions);
-//   console.log('Total Bill Payment amount:', billPaymentAmount);
+  const posChargesAmount = posCharges.reduce(
+    (sum, item) => sum + Number(item.charges || 0),
+    0
+  );
 
-//   //   POS charges Amount Sum
-//   const posCharges = data.filter((item) => item.charges);
+  //   console.log('object', posCharges);
+  console.log('Total POS Charges amount:', posChargesAmount);
 
-//   //   console.log('total pos Charge', posCharges);
+  //   Total Machine
+  const machineFeeItems = transactions.filter(
+    (item) => item.fees && item.fees.fee_amount
+  );
 
-//   const posChargesAmount = posCharges.reduce(
-//     (sum, item) => sum + Number(item.charges || 0),
-//     0
-//   );
+  const totalMachineFeeAmount = machineFeeItems.reduce(
+    (sum, item) => sum + Number(item.fees.fee_amount),
+    0
+  );
 
-//   //   console.log('object', posCharges);
-//   console.log('Total POS Charges amount:', posChargesAmount);
+  console.log('Total Machine fee:', totalMachineFeeAmount);
 
-//   //   Total Machine
-//   const machineFeeItems = data.filter(
-//     (item) => item.fees && item.fees.fee_amount
-//   );
+  //   total Amount Sum
+  const totalAmount =
+    depositAmount +
+    withdrawalAmount +
+    billPaymentAmount +
+    withdrawalTransferAmount;
 
-//   const totalMachineFeeAmount = machineFeeItems.reduce(
-//     (sum, item) => sum + Number(item.fees.fee_amount),
-//     0
-//   );
+  totalRow.innerHTML = `
+     <td colspan="4" class="date-header py-1 px-2 mt-1 mb-1">
+       <strong>${date} SUMMARY:</strong>
+     </td>
+     <td  class="date-header py-1 px-2 mt-1 mb-1">
+       <strong>Total Amount</strong> = ₦${formatAmountWithCommas(totalAmount)}
+     </td>
+ 
+     <td  class="date-header py-1 px-2 mt-1 mb-1">
+       <strong>Total POS Charges </strong> = ₦${formatAmountWithCommas(
+         posChargesAmount
+       )}
+     </td>
+ 
+     <td  class="date-header py-1 px-2 mt-1 mb-1">
+       <strong>Total Machine Fee </strong> = ₦${formatAmountWithCommas(
+         totalMachineFeeAmount
+       )}
+     </td>
+ 
+     <td  class="date-header py-1 px-2 mt-1 mb-1">
+       <strong>Total Deposit</strong> = ₦${formatAmountWithCommas(
+         depositAmount
+       )}
+     </td>
+ 
+     <td  class="date-header py-1 px-2 mt-1 mb-1">
+       <strong>Total Withdrawals</strong> = ₦${formatAmountWithCommas(
+         withdrawalAmount
+       )}
+     </td>
+ 
+     <td  class="date-header py-1 px-2 mt-1 mb-1">
+       <strong>Total Withdrawals/Transfer</strong> = ₦${formatAmountWithCommas(
+         withdrawalTransferAmount
+       )}
+     </td>
+ 
+     <td  class="date-header py-1 px-2 mt-1 mb-1">
+       <strong>Total Bill Paymen</strong> = ₦${formatAmountWithCommas(
+         billPaymentAmount
+       )}
+     </td>
+   `;
+}
 
-//   console.log('Total Machine fee:', totalMachineFeeAmount);
-
-//   //   total Amount Sum
-//   const totalAmount =
-//     depositAmount +
-//     withdrawalAmount +
-//     billPaymentAmount +
-//     withdrawalTransferAmount;
-
-//   //   Total Withdrawals and Bill Payment
-//   //   const filteredTransactions = data.filter(
-//   //     (item) =>
-//   //       item.transaction_type !== 'DEPOSIT' &&
-//   //       item.transaction_type !== 'WITHDRAWAL_TRANSFER'
-//   //   );
-
-//   //   const totalAmount = filteredTransactions.reduce(
-//   //     (sum, item) => sum + item.transaction_amount,
-//   //     0
-//   //   );
-
-//   //   Total Machine Fees
-//   //   const feeItems = data.filter((item) => item.fees && item.fees.fee_amount);
-
-//   //   const totalFee = feeItems.reduce(
-//   //     (sum, item) => sum + Number(item.fees.fee_amount),
-//   //     0
-//   //   );
-
-//   //   console.log('Total fee:', totalFee);
-
-//   if (totalPosAmount) {
-//     totalPosAmount.innerHTML = `<strong>Total Amount = &nbsp;&#x20A6;${formatAmountWithCommas(
-//       totalAmount
-//     )}</strong>`;
-//   }
-
-//   if (totalPosFee) {
-//     totalPosFee.innerHTML = `<strong>Total POS Charges = &nbsp;&#x20A6;${formatAmountWithCommas(
-//       posChargesAmount
-//     )}</strong>`;
-//   }
-
-//   if (totalMachineFee) {
-//     totalMachineFee.innerHTML = `<strong>Total Machine Fee = &nbsp;&#x20A6;${formatAmountWithCommas(
-//       totalMachineFeeAmount
-//     )}</strong>`;
-//   }
-
-//   if (totalDepositAmount) {
-//     totalDepositAmount.innerHTML = `<strong>Total Deposit = &nbsp;&#x20A6;${formatAmountWithCommas(
-//       depositAmount
-//     )}</strong>`;
-//   }
-
-//   if (totalWithdrawalAmount) {
-//     totalWithdrawalAmount.innerHTML = `<strong>Total Withdrawals = &nbsp;&#x20A6;${formatAmountWithCommas(
-//       withdrawalAmount
-//     )}</strong>`;
-//   }
-
-//   if (totalWithdrawalTransferAmount) {
-//     totalWithdrawalTransferAmount.innerHTML = `<strong>Total Withdrawals/Transfer = &nbsp;&#x20A6;${formatAmountWithCommas(
-//       withdrawalTransferAmount
-//     )}</strong>`;
-//   }
-
-//   if (totalBillPaymentAmount) {
-//     totalBillPaymentAmount.innerHTML = `<strong>Total Bill Payment = &nbsp;&#x20A6;${formatAmountWithCommas(
-//       billPaymentAmount
-//     )}</strong>`;
-//   }
-// }
-
-// renderPosTable(); called below this comment below
-// commented out - Was to be used for card kinda rendering of the data.
-
-// async function fetchAndDisplayTransactions(page = 1) {
-//   try {
-//     let startDate = document.getElementById('startDateFilter').value;
-//     let endDate = document.getElementById('endDateFilter').value;
-//     let type = document.getElementById('typeFilter').value;
-//     let status = document.getElementById('statusFilter').value;
-
-//     const queryParams = new URLSearchParams({
-//       shopId: shopId,
-//       page,
-//       limit: 10,
-//     });
-
-//     if (startDate) queryParams.append('startDate', startDate);
-//     if (endDate) queryParams.append('endDate', endDate);
-//     if (type) queryParams.append('type', type);
-//     if (status) queryParams.append('status', status);
-
-//     const response = await fetch(`/transactions?${queryParams}`);
-//     const data = await response.json();
-
-//     if (!response.ok)
-//       throw new Error(data.message || 'Failed to fetch transactions');
-
-//     generateTransactionCards(data.transactions);
-//     updatePagination(data.totalPages, page);
-//   } catch (err) {
-//     console.error('Fetch error:', err.message);
-//     transactionList.innerHTML = `<div class="error">Error: ${err.message}</div>`;
-//   }
-// }
-
-// fetchAndDisplayTransactions();
-
-// function generateTransactionCards(transactions) {
-//   const grouped = {};
-
-//   transactions.forEach((tx) => {
-//     const dateKey = new Date(tx.createdAt).toLocaleDateString(); // e.g. "5/10/2025"
-//     if (!grouped[dateKey]) grouped[dateKey] = [];
-//     grouped[dateKey].push(tx);
-//   });
-
-//   transactionList.innerHTML = ''; // Clear existing
-
-//   Object.entries(grouped).forEach(([date, transactions]) => {
-//     let total = transactions.reduce((sum, t) => sum + t.amount, 0);
-
-//     // Day header with total
-//     const header = document.createElement('div');
-//     header.className = 'day-header';
-//     header.innerHTML = `
-//            <h4>${date}</h4>
-//            <p><strong>Total:</strong> ₦${total.toLocaleString()}</p>
-//        `;
-//     transactionList.appendChild(header);
-
-//     // Transactions for the day
-//     transactions.forEach((tx) => {
-//       const card = document.createElement('div');
-//       card.className = `transaction-card ${tx.type.toLowerCase()}`;
-
-//       card.innerHTML = `
-//                <p><strong>${tx.type.toUpperCase()}</strong></p>
-//                <p>₦${tx.amount.toLocaleString()}</p>
-//                <p>${new Date(tx.createdAt).toLocaleTimeString()}</p>
-//                <p>Status: ${tx.status}</p>
-//            `;
-//       transactionList.appendChild(card);
-//     });
-//   });
-// }
 renderPosTable();
 
 // JS to Render Sold goods from LocalStorage
