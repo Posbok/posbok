@@ -436,10 +436,10 @@ export function setupCreateStaffForm() {
 
       try {
         const data = await createStaff(staffDetails);
-        if (!data || !data.data || !data.data.user) {
-          //  showToast('fail', `❎ Failed to register staff.`);
-          return;
-        }
+        //   if (!data || !data.data || !data.data.user) {
+        //     //  showToast('fail', `❎ Failed to register staff.`);
+        //     return;
+        //   }
         const userId = data.data.user.id;
         try {
           const assigned = await assignUserToShop(

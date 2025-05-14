@@ -263,15 +263,76 @@ export function populateShopDropdown(shopList = [], preselectedShopId = '') {
   //   });
 }
 
+// NEW VERSION OF UPDATING STAFF INFO - OLD VERSION UNDER THIS TWO FUNCTIONS.
+
+export function bindUpdateStaffFormListener() {
+  const form = document.querySelector('.adminUpdateUserDataModal');
+  if (!form) return;
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const userId = form.dataset.userId; // ✅ Get user ID
+    if (!userId) {
+      showToast('fail', '❎ No user selected for update.');
+      return;
+    }
+
+    const updateStaffLastName = document.getElementById(
+      'updateStaffLastName'
+    ).value;
+    const updateStaffFirstName = document.getElementById(
+      'updateStaffFirstName'
+    ).value;
+    const updateStaffAddress =
+      document.getElementById('updateStaffAddress').value;
+    const updateStaffPhoneNumber = document.getElementById(
+      'updateStaffPhoneNumber'
+    ).value;
+
+    const updateAccessTypeCheckboxes = document.querySelectorAll(
+      'input[name="updateStaffAccessType"]:checked'
+    );
+    const updateAccessType = Array.from(updateAccessTypeCheckboxes).map(
+      (cb) => cb.value
+    );
+    const updateAccessTypeValue = updateAccessType[0] || null;
+
+    const updateAccessTimeStart =
+      document.getElementById('update-start-time').value;
+    const updateAccessTimeEnd =
+      document.getElementById('update-end-time').value;
+
+    const staffUpdatedDetails = {
+      firstName: updateStaffFirstName,
+      lastName: updateStaffLastName,
+      address: updateStaffAddress,
+      phoneNumber: updateStaffPhoneNumber,
+      accountType: 'STAFF',
+      accessTimeStart: updateAccessTimeStart,
+      accessTimeEnd: updateAccessTimeEnd,
+      servicePermission: updateAccessTypeValue,
+    };
+
+    console.log('📦 Staff Update:', { userId, ...staffUpdatedDetails });
+
+    try {
+      const data = await updateUser(userId, staffUpdatedDetails);
+      closeModal();
+    } catch (err) {
+      showToast('fail', `❎ ${err.message}`);
+    }
+  });
+}
+
 export function setupUpdateStaffForm(user) {
   const form = document.querySelector('.adminUpdateUserDataModal');
+  if (!form) return;
 
-  //   console.log('Clicked user data passed to this function', user);
+  // Save user.id in the form for later use
+  form.dataset.userId = user.id;
 
-  if (!form || form.dataset.bound === 'true') return;
-
-  form.dataset.bound = 'true';
-
+  // Fill form inputs
   document.getElementById('updateStaffFirstName').value = user.firstName || '';
   document.getElementById('updateStaffLastName').value = user.lastName || '';
   document.getElementById('updateStaffPhoneNumber').value =
@@ -281,78 +342,114 @@ export function setupUpdateStaffForm(user) {
   const updateAccessTypeCheckboxes = document.querySelectorAll(
     'input[name="updateStaffAccessType"]'
   );
+  updateAccessTypeCheckboxes.forEach((checkbox) => {
+    checkbox.checked = checkbox.value === user.servicePermission;
+  });
 
-  if (updateAccessTypeCheckboxes)
-    updateAccessTypeCheckboxes.forEach(
-      (checkbox) => (checkbox.checked = false)
-    );
-
-  // Match and check the appropriate checkbox
-  const serviceType = user.servicePermission;
-  const matchedCheckbox = [...updateAccessTypeCheckboxes].find(
-    (checkbox) => checkbox.value === serviceType
-  );
-  if (matchedCheckbox) matchedCheckbox.checked = true;
-
-  if (form) {
-    form.addEventListener('submit', async function (e) {
-      e.preventDefault();
-
-      const updateStaffLastName = document.getElementById(
-        'updateStaffLastName'
-      ).value;
-      const updateStaffFirstName = document.getElementById(
-        'updateStaffFirstName'
-      ).value;
-      const updateStaffAddress =
-        document.getElementById('updateStaffAddress').value;
-      const updateStaffPhoneNumber = document.getElementById(
-        'updateStaffPhoneNumber'
-      ).value;
-
-      //  Access type checkboxes
-      const updateAccessTypeCheckboxes = document.querySelectorAll(
-        'input[name="updateStaffAccessType"]:checked'
-      );
-      const updateAccessType = Array.from(updateAccessTypeCheckboxes).map(
-        (cb) => cb.value
-      );
-      const updateAccessTypeValue = updateAccessType[0] || null;
-
-      const updateAccessTimeStart =
-        document.getElementById('update-start-time').value;
-      const updateAccessTimeEnd =
-        document.getElementById('update-end-time').value;
-
-      const staffUpdatedDetails = {
-        firstName: updateStaffFirstName,
-        lastName: updateStaffLastName,
-        address: updateStaffAddress,
-        phoneNumber: updateStaffPhoneNumber,
-        accountType: 'STAFF',
-        accessTimeStart: updateAccessTimeStart,
-        accessTimeEnd: updateAccessTimeEnd,
-        servicePermission: updateAccessTypeValue,
-      };
-
-      // console.log('📦 Staff New Details:', staffUpdatedDetails);
-
-      try {
-        const data = await updateUser(user.id, staffUpdatedDetails);
-        if (data) {
-          closeModal();
-        }
-        if (!data || !data.data || !data.data.user) {
-          //  showToast('fail', `❎ Failed to register staff.`);
-          return;
-        }
-      } catch (err) {
-        // err.message will contain the "Email already in use"
-        showToast('fail', `❎ ${err.message}`);
-      }
-    });
-  }
+  document.getElementById('update-start-time').value =
+    user.accessTimeStart || '';
+  document.getElementById('update-end-time').value = user.accessTimeEnd || '';
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  bindUpdateStaffFormListener(); // Only once
+});
+
+// ⚠️ Old version retained for comparison and reuse across other modals
+// Was causing multiple event triggers on repeated use
+
+// export function setupUpdateStaffForm(user) {
+//   const form = document.querySelector('.adminUpdateUserDataModal');
+
+//   //   console.log('Clicked user data passed to this function', user);
+
+//   if (!form || form.dataset.bound === 'true') return;
+
+//   form.dataset.bound = 'true';
+
+//   document.getElementById('updateStaffFirstName').value = user.firstName || '';
+//   document.getElementById('updateStaffLastName').value = user.lastName || '';
+//   document.getElementById('updateStaffPhoneNumber').value =
+//     user.phoneNumber || '';
+//   document.getElementById('updateStaffAddress').value = user.address || '';
+
+//   const updateAccessTypeCheckboxes = document.querySelectorAll(
+//     'input[name="updateStaffAccessType"]'
+//   );
+
+//   if (updateAccessTypeCheckboxes)
+//     updateAccessTypeCheckboxes.forEach(
+//       (checkbox) => (checkbox.checked = false)
+//     );
+
+//   // Match and check the appropriate checkbox
+//   const serviceType = user.servicePermission;
+//   const matchedCheckbox = [...updateAccessTypeCheckboxes].find(
+//     (checkbox) => checkbox.value === serviceType
+//   );
+//   if (matchedCheckbox) matchedCheckbox.checked = true;
+
+//   if (form) {
+//     form.addEventListener('submit', async function (e) {
+//       e.preventDefault();
+
+//       const updateStaffLastName = document.getElementById(
+//         'updateStaffLastName'
+//       ).value;
+//       const updateStaffFirstName = document.getElementById(
+//         'updateStaffFirstName'
+//       ).value;
+//       const updateStaffAddress =
+//         document.getElementById('updateStaffAddress').value;
+//       const updateStaffPhoneNumber = document.getElementById(
+//         'updateStaffPhoneNumber'
+//       ).value;
+
+//       //  Access type checkboxes
+//       const updateAccessTypeCheckboxes = document.querySelectorAll(
+//         'input[name="updateStaffAccessType"]:checked'
+//       );
+//       const updateAccessType = Array.from(updateAccessTypeCheckboxes).map(
+//         (cb) => cb.value
+//       );
+//       const updateAccessTypeValue = updateAccessType[0] || null;
+
+//       const updateAccessTimeStart =
+//         document.getElementById('update-start-time').value;
+//       const updateAccessTimeEnd =
+//         document.getElementById('update-end-time').value;
+
+//       const staffUpdatedDetails = {
+//         firstName: updateStaffFirstName,
+//         lastName: updateStaffLastName,
+//         address: updateStaffAddress,
+//         phoneNumber: updateStaffPhoneNumber,
+//         accountType: 'STAFF',
+//         accessTimeStart: updateAccessTimeStart,
+//         accessTimeEnd: updateAccessTimeEnd,
+//         servicePermission: updateAccessTypeValue,
+//       };
+
+//       console.log('📦 Staff New Details:', staffUpdatedDetails);
+
+//       try {
+//         const data = await updateUser(user.id, staffUpdatedDetails);
+//         if (data) {
+//           closeModal();
+//         }
+//         closeModal();
+
+//         //   if (!data || !data.data || !data.data.user) {
+//         //     //  showToast('fail', `❎ Failed to register staff.`);
+//         //     return;
+//         //   }
+//       } catch (err) {
+//         // err.message will contain the "Email already in use"
+//         showToast('fail', `❎ ${err.message}`);
+//       }
+//     });
+//   }
+// }
 
 export async function setupManageStaffForm(user) {
   const form = document.querySelector('.staffManage');
