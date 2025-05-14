@@ -23,6 +23,8 @@ export function clearFormInputs() {
   );
 
   const createPosTransactionForm = document.querySelector('.pos-method-form');
+  const addPosChargeForm = document.querySelector('.addPosChargeModal');
+  const addMachineFeesForm = document.querySelector('.addMachineFeesModal');
 
   //   console.log('activated');
 
@@ -140,6 +142,36 @@ export function clearFormInputs() {
 
     delete createPosTransactionForm.dataset.staffId;
   }
+
+  // Clear POS Charges Form Inputs
+  if (addPosChargeForm) {
+    addPosChargeForm
+      .querySelectorAll('input, textarea, select')
+      .forEach((el) => {
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          el.checked = false;
+        } else {
+          el.value = '';
+        }
+      });
+
+    delete addPosChargeForm.dataset.staffId;
+  }
+
+  // Clear POS Machine Fee Form Inputs
+  if (addMachineFeesForm) {
+    addMachineFeesForm
+      .querySelectorAll('input, textarea, select')
+      .forEach((el) => {
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          el.checked = false;
+        } else {
+          el.value = '';
+        }
+      });
+
+    delete addMachineFeesForm.dataset.staffId;
+  }
 }
 
 // function to format amounts with commas
@@ -166,6 +198,13 @@ document.addEventListener('DOMContentLoaded', function () {
   const posTransactionAmountInput = document.getElementById(
     'posTransactionAmount'
   );
+  const addPosChargeMinAmountInput = document.getElementById(
+    'addPosChargeMinAmount'
+  );
+  const addPosChargeMaxAmountInput = document.getElementById(
+    'addPosChargeMaxAmount'
+  );
+  const addPosChargeAmountInput = document.getElementById('addPosChargeAmount');
 
   if (posCapitalAmountInput)
     posCapitalAmountInput.addEventListener('input', function () {
@@ -175,6 +214,21 @@ document.addEventListener('DOMContentLoaded', function () {
   if (posTransactionAmountInput)
     posTransactionAmountInput.addEventListener('input', function () {
       formatAmountWithCommasOnInput(posTransactionAmountInput);
+    });
+
+  if (addPosChargeMinAmountInput)
+    addPosChargeMinAmountInput.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(addPosChargeMinAmountInput);
+    });
+
+  if (addPosChargeMaxAmountInput)
+    addPosChargeMaxAmountInput.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(addPosChargeMaxAmountInput);
+    });
+
+  if (addPosChargeAmountInput)
+    addPosChargeAmountInput.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(addPosChargeAmountInput);
     });
 });
 
@@ -194,4 +248,25 @@ export function getAmountForSubmission(inputOrString) {
       : inputOrString?.value || '';
 
   return rawValue.replace(/,/g, '');
+}
+
+// Turns ISO Date formats like "2025-05-14T10:46:04.164Z" into: 14 May, 2025 10:46AM
+
+export function formatDateTimeReadable(isoString) {
+  const date = new Date(isoString);
+  const options = {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  };
+
+  // e.g., "14 May 2025, 10:46 AM"
+  const formatted = date.toLocaleString('en-US', options);
+
+  // Optional tweak to remove the comma between day and year
+  const parts = formatted.split(', ');
+  return `${parts[0]} ${parts[1]}`;
 }

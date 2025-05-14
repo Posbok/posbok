@@ -13,6 +13,8 @@ export function populateShopsTable(shopData = []) {
 
   // Remove static rows and loading
 
+  //   console.log(shopData);
+
   if (tbody) tbody.innerHTML = '';
 
   if (!shopData.length) {

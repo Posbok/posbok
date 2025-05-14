@@ -1,7 +1,9 @@
 .reports,
 .goods,
 .shops,
-.staff {
+.staff,
+.posCharge,
+.machineFee {
    height: min-content;
    color: $color-secondary-dark;
 
@@ -16,7 +18,9 @@
       .reports-table-container,
       .product-table-container,
       .shops-table-container,
-      .staff-table-container {
+      .staff-table-container,
+      .posCharge-table-container,
+      .machineFee-table-container {
          overflow-x: auto;
          max-height: 40rem;
          height: 100%;

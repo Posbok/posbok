@@ -29,6 +29,7 @@
 
    <script src="/dist/main.bundle.js" defer></script>
    <script src="/dist/shops.bundle.js" defer></script>
+   <script src="/dist/pos.bundle.js" defer></script>
    <!-- <script src="dist/reports.bundle.js" defer></script> -->
 
    <title>POSBOK &mdash;BUSINESS SYSTEM 1.0</title>
@@ -223,48 +224,214 @@
          </div>
       </section>
 
+      <section class="posCharge card">
+         <div class="posCharge-method">
+            <h2 class="heading-text" style="margin-bottom: 1.5rem;">
+               POS Charges
+            </h2>
+
+            <div class="adminHeader">
+
+               <button class="hero-btn-dark openAddPosChargeModalBtn" id="openAddPosChargeModal">Add POS Charge</button>
+
+            </div>
+
+            <div class="posCharge-table-container">
+               <table class="posCharge-table">
+                  <thead>
+                     <tr class="table-header-row">
+                        <th class="py-1">S/N</th>
+                        <th class="py-1">Transaction Type</th>
+                        <th class="py-1">Min (₦)</th>
+                        <th class="py-1">Max (₦)</th>
+                        <th class="py-1">Charge (₦)</th>
+                        <th class="py-1">Created At</th>
+                     </tr>
+                  </thead>
+
+                  <tbody>
+
+                     <tr class="loading-row">
+                        <td colspan="6" class="table-error-text"></td>
+                     </tr>
+
+                     <!-- <tr class="table-body-row" id="item-list">
+                        <td class="py-1 posChargeSerialNumber">1</td>
+                        <td class="py-1 posChargeType">Withdrawal
+                        <td class="py-1 posChargeMinAmount">0</td>
+                        <td class="py-1 posChargeMaxAmount">3000</td>
+                        <td class="py-1 posChargeAmount">100</td>
+
+                        <td class="py-1 posChargeCreatedDate">14 May, 2025 10:46AM
+                        </td>
+                     </tr> -->
+                  </tbody>
+               </table>
+
+               <!-- <div class="center-button mt-2">
+                  <button id="loadMoreButton" class="hero-btn-dark">Load More</button>
+               </div> -->
+
+            </div>
+         </div>
+      </section>
+
+      <section class="machineFee card">
+         <div class="machineFee-method">
+            <h2 class="heading-text" style="margin-bottom: 1.5rem;">
+               Machine Fees
+            </h2>
+
+            <div class="adminHeader">
+
+               <button class="hero-btn-dark openAddMachineFeeModalBtn" id="openAddMachineFeeModal">Add Machine
+                  Fees</button>
+
+            </div>
+
+            <div class="machineFee-table-container">
+               <table class="machineFee-table">
+                  <thead>
+                     <tr class="table-header-row">
+                        <th class="py-1">S/N</th>
+                        <th class="py-1">Min (₦)</th>
+                        <th class="py-1">Max (₦)</th>
+                        <th class="py-1">Percentage</th>
+                        <th class="py-1">Percentage Rate</th>
+                        <th class="py-1">Fee Amount</th>
+                     </tr>
+                  </thead>
+
+                  <tbody>
+
+                     <tr class="loading-row">
+                        <td colspan="6" class="table-error-text"></td>
+                     </tr>
+
+                     <tr class="table-body-row" id="item-list">
+                        <td class="py-1 machineFeeSerialNumber">1</td>
+                        <td class="py-1 machineFeeType">Withdrawal
+                        <td class="py-1 machineFeeMinAmount">0</td>
+                        <td class="py-1 machineFeeMaxAmount">3000</td>
+                        <td class="py-1 machineFeeAmount">100</td>
+
+                        <td class="py-1 machineFeeCreatedDate">14 May, 2025 10:46AM
+                        </td>
+                     </tr>
+                  </tbody>
+               </table>
+
+               <!-- <div class="center-button mt-2">
+                  <button id="loadMoreButton" class="hero-btn-dark">Load More</button>
+               </div> -->
+
+            </div>
+         </div>
+      </section>
    </main>
 
-   <form class="add-user-form" name="add-user" netlify>
-      <div class="card addUser modal ">
+   <form class="modal-form addPosCharge-form addPosChargeModal" id="addPosChargeModal" name="addPosCharge">
+      <div class="card addPosCharge modal">
          <div>
-            <h1 class="heading-text  addItemName">Add User</h1>
+            <h1 class="heading-text">Configure POS Charges</h1>
          </div>
 
-         <div class="addUser-form_input">
-            <label for="addSurname">Surname Name</label>
+         <!-- POS Charges Transaction Type -->
+         <div class="modal-form_input">
+            <label for="addPosChargeTransactionType">TransactionType:</label>
 
-            <input id="addSurname" type="text" placeholder="Enter Surname" name="addSurname" required>
+            <select id="addPosChargeTransactionType" class="form-control" required>
+               <option value="">Select Transaction Type</option>
+               <option value="withdrawal">Withdraw</option>
+               <option value="deposit">Deposit</option>
+               <option value="withdrawal_transfer">Withdrawal/Transfer</option>
+               <option value="bill_Payment">Bill Payment</option>
+            </select>
          </div>
 
-         <div class="addUser-form_input">
-            <label for="addFirstName">First Name</label>
+         <!-- POS MIN Amount -->
+         <div class="modal-form_input">
+            <label for="addPosChargeMinAmount">Minimum Amount: </label>
 
-            <input id="addFirstName" type="text" placeholder="Enter First Name" name="addFirstName" required>
+            <input id="addPosChargeMinAmount" type="text" placeholder="Enter Minimum Amount"
+               name="addPosChargeMinAmount" required>
          </div>
 
-         <div class="addUser-form_input">
-            <label for="addStaffAddress">Staff Address</label>
+         <!-- POS MAX Amount -->
+         <div class="modal-form_input">
+            <label for="addPosChargeMaxAmount">Maximum Amount: </label>
 
-            <input id="addStaffAddress" type="text" placeholder="Enter Staff Address" name="addStaffAddress" required>
+            <input id="addPosChargeMaxAmount" type="text" placeholder="Enter Maximum Amount"
+               name="addPosChargeMaxAmount" required>
          </div>
 
-         <div class="addUser-form_input">
-            <label for="addGuarantorName">Guarantors Name</label>
+         <!-- POS Charge Amount -->
+         <div class="modal-form_input">
+            <label for="addPosChargeAmount">Charge Amount: </label>
 
-            <input id="addGuarantorName" type="text" placeholder="Enter Guarantor Name" name="addGuarantorName"
+            <input id="addPosChargeAmount" type="text" placeholder="Enter Charge Amount" name="addPosChargeAmount"
                required>
          </div>
 
-         <div class="addUser-form_input">
-            <label for="addGuarantorAddress">Guarantors Address</label>
+         <div class="center-button">
+            <button class="hero-btn-dark ">Add POS Charge</button>
+         </div>
 
-            <input id="addGuarantorAddress" type="text" placeholder="Enter Guarantors Address"
-               name="addGuarantorAddress" required>
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <form class="modal-form addMachineFees-form addMachineFeesModal" id="addMachineFeesModal" name="addMachineFees">
+      <div class="card addMachineFees modal">
+         <div>
+            <h1 class="heading-text">Configure POS Machine Fees</h1>
+         </div>
+
+         <!-- POS Machine Fees MIN Amount -->
+         <div class="modal-form_input">
+            <label for="addMachineFeesMinAmount">Minimum Amount: </label>
+
+            <input id="addMachineFeesMinAmount" type="text" placeholder="Enter Minimum Amount"
+               name="addMachineFeesMinAmount" required>
+         </div>
+
+         <!-- POS Machine Fees MAX Amount -->
+         <div class="modal-form_input">
+            <label for="addMachineFeesMaxAmount">Maximum Amount: </label>
+
+            <input id="addMachineFeesMaxAmount" type="text" placeholder="Enter Maximum Amount"
+               name="addMachineFeesMaxAmount" required>
+         </div>
+
+         <!-- POS Machine Fees isPercentage -->
+         <div class="modal-form_input">
+            <label for="addMachineFeesPercentageType">Percentage:</label>
+
+            <select id="addMachineFeesPercentageType" class="form-control" required>
+               <option value="">Select Percentage</option>
+               <option value="true">True</option>
+               <option value="false">False</option>
+            </select>
+         </div>
+
+         <!-- POS Machine Fees Percentage -->
+         <div class="modal-form_input percentageRateDiv">
+            <label for="addMachineFeesPercentageRate">Percentage Rate: </label>
+
+            <input id="addMachineFeesPercentageRate" type="number" placeholder="Enter Percentage Rate"
+               name="addMachineFeesPercentageRate" required>
+         </div>
+
+         <!-- POS Machine Fees Amount -->
+         <div class="modal-form_input machineFeesAmountDiv">
+            <label for="addMachineFeesAmount">Fee Amount: </label>
+
+            <input id="addMachineFeesAmount" type="number" placeholder="Enter Fee Amount" name="addMachineFeesAmount"
+               required>
          </div>
 
          <div class="center-button">
-            <button class="hero-btn-dark saveUserButton addUserModalBtn">SAVE</button>
+            <button class="hero-btn-dark ">Add Machine Fee</button>
          </div>
 
          <div class="close closeModal" id="">&times;</div>
@@ -341,7 +508,6 @@
          <div class="close closeModal" id="">&times;</div>
       </div>
    </form>
-
 
    <form class="modal-form adminUpdateShopDataModal" name="modal" netlify>
       <div class="card adminUpdateShopData modal">

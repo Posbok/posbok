@@ -1,4 +1,10 @@
 import config from '../../../config.js';
+import {
+  addMachineFeeForm,
+  addPosChargeForm,
+  populateMachineFeesTable,
+  populatePosChargesTable,
+} from '../../pos.js';
 import { depositPosCapitalForm, showToast } from '../../script.js';
 import { safeFetch } from '../utility/safeFetch.js';
 
@@ -13,7 +19,6 @@ const shopId = parsedUserData?.shopId || dummyShopId;
 
 // console.log(shopId);
 
-// console.log(shopId);
 function getCurrentDateISO() {
   const now = new Date();
   const localMidnight = new Date(
@@ -70,11 +75,8 @@ export async function getPosCapital(shopId) {
 
     //  console.log('Response received...');
 
-    if (posCapital) {
-      // console.log('POS Capital received successfully:', posCapital);
-      // showToast('success', `✅ ${posCapital.message}`);
-      // checkAndPromptaddPosCapital(); // Refresh the Staff list after creation
-    }
+    //  if (posCapital) {
+    //  }
 
     return posCapital;
   } catch (error) {
@@ -125,97 +127,6 @@ export async function createPosTransaction(transactionDetail) {
   }
 }
 
-// export async function getPosTransactions(shopId) {
-//   //   console.log(shopId);
-//   try {
-//     //  console.log('Sending POST request...');
-
-//     const posTransactionsData = await safeFetch(
-//       `${baseUrl}/api/pos/transactions?shopId=${shopId}&page=1&limit=10`,
-//       {
-//         method: 'GET',
-//         headers: {
-//           Authorization: `Bearer ${userToken}`,
-//           //  'Content-Type': 'application/json',
-//         },
-//       }
-//     );
-
-//     //  console.log('Response received...');
-
-//     if (posTransactionsData) {
-//       // console.log('POS Transactiion received successfully:', posTransactionsData);
-
-//       showToast('success', `✅ ${posTransactionsData.message}`);
-//     }
-
-//     return posTransactionsData;
-//   } catch (error) {
-//     console.error('Error receiving POS Transactiion:', error);
-//     throw error;
-//   }
-// }
-
-// export async function getPosTransactions(page = 1, pageSize = 25) {
-//   const todayISO = getCurrentDateISO();
-
-//   try {
-//     const response = await fetch(
-//       `${baseUrl}/api/pos-transactions?filters[createdAt][$gte]=${todayISO}&pagination[page]=${page}&pagination[pageSize]=${pageSize}&pagination[withCount]=true&populate[transaction_type]=*&populate[withdrawal_type]=*`,
-
-//       // `${baseUrl}/api/pos-transactions?pagination[page]=${page}&pagination[pageSize]=${pageSize}&pagination[withCount]=true&populate[transaction_type]=*&populate[withdrawal_type]=*`,
-
-//       {
-//         method: 'GET',
-//         headers: {
-//           Authorization: `Bearer ${apiToken}`,
-//           'Content-Type': 'application/json',
-//         },
-//       }
-//     );
-
-//     if (!response.ok) {
-//       throw new Error(`HTTP error! status: ${response.status}`);
-//     }
-
-//     const data = await response.json();
-//     return data; // Return both transaction data and pagination metadata
-//   } catch (error) {
-//     console.error('Error fetching POS transactions:', error);
-//     return { data: [], meta: { pagination: { pageCount: 1 } } };
-//   }
-// }
-
-// export async function getPosTransactions() {
-//   try {
-//     //  console.log('Sending GET request...');
-//     const response = await fetch(
-//       `${baseUrl}/api/pos-transactions?populate[transaction_type]=*&populate[withdrawal_type]=*`,
-//       {
-//         method: 'GET',
-//         headers: {
-//           Authorization: `Bearer ${apiToken}`,
-//           'Content-Type': 'application/json',
-//         },
-//       }
-//     );
-
-//     //  console.log('Response received...');
-
-//     if (!response.ok) {
-//       throw new Error(`HTTP error! status: ${response.status}`);
-//     }
-
-//     const data = await response.json();
-//     //  console.log('PosTransactions:', data);
-
-//     return data;
-//   } catch (error) {
-//     //  console.error('Error fetching PosTransactions:', error);
-//     return [];
-//   }
-// }
-
 export async function getPosTransactions({
   shopId,
   page = 1,
@@ -255,56 +166,188 @@ export async function getPosTransactions({
   }
 }
 
-export async function createPosTransactin(transactionDetail) {
+export function openaddPosChargeModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const addPosChargeContainer = document.querySelector('.addPosCharge');
+
+  if (addPosChargeContainer) addPosChargeContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  //   console.log('object');
+
+  addPosChargeForm();
+}
+
+export function openAddMachineFeeModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const addMachineFeesContainer = document.querySelector('.addMachineFees');
+
+  if (addMachineFeesContainer) addMachineFeesContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  //   console.log('object 1');
+
+  addMachineFeeForm();
+}
+
+export async function configurePosCharges(posChargesDetails) {
+  console.log(posChargesDetails);
   try {
     //  console.log('Sending POST request...');
-    const response = await fetch(
-      `${baseUrl}/api/pos-transactions?populate[transaction_type]=*&populate[withdrawal_type]=*`,
+
+    const posChargesData = await safeFetch(
+      `${baseUrl}/api/pos/settings/charges`,
       {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${userToken}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(transactionDetail),
+        body: JSON.stringify(posChargesDetails),
       }
     );
 
     //  console.log('Response received...');
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    if (posChargesData) {
+      // console.log('POS Charges configured successfully:', posChargesData);
+      showToast('success', `✅ ${posChargesData.message}`);
+
+      // Refresh the table list after successful configuration
+      getPosChargeSettings();
     }
 
-    const data = await response.json();
-    //  console.log('Product added successfully:', data);
-    return data;
+    return posChargesData;
   } catch (error) {
-    console.error('Error posting product:', error);
+    console.error('Error Configuring POS Charges:', error);
+    throw error;
   }
 }
 
-// export async function deleteAllTransactions() {
-//   const apiUrl = '${baseUrl}/api/pos-transactions';
+export async function getPosChargeSettings() {
+  const tbody = document.querySelector('.posCharge-table tbody');
+  function showLoadingRow() {
+    if (tbody)
+      tbody.innerHTML = `
+    <tr class="loading-row">
+      <td colspan="6" class="table-error-text">Loading POS Charges...</td>
+    </tr>
+  `;
+  }
 
-//   try {
-//     const response = await fetch(apiUrl, {
-//       method: 'DELETE',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         Authorization: `Bearer ${apiToken}`,
-//       },
-//     });
+  showLoadingRow();
 
-//     if (!response.ok) {
-//       throw new Error(`Error: ${response.status}`);
-//     }
+  try {
+    //  console.log('Sending POST request...');
 
-//     const data = await response.json();
-//     console.log('Pos transcation deleted successfully:', data);
-//     return { success: true, data };
-//   } catch (error) {
-//     console.error('Error deleting all transactions:', error);
-//     return { success: false, error };
-//   }
-// }
+    const posChargeSettingsData = await safeFetch(
+      `${baseUrl}/api/pos/settings/charges`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          //  'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    //  console.log('Response received...');
+
+    //  if (posChargeSettingsData) {
+    //  }
+
+    //  console.log(posChargeSettingsData);
+    populatePosChargesTable(posChargeSettingsData);
+
+    return posChargeSettingsData;
+  } catch (error) {
+    console.error('Error receiving POS COnfiguration settings:', error);
+    throw error;
+  }
+}
+
+export async function configurePosMachineFees(posMachineFeesDetails) {
+  console.log(posMachineFeesDetails);
+  try {
+    console.log('Sending POST request...');
+
+    const posMachineFeesData = await safeFetch(
+      `${baseUrl}/api/pos/settings/fees`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(posMachineFeesDetails),
+      }
+    );
+
+    console.log('Response received...');
+
+    if (posMachineFeesData) {
+      console.log(
+        'POS MachineFees configured successfully:',
+        posMachineFeesData
+      );
+      showToast('success', `✅ ${posMachineFeesData.message}`);
+
+      // Refresh the table list after successful configuration
+      getPosMachineFeesettings();
+    }
+
+    return posMachineFeesData;
+  } catch (error) {
+    console.error('Error Configuring POS MachineFees:', error);
+    throw error;
+  }
+}
+
+export async function getPosMachineFeesettings() {
+  const tbody = document.querySelector('.machineFee-table tbody');
+  function showLoadingRow() {
+    if (tbody)
+      tbody.innerHTML = `
+    <tr class="loading-row">
+      <td colspan="6" class="table-error-text">Loading POS Machine Fees...</td>
+    </tr>
+  `;
+  }
+
+  showLoadingRow();
+
+  try {
+    //  console.log('Sending GET request...');
+
+    const posMachineFeeSettingsData = await safeFetch(
+      `${baseUrl}/api/pos/settings/fees`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          //  'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    //  console.log('Response received...');
+
+    //  if (posMachineFeeSettingsData) {
+    //  }
+
+    //  console.log(posMachineFeeSettingsData);
+    populateMachineFeesTable(posMachineFeeSettingsData);
+
+    return posMachineFeeSettingsData;
+  } catch (error) {
+    console.error('Error receiving POS COnfiguration settings:', error);
+    throw error;
+  }
+}
+
+getPosChargeSettings();
+getPosMachineFeesettings();

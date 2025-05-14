@@ -139,6 +139,8 @@ export function closeModal() {
   const adminUpdateUserData = document.querySelector('.adminUpdateUserData');
   const adminUpdateShopData = document.querySelector('.adminUpdateShopData');
   const staffManage = document.querySelector('.staffManage');
+  const addPosCharge = document.querySelector('.addPosCharge');
+  const addMachineFee = document.querySelector('.addMachineFees');
 
   if (depositPosCapitalContainer) {
     depositPosCapitalContainer.classList.remove('active');
@@ -165,6 +167,16 @@ export function closeModal() {
   if (staffManage) {
     staffManage.classList.remove('active');
     delete staffManage.dataset.staffId;
+  }
+
+  if (addPosCharge) {
+    addPosCharge.classList.remove('active');
+    //  delete addPosCharge.dataset.staffId;
+  }
+
+  if (addMachineFee) {
+    addMachineFee.classList.remove('active');
+    //  delete addMachineFee.dataset.staffId;
   }
 
   clearFormInputs();
@@ -432,6 +444,8 @@ export function setupModalCloseButtons() {
   const closeModalButtons = document.querySelectorAll('.closeModal');
   const createShopContainer = document.querySelector('.createShop');
   const updateShopContainer = document.querySelector('.adminUpdateShopData');
+  const addPosChargeContainer = document.querySelector('.addPosCharge');
+  const addMachineFeesContainer = document.querySelector('.addMachineFees');
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
 
@@ -439,6 +453,11 @@ export function setupModalCloseButtons() {
     btn.addEventListener('click', () => {
       if (createShopContainer) createShopContainer.classList.remove('active');
       if (updateShopContainer) updateShopContainer.classList.remove('active');
+      if (addPosChargeContainer)
+        addPosChargeContainer.classList.remove('active');
+      if (addMachineFeesContainer)
+        addMachineFeesContainer.classList.remove('active');
+
       if (main) main.classList.remove('blur');
       if (sidebar) sidebar.classList.remove('blur');
     });
