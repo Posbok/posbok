@@ -392,6 +392,10 @@ export function populatePosChargesTable(posChargesData) {
 export function addMachineFeeForm() {
   const form = document.querySelector('.addMachineFeesModal');
 
+  if (!form || form.dataset.bound === 'true') return;
+
+  form.dataset.bound = 'true';
+
   const percentageTypeSelect = document.querySelector(
     '#addMachineFeesPercentageType'
   );

@@ -271,9 +271,9 @@ export async function getPosChargeSettings() {
 }
 
 export async function configurePosMachineFees(posMachineFeesDetails) {
-  console.log(posMachineFeesDetails);
+  //   console.log(posMachineFeesDetails);
   try {
-    console.log('Sending POST request...');
+    //  console.log('Sending POST request...');
 
     const posMachineFeesData = await safeFetch(
       `${baseUrl}/api/pos/settings/fees`,
@@ -287,13 +287,13 @@ export async function configurePosMachineFees(posMachineFeesDetails) {
       }
     );
 
-    console.log('Response received...');
+    //  console.log('Response received...');
 
     if (posMachineFeesData) {
-      console.log(
-        'POS MachineFees configured successfully:',
-        posMachineFeesData
-      );
+      // console.log(
+      //   'POS MachineFees configured successfully:',
+      //   posMachineFeesData
+      // );
       showToast('success', `✅ ${posMachineFeesData.message}`);
 
       // Refresh the table list after successful configuration
