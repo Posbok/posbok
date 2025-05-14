@@ -349,5 +349,5 @@ export async function getPosMachineFeesettings() {
   }
 }
 
-getPosChargeSettings();
-getPosMachineFeesettings();
+// getPosChargeSettings();
+// getPosMachineFeesettings();

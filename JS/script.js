@@ -20,6 +20,8 @@ import {
 } from './helper/helper.js';
 import {
   addPosCapital,
+  getPosChargeSettings,
+  getPosMachineFeesettings,
   openDepositPosCapitalModal,
 } from './apiServices/pos/posResources.js';
 import { initAccountOverview } from './apiServices/account/accountOverview.js';
@@ -426,6 +428,10 @@ if (isAdmin) {
     if (userData) {
       checkAndPromptCreateStaff();
     }
+
+    //Admin api calls
+    getPosChargeSettings();
+    getPosMachineFeesettings();
   });
 }
 

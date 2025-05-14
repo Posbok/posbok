@@ -112,7 +112,7 @@ async function renderPosTable(page = 1, pageSize, filters = {}) {
       filters,
     });
 
-    //  console.log(result);
+    console.log(result);
 
     if (!result) throw new Error(result.message || 'Failed to fetch');
 
@@ -190,6 +190,7 @@ async function renderPosTable(page = 1, pageSize, filters = {}) {
         } = posTransaction;
 
         const machineFee = fees?.fee_amount || '-';
+        const transactionCharges = charges?.charge_amount || '-';
 
         const row = document.createElement('tr');
         row.classList.add('table-body-row');
@@ -204,7 +205,7 @@ async function renderPosTable(page = 1, pageSize, filters = {}) {
          amount
        )}</td>
        <td class="py-1 posChargesReport">&#x20A6;${formatAmountWithCommas(
-         charges
+         transactionCharges
        )}</td>
        <td class="py-1 posMachineFeeReport">&#x20A6;${formatAmountWithCommas(
          machineFee
@@ -296,12 +297,14 @@ function updateTotalPosAmounts(transactions, totalRow, date) {
   //   console.log('Total Bill Payment amount:', billPaymentAmount);
 
   //   POS charges Amount Sum
-  const posCharges = transactions.filter((item) => item.charges);
+  const posChargesItems = transactions.filter(
+    (item) => item.charges && item.charges.charge_amount
+  );
 
-  //   console.log('total pos Charge', posCharges);
+  //   console.log('total pos Charge', posChargesItems);
 
-  const posChargesAmount = posCharges.reduce(
-    (sum, item) => sum + Number(item.charges || 0),
+  const posChargesAmount = posChargesItems.reduce(
+    (sum, item) => sum + Number(item.charges.charge_amount),
     0
   );
 
