@@ -3,6 +3,7 @@ import {
   deleteAllTransactions,
   getPosTransactions,
 } from './apiServices/pos/posResources';
+import { checkAndPromptCreateShop } from './apiServices/shop/shopResource';
 import { formatAmountWithCommas } from './helper/helper';
 
 const userData = config.userData;
@@ -39,6 +40,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const toggleBtn = section.querySelector('.accordion-toggle');
 
     toggleBtn.addEventListener('click', () => {
+      accordionSections.forEach((sec) => {
+        if (sec !== section) sec.classList.remove('active');
+      });
       section.classList.toggle('active');
     });
   });
@@ -67,43 +71,325 @@ let currentPage;
 let totalItems;
 let totalPages;
 let pageSize = 10;
-
-const loadMoreButton = document.getElementById('loadMoreButton');
-loadMoreButton.style.display = 'none';
-
+let limit = pageSize;
 let currentFilters = {};
 
-document.getElementById('applyFiltersBtn').addEventListener('click', () => {
-  currentFilters = {
-    startDate: document.getElementById('startDateFilter').value,
-    endDate: document.getElementById('endDateFilter').value,
-    type: document.getElementById('typeFilter').value,
-    status: document.getElementById('statusFilter').value,
+function getFilters(role) {
+  return {
+    startDate: document.getElementById(`startDateFilter_${role}`)?.value || '',
+    endDate: document.getElementById(`endDateFilter_${role}`)?.value || '',
+    type: document.getElementById(`typeFilter_${role}`)?.value || '',
+    status: document.getElementById(`statusFilter_${role}`)?.value || '',
   };
+}
 
-  currentPage = 1;
-  renderPosTable(currentPage, pageSize, currentFilters);
+document.addEventListener('DOMContentLoaded', () => {
+  if (isAdmin) {
+    document
+      .getElementById('applyFiltersBtn_admin')
+      ?.addEventListener('click', () => {
+        const filters = getFilters('admin');
+
+        console.log('object');
+        renderPosTable(
+          1,
+          pageSize,
+          filters,
+          shopId,
+          '.posTableDisplay_admin tbody'
+        );
+      });
+  }
+
+  if (isStaff) {
+    document
+      .getElementById('applyFiltersBtn_staff')
+      ?.addEventListener('click', () => {
+        const filters = getFilters('staff');
+        renderPosTable(
+          1,
+          pageSize,
+          filters,
+          shopId,
+          '.posTableDisplay_staff tbody'
+        );
+      });
+  }
 });
 
-document.getElementById('resetFiltersBtn').addEventListener('click', () => {
-  currentFilters = {
-    startDate: (document.getElementById('startDateFilter').value = ''),
-    endDate: (document.getElementById('endDateFilter').value = ''),
-    type: (document.getElementById('typeFilter').value = ''),
-    status: (document.getElementById('statusFilter').value = ''),
-  };
+function resetFilters(role) {
+  document.getElementById(`startDateFilter_${role}`).value = '';
+  document.getElementById(`endDateFilter_${role}`).value = '';
+  document.getElementById(`typeFilter_${role}`).value = '';
+  document.getElementById(`statusFilter_${role}`).value = '';
+}
 
-  currentPage = 1;
-  renderPosTable(currentPage, pageSize, currentFilters);
+document.getElementById('resetFiltersBtn')?.addEventListener('click', () => {
+  const role = isAdmin ? 'admin' : 'staff';
+  resetFilters(role);
+  const filters = getFilters(role);
+  const tableSelector = isAdmin
+    ? '.posTableDisplay_admin tbody'
+    : '.posTableDisplay_staff tbody';
+  renderPosTable(1, pageSize, filters, shopId, tableSelector);
 });
+
+const loadMoreButton = isAdmin
+  ? document.getElementById('loadMoreButton_admin')
+  : document.getElementById('loadMoreButton_staff');
+
+console.log(loadMoreButton);
+
+loadMoreButton.style.display = 'none';
 
 loadMoreButton.addEventListener('click', () => {
+  const role = isAdmin ? 'admin' : 'staff';
   currentPage += 1;
-  renderPosTable(currentPage, pageSize, currentFilters);
+  const filters = getFilters(role);
+  const tableBodyId =
+    role === 'admin'
+      ? '.posTableDisplay_admin tbody'
+      : '.posTableDisplay_staff tbody';
+
+  renderPosTable(currentPage, pageSize, filters, shopId, tableBodyId);
 });
 
-async function renderPosTable(page = 1, pageSize, filters = {}) {
-  const posTableBody = document.querySelector('.posTableDisplay tbody');
+if (isAdmin) {
+  let enrichedShopData = [];
+
+  const container = document.getElementById('accordionShops');
+  const { enrichedShopData: loadedShops } = await checkAndPromptCreateShop();
+  enrichedShopData = loadedShops;
+
+  console.log('enrichedShopData', enrichedShopData);
+
+  enrichedShopData.forEach((shop, index) => {
+    const accordion = document.createElement('section');
+    accordion.className = 'accordion-section';
+    accordion.innerHTML = `        <button class="accordion-toggle card heading-text" data-shop-id="${shop.id}">
+                  <h2 class="heading-subtext">
+                     ${shop.shop_name}
+                  </h2>
+
+                  <i class="fa-solid icon fa-chevron-down"></i>
+               </button>
+               
+                   <div class="accordion-content">
+      <div id="shop-report-${shop.id}" class="reports card" data-loaded="false">
+                 <div class="reports card">
+                     <div class="reports-method">
+                        <h2 class="heading-text mb-2">
+                           POS Reports
+                        </h2>
+
+                        <h2 class="filter-heading heading-subtext mb-2">Filter Transactions</h2>
+
+                        <div class="filter-section mb-2">
+
+                           <div class="pos-method-form_input">
+                              <label for="startDateFilter_admin">Start Date:</label>
+
+                              <input type="date" id="startDateFilter_admin">
+                           </div>
+
+                           <div class="pos-method-form_input">
+                              <label for="endDateFilter_admin">Start Date:</label>
+
+                              <input type="date" id="endDateFilter_admin">
+                           </div>
+
+                           <div class="pos-method-form_input ">
+
+                              <label for="typeFilter_admin">Transaction Type:</label>
+
+                              <select id="typeFilter_admin" name="typeFilter_admin">
+                                 <option value="">All</option>
+                                 <option value="DEPOSIT">Deposit</option>
+                                 <option value="WITHDRAWAL">Withdrawal</option>
+                                 <option value="WITHDRAWAL_TRANSFER">Withdrawal/Transfer</option>
+                                 <option value="BILL_PAYMENT">Bill Payment</option>
+                              </select>
+                           </div>
+
+                           <div class="pos-method-form_input ">
+
+                              <label for="statusFilter_admin">Status:</label>
+
+                              <select id="statusFilter_admin" name="statusFilter_admin">
+                                 <option value="">All</option>
+                                 <option value="SUCCESSFUL">Successful</option>
+                                 <option value="FAILED">Failed</option>
+                                 <option value="PENDING">Pending</option>
+                              </select>
+                           </div>
+
+
+                           <div class="filter-buttons">
+                              <button id="applyFiltersBtn_admin" class="hero-btn-dark">Apply Filters</button>
+                              <button id="resetFiltersBtn" class="hero-btn-outline">Reset</button>
+                           </div>
+
+                        </div>
+
+                        <!-- <div id="transactionList" class="transaction-list mb-3"></div> -->
+
+                        <div class="table-header">
+                           <!-- <h2 class="heading-subtext"> POS </h2> -->
+                        </div>
+
+                        <div class="reports-table-container">
+
+                           <table class="reports-table posTableDisplay_admin">
+                                     <thead>
+                                 <tr class="table-header-row">
+                                    <th class="py-1">S/N</th>
+                                    <th class="py-1">Date</th>
+                                    <th class="py-1">Transaction Type</th>
+                                    <th class="py-1">Customer Info</th>
+                                    <th class="py-1">Amount</th>
+                                    <th class="py-1">Charges</th>
+                                    <th class="py-1">Machine Fee</th>
+                                    <th class="py-1">Charge Payment Method</th>
+                                    <th class="py-1">Payment Method</th>
+                                    <th class="py-1">Remarks</th>
+                                    <th class="py-1">Receipt ID</th>
+                                 </tr>
+                              </thead>
+
+                                <tbody  id="pos-tbody-${shop.id}">
+
+                                       </tbody>
+
+                                               <tfoot>
+                                 <tr class="table-foot-row px-2">
+                                    <td colspan="4"></td>
+                                    <td id="totalPosAmount" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+
+                                    <td id="totalPosFee" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+
+                                    <td id="totalMachineFee" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+
+                                    <td id="totalDepositAmount" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+
+                                    <td id="totalWithdrawalAmount" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+
+                                    <td id="totalWithdrawalTransferAmount" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+
+                                    <td id="totalBillPaymentAmount" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+                                    <!-- <td></td> -->
+                                 </tr>
+                              </tfoot>
+                           </table>
+
+                                     <div id="loadMoreButtonDiv_admin" class=" center-button mt-2">
+
+                              <button id="loadMoreButton_admin" class=" hero-btn-dark load-more-button">Load
+                                 More</button>
+                              <!-- <button id="loadMoreButton" class="">Load More</button> -->
+                           </div>
+
+                        </div>
+
+                        <div class="double-input">
+                           <div class="amount-summary">
+                              <label for="AmountinMachine_admin">AMOUNT IN MACHINE</label>
+
+                              <div class="naira-input-container">
+                                 <input id="AmountinMachine_admin" type="text" name="AmountinMachine_admin"
+                                    oninput="this.value=this.value.replace(/[^0-9]/g,'')" value="Unavailable" disabled>
+                                 <span class="naira">&#x20A6;</span>
+                              </div>
+                           </div>
+
+                           <div class="amount-summary">
+                              <label for="cashAvailable_admin">CASH AVAILABLE</label>
+
+                              <div class="naira-input-container">
+                                 <input id="cashAvailable_admin" type="text" name="cashAvailable_admin"
+                                    oninput="this.value=this.value.replace(/[^0-9]/g,'')" value="Unavailable" disabled>
+                                 <span class="naira">&#x20A6;</span>
+                              </div>
+                           </div>
+                        </div>
+
+
+      </div>
+    </div>`;
+
+    container.appendChild(accordion);
+  });
+
+  container.addEventListener('click', async function (e) {
+    console.log(loadMoreButton);
+
+    const toggleBtn = e.target.closest('.accordion-toggle');
+    if (!toggleBtn) return;
+
+    const section = toggleBtn.closest('.accordion-section');
+    const content = section.querySelector('.accordion-content');
+    const icon = toggleBtn.querySelector('.icon');
+    const shopId = toggleBtn.dataset.shopId;
+
+    console.log('shopId', shopId);
+
+    const reportDiv = section.querySelector(`#shop-report-${shopId}`);
+    const tbody = reportDiv.querySelector(`#pos-tbody-${shopId}`);
+
+    renderPosTable(currentPage, limit, filters, shopId, `#pos-tbody-${shopId}`);
+
+    // Toggle accordion
+    section.classList.toggle('active');
+    if (section.classList.contains('active')) {
+      icon.style.transform = 'rotate(180deg)';
+    } else {
+      icon.style.transform = 'rotate(0deg)';
+    }
+  });
+
+  const filters = getFilters('admin');
+  renderPosTable(
+    currentPage,
+    limit,
+    filters,
+    shopId,
+    '.posTableDisplay_admin tbody'
+  );
+}
+
+// if (isStaff) {
+//   const filters = getFilters('staff');
+//   renderPosTable(
+//     currentPage,
+//     limit,
+//     filters,
+//     shopId,
+//     '.posTableDisplay_staff tbody'
+//   );
+// }
+
+async function renderPosTable(
+  page,
+  limit = pageSize,
+  filters,
+  shopId,
+  tableBodyId,
+  showLoadMore = false
+) {
+  const posTableBody = document.querySelector(tableBodyId);
 
   if (!posTableBody) {
     console.error('Error: Table body not found');
@@ -125,7 +411,7 @@ async function renderPosTable(page = 1, pageSize, filters = {}) {
     const queryParams = new URLSearchParams({
       shopId: shopId,
       page,
-      limit: pageSize,
+      limit,
     });
 
     if (filters.startDate) queryParams.append('startDate', filters.startDate);
@@ -152,6 +438,18 @@ async function renderPosTable(page = 1, pageSize, filters = {}) {
     // Only reset array if starting from page 1
     if (page === 1) {
       allPosTransactions = [];
+    }
+
+    //  if (posTransactions.length === 0 && page === 1) {
+    //    posTableBody.innerHTML =
+    //      '<tr><td colspan="11" class="table-no-data">No transactions found.</td></tr>';
+    //    return;
+    //  }
+
+    if (posTransactions.length === 0 && currentPage === 1) {
+      posTableBody.innerHTML =
+        '<tr class="loading-row"><td colspan="7" class="table-error-text ">No Transactions Available.</td></tr>';
+      return;
     }
 
     posTransactions.forEach((transaction) => {
@@ -261,10 +559,14 @@ async function renderPosTable(page = 1, pageSize, filters = {}) {
       posTableBody.appendChild(totalRow);
     });
 
+    console.log(currentPage, totalPages);
+
     // Handle Load More button visibility
     if (currentPage >= totalPages) {
+      console.log('here 1');
       loadMoreButton.style.display = 'none';
     } else {
+      console.log('here 2');
       loadMoreButton.style.display = 'block';
     }
   } catch (error) {
@@ -272,6 +574,220 @@ async function renderPosTable(page = 1, pageSize, filters = {}) {
     posTableBody.innerHTML =
       '<tr><td colspan="6" class="table-error-text">Error loading transactions.</td></tr>';
   }
+}
+
+if (isStaff) {
+  //   document
+  //     .getElementById('applyFiltersBtn_staff')
+  //     .addEventListener('click', () => {
+  //       currentFilters = {
+  //         startDate: document.getElementById('startDateFilter_staff').value,
+  //         endDate: document.getElementById('endDateFilter_staff').value,
+  //         type: document.getElementById('typeFilter_staff').value,
+  //         status: document.getElementById('statusFilter_staff').value,
+  //       };
+
+  //       currentPage = 1;
+  //       renderPosTable(currentPage, pageSize, currentFilters);
+  //     });
+
+  //   document.getElementById('resetFiltersBtn').addEventListener('click', () => {
+  //     currentFilters = {
+  //       startDate: (document.getElementById('startDateFilter').value = ''),
+  //       endDate: (document.getElementById('endDateFilter').value = ''),
+  //       type: (document.getElementById('typeFilter').value = ''),
+  //       status: (document.getElementById('statusFilter').value = ''),
+  //     };
+
+  //     currentPage = 1;
+  //     renderPosTable(currentPage, pageSize, currentFilters);
+  //   });
+
+  loadMoreButton.addEventListener('click', () => {
+    currentPage += 1;
+    renderPosTable(currentPage, pageSize, currentFilters);
+  });
+
+  async function renderPosTable(
+    page = 1,
+    pageSize,
+    filters = {},
+    role = 'staff'
+  ) {
+    const posTableBody = document.querySelector(
+      `.posTableDisplay_${role} tbody`
+    );
+
+    if (!posTableBody) {
+      console.error('Error: Table body not found');
+      return;
+    }
+
+    try {
+      let loadingRow = document.querySelector('.loading-row');
+      if (!loadingRow) {
+        loadingRow = document.createElement('tr');
+        loadingRow.className = 'loading-row';
+        loadingRow.innerHTML = `<td colspan="11" class="table-loading-text">Loading transactions...</td>`;
+        posTableBody.appendChild(loadingRow);
+      }
+
+      loadMoreButton.style.display = 'none';
+
+      // Build query with filters
+      const queryParams = new URLSearchParams({
+        shopId: shopId,
+        page,
+        limit: pageSize,
+      });
+
+      if (filters.startDate) queryParams.append('startDate', filters.startDate);
+      if (filters.endDate) queryParams.append('endDate', filters.endDate);
+      if (filters.type) queryParams.append('type', filters.type);
+      if (filters.status) queryParams.append('status', filters.status);
+
+      const result = await getPosTransactions({
+        shopId,
+        page,
+        limit: pageSize,
+        filters,
+      });
+
+      console.log(result);
+
+      if (!result) throw new Error(result.message || 'Failed to fetch');
+
+      const posTransactions = result.data.transactions;
+      totalPages = result.data.totalPages;
+      totalItems = result.data.totalItems;
+      currentPage = result.data.currentPage;
+
+      // Only reset array if starting from page 1
+      if (page === 1) {
+        allPosTransactions = [];
+      }
+
+      posTransactions.forEach((transaction) => {
+        if (!allPosTransactions.some((t) => t.id === transaction.id)) {
+          allPosTransactions.push(transaction);
+        }
+      });
+
+      // Clear the table body and render all accumulated transactions
+      posTableBody.innerHTML = '';
+
+      const groupedByDate = {};
+
+      allPosTransactions.forEach((tx) => {
+        const dateObj = new Date(tx.business_day);
+        const dateKey = dateObj.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }); // "May 11, 2025"
+
+        if (!groupedByDate[dateKey]) groupedByDate[dateKey] = [];
+        groupedByDate[dateKey].push(tx);
+      });
+
+      //  console.log(groupedByDate);
+
+      let serialNumber = 1;
+
+      Object.entries(groupedByDate).forEach(([date, transactions]) => {
+        // Insert group row (header for the date)
+        const groupRow = document.createElement('tr');
+        groupRow.className = 'date-group-row table-body-row ';
+
+        groupRow.innerHTML = `
+      <td colspan="11" class="date-header py-1 mt-1 mb-1">
+        <strong>${date}</strong>     </td>
+
+     `;
+        posTableBody.appendChild(groupRow);
+
+        //       groupRow.innerHTML = `
+        //     <td colspan="11" class="date-header py-1 mt-1 mb-1">
+        //       <strong>${date}</strong> — Total: ₦${formatAmountWithCommas(dailyTotal)}
+        //     </td>
+        //   `;
+
+        transactions.forEach((posTransaction) => {
+          const {
+            transaction_type,
+            amount,
+            fee_payment_type,
+            customer_name,
+            customer_phone,
+            payment_method,
+            status,
+            receipt_id,
+            remarks,
+            business_day,
+            transaction_time,
+            charges,
+            fees,
+            transaction_fee,
+          } = posTransaction;
+
+          const machineFee = fees?.fee_amount || '-';
+          const transactionCharges = charges?.charge_amount || '-';
+
+          const row = document.createElement('tr');
+          row.classList.add('table-body-row');
+          row.innerHTML = `
+       <td class="py-1">${serialNumber++}.</td>
+       <td class="py-1">${business_day}</td>
+       <td class="py-1 posTransTypeReport">${formatTransactionType(
+         transaction_type
+       )}</td>
+       <td class="py-1 posCustomerInfo">${`${customer_name} - ${customer_phone}`}</td>
+       <td class="py-1 posAmountReport">&#x20A6;${formatAmountWithCommas(
+         amount
+       )}</td>
+       <td class="py-1 posChargesReport">&#x20A6;${formatAmountWithCommas(
+         transactionCharges
+       )}</td>
+       <td class="py-1 posMachineFeeReport">&#x20A6;${formatAmountWithCommas(
+         machineFee
+       )}</td>
+       <td class="py-1 posFeePaymentMethodReport">${fee_payment_type}</td>
+       <td class="py-1 posPaymentMethodReport">${payment_method}</td>
+       <td class="py-1 posPaymentMethodRemark">${remarks}</td>
+       <td class="py-1 posPaymentMethodRemark">${receipt_id}</td>
+     `;
+          posTableBody.appendChild(row);
+        });
+
+        // Insert total row (Footer for Daily Totals))
+        const totalRow = document.createElement('tr');
+        totalRow.className = 'total-row table-body-row ';
+
+        // const dailyTotal = transactions.reduce(
+        //   (sum, t) => sum + Number(t.amount),
+        //   0
+        // );
+
+        // Update total amounts for each day startinf wth partial totals and ending the day with final Total.
+        updateTotalPosAmounts(transactions, totalRow, date);
+
+        posTableBody.appendChild(totalRow);
+      });
+
+      // Handle Load More button visibility
+      if (currentPage >= totalPages) {
+        loadMoreButton.style.display = 'none';
+      } else {
+        loadMoreButton.style.display = 'block';
+      }
+    } catch (error) {
+      console.error('Error rendering transactions:', error);
+      posTableBody.innerHTML =
+        '<tr><td colspan="6" class="table-error-text">Error loading transactions.</td></tr>';
+    }
+  }
+
+  renderPosTable();
 }
 
 function updateTotalPosAmounts(transactions, totalRow, date) {
@@ -403,8 +919,6 @@ function updateTotalPosAmounts(transactions, totalRow, date) {
      </td>
    `;
 }
-
-renderPosTable();
 
 // JS to Render Sold goods from LocalStorage
 const storedSoldGoods =

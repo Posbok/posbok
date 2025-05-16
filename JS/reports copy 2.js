@@ -39,6 +39,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const toggleBtn = section.querySelector('.accordion-toggle');
 
     toggleBtn.addEventListener('click', () => {
+      accordionSections.forEach((sec) => {
+        if (sec !== section) sec.classList.remove('active');
+      });
       section.classList.toggle('active');
     });
   });
@@ -68,161 +71,173 @@ let totalItems;
 let totalPages;
 let pageSize = 10;
 
-const loadMoreButton = document.getElementById('loadMoreButton');
+const loadMoreButton = isAdmin
+  ? document.getElementById('loadMoreButton_admin')
+  : document.getElementById('loadMoreButton_staff');
 loadMoreButton.style.display = 'none';
 
 let currentFilters = {};
 
-document.getElementById('applyFiltersBtn').addEventListener('click', () => {
-  currentFilters = {
-    startDate: document.getElementById('startDateFilter').value,
-    endDate: document.getElementById('endDateFilter').value,
-    type: document.getElementById('typeFilter').value,
-    status: document.getElementById('statusFilter').value,
-  };
+if (isAdmin) {
+  document
+    .getElementById('applyFiltersBtn_admin')
+    .addEventListener('click', () => {
+      currentFilters = {
+        startDate: document.getElementById('startDateFilter').value,
+        endDate: document.getElementById('endDateFilter').value,
+        type: document.getElementById('typeFilter').value,
+        status: document.getElementById('statusFilter').value,
+      };
 
-  currentPage = 1;
-  renderPosTable(currentPage, pageSize, currentFilters);
-});
-
-document.getElementById('resetFiltersBtn').addEventListener('click', () => {
-  currentFilters = {
-    startDate: (document.getElementById('startDateFilter').value = ''),
-    endDate: (document.getElementById('endDateFilter').value = ''),
-    type: (document.getElementById('typeFilter').value = ''),
-    status: (document.getElementById('statusFilter').value = ''),
-  };
-
-  currentPage = 1;
-  renderPosTable(currentPage, pageSize, currentFilters);
-});
-
-loadMoreButton.addEventListener('click', () => {
-  currentPage += 1;
-  renderPosTable(currentPage, pageSize, currentFilters);
-});
-
-async function renderPosTable(page = 1, pageSize, filters = {}) {
-  const posTableBody = document.querySelector('.posTableDisplay tbody');
-
-  if (!posTableBody) {
-    console.error('Error: Table body not found');
-    return;
-  }
-
-  try {
-    let loadingRow = document.querySelector('.loading-row');
-    if (!loadingRow) {
-      loadingRow = document.createElement('tr');
-      loadingRow.className = 'loading-row';
-      loadingRow.innerHTML = `<td colspan="11" class="table-loading-text">Loading transactions...</td>`;
-      posTableBody.appendChild(loadingRow);
-    }
-
-    loadMoreButton.style.display = 'none';
-
-    // Build query with filters
-    const queryParams = new URLSearchParams({
-      shopId: shopId,
-      page,
-      limit: pageSize,
+      currentPage = 1;
+      renderPosTable(currentPage, pageSize, currentFilters);
     });
 
-    if (filters.startDate) queryParams.append('startDate', filters.startDate);
-    if (filters.endDate) queryParams.append('endDate', filters.endDate);
-    if (filters.type) queryParams.append('type', filters.type);
-    if (filters.status) queryParams.append('status', filters.status);
+  document.getElementById('resetFiltersBtn').addEventListener('click', () => {
+    currentFilters = {
+      startDate: (document.getElementById('startDateFilter').value = ''),
+      endDate: (document.getElementById('endDateFilter').value = ''),
+      type: (document.getElementById('typeFilter').value = ''),
+      status: (document.getElementById('statusFilter').value = ''),
+    };
 
-    const result = await getPosTransactions({
-      shopId,
-      page,
-      limit: pageSize,
-      filters,
-    });
+    currentPage = 1;
+    renderPosTable(currentPage, pageSize, currentFilters);
+  });
 
-    console.log(result);
+  loadMoreButton.addEventListener('click', () => {
+    currentPage += 1;
+    renderPosTable(currentPage, pageSize, currentFilters);
+  });
 
-    if (!result) throw new Error(result.message || 'Failed to fetch');
+  async function renderPosTable(
+    page = 1,
+    pageSize,
+    filters = {},
+    role = 'admin'
+  ) {
+    const posTableBody = document.querySelector(
+      `.posTableDisplay_${role} tbody`
+    );
 
-    const posTransactions = result.data.transactions;
-    totalPages = result.data.totalPages;
-    totalItems = result.data.totalItems;
-    currentPage = result.data.currentPage;
-
-    // Only reset array if starting from page 1
-    if (page === 1) {
-      allPosTransactions = [];
+    if (!posTableBody) {
+      console.error('Error: Table body not found');
+      return;
     }
 
-    posTransactions.forEach((transaction) => {
-      if (!allPosTransactions.some((t) => t.id === transaction.id)) {
-        allPosTransactions.push(transaction);
+    try {
+      let loadingRow = document.querySelector('.loading-row');
+      if (!loadingRow) {
+        loadingRow = document.createElement('tr');
+        loadingRow.className = 'loading-row';
+        loadingRow.innerHTML = `<td colspan="11" class="table-loading-text">Loading transactions...</td>`;
+        posTableBody.appendChild(loadingRow);
       }
-    });
 
-    // Clear the table body and render all accumulated transactions
-    posTableBody.innerHTML = '';
+      loadMoreButton.style.display = 'none';
 
-    const groupedByDate = {};
+      // Build query with filters
+      const queryParams = new URLSearchParams({
+        shopId: shopId,
+        page,
+        limit: pageSize,
+      });
 
-    allPosTransactions.forEach((tx) => {
-      const dateObj = new Date(tx.business_day);
-      const dateKey = dateObj.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      }); // "May 11, 2025"
+      if (filters.startDate) queryParams.append('startDate', filters.startDate);
+      if (filters.endDate) queryParams.append('endDate', filters.endDate);
+      if (filters.type) queryParams.append('type', filters.type);
+      if (filters.status) queryParams.append('status', filters.status);
 
-      if (!groupedByDate[dateKey]) groupedByDate[dateKey] = [];
-      groupedByDate[dateKey].push(tx);
-    });
+      const result = await getPosTransactions({
+        shopId,
+        page,
+        limit: pageSize,
+        filters,
+      });
 
-    //  console.log(groupedByDate);
+      console.log(result);
 
-    let serialNumber = 1;
+      if (!result) throw new Error(result.message || 'Failed to fetch');
 
-    Object.entries(groupedByDate).forEach(([date, transactions]) => {
-      // Insert group row (header for the date)
-      const groupRow = document.createElement('tr');
-      groupRow.className = 'date-group-row table-body-row ';
+      const posTransactions = result.data.transactions;
+      totalPages = result.data.totalPages;
+      totalItems = result.data.totalItems;
+      currentPage = result.data.currentPage;
 
-      groupRow.innerHTML = `
+      // Only reset array if starting from page 1
+      if (page === 1) {
+        allPosTransactions = [];
+      }
+
+      posTransactions.forEach((transaction) => {
+        if (!allPosTransactions.some((t) => t.id === transaction.id)) {
+          allPosTransactions.push(transaction);
+        }
+      });
+
+      // Clear the table body and render all accumulated transactions
+      posTableBody.innerHTML = '';
+
+      const groupedByDate = {};
+
+      allPosTransactions.forEach((tx) => {
+        const dateObj = new Date(tx.business_day);
+        const dateKey = dateObj.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }); // "May 11, 2025"
+
+        if (!groupedByDate[dateKey]) groupedByDate[dateKey] = [];
+        groupedByDate[dateKey].push(tx);
+      });
+
+      //  console.log(groupedByDate);
+
+      let serialNumber = 1;
+
+      Object.entries(groupedByDate).forEach(([date, transactions]) => {
+        // Insert group row (header for the date)
+        const groupRow = document.createElement('tr');
+        groupRow.className = 'date-group-row table-body-row ';
+
+        groupRow.innerHTML = `
       <td colspan="11" class="date-header py-1 mt-1 mb-1">
         <strong>${date}</strong>     </td>
   
      `;
-      posTableBody.appendChild(groupRow);
+        posTableBody.appendChild(groupRow);
 
-      //       groupRow.innerHTML = `
-      //     <td colspan="11" class="date-header py-1 mt-1 mb-1">
-      //       <strong>${date}</strong> — Total: ₦${formatAmountWithCommas(dailyTotal)}
-      //     </td>
-      //   `;
+        //       groupRow.innerHTML = `
+        //     <td colspan="11" class="date-header py-1 mt-1 mb-1">
+        //       <strong>${date}</strong> — Total: ₦${formatAmountWithCommas(dailyTotal)}
+        //     </td>
+        //   `;
 
-      transactions.forEach((posTransaction) => {
-        const {
-          transaction_type,
-          amount,
-          fee_payment_type,
-          customer_name,
-          customer_phone,
-          payment_method,
-          status,
-          receipt_id,
-          remarks,
-          business_day,
-          transaction_time,
-          charges,
-          fees,
-          transaction_fee,
-        } = posTransaction;
+        transactions.forEach((posTransaction) => {
+          const {
+            transaction_type,
+            amount,
+            fee_payment_type,
+            customer_name,
+            customer_phone,
+            payment_method,
+            status,
+            receipt_id,
+            remarks,
+            business_day,
+            transaction_time,
+            charges,
+            fees,
+            transaction_fee,
+          } = posTransaction;
 
-        const machineFee = fees?.fee_amount || '-';
-        const transactionCharges = charges?.charge_amount || '-';
+          const machineFee = fees?.fee_amount || '-';
+          const transactionCharges = charges?.charge_amount || '-';
 
-        const row = document.createElement('tr');
-        row.classList.add('table-body-row');
-        row.innerHTML = `
+          const row = document.createElement('tr');
+          row.classList.add('table-body-row');
+          row.innerHTML = `
        <td class="py-1">${serialNumber++}.</td>
        <td class="py-1">${business_day}</td>
        <td class="py-1 posTransTypeReport">${formatTransactionType(
@@ -243,35 +258,252 @@ async function renderPosTable(page = 1, pageSize, filters = {}) {
        <td class="py-1 posPaymentMethodRemark">${remarks}</td>
        <td class="py-1 posPaymentMethodRemark">${receipt_id}</td>
      `;
-        posTableBody.appendChild(row);
+          posTableBody.appendChild(row);
+        });
+
+        // Insert total row (Footer for Daily Totals))
+        const totalRow = document.createElement('tr');
+        totalRow.className = 'total-row table-body-row ';
+
+        // const dailyTotal = transactions.reduce(
+        //   (sum, t) => sum + Number(t.amount),
+        //   0
+        // );
+
+        // Update total amounts for each day startinf wth partial totals and ending the day with final Total.
+        updateTotalPosAmounts(transactions, totalRow, date);
+
+        posTableBody.appendChild(totalRow);
       });
 
-      // Insert total row (Footer for Daily Totals))
-      const totalRow = document.createElement('tr');
-      totalRow.className = 'total-row table-body-row ';
+      // Handle Load More button visibility
+      if (currentPage >= totalPages) {
+        loadMoreButton.style.display = 'none';
+      } else {
+        loadMoreButton.style.display = 'block';
+      }
+    } catch (error) {
+      console.error('Error rendering transactions:', error);
+      posTableBody.innerHTML =
+        '<tr><td colspan="6" class="table-error-text">Error loading transactions.</td></tr>';
+    }
+  }
 
-      // const dailyTotal = transactions.reduce(
-      //   (sum, t) => sum + Number(t.amount),
-      //   0
-      // );
+  renderPosTable();
+}
 
-      // Update total amounts for each day startinf wth partial totals and ending the day with final Total.
-      updateTotalPosAmounts(transactions, totalRow, date);
+if (isStaff) {
+  document
+    .getElementById('applyFiltersBtn_staff')
+    .addEventListener('click', () => {
+      currentFilters = {
+        startDate: document.getElementById('startDateFilter').value,
+        endDate: document.getElementById('endDateFilter').value,
+        type: document.getElementById('typeFilter').value,
+        status: document.getElementById('statusFilter').value,
+      };
 
-      posTableBody.appendChild(totalRow);
+      currentPage = 1;
+      renderPosTable(currentPage, pageSize, currentFilters);
     });
 
-    // Handle Load More button visibility
-    if (currentPage >= totalPages) {
-      loadMoreButton.style.display = 'none';
-    } else {
-      loadMoreButton.style.display = 'block';
+  document.getElementById('resetFiltersBtn').addEventListener('click', () => {
+    currentFilters = {
+      startDate: (document.getElementById('startDateFilter').value = ''),
+      endDate: (document.getElementById('endDateFilter').value = ''),
+      type: (document.getElementById('typeFilter').value = ''),
+      status: (document.getElementById('statusFilter').value = ''),
+    };
+
+    currentPage = 1;
+    renderPosTable(currentPage, pageSize, currentFilters);
+  });
+
+  loadMoreButton.addEventListener('click', () => {
+    currentPage += 1;
+    renderPosTable(currentPage, pageSize, currentFilters);
+  });
+
+  async function renderPosTable(
+    page = 1,
+    pageSize,
+    filters = {},
+    role = 'staff'
+  ) {
+    const posTableBody = document.querySelector(
+      `.posTableDisplay_${role} tbody`
+    );
+
+    if (!posTableBody) {
+      console.error('Error: Table body not found');
+      return;
     }
-  } catch (error) {
-    console.error('Error rendering transactions:', error);
-    posTableBody.innerHTML =
-      '<tr><td colspan="6" class="table-error-text">Error loading transactions.</td></tr>';
+
+    try {
+      let loadingRow = document.querySelector('.loading-row');
+      if (!loadingRow) {
+        loadingRow = document.createElement('tr');
+        loadingRow.className = 'loading-row';
+        loadingRow.innerHTML = `<td colspan="11" class="table-loading-text">Loading transactions...</td>`;
+        posTableBody.appendChild(loadingRow);
+      }
+
+      loadMoreButton.style.display = 'none';
+
+      // Build query with filters
+      const queryParams = new URLSearchParams({
+        shopId: shopId,
+        page,
+        limit: pageSize,
+      });
+
+      if (filters.startDate) queryParams.append('startDate', filters.startDate);
+      if (filters.endDate) queryParams.append('endDate', filters.endDate);
+      if (filters.type) queryParams.append('type', filters.type);
+      if (filters.status) queryParams.append('status', filters.status);
+
+      const result = await getPosTransactions({
+        shopId,
+        page,
+        limit: pageSize,
+        filters,
+      });
+
+      console.log(result);
+
+      if (!result) throw new Error(result.message || 'Failed to fetch');
+
+      const posTransactions = result.data.transactions;
+      totalPages = result.data.totalPages;
+      totalItems = result.data.totalItems;
+      currentPage = result.data.currentPage;
+
+      // Only reset array if starting from page 1
+      if (page === 1) {
+        allPosTransactions = [];
+      }
+
+      posTransactions.forEach((transaction) => {
+        if (!allPosTransactions.some((t) => t.id === transaction.id)) {
+          allPosTransactions.push(transaction);
+        }
+      });
+
+      // Clear the table body and render all accumulated transactions
+      posTableBody.innerHTML = '';
+
+      const groupedByDate = {};
+
+      allPosTransactions.forEach((tx) => {
+        const dateObj = new Date(tx.business_day);
+        const dateKey = dateObj.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }); // "May 11, 2025"
+
+        if (!groupedByDate[dateKey]) groupedByDate[dateKey] = [];
+        groupedByDate[dateKey].push(tx);
+      });
+
+      //  console.log(groupedByDate);
+
+      let serialNumber = 1;
+
+      Object.entries(groupedByDate).forEach(([date, transactions]) => {
+        // Insert group row (header for the date)
+        const groupRow = document.createElement('tr');
+        groupRow.className = 'date-group-row table-body-row ';
+
+        groupRow.innerHTML = `
+      <td colspan="11" class="date-header py-1 mt-1 mb-1">
+        <strong>${date}</strong>     </td>
+  
+     `;
+        posTableBody.appendChild(groupRow);
+
+        //       groupRow.innerHTML = `
+        //     <td colspan="11" class="date-header py-1 mt-1 mb-1">
+        //       <strong>${date}</strong> — Total: ₦${formatAmountWithCommas(dailyTotal)}
+        //     </td>
+        //   `;
+
+        transactions.forEach((posTransaction) => {
+          const {
+            transaction_type,
+            amount,
+            fee_payment_type,
+            customer_name,
+            customer_phone,
+            payment_method,
+            status,
+            receipt_id,
+            remarks,
+            business_day,
+            transaction_time,
+            charges,
+            fees,
+            transaction_fee,
+          } = posTransaction;
+
+          const machineFee = fees?.fee_amount || '-';
+          const transactionCharges = charges?.charge_amount || '-';
+
+          const row = document.createElement('tr');
+          row.classList.add('table-body-row');
+          row.innerHTML = `
+       <td class="py-1">${serialNumber++}.</td>
+       <td class="py-1">${business_day}</td>
+       <td class="py-1 posTransTypeReport">${formatTransactionType(
+         transaction_type
+       )}</td>
+       <td class="py-1 posCustomerInfo">${`${customer_name} - ${customer_phone}`}</td>
+       <td class="py-1 posAmountReport">&#x20A6;${formatAmountWithCommas(
+         amount
+       )}</td>
+       <td class="py-1 posChargesReport">&#x20A6;${formatAmountWithCommas(
+         transactionCharges
+       )}</td>
+       <td class="py-1 posMachineFeeReport">&#x20A6;${formatAmountWithCommas(
+         machineFee
+       )}</td>
+       <td class="py-1 posFeePaymentMethodReport">${fee_payment_type}</td>
+       <td class="py-1 posPaymentMethodReport">${payment_method}</td>
+       <td class="py-1 posPaymentMethodRemark">${remarks}</td>
+       <td class="py-1 posPaymentMethodRemark">${receipt_id}</td>
+     `;
+          posTableBody.appendChild(row);
+        });
+
+        // Insert total row (Footer for Daily Totals))
+        const totalRow = document.createElement('tr');
+        totalRow.className = 'total-row table-body-row ';
+
+        // const dailyTotal = transactions.reduce(
+        //   (sum, t) => sum + Number(t.amount),
+        //   0
+        // );
+
+        // Update total amounts for each day startinf wth partial totals and ending the day with final Total.
+        updateTotalPosAmounts(transactions, totalRow, date);
+
+        posTableBody.appendChild(totalRow);
+      });
+
+      // Handle Load More button visibility
+      if (currentPage >= totalPages) {
+        loadMoreButton.style.display = 'none';
+      } else {
+        loadMoreButton.style.display = 'block';
+      }
+    } catch (error) {
+      console.error('Error rendering transactions:', error);
+      posTableBody.innerHTML =
+        '<tr><td colspan="6" class="table-error-text">Error loading transactions.</td></tr>';
+    }
   }
+
+  renderPosTable();
 }
 
 function updateTotalPosAmounts(transactions, totalRow, date) {
@@ -403,8 +635,6 @@ function updateTotalPosAmounts(transactions, totalRow, date) {
      </td>
    `;
 }
-
-renderPosTable();
 
 // JS to Render Sold goods from LocalStorage
 const storedSoldGoods =

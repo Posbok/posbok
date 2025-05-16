@@ -2041,11 +2041,54 @@ body.authentication {
           .machineFee-method .machineFee-table-container .table-body-row:hover .hero-btn-outline:active {
             background-color: #eef1f6; }
 
-.action-buttons {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  align-items: center; }
+.accordion-container {
+  width: 100%; }
+  .accordion-container .accordion-toggle {
+    width: 100%;
+    text-align: left;
+    background-color: #ebfbee;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-bottom: 0.3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center; }
+    .accordion-container .accordion-toggle .heading-subtext {
+      text-align: left;
+      color: #205329;
+      font-size: 1.5rem;
+      text-transform: initial; }
+    .accordion-container .accordion-toggle .icon {
+      font-size: 1.5rem;
+      color: #205329;
+      transform: rotate(360deg);
+      transition: transform 0.3s ease; }
+    .accordion-container .accordion-toggle:hover, .accordion-container .accordion-toggle:active {
+      background-color: #10AB2B; }
+  .accordion-container .accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease; }
+  .accordion-container .accordion-section.active .accordion-toggle {
+    background-color: #10AB2B; }
+    .accordion-container .accordion-section.active .accordion-toggle .heading-subtext {
+      color: #ebfbee; }
+    .accordion-container .accordion-section.active .accordion-toggle .icon {
+      transform: rotate(180deg);
+      transition: transform 0.3s ease;
+      color: #ebfbee; }
+  .accordion-container .accordion-section.active .accordion-content {
+    max-height: max-content;
+    /* enough to show full content */ }
+  .accordion-container .action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center; }
+
+.admin-view,
+.staff-view {
+  display: none; }
 
 .loading-row td {
   padding: 1.5rem 1rem;

@@ -127,12 +127,90 @@
    }
 }
 
-.action-buttons {
-   display: flex;
-   gap: 1rem;
-   justify-content: center;
-   align-items: center;
+// reports.html table/accodium
+
+.accordion-container {
+   width: 100%;
+
+   .accordion-toggle {
+      width: 100%;
+      text-align: left;
+      background-color: $color-primary-light-1;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-bottom: 0.3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .heading-subtext {
+         text-align: left;
+         color: $color-secondary-dark;
+         font-size: 1.5rem;
+         text-transform: initial;
+      }
+
+      .icon {
+         font-size: 1.5rem;
+         color: $color-secondary-dark;
+         transform: rotate(360deg);
+         transition: transform 0.3s ease;
+      }
+
+      &:hover,
+      &:active {
+         background-color: $color-primary-light;
+      }
+   }
+
+   .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+   }
+
+   .accordion-section.active {
+
+      .accordion-toggle {
+         background-color: $color-primary-light;
+
+         .heading-subtext {
+            color: $color-primary-light-1
+         }
+
+
+         .icon {
+            transform: rotate(180deg);
+            transition: transform 0.3s ease;
+            color: $color-primary-light-1
+         }
+      }
+
+      .accordion-content {
+         // max-height: 10000px;
+         max-height: max-content;
+         /* enough to show full content */
+      }
+   }
+
+
+   .action-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      align-items: center;
+   }
 }
+
+.admin-view,
+.staff-view {
+   display: none;
+}
+
+
+
+
+
 
 .loading-row td {
    padding: 1.5rem 1rem;

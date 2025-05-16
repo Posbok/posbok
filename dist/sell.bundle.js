@@ -46,7 +46,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _api
   \*******************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\nconst config = {\n  baseUrl: 'https://api.posbok.com',\n  token: localStorage.getItem('accessToken') || null,\n  userData: localStorage.getItem('userData') || null,\n  dummyShopId: 88\n};\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (config);\n\n//# sourceURL=webpack://posbok/./config.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\nconst config = {\n  baseUrl: 'https://api.posbok.com',\n  token: localStorage.getItem('accessToken') || null,\n  userData: localStorage.getItem('userData') || null,\n  //   dummyShopId: 88, // john8709@yahoo.com\n  dummyShopId: 91 //blessing7430@yahoo.com\n};\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (config);\n\n//# sourceURL=webpack://posbok/./config.js?");
 
 /***/ })
 

@@ -81,82 +81,82 @@ export function setupCreateShopForm() {
 }
 
 // POS FORM MANIPUATION - LEAVE AS IT IS
-document.addEventListener('DOMContentLoaded', function () {
-  const posSuccessfulCheckbox = document.getElementById(
-    'posSuccessfulCheckbox'
-  );
-  const posPendingCheckbox = document.getElementById('posPendingCheckbox');
-  const posRemarksDiv = document.querySelector('.posRemarksDiv');
-  const posTransactionRemark = document.getElementById('posTransactionRemark');
-  const checkboxes = document.querySelectorAll('input[type="radio"]');
+// document.addEventListener('DOMContentLoaded', function () {
+//   const posSuccessfulCheckbox = document.getElementById(
+//     'posSuccessfulCheckbox'
+//   );
+//   const posPendingCheckbox = document.getElementById('posPendingCheckbox');
+//   const posRemarksDiv = document.querySelector('.posRemarksDiv');
+//   const posTransactionRemark = document.getElementById('posTransactionRemark');
+//   const checkboxes = document.querySelectorAll('input[type="radio"]');
 
-  function updateStatus() {
-    if (posSuccessfulCheckbox?.checked) {
-      if (posRemarksDiv) posRemarksDiv.style.display = 'none';
-      if (posTransactionRemark) posTransactionRemark.value = 'Successful';
-      if (posTransactionRemark) posTransactionRemark.disabled = true;
-    } else {
-      if (posRemarksDiv) posRemarksDiv.style.display = 'block';
-      if (posTransactionRemark) posTransactionRemark.disabled = false;
-    }
-  }
+//   function updateStatus() {
+//     if (posSuccessfulCheckbox?.checked) {
+//       if (posRemarksDiv) posRemarksDiv.style.display = 'none';
+//       if (posTransactionRemark) posTransactionRemark.value = 'Successful';
+//       if (posTransactionRemark) posTransactionRemark.disabled = true;
+//     } else {
+//       if (posRemarksDiv) posRemarksDiv.style.display = 'block';
+//       if (posTransactionRemark) posTransactionRemark.disabled = false;
+//     }
+//   }
 
-  updateStatus();
+//   updateStatus();
 
-  //   nOW USING RADIO BUTTONS BUT STILLL KEEPING THIS HERE
-  //   checkboxes.forEach((checkbox) => {
-  //     checkbox.addEventListener('change', function () {
-  //       checkboxes.forEach((otherCheckbox) => {
-  //         if (otherCheckbox !== checkbox) {
-  //           otherCheckbox.checked = false;
-  //           otherCheckbox.removeAttribute('required');
-  //         }
-  //       });
+//   //   nOW USING RADIO BUTTONS BUT STILLL KEEPING THIS HERE
+//   //   checkboxes.forEach((checkbox) => {
+//   //     checkbox.addEventListener('change', function () {
+//   //       checkboxes.forEach((otherCheckbox) => {
+//   //         if (otherCheckbox !== checkbox) {
+//   //           otherCheckbox.checked = false;
+//   //           otherCheckbox.removeAttribute('required');
+//   //         }
+//   //       });
 
-  //       if (checkbox === posSuccessfulCheckbox) {
-  //         posPendingCheckbox.checked = !checkbox.checked;
-  //       } else {
-  //         posSuccessfulCheckbox.checked = !checkbox.checked;
-  //         posTransactionRemark.value = '';
-  //       }
+//   //       if (checkbox === posSuccessfulCheckbox) {
+//   //         posPendingCheckbox.checked = !checkbox.checked;
+//   //       } else {
+//   //         posSuccessfulCheckbox.checked = !checkbox.checked;
+//   //         posTransactionRemark.value = '';
+//   //       }
 
-  //       //Backup
-  //       // if (checkbox === posSuccessfulCheckbox) {
-  //       //   posSuccessfulCheckbox.checked = true;
-  //       //   posRemarksDiv.style.display = 'none';
-  //       //   posTransactionRemark.disabled = true;
-  //       //   posTransactionRemark.value = 'Successful';
-  //       // } else {
-  //       //   posPendingCheckbox.checked = true;
-  //       //   posRemarksDiv.style.display = 'flex';
-  //       //   posTransactionRemark.disabled = false;
-  //       //   posTransactionRemark.value = '';
-  //       // }
-  //       updateStatus();
-  //     });
-  //   });
+//   //       //Backup
+//   //       // if (checkbox === posSuccessfulCheckbox) {
+//   //       //   posSuccessfulCheckbox.checked = true;
+//   //       //   posRemarksDiv.style.display = 'none';
+//   //       //   posTransactionRemark.disabled = true;
+//   //       //   posTransactionRemark.value = 'Successful';
+//   //       // } else {
+//   //       //   posPendingCheckbox.checked = true;
+//   //       //   posRemarksDiv.style.display = 'flex';
+//   //       //   posTransactionRemark.disabled = false;
+//   //       //   posTransactionRemark.value = '';
+//   //       // }
+//   //       updateStatus();
+//   //     });
+//   //   });
 
-  if (posTransactionRemark)
-    posTransactionRemark.addEventListener('input', function () {
-      const inputValue = posTransactionRemark.value.trim();
+//   if (posTransactionRemark)
+//     posTransactionRemark.addEventListener('input', function () {
+//       const inputValue = posTransactionRemark.value.trim();
 
-      posPendingCheckbox.checked = inputValue !== '';
-      posSuccessfulCheckbox.checked = !posPendingCheckbox.checked;
-      posSuccessfulCheckbox.removeAttribute('required');
+//       posPendingCheckbox.checked = inputValue !== '';
+//       posSuccessfulCheckbox.checked = !posPendingCheckbox.checked;
+//       posSuccessfulCheckbox.removeAttribute('required');
 
-      //Backup
-      //  if (inputValue !== '') {
-      //    posPendingCheckbox.checked = true;
-      //    posSuccessfulCheckbox.checked = false;
-      //    posSuccessfulCheckbox.removeAttribute('required');
-      //  } else {
-      //    posPendingCheckbox.checked = false;
-      //    return;
-      //  }
+//       //Backup
+//       //  if (inputValue !== '') {
+//       //    posPendingCheckbox.checked = true;
+//       //    posSuccessfulCheckbox.checked = false;
+//       //    posSuccessfulCheckbox.removeAttribute('required');
+//       //  } else {
+//       //    posPendingCheckbox.checked = false;
+//       //    return;
+//       //  }
 
-      updateStatus();
-    });
-});
+//       updateStatus();
+//     });
+// });
 
 // JavaScript for POS Form
 

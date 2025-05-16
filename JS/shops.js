@@ -85,7 +85,7 @@ export function populateShopsTable(shopData = []) {
         // Fetch Shop detail
         const shopDetail = await fetchShopDetail(shopId);
 
-        console.log(shopDetail);
+        //   console.log(shopDetail);
 
         // Call function to prefill modal inputs
         if (shopDetail?.data) {

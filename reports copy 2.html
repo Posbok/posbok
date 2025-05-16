@@ -125,20 +125,194 @@
       </header>
 
       <!-- POS TABLE - ADMIN -->
-      <div class="adminAccordionContainer admin-view ">
+      <div class="adminAccordionContainer admin-view">
 
          <!-- Header and Reports Section here... -->
 
          <!-- This is the placeholder for accordion shops -->
          <div id="accordionShops" class="accordion-container">
 
-         </div>
+            <div class="accordion-section">
+               <button class="accordion-toggle">Shop Name or ID</button>
+               <div class="accordion-content">
 
+                  <!-- REPORT CARD -->
+                  <div class="reports card">
+                     <div class="reports-method">
+                        <h2 class="heading-text mb-2">
+                           POS Reports
+                        </h2>
+
+                        <h2 class="filter-heading heading-subtext mb-2">Filter Transactions</h2>
+
+                        <div class="filter-section mb-2">
+
+                           <div class="pos-method-form_input">
+                              <label for="startDateFilter_admin">Start Date:</label>
+
+                              <input type="date" id="startDateFilter_admin">
+                           </div>
+
+                           <div class="pos-method-form_input">
+                              <label for="endDateFilter_admin">Start Date:</label>
+
+                              <input type="date" id="endDateFilter_admin">
+                           </div>
+
+                           <div class="pos-method-form_input ">
+
+                              <label for="typeFilter_admin">Transaction Type:</label>
+
+                              <select id="typeFilter_admin" name="typeFilter_admin">
+                                 <option value="">All</option>
+                                 <option value="DEPOSIT">Deposit</option>
+                                 <option value="WITHDRAWAL">Withdrawal</option>
+                                 <option value="WITHDRAWAL_TRANSFER">Withdrawal/Transfer</option>
+                                 <option value="BILL_PAYMENT">Bill Payment</option>
+                              </select>
+                           </div>
+
+                           <div class="pos-method-form_input ">
+
+                              <label for="statusFilter_admin">Status:</label>
+
+                              <select id="statusFilter_admin" name="statusFilter_admin">
+                                 <option value="">All</option>
+                                 <option value="SUCCESSFUL">Successful</option>
+                                 <option value="FAILED">Failed</option>
+                                 <option value="PENDING">Pending</option>
+                              </select>
+                           </div>
+
+
+                           <div class="filter-buttons">
+                              <button id="applyFiltersBtn_admin" class="hero-btn-dark">Apply Filters</button>
+                              <button id="resetFiltersBtn" class="hero-btn-outline">Reset</button>
+                           </div>
+
+                        </div>
+
+                        <!-- <div id="transactionList" class="transaction-list mb-3"></div> -->
+
+                        <div class="table-header">
+                           <!-- <h2 class="heading-subtext"> POS </h2> -->
+                        </div>
+
+                        <div class="reports-table-container">
+
+                           <table class="reports-table posTableDisplay_admin">
+                              <thead>
+                                 <tr class="table-header-row">
+                                    <th class="py-1">S/N</th>
+                                    <th class="py-1">Date</th>
+                                    <th class="py-1">Transaction Type</th>
+                                    <th class="py-1">Customer Info</th>
+                                    <th class="py-1">Amount</th>
+                                    <th class="py-1">Charges</th>
+                                    <th class="py-1">Machine Fee</th>
+                                    <th class="py-1">Charge Payment Method</th>
+                                    <th class="py-1">Payment Method</th>
+                                    <th class="py-1">Remarks</th>
+                                    <th class="py-1">Receipt ID</th>
+                                 </tr>
+                              </thead>
+
+                              <tbody>
+
+                                 <!-- <tr class="loading-row">
+                                                                                       <td colspan="11" class="table-error-text">Loading Transactions...</td>
+                                                                                    </tr> -->
+                                 <!-- 
+                           <tr class="table-body-row">
+                              <td class="py-1">3.</td>
+                              <td class="py-1">Demo Withdraw</td>
+                              <td class="py-1">&#x20A6;00,000</td>
+                              <td class="py-1">&#x20A6;0,000</td>
+                              <td class="py-1">cash</td>
+                              <td class="py-1">Transfer</td>
+                              <td class="py-1">Successful</td>
+                           </tr> -->
+                              </tbody>
+
+                              <tfoot>
+                                 <tr class="table-foot-row px-2">
+                                    <td colspan="4"></td>
+                                    <td id="totalPosAmount" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+
+                                    <td id="totalPosFee" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+
+                                    <td id="totalMachineFee" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+
+                                    <td id="totalDepositAmount" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+
+                                    <td id="totalWithdrawalAmount" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+
+                                    <td id="totalWithdrawalTransferAmount" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+
+                                    <td id="totalBillPaymentAmount" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+                                    <!-- <td></td> -->
+                                 </tr>
+                              </tfoot>
+                           </table>
+
+                           <!-- <div id="paginationControls" class="pagination-controls mt-3">
+                 JS will generate buttons here 
+               </div> -->
+
+                           <div id="loadMoreButtonDiv_admin" class=" center-button mt-2">
+
+                              <button id="loadMoreButton_admin" class=" hero-btn-dark load-more-button">Load
+                                 More</button>
+                              <!-- <button id="loadMoreButton" class="">Load More</button> -->
+                           </div>
+
+                        </div>
+
+                        <div class="double-input">
+                           <div class="amount-summary">
+                              <label for="AmountinMachine_admin">AMOUNT IN MACHINE</label>
+
+                              <div class="naira-input-container">
+                                 <input id="AmountinMachine_admin" type="text" name="AmountinMachine_admin"
+                                    oninput="this.value=this.value.replace(/[^0-9]/g,'')" value="Unavailable" disabled>
+                                 <span class="naira">&#x20A6;</span>
+                              </div>
+                           </div>
+
+                           <div class="amount-summary">
+                              <label for="cashAvailable_admin">CASH AVAILABLE</label>
+
+                              <div class="naira-input-container">
+                                 <input id="cashAvailable_admin" type="text" name="cashAvailable_admin"
+                                    oninput="this.value=this.value.replace(/[^0-9]/g,'')" value="Unavailable" disabled>
+                                 <span class="naira">&#x20A6;</span>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
       </div>
 
       <!-- POS TABLE - STAFF -->
       <div class="staffContainer staff-view">
-         <div class="reports card mb-1">
+         <div class="reports card">
             <div class="reports-method">
                <h2 class="heading-text mb-2">
                   POS Reports
@@ -189,7 +363,7 @@
                   <div class="filter-buttons">
                      <button id="applyFiltersBtn_staff" class="hero-btn-dark">Apply Filters</button>
 
-                     <button id="resetFiltersBtn_staff" class="hero-btn-outline">Reset</button>
+                     <button id="resetFiltersBtn" class="hero-btn-outline">Reset</button>
                   </div>
 
                </div>
@@ -306,35 +480,37 @@
                </div>
             </div>
          </div>
+      </div>
 
-         <!-- Sold Items -->
-         <div class="reports card">
-            <div class="reports-method">
-               <h2 class="heading-text mb-2">
-                  Sales Reports
-               </h2>
 
-               <div class="table-header">
-                  <!-- <h2 class="heading-subtext"> SALES </h2> -->
-               </div>
+      <!-- Sold Items -->
+      <div class="reports card">
+         <div class="reports-method">
+            <h2 class="heading-text mb-2">
+               Sales Reports
+            </h2>
 
-               <div class="reports-table-container">
+            <div class="table-header">
+               <!-- <h2 class="heading-subtext"> SALES </h2> -->
+            </div>
 
-                  <table class="reports-table soldTableDisplay">
-                     <thead>
-                        <tr class="table-header-row">
-                           <th class="py-1">S/N</th>
-                           <th class="py-1">Item Name</th>
-                           <th class="py-1">Amount Sold</th>
-                           <th class="py-1">Status</th>
-                           <th class="py-1">Balance</th>
-                           <th class="py-1">Machine Fee</th>
-                           <th class="py-1">Remarks</th>
-                        </tr>
-                     </thead>
+            <div class="reports-table-container">
 
-                     <tbody>
-                        <!-- <tr class="table-body-row">
+               <table class="reports-table soldTableDisplay">
+                  <thead>
+                     <tr class="table-header-row">
+                        <th class="py-1">S/N</th>
+                        <th class="py-1">Item Name</th>
+                        <th class="py-1">Amount Sold</th>
+                        <th class="py-1">Status</th>
+                        <th class="py-1">Balance</th>
+                        <th class="py-1">Machine Fee</th>
+                        <th class="py-1">Remarks</th>
+                     </tr>
+                  </thead>
+
+                  <tbody>
+                     <!-- <tr class="table-body-row">
                         <td class="py-1">1.</td>
                         <td class="py-1 soldItemNameReport">Infinix Charger</td>
                         <td class="py-1 soldItemPriceReport">&#x20A6;2,000</td>
@@ -342,9 +518,9 @@
                         <td class="py-1 soldItemBalanceReport">-</td>
                         <td class="py-1 soldItemRemarkReport ">Cash</td>
                      </tr> -->
-                     </tbody>
+                  </tbody>
 
-                     <!-- <tbody>
+                  <!-- <tbody>
                      <tr class="table-body-row" id="item-list">
                         <td class="py-1">x.</td>
                         <td class="py-1">Oraimo Watch</td>
@@ -366,29 +542,24 @@
                      </tr>
                   </tbody> -->
 
-                     <tfoot>
-                        <tr class="table-foot-row px-2">
-                           <td colspan="2"></td>
-                           <td id="totalSoldAmount" class="py-1 px-2"><strong>Total Amount =
-                                 &nbsp;&#x20A6;2,000</strong>
-                           </td>
-                        </tr>
-                     </tfoot>
-                  </table>
+                  <tfoot>
+                     <tr class="table-foot-row px-2">
+                        <td colspan="2"></td>
+                        <td id="totalSoldAmount" class="py-1 px-2"><strong>Total Amount = &nbsp;&#x20A6;2,000</strong>
+                        </td>
+                     </tr>
+                  </tfoot>
+               </table>
 
-                  <!-- 
+               <!-- 
                <div class="pagination-container">
                   <button class="pagination-button">Previous</button>
                   <p>Page 1 of 10</p>
                   <button class="pagination-button">Next</button>
                </div> -->
-               </div>
             </div>
          </div>
       </div>
-
-
-
 
    </main>
 
