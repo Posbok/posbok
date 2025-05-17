@@ -5,6 +5,12 @@ import {
   openUpdateShopModal,
   updateShop,
 } from './apiServices/shop/shopResource';
+import {
+  hideBtnLoader,
+  hideGlobalLoader,
+  showBtnLoader,
+  showGlobalLoader,
+} from './helper/helper';
 import { closeModal, showToast } from './script';
 
 export function populateShopsTable(shopData = []) {
@@ -72,6 +78,7 @@ export function populateShopsTable(shopData = []) {
 
     const updateShopBtn = row.querySelector('.editShopButton');
     updateShopBtn?.addEventListener('click', async () => {
+      showGlobalLoader();
       const shopId = updateShopBtn.dataset.shopId;
 
       const adminUpdateShopDataContainer = document.querySelector(
@@ -89,9 +96,11 @@ export function populateShopsTable(shopData = []) {
 
         // Call function to prefill modal inputs
         if (shopDetail?.data) {
+          hideGlobalLoader();
           openUpdateShopModal(); // Show modal after data is ready
           setupUpdateShopForm(shopDetail.data);
         } else {
+          hideGlobalLoader();
           showToast('fail', '❌ Failed to fetch shop details.');
         }
       }
@@ -210,15 +219,21 @@ export function initUpdateShopFormListener() {
 
     const shopId = form.dataset.shopId;
 
+    const updateShopSubmitBtn = document.querySelector('.updateShopBtn');
+
     try {
+      showBtnLoader(updateShopSubmitBtn);
+
       const data = await updateShop(shopId, shopUpdatedDetails);
 
       if (data) {
+        hideBtnLoader(updateShopSubmitBtn);
         closeModal();
         form.reset();
       }
     } catch (err) {
       showToast('fail', `❎ ${err.message}`);
+      hideBtnLoader(updateShopSubmitBtn);
     }
   });
 }

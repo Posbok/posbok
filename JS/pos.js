@@ -13,6 +13,7 @@ import {
   clearFormInputs,
   formatAmountWithCommas,
   formatDateTimeReadable,
+  formatTransactionType,
   getAmountForSubmission,
   hideBtnLoader,
   showBtnLoader,
@@ -181,6 +182,7 @@ export function addPosChargeForm() {
       // console.log('Configuring POS Charges with:', addPosChargesDetails);
 
       const addPosChargeBtn = document.querySelector('.addPosChargeBtn');
+
       try {
         showBtnLoader(addPosChargeBtn);
         const data = await configurePosCharges(addPosChargesDetails);
@@ -239,7 +241,7 @@ export function populatePosChargesTable(posChargesData) {
       row.innerHTML = `
 
       <td class="py-1 posChargeSerialNumber">${index + 1}</td>
-      <td class="py-1 posChargeType">${transaction_type}
+      <td class="py-1 posChargeType">${formatTransactionType(transaction_type)}
       <td class="py-1 posChargeMinAmount">₦${formatAmountWithCommas(
         min_amount
       )}</td>
@@ -360,16 +362,21 @@ export function addMachineFeeForm() {
             }),
       };
 
-      console.log('Configuring POS Charges with:', addMachineFeesDetails);
+      // console.log('Configuring POS Charges with:', addMachineFeesDetails);
+
+      const addMachineFeeBtn = document.querySelector('.addMachineFeeBtn');
 
       try {
+        showBtnLoader(addMachineFeeBtn);
         const data = await configurePosMachineFees(addMachineFeesDetails);
+        hideBtnLoader(addMachineFeeBtn);
         if (data) {
           closeModal();
         }
         closeModal(); // close modal after success
       } catch (err) {
         console.error('Error COnfiguring POS Charges:', err.message);
+        hideBtnLoader(addMachineFeeBtn);
         showToast('fail', `❎ ${err.message}`);
       }
     });

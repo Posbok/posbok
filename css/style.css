@@ -68,7 +68,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(243, 253, 245, 0.6); }
+  background-color: rgba(243, 253, 245, 0.6);
+  z-index: 100001; }
 
 .spinner {
   width: 45px;
@@ -92,7 +93,7 @@ body {
   top: 50%;
   width: 16px;
   height: 16px;
-  border: 2px solid #ccc;
+  border: 2px solid #fff;
   border-top: 2px solid #10AB2B;
   border-radius: 50%;
   animation: buttonSpin 0.8s linear infinite;

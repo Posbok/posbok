@@ -1,4 +1,5 @@
 import config from '../../../config.js';
+import { hideGlobalLoader, showGlobalLoader } from '../../helper/helper.js';
 import { closeModal, showToast } from '../../script.js';
 import { populateShopsTable } from '../../shops.js';
 import { populateShopDropdown } from '../../staff.js';
@@ -65,7 +66,7 @@ export async function createShop(shopDetails) {
 
 export async function fetchShopDetail(shopId) {
   try {
-    console.log('Sending POST request...');
+    //  console.log('Sending POST request...');
 
     const receivedShopDetail = await safeFetch(
       `${baseUrl}/api/shop/${shopId}`,
@@ -77,7 +78,7 @@ export async function fetchShopDetail(shopId) {
       }
     );
 
-    console.log('Response received...');
+    //  console.log('Response received...');
 
     if (!receivedShopDetail) {
       console.log('Shop detail NOT received :', receivedShopDetail);
@@ -252,8 +253,10 @@ export function setupCreateShopForm() {
       };
 
       try {
+        showGlobalLoader();
         createShop(shopDetails)
           .then((data) => {
+            hideGlobalLoader();
             closeModal();
 
             // Clear inputs and checkboxes
@@ -270,6 +273,7 @@ export function setupCreateShopForm() {
             // window.location.href = 'manage.html';
           })
           .catch((data) => {
+            hideGlobalLoader();
             showToast('fail', `❎ ${data.message}`);
             console.error('❎ Failed to create shop:', data.message);
           });
@@ -305,6 +309,8 @@ export async function deleteShop(shopId) {
   try {
     console.log('Sending POST request...');
 
+    showGlobalLoader();
+
     const response = await fetch(`${baseUrl}/api/shop/${shopId}`, {
       method: 'DELETE',
       headers: {
@@ -318,12 +324,17 @@ export async function deleteShop(shopId) {
       throw new Error(data.message || 'Something went wrong');
     }
 
-    console.log('Shop deleted successfully:', data);
+    if (data) {
+      hideGlobalLoader();
+    }
+
+    //  console.log('Shop deleted successfully:', data);
     showToast('success', `✅ ${data.message}`);
     checkAndPromptCreateShop(); // Refresh list or update UI
 
     return data;
   } catch (error) {
+    hideGlobalLoader();
     console.error('Error deleting Shop', error);
     showToast('error', '❌ Failed to delete Shop');
     throw error;
@@ -355,6 +366,7 @@ export async function updateShop(shop_id, shopUpdatedDetails) {
   try {
     console.log('Sending POST request...');
 
+    showGlobalLoader();
     const updateShopData = await safeFetch(`${baseUrl}/api/shop/${shop_id}`, {
       method: 'PUT',
       headers: {
@@ -365,13 +377,15 @@ export async function updateShop(shop_id, shopUpdatedDetails) {
     });
 
     if (updateShopData) {
-      console.log('Shop info Updated successfully:', updateShopData);
+      // console.log('Shop info Updated successfully:', updateShopData);
+      hideGlobalLoader();
       showToast('success', `✅ ${updateShopData.message}`);
       checkAndPromptCreateShop(); // Refresh list or update UI
     }
 
     return updateShopData;
   } catch (error) {
+    hideGlobalLoader();
     console.error('Error Updating Shop Info', error);
     showToast('error', '❌ Failed to Update Shop info');
     throw error;

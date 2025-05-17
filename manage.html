@@ -438,7 +438,10 @@
          </div>
 
          <div class="center-button">
-            <button class="hero-btn-dark ">Add Machine Fee</button>
+            <button class="hero-btn-dark addMachineFeeBtn has-spinner">
+               <span class="btn-text">Add Machine Fee</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
          </div>
 
          <div class="close closeModal" id="">&times;</div>
@@ -509,7 +512,10 @@
          </div>
 
          <div class="center-button">
-            <button class="hero-btn-dark" type="submit">Create SHop</button>
+            <button class="hero-btn-dark createShopSubmitButton has-spinner" type="submit">
+               <span class="btn-text">Create SHop</span>
+               <span class="btn-spinner hidden"></span>
+               Create SHop</button>
          </div>
 
          <div class="close closeModal" id="">&times;</div>
@@ -559,7 +565,10 @@
          </div>
 
          <div class="center-button">
-            <button class="hero-btn-dark" type="submit">Update Shop Details</button>
+            <button class="hero-btn-dark  updateShopBtn has-spinner" type="submit">
+               <span class="btn-text">Update Shop Details</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
          </div>
 
          <div class="close closeModal" id="">&times;</div>
@@ -567,6 +576,11 @@
    </form>
 
    <div id="toast" class="toast">This is a toast message!</div>
+
+
+   <div id="global-loader" class="loader-overlay hidden">
+      <div class="spinner"></div>
+   </div>
 </body>
 
 </html>

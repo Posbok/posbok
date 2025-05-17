@@ -1,4 +1,5 @@
 import config from '../../../config.js';
+import { hideGlobalLoader, showGlobalLoader } from '../../helper/helper.js';
 import {
   addMachineFeeForm,
   addPosChargeForm,
@@ -145,6 +146,7 @@ export async function getPosTransactions({
     if (filters.type) queryParams.append('type', filters.type);
     if (filters.status) queryParams.append('status', filters.status);
 
+    showGlobalLoader();
     const posTransactionsData = await safeFetch(
       `${baseUrl}/api/pos/transactions?${queryParams.toString()}`,
       {
@@ -156,11 +158,13 @@ export async function getPosTransactions({
     );
 
     if (posTransactionsData) {
-      showToast('success', `✅ ${posTransactionsData.message}`);
+      // showToast('success', `✅ ${posTransactionsData.message}`);
+      hideGlobalLoader();
     }
 
     return posTransactionsData;
   } catch (error) {
+    hideGlobalLoader();
     console.error('Error receiving POS Transaction:', error);
     throw error;
   }

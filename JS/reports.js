@@ -4,7 +4,7 @@ import {
   getPosTransactions,
 } from './apiServices/pos/posResources';
 import { checkAndPromptCreateShop } from './apiServices/shop/shopResource';
-import { formatAmountWithCommas } from './helper/helper';
+import { formatAmountWithCommas, formatTransactionType } from './helper/helper';
 import { hideGlobalLoader, showGlobalLoader } from '../JS/helper/helper';
 
 const userData = config.userData;
@@ -48,21 +48,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 });
-
-function formatTransactionType(value) {
-  switch (value.toLowerCase()) {
-    case 'withdrawal':
-      return 'Withdrawal';
-    case 'withdrawal_transfer':
-      return 'Withdrawal & Transfer';
-    case 'bill_payment':
-      return 'Bill Payment';
-    case 'deposit':
-      return 'Deposit';
-    default:
-      return value;
-  }
-}
 
 // JS to Render saved POS from Database to help with Load More features of the transactions.
 let allPosTransactions = [];

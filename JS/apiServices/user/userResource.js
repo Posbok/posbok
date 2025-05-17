@@ -1,5 +1,9 @@
 import config from '../../../config.js';
-import { clearFormInputs } from '../../helper/helper.js';
+import {
+  clearFormInputs,
+  hideGlobalLoader,
+  showGlobalLoader,
+} from '../../helper/helper.js';
 import { closeModal, showToast } from '../../script.js';
 import { populateStaffTable } from '../../staff.js';
 import { fetchBusinessDetails } from '../business/businessResource.js';
@@ -353,6 +357,7 @@ export function setupCreateStaffForm() {
 
   if (form) {
     form.addEventListener('submit', async function (e) {
+      showGlobalLoader();
       e.preventDefault();
 
       const businessData = await fetchBusinessDetails();
@@ -460,8 +465,11 @@ export function setupCreateStaffForm() {
             `❎ ${assignErr.message || 'Failed to assign user'}`
           );
         }
+
+        hideGlobalLoader();
       } catch (err) {
         // err.message will contain the "Email already in use"
+        hideGlobalLoader();
         showToast('fail', `❎ ${err.message}`);
       }
     });

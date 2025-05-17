@@ -16,6 +16,7 @@ import {
   updateUser,
 } from './apiServices/user/userResource';
 import { safeFetch } from './apiServices/utility/safeFetch';
+import { hideGlobalLoader, showGlobalLoader } from './helper/helper';
 import { closeModal, showToast } from './script';
 
 const userData = config.userData;
@@ -166,6 +167,7 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
 
     const updateStaffBtn = row.querySelector('.editStaffButton');
     updateStaffBtn?.addEventListener('click', async () => {
+      showGlobalLoader();
       const staffId = updateStaffBtn.dataset.staffId;
 
       const adminUpdateUserDataContainer = document.querySelector(
@@ -181,9 +183,11 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
 
         // Call function to prefill modal inputs
         if (staffDetail?.data?.user) {
+          hideGlobalLoader();
           openUpdateStaffModal(); // Show modal after data is ready
           setupUpdateStaffForm(staffDetail.data.user);
         } else {
+          hideGlobalLoader();
           showToast('fail', '❌ Failed to fetch staff details.');
         }
       }
@@ -191,6 +195,7 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
 
     const manageStaffBtn = row.querySelector('.manageShopButton');
     manageStaffBtn?.addEventListener('click', async () => {
+      showGlobalLoader();
       const staffId = manageStaffBtn.dataset.staffId;
 
       const staffManageContainer = document.querySelector('.staffManage');
@@ -206,9 +211,11 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
 
         // Call function to prefill modal inputs
         if (staffDetail?.data?.user) {
+          hideGlobalLoader();
           openManageStaffModal(); // Show modal after data is ready
           setupManageStaffForm(staffDetail.data.user);
         } else {
+          hideGlobalLoader();
           showToast('fail', '❌ Failed to fetch staff details.');
         }
       }

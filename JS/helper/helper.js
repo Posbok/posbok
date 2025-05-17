@@ -193,6 +193,22 @@ export function formatAmountWithCommasOnInput(input) {
   input.value = formatAmountWithCommas(value);
 }
 
+// Format transaction type
+export function formatTransactionType(value) {
+  switch (value.toLowerCase()) {
+    case 'withdrawal':
+      return 'Withdrawal';
+    case 'withdrawal_transfer':
+      return 'Withdrawal & Transfer';
+    case 'bill_payment':
+      return 'Bill Payment';
+    case 'deposit':
+      return 'Deposit';
+    default:
+      return value;
+  }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
   const posCapitalAmountInput = document.getElementById('posCapitalAmount');
   const posTransactionAmountInput = document.getElementById(
