@@ -113,6 +113,62 @@ body {
    }
 }
 
+.loader-overlay {
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   background-color: rgba(#f3fdf5, 0.6);
+   // z-index: 9999;
+}
+
+.spinner {
+   width: 45px;
+   height: 45px;
+   border: 4px solid #ccc;
+   border-top: 4px solid $color-primary-light;
+   border-radius: 50%;
+   animation: globalLoaderSpin 0.8s linear infinite;
+}
+
+@keyframes globalLoaderSpin {
+   to {
+      transform: rotate(360deg);
+   }
+}
+
+@keyframes buttonSpin {
+   to {
+      transform: translateY(-50%) rotate(360deg);
+   }
+}
+
+.btn-spinner {
+   position: absolute;
+   right: 8px;
+   top: 50%;
+   width: 16px;
+   height: 16px;
+   border: 2px solid #ccc;
+   border-top: 2px solid $color-primary-light;
+   border-radius: 50%;
+   animation: buttonSpin 0.8s linear infinite;
+   transform: translateY(-50%) rotate(0deg);
+}
+
+.has-spinner.loading .btn-text {
+   margin-right: 2rem;
+}
+
+.hidden {
+   display: none;
+}
+
+
 // Toast styling
 .toast {
    visibility: hidden;

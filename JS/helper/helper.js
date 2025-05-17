@@ -270,3 +270,31 @@ export function formatDateTimeReadable(isoString) {
   const parts = formatted.split(', ');
   return `${parts[0]} ${parts[1]}`;
 }
+
+// Global UI Spinner
+export function showGlobalLoader() {
+  document.getElementById('global-loader').classList.remove('hidden');
+}
+
+export function hideGlobalLoader() {
+  document.getElementById('global-loader').classList.add('hidden');
+}
+
+// Button UI spinner
+export function showBtnLoader(button) {
+  const text = button.querySelector('.btn-text');
+  const spinner = button.querySelector('.btn-spinner');
+  text.style.opacity = '0.5';
+  spinner.classList.remove('hidden');
+  button.classList.add('loading');
+  button.disabled = true;
+}
+
+export function hideBtnLoader(button) {
+  const text = button.querySelector('.btn-text');
+  const spinner = button.querySelector('.btn-spinner');
+  text.style.opacity = '1';
+  spinner.classList.add('hidden');
+  button.classList.remove('loading');
+  button.disabled = false;
+}

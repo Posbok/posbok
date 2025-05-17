@@ -14,149 +14,15 @@ import {
   formatAmountWithCommas,
   formatDateTimeReadable,
   getAmountForSubmission,
+  hideBtnLoader,
+  showBtnLoader,
+  showGlobalLoader,
 } from './helper/helper.js';
 
 const userData = config.userData;
 const dummyShopId = config.dummyShopId;
 
 const shopId = userData?.shopId || dummyShopId;
-
-export function setupCreateShopForm() {
-  const form = document.querySelector('.createShopModal');
-
-  if (!form || form.dataset.bound === 'true') return;
-
-  form.dataset.bound = 'true';
-
-  if (form) {
-    form.addEventListener('submit', async function (e) {
-      e.preventDefault();
-
-      const shopNameInput = document.querySelector('#shopName');
-      const shopAddressInput = document.querySelector('#shopAddress');
-
-      const serviceTypeCheckboxes = document.querySelectorAll(
-        'input[name="serviceType"]:checked'
-      );
-      const serviceType = Array.from(serviceTypeCheckboxes).map(
-        (cb) => cb.value
-      );
-      const serviceTypeValue = serviceType[0] || null;
-
-      const shopDetails = {
-        shopName: shopNameInput.value,
-        location: shopAddressInput.value,
-        serviceType: serviceTypeValue,
-      };
-
-      try {
-        createShop(shopDetails)
-          .then((data) => {
-            closeModal();
-
-            // Clear inputs and checkboxes
-            shopNameInput.value = '';
-            shopAddressInput.value = '';
-            document
-              .querySelectorAll('input[name="serviceType"]')
-              .forEach((cb) => (cb.checked = false));
-            // serviceTypeCheckboxes.forEach(
-            //   (checkbox) => (checkbox.checked = false)
-            // );
-
-            //   redirectWithDelay('Homepage', 'manage.html', 500);
-            // window.location.href = 'manage.html';
-          })
-          .catch((data) => {
-            showToast('fail', `❎ ${data.message}`);
-            console.error('❎ Failed to create shop:', data.message);
-          });
-        //   console.log('Creating shop with:', shopDetails);
-        // closeModal(); // close modal after success
-      } catch (err) {
-        console.error('Error creating shop:', err.message);
-      }
-    });
-  }
-}
-
-// POS FORM MANIPUATION - LEAVE AS IT IS
-// document.addEventListener('DOMContentLoaded', function () {
-//   const posSuccessfulCheckbox = document.getElementById(
-//     'posSuccessfulCheckbox'
-//   );
-//   const posPendingCheckbox = document.getElementById('posPendingCheckbox');
-//   const posRemarksDiv = document.querySelector('.posRemarksDiv');
-//   const posTransactionRemark = document.getElementById('posTransactionRemark');
-//   const checkboxes = document.querySelectorAll('input[type="radio"]');
-
-//   function updateStatus() {
-//     if (posSuccessfulCheckbox?.checked) {
-//       if (posRemarksDiv) posRemarksDiv.style.display = 'none';
-//       if (posTransactionRemark) posTransactionRemark.value = 'Successful';
-//       if (posTransactionRemark) posTransactionRemark.disabled = true;
-//     } else {
-//       if (posRemarksDiv) posRemarksDiv.style.display = 'block';
-//       if (posTransactionRemark) posTransactionRemark.disabled = false;
-//     }
-//   }
-
-//   updateStatus();
-
-//   //   nOW USING RADIO BUTTONS BUT STILLL KEEPING THIS HERE
-//   //   checkboxes.forEach((checkbox) => {
-//   //     checkbox.addEventListener('change', function () {
-//   //       checkboxes.forEach((otherCheckbox) => {
-//   //         if (otherCheckbox !== checkbox) {
-//   //           otherCheckbox.checked = false;
-//   //           otherCheckbox.removeAttribute('required');
-//   //         }
-//   //       });
-
-//   //       if (checkbox === posSuccessfulCheckbox) {
-//   //         posPendingCheckbox.checked = !checkbox.checked;
-//   //       } else {
-//   //         posSuccessfulCheckbox.checked = !checkbox.checked;
-//   //         posTransactionRemark.value = '';
-//   //       }
-
-//   //       //Backup
-//   //       // if (checkbox === posSuccessfulCheckbox) {
-//   //       //   posSuccessfulCheckbox.checked = true;
-//   //       //   posRemarksDiv.style.display = 'none';
-//   //       //   posTransactionRemark.disabled = true;
-//   //       //   posTransactionRemark.value = 'Successful';
-//   //       // } else {
-//   //       //   posPendingCheckbox.checked = true;
-//   //       //   posRemarksDiv.style.display = 'flex';
-//   //       //   posTransactionRemark.disabled = false;
-//   //       //   posTransactionRemark.value = '';
-//   //       // }
-//   //       updateStatus();
-//   //     });
-//   //   });
-
-//   if (posTransactionRemark)
-//     posTransactionRemark.addEventListener('input', function () {
-//       const inputValue = posTransactionRemark.value.trim();
-
-//       posPendingCheckbox.checked = inputValue !== '';
-//       posSuccessfulCheckbox.checked = !posPendingCheckbox.checked;
-//       posSuccessfulCheckbox.removeAttribute('required');
-
-//       //Backup
-//       //  if (inputValue !== '') {
-//       //    posPendingCheckbox.checked = true;
-//       //    posSuccessfulCheckbox.checked = false;
-//       //    posSuccessfulCheckbox.removeAttribute('required');
-//       //  } else {
-//       //    posPendingCheckbox.checked = false;
-//       //    return;
-//       //  }
-
-//       updateStatus();
-//     });
-// });
 
 // JavaScript for POS Form
 
@@ -312,16 +178,20 @@ export function addPosChargeForm() {
         chargeAmount: Number(getAmountForSubmission(posChargeAmount)),
       };
 
-      console.log('Configuring POS Charges with:', addPosChargesDetails);
+      // console.log('Configuring POS Charges with:', addPosChargesDetails);
 
+      const addPosChargeBtn = document.querySelector('.addPosChargeBtn');
       try {
+        showBtnLoader(addPosChargeBtn);
         const data = await configurePosCharges(addPosChargesDetails);
         if (data) {
+          hideBtnLoader(addPosChargeBtn);
           closeModal();
         }
-        closeModal(); // close modal after success
+        //   closeModal(); // close modal after success
       } catch (err) {
         console.error('Error COnfiguring POS Charges:', err.message);
+        hideBtnLoader(addPosChargeBtn);
         showToast('fail', `❎ ${err.message}`);
       }
     });
@@ -560,6 +430,84 @@ export function populateMachineFeesTable(MachineFeesData) {
     if (tbody) tbody.appendChild(row);
   });
 }
+
+// POS FORM MANIPUATION - LEAVE AS IT IS
+// document.addEventListener('DOMContentLoaded', function () {
+//   const posSuccessfulCheckbox = document.getElementById(
+//     'posSuccessfulCheckbox'
+//   );
+//   const posPendingCheckbox = document.getElementById('posPendingCheckbox');
+//   const posRemarksDiv = document.querySelector('.posRemarksDiv');
+//   const posTransactionRemark = document.getElementById('posTransactionRemark');
+//   const checkboxes = document.querySelectorAll('input[type="radio"]');
+
+//   function updateStatus() {
+//     if (posSuccessfulCheckbox?.checked) {
+//       if (posRemarksDiv) posRemarksDiv.style.display = 'none';
+//       if (posTransactionRemark) posTransactionRemark.value = 'Successful';
+//       if (posTransactionRemark) posTransactionRemark.disabled = true;
+//     } else {
+//       if (posRemarksDiv) posRemarksDiv.style.display = 'block';
+//       if (posTransactionRemark) posTransactionRemark.disabled = false;
+//     }
+//   }
+
+//   updateStatus();
+
+//   //   nOW USING RADIO BUTTONS BUT STILLL KEEPING THIS HERE
+//   //   checkboxes.forEach((checkbox) => {
+//   //     checkbox.addEventListener('change', function () {
+//   //       checkboxes.forEach((otherCheckbox) => {
+//   //         if (otherCheckbox !== checkbox) {
+//   //           otherCheckbox.checked = false;
+//   //           otherCheckbox.removeAttribute('required');
+//   //         }
+//   //       });
+
+//   //       if (checkbox === posSuccessfulCheckbox) {
+//   //         posPendingCheckbox.checked = !checkbox.checked;
+//   //       } else {
+//   //         posSuccessfulCheckbox.checked = !checkbox.checked;
+//   //         posTransactionRemark.value = '';
+//   //       }
+
+//   //       //Backup
+//   //       // if (checkbox === posSuccessfulCheckbox) {
+//   //       //   posSuccessfulCheckbox.checked = true;
+//   //       //   posRemarksDiv.style.display = 'none';
+//   //       //   posTransactionRemark.disabled = true;
+//   //       //   posTransactionRemark.value = 'Successful';
+//   //       // } else {
+//   //       //   posPendingCheckbox.checked = true;
+//   //       //   posRemarksDiv.style.display = 'flex';
+//   //       //   posTransactionRemark.disabled = false;
+//   //       //   posTransactionRemark.value = '';
+//   //       // }
+//   //       updateStatus();
+//   //     });
+//   //   });
+
+//   if (posTransactionRemark)
+//     posTransactionRemark.addEventListener('input', function () {
+//       const inputValue = posTransactionRemark.value.trim();
+
+//       posPendingCheckbox.checked = inputValue !== '';
+//       posSuccessfulCheckbox.checked = !posPendingCheckbox.checked;
+//       posSuccessfulCheckbox.removeAttribute('required');
+
+//       //Backup
+//       //  if (inputValue !== '') {
+//       //    posPendingCheckbox.checked = true;
+//       //    posSuccessfulCheckbox.checked = false;
+//       //    posSuccessfulCheckbox.removeAttribute('required');
+//       //  } else {
+//       //    posPendingCheckbox.checked = false;
+//       //    return;
+//       //  }
+
+//       updateStatus();
+//     });
+// });
 
 // Machine Fees
 // amount.addEventListener('input', () => {

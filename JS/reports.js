@@ -5,6 +5,7 @@ import {
 } from './apiServices/pos/posResources';
 import { checkAndPromptCreateShop } from './apiServices/shop/shopResource';
 import { formatAmountWithCommas } from './helper/helper';
+import { hideGlobalLoader, showGlobalLoader } from '../JS/helper/helper';
 
 const userData = config.userData;
 const dummyShopId = config.dummyShopId; // Dummy user data for testing
@@ -97,11 +98,13 @@ function resetFilters(role, shopId) {
 }
 
 if (isAdmin) {
+  showGlobalLoader();
   let enrichedShopData = [];
   const currentFiltersByShop = {};
 
   const container = document.getElementById('accordionShops');
   const { enrichedShopData: loadedShops } = await checkAndPromptCreateShop();
+  hideGlobalLoader();
   enrichedShopData = loadedShops;
 
   //   console.log('enrichedShopData', enrichedShopData);
