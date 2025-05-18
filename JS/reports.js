@@ -34,21 +34,6 @@ if (isAdmin) {
   staffContainer.style.display = 'block';
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-  const accordionSections = document.querySelectorAll('.accordion-section');
-
-  accordionSections.forEach((section) => {
-    const toggleBtn = section.querySelector('.accordion-toggle');
-
-    toggleBtn.addEventListener('click', () => {
-      accordionSections.forEach((sec) => {
-        if (sec !== section) sec.classList.remove('active');
-      });
-      section.classList.toggle('active');
-    });
-  });
-});
-
 // JS to Render saved POS from Database to help with Load More features of the transactions.
 let allPosTransactions = [];
 
@@ -266,6 +251,7 @@ if (isAdmin) {
     </div>`;
 
     container.appendChild(accordion);
+    container.dataset.shopId;
 
     document
       .getElementById(`applyFiltersBtn_admin_${shop.id}`)
@@ -546,19 +532,26 @@ if (isAdmin) {
 
     const section = toggleBtn.closest('.accordion-section');
     const content = section.querySelector('.accordion-content');
-    const icon = toggleBtn.querySelector('.icon');
+
     const shopId = toggleBtn.dataset.shopId;
 
-    // const reportDiv = section.querySelector(`#shop-report-${shopId}`);
-    // const tbody = reportDiv.querySelector(`#pos-tbody-${shopId}`);
+    const isActive = section.classList.contains('active');
 
-    //  renderPosTable(
-    //    currentPage,
-    //    limit,
-    //    filters,
-    //    shopId,
-    //    `.posTableDisplay_admin_${shopId} tbody`
-    //  );
+    // Close all accordion sections
+    document.querySelectorAll('.accordion-section').forEach((sec) => {
+      sec.classList.remove('active');
+    });
+
+    // Re-open only if it wasn't active before
+    if (!isActive) {
+      section.classList.add('active');
+    }
+
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
 
     const filters = getFilters('admin', shopId);
     currentFiltersByShop[shopId] = filters;
@@ -574,12 +567,12 @@ if (isAdmin) {
     });
 
     // Toggle accordion
-    section.classList.toggle('active');
-    if (section.classList.contains('active')) {
-      icon.style.transform = 'rotate(180deg)';
-    } else {
-      icon.style.transform = 'rotate(0deg)';
-    }
+    //  section.classList.toggle('active');
+    //  if (section.classList.contains('active')) {
+    //    icon.style.transform = 'rotate(180deg)';
+    //  } else {
+    //    icon.style.transform = 'rotate(0deg)';
+    //  }
   });
 }
 

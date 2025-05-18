@@ -34,11 +34,11 @@ body {
 .container {
   overflow-x: hidden;
   display: grid;
-  grid-template-columns: [sidebar-start] 23% [sidebar-end main-start] 1fr [main-end];
+  grid-template-columns: [sidebar-start] 23% [sidebar-end main-start] 77% [main-end];
   grid-template-rows: [rowOne-start] 100vh [rowOne-end rowTwo-start] min-content [rowTwo-end]; }
   @media only screen and (max-width: 50.3em) {
     .container {
-      grid-template-columns: [main-start] 100vw [main-end];
+      grid-template-columns: [main-start] 100% [main-end];
       grid-template-rows: [rowOne-start] 93vh [rowOne-end];
       margin-bottom: 7rem; } }
   .container .sidebar-fixed {
@@ -2117,17 +2117,21 @@ body.authentication {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.4s ease; }
-  .accordion-container .accordion-section.active .accordion-toggle {
-    background-color: #10AB2B; }
-    .accordion-container .accordion-section.active .accordion-toggle .heading-subtext {
-      color: #ebfbee; }
-    .accordion-container .accordion-section.active .accordion-toggle .icon {
-      transform: rotate(180deg);
-      transition: transform 0.3s ease;
-      color: #ebfbee; }
-  .accordion-container .accordion-section.active .accordion-content {
-    max-height: max-content;
-    /* enough to show full content */ }
+  .accordion-container .accordion-section:last-child {
+    margin-bottom: 3rem; }
+  .accordion-container .accordion-section.active {
+    display: block; }
+    .accordion-container .accordion-section.active .accordion-toggle {
+      background-color: #10AB2B; }
+      .accordion-container .accordion-section.active .accordion-toggle .heading-subtext {
+        color: #ebfbee; }
+      .accordion-container .accordion-section.active .accordion-toggle .icon {
+        transform: rotate(180deg);
+        transition: transform 0.3s ease;
+        color: #ebfbee; }
+    .accordion-container .accordion-section.active .accordion-content {
+      max-height: 100rem;
+      /* enough to show full content */ }
   .accordion-container .action-buttons {
     display: flex;
     gap: 1rem;

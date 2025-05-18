@@ -1,11 +1,23 @@
 import config from '../../config.js';
+import {
+  hideBtnLoader,
+  hideGlobalLoader,
+  showGlobalLoader,
+} from '../helper/helper.js';
 
 const baseUrl = config.baseUrl;
 const apiToken = config.token;
 
+const createBusinessSubmitBtn = document.querySelector(
+  '.createBusinessSubmitBtn'
+);
+const createAdminSubmitBtn = document.querySelector('.createAdminSubmitBtn');
+
 // Function to register a Business - API
 export async function registerBusiness(businessDetails) {
   try {
+    showGlobalLoader();
+    createBusinessSubmitBtn.disabled = true;
     console.log('Sending POST request...');
     const response = await fetch(`${baseUrl}/api/business`, {
       method: 'POST',
@@ -24,9 +36,12 @@ export async function registerBusiness(businessDetails) {
     }
 
     //  console.log('detail added successfully:', data);
+    hideGlobalLoader();
     return data;
   } catch (error) {
-    console.error('Error Adding detail:', data.message);
+    hideGlobalLoader();
+    createBusinessSubmitBtn.disabled = false;
+    console.error('Error Adding detail:', error.message);
     throw error;
   }
 }
@@ -36,6 +51,8 @@ export async function registerBusiness(businessDetails) {
 // Function to register an Admin - API
 export async function registerAdmin(adminDetails) {
   try {
+    showGlobalLoader();
+    createAdminSubmitBtn.disabled = true;
     //  console.log('Sending POST request...');
 
     const response = await fetch(`${baseUrl}/api/auth/register`, {
@@ -55,8 +72,11 @@ export async function registerAdmin(adminDetails) {
     }
 
     //  console.log('Admin created successfully:', data);
+    hideGlobalLoader();
     return data;
   } catch (error) {
+    hideGlobalLoader();
+    createAdminSubmitBtn.disabled = false;
     console.error('Error creating Admin:', error);
     throw error;
   }

@@ -1,4 +1,5 @@
 import { loginUser } from './apiServices/login';
+import { hideBtnLoader, showBtnLoader } from './helper/helper';
 import { redirectWithDelay, showToast } from './script';
 
 const loginForm = document.getElementById('loginForm');
@@ -17,6 +18,9 @@ if (loginForm) {
 
     //  console.log('📦 User Details:', userDetails);
 
+    const loginSubmitBtn = document.querySelector('.loginSubmitBtn');
+
+    showBtnLoader(loginSubmitBtn);
     loginUser(userDetails)
       .then((data) => {
         const user = data.data.user;
@@ -31,8 +35,10 @@ if (loginForm) {
 
         //   redirectWithDelay('Homepage', 'index.html', 500);
         window.location.href = 'index.html';
+        //   hideBtnLoader(loginSubmitBtn);
       })
       .catch((data) => {
+        hideBtnLoader(loginSubmitBtn);
         showToast('fail', `❎ ${data.message}`);
         console.error('❎ Failed to login:', data.message);
       });

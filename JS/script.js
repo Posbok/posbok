@@ -16,7 +16,9 @@ import {
 import {
   clearFormInputs,
   getAmountForSubmission,
+  hideGlobalLoader,
   isUserLoggedIn,
+  showGlobalLoader,
 } from './helper/helper.js';
 import {
   addPosCapital,
@@ -482,6 +484,7 @@ if (useBusinessInfoCheckbox) {
     );
 
     if (useBusinessInfoCheckbox.checked) {
+      showGlobalLoader();
       const businessData = await fetchBusinessDetails();
 
       shopNameInput.value = businessData.data.business_name || '';
@@ -496,6 +499,8 @@ if (useBusinessInfoCheckbox) {
         (checkbox) => checkbox.value === serviceType
       );
       if (matchedCheckbox) matchedCheckbox.checked = true;
+
+      hideGlobalLoader();
     } else {
       // Clear inputs and checkboxes
       shopNameInput.value = '';

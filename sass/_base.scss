@@ -79,11 +79,11 @@ body {
 .container {
    overflow-x: hidden;
    display: grid;
-   grid-template-columns: [sidebar-start] 23% [sidebar-end main-start] 1fr [main-end];
+   grid-template-columns: [sidebar-start] 23% [sidebar-end main-start] 77% [main-end];
    grid-template-rows: [rowOne-start] 100vh [rowOne-end rowTwo-start] min-content [rowTwo-end];
 
    @media only screen and (max-width:$bp-big) {
-      grid-template-columns: [main-start] 100vw [main-end];
+      grid-template-columns: [main-start] 100% [main-end];
       grid-template-rows: [rowOne-start] 93vh [rowOne-end];
       margin-bottom: 7rem;
       // grid-template-rows: [rowOne-start] 100% [rowOne-end rowTwo-start] 17% [rowTwo-end];

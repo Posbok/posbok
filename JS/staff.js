@@ -16,7 +16,12 @@ import {
   updateUser,
 } from './apiServices/user/userResource';
 import { safeFetch } from './apiServices/utility/safeFetch';
-import { hideGlobalLoader, showGlobalLoader } from './helper/helper';
+import {
+  hideBtnLoader,
+  hideGlobalLoader,
+  showBtnLoader,
+  showGlobalLoader,
+} from './helper/helper';
 import { closeModal, showToast } from './script';
 
 const userData = config.userData;
@@ -78,7 +83,7 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
           staffData.shop_name = staffShopName; // Add shop name to staff data
         }
       } else {
-        staffData.shop_name = 'No Shop ID'; // Default value if no shop found
+        staffData.shop_name = 'No Shop Assigned'; // Default value if no shop found
       }
     });
   });
@@ -108,7 +113,7 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
           </td>
         <td class="py-1 staffAccountType">${staff.accountType}</td>
         <td class="py-1 staffServicePermission">${staff.servicePermission}</td>
-        <td class="py-1 staffshop">${staff.shop_name || 'No Shop ID'}</td>
+        <td class="py-1 staffshop">${staff.shop_name || 'No Shop Assigned'}</td>
         <td class="py-1 action-buttons">
           <button class="hero-btn-outline editStaffButton" data-staff-id="${
             staff.id
@@ -321,12 +326,22 @@ export function bindUpdateStaffFormListener() {
       servicePermission: updateAccessTypeValue,
     };
 
-    console.log('📦 Staff Update:', { userId, ...staffUpdatedDetails });
+    //  console.log('📦 Staff Update:', { userId, ...staffUpdatedDetails });
+
+    const updateUserDetailSubmitBtn = document.querySelector(
+      '.updateUserDetailSubmitBtn'
+    );
 
     try {
+      showBtnLoader(updateUserDetailSubmitBtn);
       const data = await updateUser(userId, staffUpdatedDetails);
-      closeModal();
+
+      if (data) {
+        hideBtnLoader(updateUserDetailSubmitBtn);
+        closeModal();
+      }
     } catch (err) {
+      hideBtnLoader(updateUserDetailSubmitBtn);
       showToast('fail', `❎ ${err.message}`);
     }
   });
@@ -461,6 +476,7 @@ document.addEventListener('DOMContentLoaded', () => {
 export async function setupManageStaffForm(user) {
   const form = document.querySelector('.staffManage');
   if (!form) return;
+  showGlobalLoader();
 
   const nameElem = document.getElementById('staffManage-name');
   const currentAssignedShop = document.getElementById('currentAssignedShop');
@@ -474,7 +490,9 @@ export async function setupManageStaffForm(user) {
     enrichedShopData = data.enrichedShopData;
     userShops = data.userShops;
     businessId = data.businessId;
+    hideGlobalLoader();
   } catch (err) {
+    hideGlobalLoader();
     console.error('Failed to refresh data in modal:', err.message);
     showToast('fail', '❎ Failed to refresh staff-shop data.');
     return;
@@ -527,14 +545,21 @@ export async function setupManageStaffForm(user) {
           )
         );
 
-        console.log('userId =', userId, 'shopId =', currentShop?.id);
+        //   console.log('userId =', userId, 'shopId =', currentShop?.id);
 
         try {
+          showBtnLoader(removeShopButton);
+          assignShopButton.disabled = true;
+
           const data = await removeStaffFromShop(userId, currentShop?.id);
+
           if (data) {
+            hideBtnLoader(removeShopButton);
             closeModal();
           }
         } catch (err) {
+          hideBtnLoader(removeShopButton);
+          assignShopButton.disabled = false;
           // err.message will contain the "Email already in use"
           showToast('fail', `❎ ${err.message}`);
         }
@@ -558,12 +583,12 @@ export async function setupManageStaffForm(user) {
           shopId: selectedShopId,
         };
 
-        console.log(
-          '📦 Staff Store Details:',
-          staffDetailsForAssigningShop,
-          'userId',
-          userId
-        );
+        //   console.log(
+        //     '📦 Staff Store Details:',
+        //     staffDetailsForAssigningShop,
+        //     'userId',
+        //     userId
+        //   );
 
         // Find the user's current shop (if any)
         const currentShop = enrichedShopData.find((shop) =>
@@ -579,8 +604,12 @@ export async function setupManageStaffForm(user) {
           return;
         }
 
-        console.log('userId =', userId, 'shopId =', selectedShopId);
+        //   console.log('userId =', userId, 'shopId =', selectedShopId);
+
         try {
+          showBtnLoader(assignShopButton);
+          removeShopButton.disabled = true;
+
           if (currentShop) {
             await removeStaffFromShop(staffId, currentShop.id);
           }
@@ -590,6 +619,8 @@ export async function setupManageStaffForm(user) {
             staffDetailsForAssigningShop
           );
           if (data) {
+            hideBtnLoader(assignShopButton);
+            removeShopButton.disabled = false;
             closeModal();
           }
 
@@ -603,6 +634,7 @@ export async function setupManageStaffForm(user) {
           //   }
         } catch (err) {
           // err.message will contain the "Email already in use"
+          hideBtnLoader(assignShopButton);
           showToast('fail', `❎ ${err.message}`);
         }
 

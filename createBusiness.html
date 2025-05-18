@@ -97,7 +97,8 @@
                <div class="signup-form_input">
                   <label for="nin">NIN</label>
 
-                  <input id="nin" type="number" placeholder="Enter NIN" name="nin" required>
+                  <input id="nin" type="number" placeholder="Enter NIN" maxlength="11" pattern="\d{11}" name="nin"
+                     oninput="this.value = this.value.replace(/\D/g, '').slice(0,11);" required>
                </div>
 
                <!-- Business Type -->
@@ -160,7 +161,10 @@
                   </div>
                </div>
 
-               <button class="hero-btn-dark mt-2" type="submit">Create Business</button>
+               <button class="hero-btn-dark mt-2 createBusinessSubmitBtn has-spinner" type="submit">
+                  <span class="btn-text">Create Business</span>
+                  <span class="btn-spinner hidden"></span>
+               </button>
 
                <p class="heading-subtext mb-1">Forgot password? <a href="#">Click here</a></p>
 
@@ -178,5 +182,6 @@
    </div>
 
 </body>
+
 
 </html>

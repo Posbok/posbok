@@ -9,7 +9,7 @@ import {
 
 // Create Business Registration Form
 const createbusinessForm = document.getElementById('createbusinessForm');
-const businessId = localStorage.getItem('businessId');
+// const businessId = localStorage.getItem('businessId');
 
 const generatedBusinessOwnerId = generateBusinessOwnerId();
 
@@ -46,6 +46,11 @@ if (createbusinessForm) {
     );
     const versionPreferenceValue = versionPreference[0] || null;
 
+    if (nin.length !== 11) {
+      showToast('info', `ℹ️ NIN must be exactly 11 digits.`);
+      return;
+    }
+
     const businessDetails = {
       businessOwnerId: generatedBusinessOwnerId,
       businessName,
@@ -71,8 +76,8 @@ if (createbusinessForm) {
         showToast('success', `✅ ${data.message}`);
 
         //   console.log(data);
-        //   redirectWithDelay('Admin Creation Page', 'signup.html', 1000);
-        window.location.href = 'signup.html';
+        redirectWithDelay('Admin Creation Page', 'signup.html', 500);
+        //   window.location.href = 'signup.html';
       })
       .catch((data) => {
         showToast('fail', `❎ ${data.message}`);
@@ -133,12 +138,13 @@ if (signupForm) {
   const businessData = localStorage.getItem('businessData');
   const parseBusinessData = JSON.parse(businessData);
 
-  const businessId = parseBusinessData.data.id;
+  const businessId = parseBusinessData?.data.id;
+
   parseBusinessData
     ? (document.querySelector(
         '.adminBusinessName'
-      ).textContent = `Admin Account Creation (${parseBusinessData.data.business_name})`)
-    : nul`Admin Account Creation `;
+      ).textContent = `Admin Account Creation (${parseBusinessData?.data.business_name})`)
+    : `Admin Account Creation `;
 
   signupForm.addEventListener('submit', function (e) {
     e.preventDefault();
@@ -195,12 +201,21 @@ if (signupForm) {
       return; // Prevent form submission
     }
 
+    if (!businessId) {
+      showToast(
+        'fail',
+        '❎ No Business ID! Kindly create a Business before creeating an Admin'
+      );
+      redirectWithDelay('Create Business Page', 'createbusiness.html', 500);
+      return;
+    }
+
     registerAdmin(adminDetails)
       .then((data) => {
         //   console.log('✅ Registered successfully:', data);
         showToast('success', `✅ ${data.message}`);
 
-        redirectWithDelay('Login Page', 'login.html', 1000);
+        redirectWithDelay('Login Page', 'login.html', 500);
       })
       .catch((data) => {
         console.error('❎ Failed to register:', data.message);

@@ -1,4 +1,5 @@
 import config from '../../config.js';
+import { hideGlobalLoader, showGlobalLoader } from '../helper/helper.js';
 
 const baseUrl = config.baseUrl;
 const apiToken = config.token;
@@ -35,6 +36,7 @@ export async function loginUser(userDetails) {
 // Function to Logout a User - API
 export async function logoutUser() {
   try {
+    showGlobalLoader();
     //  console.log('Sending POST request...');
     const response = await fetch(`${baseUrl}/api/auth/logout`, {
       method: 'POST',
@@ -51,9 +53,11 @@ export async function logoutUser() {
       throw new Error(data.message || 'Something went wrong');
     }
 
+    hideGlobalLoader();
     //  console.log('Logout successfully:', data);
     return data;
   } catch (error) {
+    hideGlobalLoader();
     console.error('Logout Error detail:', error.message);
     throw error;
   }

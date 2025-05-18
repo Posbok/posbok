@@ -469,7 +469,7 @@
       </div>
    </form>
 
-   <form class="modal-form adminUpdateUserDataModal" name="modal" netlify>
+   <form class="modal-form adminUpdateUserDataModal" name="modal">
       <div class="card adminUpdateUserData modal ">
          <div>
             <h1 class="heading-text">Update User Data</h1>
@@ -551,14 +551,17 @@
          <!-- staff Address -->
 
          <div class="center-button">
-            <button class="hero-btn-dark" type="submit">Update User Details</button>
+            <button class="hero-btn-dark updateUserDetailSubmitBtn has-spinner" type="submit">
+               <span class="btn-text">Update User Details</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
          </div>
 
          <div class="close closeModal" id="">&times;</div>
       </div>
    </form>
 
-   <form class="modal-form staffManageModal" name="modal" netlify>
+   <form class="modal-form staffManageModal" name="modal">
       <div class="card staffManage modal ">
          <div>
             <h1 class="heading-text">Manage Shop</h1>
@@ -586,11 +589,18 @@
          <div class="btn-container">
 
             <div class="center-button">
-               <button class="hero-btn-danger" id="removeShopButton">Remove from shop</button>
+               <button class="hero-btn-danger  removeShopButton has-spinner " id="removeShopButton">
+                  <span class="btn-text">Remove from shop</span>
+                  <span class="btn-spinner hidden"></span>
+               </button>
             </div>
 
             <div class="center-button">
-               <button class="hero-btn-dark" id="assignShopButton">Assign New SHop</button>
+               <button class="hero-btn-dark assignShopButton  has-spinner" id="assignShopButton">
+
+                  <span class="btn-text">Assign New SHop</span>
+                  <span class="btn-spinner hidden"></span>
+               </button>
             </div>
          </div>
 
