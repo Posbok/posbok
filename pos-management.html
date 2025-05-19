@@ -132,51 +132,43 @@
             <div class="adminHeader">
                <h2 class="heading-subtext" style=""> Quick Actions </h2>
 
-               <button class="hero-btn-dark"> <a href="pos-management.html" class="button-link"></a>Pos
-                  Management</button>
-
                <button class="hero-btn-dark"> <a href="goods.html" class="button-link"></a>Inventory</button>
 
 
                <button class="hero-btn-dark"> <a href="staff-profile.html" class="button-link"></a>Staff
                   Profile</button>
 
+
+               <button class="hero-btn-dark"> <a href="manage.html" class="button-link"></a>Manage</button>
+
             </div>
 
          </div>
       </div>
 
-      <!-- <button id="openShopModalBtn">Create Shop</button> -->
 
-
-      <section class="shops card">
-         <div class="shops-method">
+      <section class="posCharge card">
+         <div class="posCharge-method">
             <h2 class="heading-text" style="margin-bottom: 1.5rem;">
-               Available SHops
+               POS Charges
             </h2>
 
-            <!-- <div class="table-header" style="display: flex; flex-direction: column; width: max-content;"> -->
             <div class="adminHeader">
 
-               <button class="hero-btn-dark openShopModalBtn" id="openShopModalBtn">
-                  <span class="btn-text">Create Shop</span>
-                  <span class="btn-spinner hidden"></span>
-               </button>
+               <button class="hero-btn-dark openAddPosChargeModalBtn" id="openAddPosChargeModal">Add POS Charge</button>
 
             </div>
-            <!-- <h2 class="heading-subtext"> Staff Informations</h2> -->
-            <!-- </div> -->
 
-            <div class="shops-table-container">
-               <table class="shops-table">
+            <div class="posCharge-table-container">
+               <table class="posCharge-table">
                   <thead>
                      <tr class="table-header-row">
                         <th class="py-1">S/N</th>
-                        <th class="py-1">Shop Name</th>
-                        <th class="py-1">Shop Location</th>
-                        <th class="py-1">Service Type</th>
-                        <th class="py-1">Shop Manager</th>
-                        <th class="py-1">Action</th>
+                        <th class="py-1">Transaction Type</th>
+                        <th class="py-1">Min (₦)</th>
+                        <th class="py-1">Max (₦)</th>
+                        <th class="py-1">Charge (₦)</th>
+                        <th class="py-1">Created At</th>
                      </tr>
                   </thead>
 
@@ -187,39 +179,15 @@
                      </tr>
 
                      <!-- <tr class="table-body-row" id="item-list">
-                        <td class="py-1 shopSerialNumber">1</td>
-                        <td class="py-1 shopName">Shop 1
-                        <td class="py-1 shopLocation">Shop Address</td>
-                        <td class="py-1 shopServiceType">POS & SELL</td>
-                        <td class="py-1 shopManager">Shop Manager Name</td>
+                        <td class="py-1 posChargeSerialNumber">1</td>
+                        <td class="py-1 posChargeType">Withdrawal
+                        <td class="py-1 posChargeMinAmount">0</td>
+                        <td class="py-1 posChargeMaxAmount">3000</td>
+                        <td class="py-1 posChargeAmount">100</td>
 
-                        <td class="py-1 action-buttons">
-
-                           <button class="hero-btn-outline editShopButton"><i
-                                 class="fa-solid fa-pen-to-square"></i></button>
-
-                           <button class="hero-btn-outline deleteShopButton"><i
-                                 class="fa-solid fa-trash-can"></i></button>
-                        </td>
-                     </tr>
-
-                     <tr class="table-body-row" id="item-list">
-                        <td class="py-1 shopSerialNumber">2</td>
-                        <td class="py-1 shopName">Shop 2
-                        <td class="py-1 shopLocation">Shop Address</td>
-                        <td class="py-1 shopServiceType">POS</td>
-                        <td class="py-1 shopManager">Shop Manager Name</td>
-
-                        <td class="py-1 action-buttons">
-
-                           <button class="hero-btn-outline editShopButton"><i
-                                 class="fa-solid fa-pen-to-square"></i></button>
-
-                           <button class="hero-btn-outline deleteShopButton"><i
-                                 class="fa-solid fa-trash-can"></i></button>
+                        <td class="py-1 posChargeCreatedDate">14 May, 2025 10:46AM
                         </td>
                      </tr> -->
-
                   </tbody>
                </table>
 
@@ -231,6 +199,58 @@
          </div>
       </section>
 
+      <section class="machineFee card">
+         <div class="machineFee-method">
+            <h2 class="heading-text" style="margin-bottom: 1.5rem;">
+               Machine Fees
+            </h2>
+
+            <div class="adminHeader">
+
+               <button class="hero-btn-dark openAddMachineFeeModalBtn" id="openAddMachineFeeModal">Add Machine
+                  Fees</button>
+
+            </div>
+
+            <div class="machineFee-table-container">
+               <table class="machineFee-table">
+                  <thead>
+                     <tr class="table-header-row">
+                        <th class="py-1">S/N</th>
+                        <th class="py-1">Min (₦)</th>
+                        <th class="py-1">Max (₦)</th>
+                        <th class="py-1">Percentage</th>
+                        <th class="py-1">Percentage Rate</th>
+                        <th class="py-1">Fee Amount</th>
+                     </tr>
+                  </thead>
+
+                  <tbody>
+
+                     <tr class="loading-row">
+                        <td colspan="6" class="table-error-text"></td>
+                     </tr>
+
+                     <tr class="table-body-row" id="item-list">
+                        <td class="py-1 machineFeeSerialNumber">1</td>
+                        <td class="py-1 machineFeeType">Withdrawal
+                        <td class="py-1 machineFeeMinAmount">0</td>
+                        <td class="py-1 machineFeeMaxAmount">3000</td>
+                        <td class="py-1 machineFeeAmount">100</td>
+
+                        <td class="py-1 machineFeeCreatedDate">14 May, 2025 10:46AM
+                        </td>
+                     </tr>
+                  </tbody>
+               </table>
+
+               <!-- <div class="center-button mt-2">
+                  <button id="loadMoreButton" class="hero-btn-dark">Load More</button>
+               </div> -->
+
+            </div>
+         </div>
+      </section>
    </main>
 
    <form class="modal-form addPosCharge-form addPosChargeModal" id="addPosChargeModal" name="addPosCharge">

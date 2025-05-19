@@ -354,6 +354,13 @@ if (!userData) {
 
   // Account Type - services display
 
+  // Extract only the current page name (without .html or parameters)
+  const currentPath = window.location.pathname;
+  const currentPageName = currentPath
+    .substring(currentPath.lastIndexOf('/') + 1)
+    .replace('.html', '')
+    .split('?')[0];
+
   if (parsedUserData.accountType === 'ADMIN') {
     if (sellIndexTab) sellIndexTab.style.display = 'none';
     if (posIndexTab) posIndexTab.style.display = 'none';
@@ -368,15 +375,20 @@ if (!userData) {
     if (posDepositButton) posDepositButton.style.display = 'none';
 
     //  List of pages not open to admin
-    const RestrictedAdminPage = ['pos', 'sell'];
-    const isOnRestrictedAdminPage = RestrictedAdminPage.some((page) =>
-      currentPage.includes(page)
-    );
+    const restrictedAdminPages = ['pos', 'sell'];
 
-    // If admin is on a protected page, redirect to login
-    if (isOnRestrictedAdminPage) {
+    if (restrictedAdminPages.includes(currentPageName)) {
       window.location.href = 'index.html';
     }
+
+    //  const isOnRestrictedAdminPage = RestrictedAdminPage.some((page) =>
+    //    currentPage.includes(page)
+    //  );
+
+    //  // If admin is on a protected page, redirect to login
+    //  if (isOnRestrictedAdminPage) {
+    //    window.location.href = 'index.html';
+    //  }
   }
 
   if (parsedUserData.accountType === 'STAFF') {
@@ -393,15 +405,20 @@ if (!userData) {
     if (posDepositButton) posDepositButton.style.display = 'block';
 
     //  List of pages not open to Staff
-    const restrictedStaffPage = ['manage', 'staff-profile'];
-    const isOnRestrictedStaffPage = restrictedStaffPage.some((page) =>
-      currentPage.includes(page)
-    );
 
-    // If Staff is on a protected page, redirect to login
-    if (isOnRestrictedStaffPage) {
+    const restrictedStaffPages = ['manage', 'staff-profile', 'pos-management'];
+    if (restrictedStaffPages.includes(currentPageName)) {
       window.location.href = 'index.html';
     }
+
+    //  const isOnRestrictedStaffPage = restrictedStaffPage.some((page) =>
+    //    currentPage.includes(page)
+    //  );
+
+    //  // If Staff is on a protected page, redirect to login
+    //  if (isOnRestrictedStaffPage) {
+    //    window.location.href = 'index.html';
+    //  }
   }
 }
 

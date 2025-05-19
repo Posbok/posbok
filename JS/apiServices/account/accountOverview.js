@@ -8,7 +8,10 @@ const parsedUserData = userData ? JSON.parse(userData) : null;
 
 const shopId = parsedUserData?.shopId || dummyShopId;
 
+const isStaff = parsedUserData?.accountType === 'STAFF';
+
 export async function initAccountOverview() {
+  if (!isStaff) return;
   try {
     const [posCapital, charges, goodsData] = await Promise.all([
       getPosCapital(shopId),
@@ -27,6 +30,7 @@ export async function initAccountOverview() {
 
 // Updates just the POS capital section
 export function updateCapitalUI(posCapitalData) {
+  if (!isStaff) return;
   const cashInMachine = document.getElementById('cashInMachine');
   const cashAtHand = document.getElementById('cashAtHand');
   const totalPosCapital = document.getElementById('totalPosCapital');

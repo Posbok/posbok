@@ -79,12 +79,17 @@ if (isAdmin) {
 
   //   console.log('enrichedShopData', enrichedShopData);
 
+  if (enrichedShopData.length === 0) {
+    container.innerHTML = `<h1 class="heading-text">No shop to Available for Reports Display</h1>`;
+  }
+
   enrichedShopData.forEach((shop, index) => {
+    console.log(shop.length);
+    const accordion = document.createElement('section');
     shopPageTracker[shop.id] = 1;
 
     const shopId = shop.id;
 
-    const accordion = document.createElement('section');
     accordion.className = 'accordion-section';
     accordion.innerHTML = `        <button class="accordion-toggle card heading-text" data-shop-id="${shop.id}">
                   <h2 class="heading-subtext">
