@@ -35,7 +35,7 @@ if (loginForm) {
 
         //   redirectWithDelay('Homepage', 'index.html', 500);
         window.location.href = 'index.html';
-        //   hideBtnLoader(loginSubmitBtn);
+        hideBtnLoader(loginSubmitBtn);
       })
       .catch((data) => {
         hideBtnLoader(loginSubmitBtn);
