@@ -377,35 +377,35 @@ if (!userData) {
     .replace('.html', '')
     .split('?')[0];
 
-  if (parsedUserData.accountType === 'ADMIN') {
-    if (sellIndexTab) sellIndexTab.style.display = 'none';
-    if (posIndexTab) posIndexTab.style.display = 'none';
-    if (posNav) posNav.style.display = 'none';
-    if (sellNav) sellNav.style.display = 'none';
+  //   if (parsedUserData.accountType === 'ADMIN') {
+  //     if (sellIndexTab) sellIndexTab.style.display = 'none';
+  //     if (posIndexTab) posIndexTab.style.display = 'none';
+  //     if (posNav) posNav.style.display = 'none';
+  //     if (sellNav) sellNav.style.display = 'none';
 
-    if (reportIndexTab) reportIndexTab.style.display = 'block';
-    if (manageIndexTab) manageIndexTab.style.display = 'block';
-    if (reportsNav) reportsNav.style.display = 'block';
-    if (manageNav) manageNav.style.display = 'block';
+  //     if (reportIndexTab) reportIndexTab.style.display = 'block';
+  //     if (manageIndexTab) manageIndexTab.style.display = 'block';
+  //     if (reportsNav) reportsNav.style.display = 'block';
+  //     if (manageNav) manageNav.style.display = 'block';
 
-    if (posDepositButton) posDepositButton.style.display = 'none';
+  //     if (posDepositButton) posDepositButton.style.display = 'none';
 
-    //  List of pages not open to admin
-    const restrictedAdminPages = ['pos', 'sell'];
+  //     //  List of pages not open to admin
+  //     const restrictedAdminPages = ['pos', 'sell'];
 
-    if (restrictedAdminPages.includes(currentPageName)) {
-      window.location.href = 'index.html';
-    }
+  //     if (restrictedAdminPages.includes(currentPageName)) {
+  //       window.location.href = 'index.html';
+  //     }
 
-    //  const isOnRestrictedAdminPage = RestrictedAdminPage.some((page) =>
-    //    currentPage.includes(page)
-    //  );
+  //     //  const isOnRestrictedAdminPage = RestrictedAdminPage.some((page) =>
+  //     //    currentPage.includes(page)
+  //     //  );
 
-    //  // If admin is on a protected page, redirect to login
-    //  if (isOnRestrictedAdminPage) {
-    //    window.location.href = 'index.html';
-    //  }
-  }
+  //     //  // If admin is on a protected page, redirect to login
+  //     //  if (isOnRestrictedAdminPage) {
+  //     //    window.location.href = 'index.html';
+  //     //  }
+  //   }
 
   if (parsedUserData.accountType === 'STAFF') {
     if (sellIndexTab) sellIndexTab.style.display = 'block';

@@ -167,7 +167,7 @@ export async function getProductInventory(shopId) {
 
   try {
     //  showGlobalLoader();
-    //  console.log('Sending  getProductInventory request...');
+    console.log('Sending  getProductInventory request...');
 
     const productInventoryData = await safeFetch(
       `${baseUrl}/api/inventory/shops/${shopId}/inventory`,
@@ -180,10 +180,10 @@ export async function getProductInventory(shopId) {
       }
     );
 
-    //  console.log('Response received...');
+    console.log('Response received...');
 
     if (productInventoryData) {
-      // console.log(productInventoryData);
+      console.log(productInventoryData);
       hideGlobalLoader();
     }
 

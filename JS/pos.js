@@ -8,19 +8,25 @@ import {
   configurePosMachineFees,
   getPosChargeSettings,
   getPosMachineFeesettings,
+  getCurrentBusinessDay,
 } from './apiServices/pos/posResources';
 import { closeModal, setupModalCloseButtons, showToast } from './script';
 import config from '../config.js';
 import {
   clearFormInputs,
+  ensureBusinessDayOpen,
   formatAmountWithCommas,
   formatDateTimeReadable,
   formatTransactionType,
   getAmountForSubmission,
   hideBtnLoader,
+  hideGlobalLoader,
+  populateBusinessShopDropdown,
   showBtnLoader,
   showGlobalLoader,
 } from './helper/helper.js';
+import { populateGoodsShopDropdown } from './goods.js';
+import { checkAndPromptCreateShop } from './apiServices/shop/shopResource.js';
 
 const userData = config.userData;
 const dummyShopId = config.dummyShopId;
@@ -33,6 +39,32 @@ if (isAdmin) {
     getPosChargeSettings();
     getPosMachineFeesettings();
   });
+}
+
+const adminPosContainer = document.querySelector('.adminPosContainer');
+
+const staffPosContainer = document.querySelector('.staffPosContainer');
+
+if ((isAdmin && adminPosContainer) || staffPosContainer) {
+  if (adminPosContainer) adminPosContainer.style.display = 'block';
+  if (staffPosContainer) staffPosContainer.style.display = 'none';
+
+  async function loadShopDropdown() {
+    try {
+      showGlobalLoader();
+      const { enrichedShopData } = await checkAndPromptCreateShop();
+      populateBusinessShopDropdown(enrichedShopData, 'posShopDropdown');
+      hideGlobalLoader();
+    } catch (err) {
+      hideGlobalLoader();
+      console.error('Failed to load dropdown:', err.message);
+    }
+  }
+
+  loadShopDropdown();
+} else {
+  if (adminPosContainer) adminPosContainer.style.display = 'none';
+  if (staffPosContainer) staffPosContainer.style.display = 'block';
 }
 
 const shopId = parsedUserData?.shopId;
@@ -52,6 +84,7 @@ export async function handlePosFormSubmit() {
     posForm.addEventListener('submit', async function (e) {
       e.preventDefault();
 
+      const posShopDropdown = document.getElementById('posShopDropdown').value;
       const amount = document.getElementById('posTransactionAmount').value;
       const customerName = document.getElementById('posCustomerName').value;
       const customerPhone = document.getElementById('posCustomerPhone').value;
@@ -86,9 +119,12 @@ export async function handlePosFormSubmit() {
       // Create the form data with documentIds
 
       // "transactionType" must be one of [WITHDRAWAL, DEPOSIT, WITHDRAWAL_TRANSFER, BILL_PAYMENT]
+      const shopId = isAdmin
+        ? Number(posShopDropdown)
+        : Number(parsedUserData?.shopId);
 
       const posFormData = {
-        shopId: shopId,
+        shopId,
         transactionType: transactionType.toUpperCase(),
         amount: Number(getAmountForSubmission(amount)),
         customerName: customerName,
@@ -105,6 +141,13 @@ export async function handlePosFormSubmit() {
       try {
         console.log('📦 POS Ttransaction Details:', posFormData);
         showBtnLoader(posSubmitButton);
+
+        const isDayOpen = await ensureBusinessDayOpen(shopId);
+        if (!isDayOpen) {
+          hideBtnLoader(posSubmitButton);
+          return;
+        }
+
         const posTransactionCreated = await createPosTransaction(posFormData);
 
         console.log(posTransactionCreated);
@@ -113,6 +156,7 @@ export async function handlePosFormSubmit() {
         //     'POS transaction sent successfully:',
         //     posTransactionCreated
         //   );
+
         showToast('success', `✅ ${posTransactionCreated?.message}`);
         hideBtnLoader(posSubmitButton);
       } catch (err) {

@@ -1,6 +1,10 @@
 import config from '../../../config.js';
 import { populateGoodsShopDropdown } from '../../goods.js';
-import { hideGlobalLoader, showGlobalLoader } from '../../helper/helper.js';
+import {
+  hideGlobalLoader,
+  populateBusinessShopDropdown,
+  showGlobalLoader,
+} from '../../helper/helper.js';
 import { closeModal, showToast } from '../../script.js';
 import { populateShopsTable } from '../../shops.js';
 import { populateShopDropdown } from '../../staff.js';
@@ -198,6 +202,7 @@ export async function checkAndPromptCreateShop() {
       populateShopsTable(enrichedShopData);
       populateShopDropdown(enrichedShopData, Number(preselectedShopId));
       populateGoodsShopDropdown(enrichedShopData);
+      populateBusinessShopDropdown(enrichedShopData);
       // populateUserShop(userShops);
 
       //  console.log('checkAndPromptCreateShop data', enrichedShopData);

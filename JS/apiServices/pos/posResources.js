@@ -368,5 +368,23 @@ export async function getPosMachineFeesettings() {
   }
 }
 
-// getPosChargeSettings();
-// getPosMachineFeesettings();
+export async function getCurrentBusinessDay(shopId) {
+  try {
+    const fetchedData = await safeFetch(
+      `${baseUrl}/api/business-day?shopId=${shopId}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    if (fetchedData) {
+      return fetchedData?.data || null;
+    }
+  } catch (err) {
+    console.error('Failed to fetch current business day:', err.message);
+    return null;
+  }
+}

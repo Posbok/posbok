@@ -1,5 +1,8 @@
 // isUserLoggedIn() - Used to make sure that a user is loggedin before running functions that needs to run automatically so that they don rn on Authenyication pages
 
+import { getCurrentBusinessDay } from '../apiServices/pos/posResources';
+import { showToast } from '../script';
+
 export function isUserLoggedIn() {
   const token = localStorage.getItem('accessToken');
   const user = localStorage.getItem('userData');
@@ -405,4 +408,32 @@ export function generateBarcode() {
   }
 
   return prefix + body;
+}
+
+export function populateBusinessShopDropdown(
+  shopList = [],
+  dropdownId = 'inventoryShopDropdown'
+) {
+  const dropdown = document.getElementById(dropdownId);
+  if (!dropdown) return;
+
+  dropdown.innerHTML = `<option value="">Select a shop</option>`;
+
+  shopList.forEach((shop) => {
+    const option = document.createElement('option');
+    option.value = shop.id;
+    option.textContent = `${shop.shop_name} - ${shop.location}`;
+    dropdown.appendChild(option);
+  });
+}
+
+export async function ensureBusinessDayOpen(shopId) {
+  console.log(shopId);
+
+  const day = await getCurrentBusinessDay(shopId);
+  if (!day || !day.is_open) {
+    showToast('warning', '⛔ Please open a business day to continue.');
+    return false;
+  }
+  return true;
 }

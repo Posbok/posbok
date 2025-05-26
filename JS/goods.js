@@ -423,6 +423,11 @@ if (isAdmin && adminAccordionContainer && container) {
   adminAccordionContainer.style.display = 'block';
 
   (async () => {
+    if (container.dataset.accordionRendered === 'true') {
+      console.warn('Accordion already rendered. Skipping...');
+      return;
+    }
+    container.dataset.accordionRendered = 'true';
     showGlobalLoader();
 
     let enrichedShopData = [];
@@ -435,12 +440,14 @@ if (isAdmin && adminAccordionContainer && container) {
       container.innerHTML = `<h1 class="heading-text">No shop Available for Product Inventory Display</h1>`;
     }
 
-    // container.innerHTML = '';
+    container.innerHTML = '';
 
     enrichedShopData.forEach((shop, index) => {
       const accordion = document.createElement('section');
       //  shopPageTracker[shop.id] = 1;
       const shopId = shop.id;
+
+      // console.log(shop);
 
       accordion.className = 'accordion-section';
       accordion.innerHTML = `        <button class="accordion-toggle card heading-text" data-shop-id="${shopId}">
@@ -491,30 +498,13 @@ if (isAdmin && adminAccordionContainer && container) {
       if (container) container.appendChild(accordion);
       if (container) container.dataset.shopId;
 
-      document
-        .getElementById(`applyFiltersBtn_admin_${shop.id}`)
-        ?.addEventListener('click', () => {
-          const filters = getFilters('admin', shop.id);
-          currentFiltersByShop[shop.id] = filters;
-          renderProductInventoryTable(shopId);
-        });
-      document
-        .getElementById(`resetFiltersBtn_${shop.id}`)
-        ?.addEventListener('click', () => {
-          const role = 'admin';
-          resetFilters(role, shop.id);
-          const filters = getFilters(role, shop.id);
-          currentFiltersByShop[shop.id] = filters;
-          renderProductInventoryTable(shopId);
-        });
+      // console.log(accordion);
 
       const searchProductInput = document.getElementById(
         `searchProdutInventory_${shopId}`
       );
 
       searchProductInput.addEventListener('input', (e) => {
-        console.log(e.target.value, shopId);
-
         const query = e.target.value.toLowerCase();
         const products = shopProductMap[shopId] || [];
 
