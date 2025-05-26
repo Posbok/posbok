@@ -3,7 +3,8 @@
 .shops,
 .staff,
 .posCharge,
-.machineFee {
+.machineFee,
+.inventory {
    height: min-content;
    color: $color-secondary-dark;
 
@@ -20,7 +21,9 @@
       .shops-table-container,
       .staff-table-container,
       .posCharge-table-container,
-      .machineFee-table-container {
+      .machineFee-table-container,
+      .category-table-container,
+      .inventory-table-container {
          overflow-x: auto;
          max-height: 40rem;
          height: 100%;

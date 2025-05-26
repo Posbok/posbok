@@ -24,6 +24,7 @@ function toTitleCase(value) {
 const adminAccordionContainer = document.querySelector(
   '.adminAccordionContainer'
 );
+
 const staffContainer = document.querySelector('.staffContainer');
 
 if (isAdmin) {
@@ -69,10 +70,12 @@ function resetFilters(role, shopId) {
 
 if (isAdmin) {
   showGlobalLoader();
+
   let enrichedShopData = [];
   const currentFiltersByShop = {};
 
   const container = document.getElementById('accordionShops');
+  console.log('report', container);
   const { enrichedShopData: loadedShops } = await checkAndPromptCreateShop();
   hideGlobalLoader();
   enrichedShopData = loadedShops;
@@ -80,11 +83,11 @@ if (isAdmin) {
   //   console.log('enrichedShopData', enrichedShopData);
 
   if (enrichedShopData.length === 0) {
-    container.innerHTML = `<h1 class="heading-text">No shop to Available for Reports Display</h1>`;
+    container.innerHTML = `<h1 class="heading-text">No shop Available for Reports Display</h1>`;
   }
 
   enrichedShopData.forEach((shop, index) => {
-    console.log(shop.length);
+    //  console.log(shop.length);
     const accordion = document.createElement('section');
     shopPageTracker[shop.id] = 1;
 
@@ -101,7 +104,7 @@ if (isAdmin) {
                
                    <div class="accordion-content">
       <div id="shop-report-${shop.id}" class="reports card" data-loaded="false">
-                 <div class="reports card">
+                 <div class="reports">
                      <div class="reports-method">
                         <h2 class="heading-text mb-2">
                            POS Reports
@@ -118,7 +121,7 @@ if (isAdmin) {
                            </div>
 
                            <div class="pos-method-form_input">
-                              <label for="endDateFilter_admin_${shop.id}">Start Date:</label>
+                              <label for="endDateFilter_admin_${shop.id}">End Date:</label>
 
                               <input type="date" id="endDateFilter_admin_${shop.id}">
                            </div>
@@ -326,14 +329,14 @@ if (isAdmin) {
     const filters = getFilters('admin', shop.id);
     currentFiltersByShop[shop.id] = filters;
 
-    renderPosTable({
-      page: currentPage,
-      limit,
-      filters,
-      shopId,
-      tableBodyId: `.posTableDisplay_admin_${shopId} tbody`,
-      loadMoreButton: document.getElementById(`loadMoreButton_admin_${shopId}`),
-    });
+    //  renderPosTable({
+    //    page: currentPage,
+    //    limit,
+    //    filters,
+    //    shopId,
+    //    tableBodyId: `.posTableDisplay_admin_${shopId} tbody`,
+    //    loadMoreButton: document.getElementById(`loadMoreButton_admin_${shopId}`),
+    //  });
   });
 
   async function renderPosTable({
@@ -562,14 +565,34 @@ if (isAdmin) {
     currentFiltersByShop[shopId] = filters;
     shopPageTracker[shopId] = 1;
 
-    await renderPosTable({
-      page: shopPageTracker[shopId],
-      limit,
-      filters,
-      shopId,
-      tableBodyId: `#pos-tbody-${shopId}`,
-      loadMoreButton: document.getElementById(`loadMoreButton_admin_${shopId}`),
-    });
+    const shopPosTransactiionSection = document.getElementById(
+      `shop-report-${shopId}`
+    );
+    if (
+      shopPosTransactiionSection &&
+      shopPosTransactiionSection.dataset.loaded !== 'true'
+    ) {
+      await renderPosTable({
+        page: shopPageTracker[shopId],
+        limit,
+        filters,
+        shopId,
+        tableBodyId: `#pos-tbody-${shopId}`,
+        loadMoreButton: document.getElementById(
+          `loadMoreButton_admin_${shopId}`
+        ),
+      });
+      shopPosTransactiionSection.dataset.loaded = 'true';
+    }
+
+    //  await renderPosTable({
+    //    page: shopPageTracker[shopId],
+    //    limit,
+    //    filters,
+    //    shopId,
+    //    tableBodyId: `#pos-tbody-${shopId}`,
+    //    loadMoreButton: document.getElementById(`loadMoreButton_admin_${shopId}`),
+    //  });
 
     // Toggle accordion
     //  section.classList.toggle('active');

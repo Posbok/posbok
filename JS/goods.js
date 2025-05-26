@@ -1,10 +1,27 @@
-const {
-  addProduct,
-  getProducts,
-  updateProduct,
-  deleteProduct,
-} = require('./apiServices/product');
-const { showToast, formatAmountWithCommas } = require('./script');
+import config from '../config';
+import {
+  addInventory,
+  createProduct,
+  createProductCategory,
+  getProductCategories,
+  getProductInventory,
+} from './apiServices/inventory/inventoryResources';
+
+import { checkAndPromptCreateShop } from './apiServices/shop/shopResource';
+
+import {
+  clearFormInputs,
+  formatAmountWithCommas,
+  generateBarcode,
+  getAmountForSubmission,
+  hideBtnLoader,
+  hideGlobalLoader,
+  showBtnLoader,
+  showGlobalLoader,
+} from './helper/helper';
+import { addPosChargeForm } from './pos';
+import { showToast, closeModal, setupModalCloseButtons } from './script';
+import { populateShopDropdown } from './staff';
 
 let isSubmitting = false;
 const deleteProductButton = document.querySelector('.deleteProductButton');
@@ -17,719 +34,777 @@ const addProductSellingPrice = document.getElementById(
 );
 const addProductQuantity = document.getElementById('addProductQuantity');
 
-async function handleAddProductSubmit(e) {
-  e.preventDefault();
-  isSubmitting = true;
+const userData = config.userData;
+const dummyShopId = config.dummyShopId; // Dummy user data for testing
 
-  addProductModalBtn.innerHTML = 'Submitting...';
+const parsedUserData = userData ? JSON.parse(userData) : null;
 
-  const addProductFormData = {
-    name: addProductName.value,
-    amount_bought: Number(addProductBoughtPrice.value),
-    amount_to_sell: Number(addProductSellingPrice.value),
-    quantity: Number(addProductQuantity.value),
-  };
+// const shopId = parsedUserData?.shopId || dummyShopId;
 
-  try {
-    const response = await addProduct({
-      data: {
-        ...addProductFormData,
-      },
+const isAdmin = parsedUserData?.accountType === 'ADMIN';
+const isStaff = parsedUserData?.accountType === 'STAFF';
+
+if (isAdmin) {
+  document.addEventListener('DOMContentLoaded', () => {
+    getProductCategories();
+  });
+}
+
+export function openAddCategoryModalBtn() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const addProductCategoryContainer = document.querySelector('.addCategory');
+
+  if (addProductCategoryContainer)
+    addProductCategoryContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  addProductCategoryForm();
+}
+
+export function openAddProductModalBtn() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const addProductContainer = document.querySelector('.addProduct');
+
+  if (addProductContainer) addProductContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  createProductForm();
+}
+
+export function openUpdateProductButton() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const updateProductContainer = document.querySelector('.updateProduct');
+
+  if (updateProductContainer) updateProductContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  addProductForm();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Setup for Opening Pos Charges Modal
+  setupModalCloseButtons();
+
+  document
+    .querySelector('#openAddCategoryModalBtn')
+    ?.addEventListener('click', openAddCategoryModalBtn);
+
+  document
+    .querySelector('#openAddProductModalBtn')
+    ?.addEventListener('click', openAddProductModalBtn);
+
+  document
+    .querySelector('#openUpdateProductBtn')
+    ?.addEventListener('click', openUpdateProductButton);
+});
+
+export function addProductCategoryForm() {
+  const form = document.querySelector('.addCategoryModal');
+
+  if (!form || form.dataset.bound === 'true') return;
+
+  form.dataset.bound = 'true';
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const addCategoryName = document.querySelector('#addCategoryName').value;
+
+      const addCategoryDescription = document.querySelector(
+        '#addCategoryDescription'
+      ).value;
+
+      const addProductCategoryDetails = {
+        name: addCategoryName,
+        description: addCategoryDescription,
+      };
+
+      // console.log('Add Category Details:', addProductCategoryDetails);
+
+      const addCategorySubmitBtn = document.querySelector(
+        '.addCategorySubmitBtn'
+      );
+
+      try {
+        showBtnLoader(addCategorySubmitBtn);
+
+        const data = await createProductCategory(addProductCategoryDetails);
+
+        if (data) {
+          hideBtnLoader(addCategorySubmitBtn);
+          closeModal();
+        }
+
+        closeModal(); // close modal after success
+      } catch (err) {
+        console.error('Error Adding Product Category:', err.message);
+        hideBtnLoader(addCategorySubmitBtn);
+        showToast('fail', `❎ ${err.message}`);
+      }
     });
+  }
+}
 
-    console.log('Response from addProduct:', response);
+export function populateCategoryTable(productCategoriesData) {
+  const tbody = document.querySelector('.category-table tbody');
+  const loadingRow = document.querySelector('.loading-row');
 
-    if (response) {
-      isSubmitting = false;
-      console.log('Product added successfully:', response);
-      showToast('success', 'Product added successfully! ⭐');
+  // Remove static rows and loading
 
-      appendProductToTable(response.data);
-    } else {
-      showToast('fail', 'Product not added 1. ❎');
-      isSubmitting = false;
-    }
-  } catch (error) {
-    console.error('Error adding product:', error);
-    showToast('fail', 'Product not added 2. ❎');
-  } finally {
-    addProductName.value = '';
-    addProductBoughtPrice.value = '';
-    addProductSellingPrice.value = '';
-    addProductQuantity.value = '';
-    isSubmitting = false;
-    addProductModalBtn.innerHTML = isSubmitting ? 'Submitting...' : 'Save';
+  const categories = productCategoriesData.data;
 
-    closeModal();
+  if (tbody) tbody.innerHTML = '';
+
+  if (!categories.length) {
+    const emptyRow = document.createElement('tr');
+    emptyRow.innerHTML = `
+        <td colspan="6" class="table-error-text">No Categories found.</td>
+      `;
+    if (tbody) tbody.appendChild(emptyRow);
+    return;
   }
 
-  return addProductFormData;
-}
+  categories.forEach((category, index) => {
+    const row = document.createElement('tr');
+    row.classList.add('table-body-row');
 
-const addProductForm = document.querySelector('.add-product-form');
-const addProductModalBtn = document.querySelector('.addProductModalBtn');
+    if (row)
+      row.innerHTML = `
+        <td class="py-1 categorySerialNumber">${index + 1}</td>
+        <td class="py-1 categoryName">${category.name}</td>
+         <td class="py-1 categoryDescription">${category.description}</td>
 
-if (addProductForm) {
-  addProductForm.addEventListener('submit', function (e) {
-    handleAddProductSubmit(e);
+        <td class="py-1 action-buttons">
+          <button class="hero-btn-outline editcategoryButton" data-category-id="${
+            category.id
+          }">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </button>
+          <button class="hero-btn-outline deletecategoryButton" data-category-id="${
+            category.id
+          }">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        </td>
+      `;
+
+    if (tbody) tbody.appendChild(row);
+
+    //  const deleteBtn = row.querySelector('.deleteShopButton');
+    //  deleteBtn.addEventListener('click', async () => {
+    //    const shopId = deleteBtn.dataset.shopId;
+    //    await deleteShop(shopId);
+    //  });
+
+    //  const updateShopBtn = row.querySelector('.editShopButton');
+    //  updateShopBtn?.addEventListener('click', async () => {
+    //    showGlobalLoader();
+    //    const shopId = updateShopBtn.dataset.shopId;
+
+    //    const adminUpdateShopDataContainer = document.querySelector(
+    //      '.adminUpdateShopData'
+    //    );
+
+    //    if (adminUpdateShopDataContainer) {
+    //      // Store shopId in modal container for reference
+    //      adminUpdateShopDataContainer.dataset.shopId = shopId;
+
+    //      // Fetch Shop detail
+    //      const shopDetail = await fetchShopDetail(shopId);
+
+    //      //   console.log(shopDetail);
+
+    //      // Call function to prefill modal inputs
+    //      if (shopDetail?.data) {
+    //        hideGlobalLoader();
+    //        openUpdateShopModal(); // Show modal after data is ready
+    //        setupUpdateShopForm(shopDetail.data);
+    //      } else {
+    //        hideGlobalLoader();
+    //        showToast('fail', '❌ Failed to fetch shop details.');
+    //      }
+    //    }
+    //  });
   });
 }
 
-// Append new product to the table
-function appendProductToTable(product) {
-  const goodsTableBody = document.querySelector('.product-table tbody');
-  const row = document.createElement('tr');
-  row.setAttribute('data-document-id', product.documentId);
-  row.classList.add('table-body-row');
-
-  row.innerHTML = `
-     <td class="py-1 productSerialNumber">${
-       goodsTableBody.children.length + 1
-     }</td>
-     <td class="py-1 productName">${product.name}</td>
-     <td class="py-1 productAmountBought">&#x20A6;${product.amount_bought}</td>
-     <td class="py-1 productQuantity">${product.quantity}</td>
-     <td class="py-1 productSellingPrice">&#x20A6;${product.amount_to_sell}</td>
-  
-     <td class="py-1 action-buttons">
-     <button class="hero-btn-outline updateProductButton" data-product-id="${
-       product.id
-     }">
-        <i class="fa-solid fa-pen-to-square" data-product-id="${
-          product.id
-        }"></i>
-        </button>
-
-     <button class="hero-btn-outline deleteProductModalButtons" data-product-id="${
-       product.id
-     }"><i class="fa-solid fa-trash-can" data-product-id="${product.id}"></i>
-        </button>
-  </td>
-   `;
-
-  goodsTableBody.appendChild(row);
-
-  // Attach event listeners after rendering the rows
-  const updateProductButtons = document.querySelectorAll(
-    '.updateProductButton'
+export function populateGoodsShopDropdown(shopList = []) {
+  const inventoryShopDropdown = document.getElementById(
+    'inventoryShopDropdown'
   );
+  if (!inventoryShopDropdown) return;
 
-  updateProductButtons.forEach((button) => {
-    button.addEventListener('click', handleUpdateBtnClick);
+  inventoryShopDropdown.innerHTML = `<option value="">Select a shop</option>`;
+
+  shopList.forEach((shop) => {
+    const option = document.createElement('option');
+    option.value = shop.id;
+    option.textContent = `${shop.shop_name} - ${shop.location}`;
+    inventoryShopDropdown.appendChild(option);
   });
+}
 
-  // Attach delete button modal trigger event listeners
-  const deleteProductModalButtons = document.querySelectorAll(
-    '.deleteProductModalButtons'
+export function populateCategoriesDropdown(categoriesData = []) {
+  const categoryList = categoriesData.data;
+
+  const addProductCategoryDropdown =
+    document.getElementById('addProductCategory');
+  const updateProductCategoryDropdown = document.getElementById(
+    'updateProductCategory'
   );
+  if (!addProductCategoryDropdown || !updateProductCategoryDropdown) return;
 
-  deleteProductModalButtons.forEach((button) => {
-    button.addEventListener('click', function () {
-      const productId = button.dataset.productId; // Get product ID
-      const productName = button
-        .closest('tr')
-        .querySelector('.productName').textContent;
+  // Clear existing options except the default
+  addProductCategoryDropdown.innerHTML = `<option value="">Select a Category</option>`;
+  updateProductCategoryDropdown.innerHTML = `<option value="">Select a Category</option>`;
 
-      deleteProductButton.dataset.productId = productId; // Pass the product ID to the delete button
-      const confirmationText = document.querySelector('.confirmation-text');
-      confirmationText.textContent = `Are you sure you want to delete "${productName}"?`;
+  categoryList.forEach((category) => {
+    const option1 = document.createElement('option');
+    option1.value = category.id;
+    option1.textContent = `${category.name}`;
+    if (addProductCategoryDropdown)
+      addProductCategoryDropdown.appendChild(option1);
 
-      // Show modal
-      confirmation.classList.add('active');
-      main.classList.add('blur');
-      sidebar.classList.add('blur');
-      main.classList.add('no-scroll');
+    const option2 = document.createElement('option');
+    option2.value = category.id;
+    option2.textContent = `${category.category_name} - ${category.location}`;
+    if (updateProductCategoryDropdown)
+      updateProductCategoryDropdown.appendChild(option2);
+  });
+}
 
-      // Dont delete
-      //  const documentId = button.dataset.documentId; // Get the documentId
-      //  deleteProductButton.dataset.productId = button.dataset.productId; // Pass it to the modal delete button
-      //  confirmation.classList.add('active'); // Show modal
-      //  main.classList.add('blur');
-      //  sidebar.classList.add('blur');
-      //  main.classList.add('no-scroll');
+export function createProductForm() {
+  const form = document.querySelector('.addProductModal');
+
+  if (!form || form.dataset.bound === 'true') return;
+
+  form.dataset.bound = 'true';
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const inventoryShopDropdown = document.querySelector(
+        '#inventoryShopDropdown'
+      ).value;
+      const addProductCategory = document.querySelector(
+        '#addProductCategory'
+      ).value;
+      const addProductName = document.querySelector('#addProductName').value;
+
+      const addProductDescription = document.querySelector(
+        '#addProductDescription'
+      ).value;
+
+      const addProductBoughtPrice = document.querySelector(
+        '#addProductBoughtPrice'
+      ).value;
+
+      const addProductSellingPrice = document.querySelector(
+        '#addProductSellingPrice'
+      ).value;
+
+      const addProductQuantity = document.querySelector(
+        '#addProductQuantity'
+      ).value;
+
+      const addProductDetails = {
+        categoryId: addProductCategory,
+        name: addProductName,
+        description: addProductDescription,
+        purchasePrice: Number(getAmountForSubmission(addProductBoughtPrice)),
+        sellingPrice: Number(getAmountForSubmission(addProductSellingPrice)),
+        barcode: generateBarcode(),
+      };
+
+      const addInventoryDetails = {
+        quantity: Number(addProductQuantity),
+        productId: Number(addProductQuantity),
+      };
+
+      // console.log('Adding Products with:', addProductDetails);
+
+      const addProductModalBtn = document.querySelector('.addProductModalBtn');
+
+      try {
+        showBtnLoader(addProductModalBtn);
+        const productData = await createProduct(addProductDetails);
+
+        //   if (!productData) {
+        //     showToast('fail', productData.message);
+        //     return;
+        //   }
+
+        const productId = productData?.data.id;
+        const shopId = Number(inventoryShopDropdown);
+
+        if (!productId) {
+          hideBtnLoader(addProductModalBtn);
+          return;
+        }
+
+        const addInventoryDetails = {
+          quantity: Number(addProductQuantity),
+          productId: Number(productId),
+        };
+
+        //   console.log('Adding Products with:', addProductDetails);
+
+        try {
+          const inventoryData = await addInventory(addInventoryDetails, shopId);
+
+          if (inventoryData) {
+            showToast('success', `✅ ${inventoryData.message}`);
+            closeModal();
+            clearFormInputs();
+            await renderProductInventoryTable(shopId);
+          }
+        } catch (inventoryDataErr) {
+          showToast(
+            'fail',
+            `❎ ${inventoryDataErr.message || 'Failed to Add inventory'}`
+          );
+          console.error(
+            'Error During Inventory Adding:',
+            inventoryDataErr.message
+          );
+        }
+        hideBtnLoader(addProductModalBtn);
+        //   hideGlobalLoader();
+      } catch (err) {
+        hideBtnLoader(addProductModalBtn);
+
+        console.error('Error Creating product:', err);
+        showToast('fail', `❎ ${err.message}`);
+      }
     });
-  });
+  }
+}
 
-  // Handle actual delete in the modal
-  deleteProductButton.addEventListener('click', async function () {
-    confirmation.classList.remove('active'); // Hide modal
-    main.classList.remove('blur');
-    sidebar.classList.remove('blur');
-    main.classList.remove('no-scroll');
-    await handleDeleteBtnClick({ target: deleteProductButton }); // Pass button as event target
-    renderAddedGoods();
+function getFilters(role, shopId) {
+  const suffix = role === 'admin' ? `${role}_${shopId}` : role;
+
+  return {
+    startDate:
+      document.getElementById(`startDateFilter_${suffix}`)?.value || '',
+    endDate: document.getElementById(`endDateFilter_${suffix}`)?.value || '',
+    type: document.getElementById(`typeFilter_${suffix}`)?.value || '',
+    status: document.getElementById(`statusFilter_${suffix}`)?.value || '',
+  };
+}
+
+function resetFilters(role, shopId) {
+  const suffix = role === 'admin' ? `${role}_${shopId}` : role;
+
+  document.getElementById(`startDateFilter_${suffix}`).value = '';
+  document.getElementById(`endDateFilter_${suffix}`).value = '';
+  document.getElementById(`typeFilter_${suffix}`).value = '';
+  document.getElementById(`statusFilter_${suffix}`).value = '';
+}
+
+const adminAccordionContainer = document.querySelector(
+  '.adminAccordionContainer'
+);
+const container = document.getElementById('accordionProductInventory');
+
+// export async function populateProductInventoryTable(productInventoryData) {
+// if (userData && isAdmin) {
+
+const shopProductMap = {};
+
+if (isAdmin && adminAccordionContainer && container) {
+  adminAccordionContainer.style.display = 'block';
+
+  (async () => {
+    showGlobalLoader();
+
+    let enrichedShopData = [];
+    const currentFiltersByShop = {};
+
+    const { enrichedShopData: loadedShops } = await checkAndPromptCreateShop();
+
+    enrichedShopData = loadedShops;
+    if (enrichedShopData.length === 0) {
+      container.innerHTML = `<h1 class="heading-text">No shop Available for Product Inventory Display</h1>`;
+    }
+
+    // container.innerHTML = '';
+
+    enrichedShopData.forEach((shop, index) => {
+      const accordion = document.createElement('section');
+      //  shopPageTracker[shop.id] = 1;
+      const shopId = shop.id;
+
+      accordion.className = 'accordion-section';
+      accordion.innerHTML = `        <button class="accordion-toggle card heading-text" data-shop-id="${shopId}">
+                       <h2 class="heading-subtext">
+                          ${shop.shop_name}
+                       </h2>
+                       <i class="fa-solid icon fa-chevron-down"></i>
+                    </button>
+                        <div class="accordion-content">
+           <div id="shop-report-${shop.id}" class="reports card" data-loaded="false">
+                      <div class="reports ">
+                          <div class="reports-method">
+                             <h2 class="heading-text mb-2">
+                               Shop inventory
+                             </h2>
+
+                              <div class="search-section_${shop.id} mb-2">
+
+                                 <div class="inventory-method-form_input ml-1 mr-1">
+                                 <label for="searchProdutInventory_${shop.id}">Search Products:</label>
+                                 <input type="search" id="searchProdutInventory_${shop.id}"
+                                    placeholder="Search Product Name or Description ">
+                                </div>
+                              </div>
+
+                             <div class="table-header">
+                                <!-- <h2 class="heading-subtext"> inventory </h2> -->
+                             </div>
+                             <div class="reports-table-container">
+                                <table class="reports-table inventoryTableDisplay_admin_${shop.id}">
+                                          <thead>
+                                      <tr class="table-header-row">
+                                          <th class="py-1">S/N</th>
+                          <th class="py-1">Products</th>
+                          <th class="py-1">Buying Price</th>
+                          <th class="py-1">Quantity</th>
+                          <th class="py-1">Selling Price</th>
+                          <th class="py-1">Action</th>
+                                      </tr>
+                                   </thead>
+                                     <tbody id="inventory-tbody-${shop.id}">
+                                      </tbody>
+                                </table>
+                                      
+                             </div>
+           </div>
+        </div>`;
+      if (container) container.appendChild(accordion);
+      if (container) container.dataset.shopId;
+
+      document
+        .getElementById(`applyFiltersBtn_admin_${shop.id}`)
+        ?.addEventListener('click', () => {
+          const filters = getFilters('admin', shop.id);
+          currentFiltersByShop[shop.id] = filters;
+          renderProductInventoryTable(shopId);
+        });
+      document
+        .getElementById(`resetFiltersBtn_${shop.id}`)
+        ?.addEventListener('click', () => {
+          const role = 'admin';
+          resetFilters(role, shop.id);
+          const filters = getFilters(role, shop.id);
+          currentFiltersByShop[shop.id] = filters;
+          renderProductInventoryTable(shopId);
+        });
+
+      const searchProductInput = document.getElementById(
+        `searchProdutInventory_${shopId}`
+      );
+
+      searchProductInput.addEventListener('input', (e) => {
+        console.log(e.target.value, shopId);
+
+        const query = e.target.value.toLowerCase();
+        const products = shopProductMap[shopId] || [];
+
+        const filteredProducts = products.filter((item) => {
+          const product = item.Product;
+          return (
+            product.name.toLowerCase().includes(query) ||
+            product.description.toLowerCase().includes(query)
+          );
+        });
+
+        renderFilteredProducts(shopId, filteredProducts);
+      });
+
+      const filters = getFilters('admin', shop.id);
+      currentFiltersByShop[shop.id] = filters;
+    });
+
+    container.addEventListener('click', async function (e) {
+      const toggleBtn = e.target.closest('.accordion-toggle');
+      if (!toggleBtn) return;
+      const section = toggleBtn.closest('.accordion-section');
+      const content = section.querySelector('.accordion-content');
+      const shopId = toggleBtn.dataset.shopId;
+
+      const isActive = section.classList.contains('active');
+
+      // Close all accordion sections
+      document.querySelectorAll('.accordion-section').forEach((sec) => {
+        sec.classList.remove('active');
+      });
+      // Re-open only if it wasn't active before
+      if (!isActive) {
+        section.classList.add('active');
+      }
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth',
+      });
+      const filters = getFilters('admin', shopId);
+      currentFiltersByShop[shopId] = filters;
+      //  shopPageTracker[shopId] = 1;
+
+      // await renderProductInventoryTable(shopId);
+
+      const shopInventorySection = document.getElementById(
+        `shop-report-${shopId}`
+      );
+      if (
+        shopInventorySection &&
+        shopInventorySection.dataset.loaded !== 'true'
+      ) {
+        await renderProductInventoryTable(shopId);
+        shopInventorySection.dataset.loaded = 'true';
+      }
+
+      // Toggle accordion
+      //  section.classList.toggle('active');
+      //  if (section.classList.contains('active')) {
+      //    icon.style.transform = 'rotate(180deg)';
+      //  } else {
+      //    icon.style.transform = 'rotate(0deg)';
+      //  }
+    });
+    //   });
+  })();
+}
+
+function renderFilteredProducts(shopId, productList) {
+  const inventoryTableBody = document.querySelector(
+    `#inventory-tbody-${shopId}`
+  );
+  if (!inventoryTableBody) return;
+
+  if (productList.length === 0) {
+    inventoryTableBody.innerHTML =
+      '<tr class="loading-row"><td colspan="6" class="table-error-text ">No Product matches search Query.</td></tr>';
+    return;
+  }
+
+  inventoryTableBody.innerHTML = ''; // Clear old
+
+  productList.forEach((productInventory, index) => {
+    const {
+      id,
+      product_id,
+      quantity,
+      Product: {
+        name: productName,
+        description,
+        purchase_price,
+        selling_price,
+        ProductCategory: { name: categoryName },
+      },
+    } = productInventory;
+
+    const row = document.createElement('tr');
+    row.classList.add('table-body-row');
+    row.innerHTML = `
+      <td class="py-1 productSerialNumber">${index + 1}</td>
+      <td class="py-1 productName">${productName}</td>
+      <td class="py-1 productDescription">${description}</td>
+      <td class="py-1 productAmountBought">&#x20A6;${formatAmountWithCommas(
+        purchase_price
+      )}</td>
+      <td class="py-1 productQuantity">${quantity}</td>
+      <td class="py-1 productSellingPrice">&#x20A6;${formatAmountWithCommas(
+        selling_price
+      )}</td>
+      <td class="py-1 action-buttons">
+        <button class="hero-btn-outline openUpdateProductBtn" data-staff-id="${product_id}">
+          <i class="fa-solid fa-pen-to-square"></i>
+        </button>
+        <button class="hero-btn-outline deleteProductBtn" data-staff-id="${product_id}">
+          <i class="fa-solid fa-trash-can"></i>
+        </button>
+      </td>
+    `;
+    inventoryTableBody.appendChild(row);
   });
 }
 
-// JS to render items from database
+export async function renderProductInventoryTable(shopId) {
+  const inventoryTableBody = document.querySelector(
+    `#inventory-tbody-${shopId}`
+  );
 
-let currentPage = 1;
-const pageSize = 25;
-let totalPages = 1;
-
-async function renderAddedGoods(page = 1) {
-  const goodsTableBody = document.querySelector('.product-table tbody');
-  const loadMoreButton = document.getElementById('loadMoreButton');
-
-  const deleteProductButton = document.querySelector('.deleteProductButton');
-
-  // Check if goodsTableBody and loadMoreButton exist
-  if (!goodsTableBody) {
+  if (!inventoryTableBody) {
     console.error('Error: Table body not found');
     return;
   }
-
-  if (!loadMoreButton) {
-    console.warn('Warning: Load More button not found');
-    return;
-  }
-
-  // Add a loading row dynamically at the start of each call
-
-  let existingLoadingRow = goodsTableBody.querySelector('.loading-row');
-  if (!existingLoadingRow) {
-    let loadingRow = document.createElement('tr');
-    loadingRow.classList.add('loading-row');
-    loadingRow.innerHTML = `<td colspan="6" class="table-error-text">Loading Products...</td>`;
-    goodsTableBody.appendChild(loadingRow);
-  }
-
   try {
-    const productData = await getProducts(page, pageSize);
-    const products = productData.data;
-    totalPages = productData.meta.pagination.pageCount;
+    let loadingRow = document.querySelector('.loading-row');
+    if (!loadingRow) {
+      loadingRow = document.createElement('tr');
+      loadingRow.className = 'loading-row';
+      loadingRow.innerHTML = `<td colspan="11" class="table-loading-text">Loading Product Inventory...</td>`;
+      inventoryTableBody.appendChild(loadingRow);
+    }
+    const result = await getProductInventory(shopId);
+    if (!result) throw new Error('Failed to fetch Product Inventory');
 
-    // Clear table only on the first page load
-    if (page === 1) {
-      goodsTableBody.innerHTML = ''; // Clear only if it's the first page
-    } else {
-      // Remove the loading row after loading
-      if (existingLoadingRow) existingLoadingRow.remove();
+    const productInventories = result.data;
+
+    shopProductMap[shopId] = productInventories;
+
+    if (productInventories.length === 0) {
+      const searchSection = document.querySelector(`.search-section_${shopId}`);
+
+      searchSection.style.display = 'none';
+
+      inventoryTableBody.innerHTML =
+        '<tr class="loading-row"><td colspan="11" class="table-error-text ">No Product Inventory Available.</td></tr>';
+      return;
     }
 
-    if (products.length === 0 && page === 1) {
-      goodsTableBody.innerHTML =
-        '<tr class="loading-row"><td colspan="6" class="table-error-text">No Products Available.</td></tr>';
-    } else {
-      products.forEach((product, index) => {
-        const row = document.createElement('tr');
-        row.setAttribute('data-document-id', product.documentId);
-        row.classList.add('table-body-row');
+    inventoryTableBody.innerHTML = '';
+    productInventories.map((productInventory, index) => {
+      const { id, product_id, quantity } = productInventory;
+      const {
+        name: productName,
+        description,
+        purchase_price,
+        selling_price,
+      } = productInventory.Product;
+      const { name: categoryName } = productInventory.Product.ProductCategory;
 
-        //   console.log(product);
-
-        row.innerHTML = `
-          <td class="py-1 productSerialNumber">${
-            (page - 1) * pageSize + index + 1
-          }</td>
-          <td class="py-1 productName">${product.name}</td>
-          <td class="py-1 productAmountBought">&#x20A6;${formatAmountWithCommas(
-            product.amount_bought
-          )}</td>
-          <td class="py-1 productQuantity">${product.quantity}</td>
-          <td class="py-1 productSellingPrice">&#x20A6;${formatAmountWithCommas(
-            product.amount_to_sell
-          )}</td>
-     
-
-            <td class="py-1 action-buttons">
-               <button class="hero-btn-outline updateProductButton" data-product-id="${
-                 product.id
-               }">
-                  <i class="fa-solid fa-pen-to-square" data-product-id="${
-                    product.id
-                  }"></i>
-                  </button>
-
-               <button class="hero-btn-outline deleteProductModalButtons" data-product-id="${
-                 product.id
-               }"><i class="fa-solid fa-trash-can" data-product-id="${
-          product.id
-        }"></i>
-                  </button>
-            </td>
-        `;
-        goodsTableBody.appendChild(row);
-      });
-
-      // Attach event listeners after rendering the rows
-      const updateProductButtons = document.querySelectorAll(
-        '.updateProductButton'
-      );
-
-      updateProductButtons.forEach((button) => {
-        button.addEventListener('click', handleUpdateBtnClick);
-      });
-
-      // Attach delete button modal trigger event listeners
-      const deleteProductModalButtons = document.querySelectorAll(
-        '.deleteProductModalButtons'
-      );
-
-      deleteProductModalButtons.forEach((button) => {
-        button.addEventListener('click', function () {
-          const productId = button.dataset.productId; // Get product ID
-          const productName = button
-            .closest('tr')
-            .querySelector('.productName').textContent;
-
-          deleteProductButton.dataset.productId = productId; // Pass the product ID to the delete button
-          const confirmationText = document.querySelector('.confirmation-text');
-          confirmationText.textContent = `Are you sure you want to delete "${productName}"?`;
-
-          // Show modal
-          confirmation.classList.add('active');
-          main.classList.add('blur');
-          sidebar.classList.add('blur');
-          main.classList.add('no-scroll');
-
-          // Dont delete
-          //  const documentId = button.dataset.documentId; // Get the documentId
-          //  deleteProductButton.dataset.productId = button.dataset.productId; // Pass it to the modal delete button
-          //  confirmation.classList.add('active'); // Show modal
-          //  main.classList.add('blur');
-          //  sidebar.classList.add('blur');
-          //  main.classList.add('no-scroll');
-        });
-      });
-
-      // Handle actual delete in the modal
-      deleteProductButton.addEventListener('click', async function () {
-        confirmation.classList.remove('active'); // Hide modal
-        main.classList.remove('blur');
-        sidebar.classList.remove('blur');
-        main.classList.remove('no-scroll');
-        await handleDeleteBtnClick({ target: deleteProductButton }); // Pass button as event target
-        renderAddedGoods();
-      });
-    }
-  } catch (error) {
-    console.error('Error rendering products:', error);
-    goodsTableBody.innerHTML =
-      '<tr class="loading-row"><td colspan="6" class="table-error-text">No Products Available.</td></tr>';
-  } finally {
-    //  loadingRow.remove(); // Ensure the loading row is always removed
-
-    const loadingRowToRemove = goodsTableBody.querySelector('.loading-row');
-    if (loadingRowToRemove) loadingRowToRemove.remove();
-
-    // Show or hide the Load More button
-    if (currentPage >= totalPages) {
-      loadMoreButton.style.display = 'none';
-    } else {
-      loadMoreButton.style.display = 'block';
-    }
-  }
-}
-
-document.getElementById('loadMoreButton').addEventListener('click', () => {
-  currentPage++;
-  renderAddedGoods(currentPage);
-});
-
-// Initial load of the first page of products
-renderAddedGoods(currentPage);
-
-// JS to dispaly Item to be Updated
-const updateProductButton = document.querySelectorAll('.updateProductButton');
-const updateProductContainer = document.querySelector('.updateProduct');
-const updateProductNameInput = document.getElementById('updateProductName');
-const productBoughtPriceInput = document.getElementById('productBoughtPrice');
-const previousItemPriceInput = document.getElementById('previousItemPrice');
-
-const newItemNameInput = document.getElementById('newItemName');
-const newItemPriceInput = document.getElementById('newItemSellingPrice');
-const saveProductButton = document.querySelector('.saveProductButton');
-
-async function handleUpdateBtnClick(event) {
-  const button = event.target;
-  const productId = button.dataset.productId;
-
-  const productData = await getProducts(currentPage, pageSize);
-
-  const product = productData.data.find(
-    (product) => product.id.toString() === productId
-  );
-
-  if (product) {
-    updateProductContainer.dataset.documentId = product.documentId;
-    updateProductContainer.dataset.productId = product.id;
-
-    updateProductContainer.classList.add('active');
-    main.classList.add('blur');
-    sidebar.classList.add('blur');
-    main.classList.add('no-scroll');
-
-    updateProductNameInput.value = product.name;
-    productBoughtPriceInput.value = product.amount_bought;
-    previousItemPriceInput.value = product.amount_to_sell;
-    //  updateProductQuantityInput.value = product.quantity;
-  } else {
-    console.error(`Product with id ${productId} not found in Store.`);
-  }
-}
-
-async function handleDeleteBtnClick(event) {
-  const button = event.target;
-  const productId = button.dataset.productId;
-
-  // Get products from the current page
-  const productData = await getProducts(currentPage, pageSize);
-
-  // Find the product by productId
-  const product = productData.data.find(
-    (product) => product.id.toString() === productId.toString()
-  );
-
-  // Check if product was found before attempting to delete
-
-  //   if (!product) {
-  //     showToast('fail', 'Product not found. ❎');
-  //     return;
-  //   }
-
-  if (product) {
-    const documentId = product.documentId; // Get the documentId
-
-    try {
-      // Call the deleteProduct function with documentId
-      const deletionSuccess = await deleteProduct(documentId);
-
-      // If deletion is successful, show success message
-      if (deletionSuccess) {
-        showToast('success', 'Product deleted successfully! ⭐');
-        // renderAddedGoods(currentPage); // Reloadig the product list
-      } else {
-        // If deletion fails, show error message
-        showToast('fail', 'Product not deleted. ❎');
-      }
-    } catch (error) {
-      showToast('fail', 'Product not deleted. ❎');
-    }
-  }
-}
-
-// async function handleDeleteBtnClick(event) {
-//   const button = event.target;
-//   const productId = button.dataset.productId;
-
-//   // Get products from the current page
-//   const productData = await getProducts(currentPage, pageSize);
-
-//   // Find the product by productId
-//   const product = productData.data.find(
-//     (product) => product.id.toString() === productId.toString()
-//   );
-
-//   //   // If the product was not found, show the failure toast and return
-//   //   if (!product) {
-//   //     showToast('fail', 'Product not found. ❎');
-//   //     return;
-//   //   }
-
-//   if (product) {
-//     const documentId = product.documentId; // Get the documentId
-//   }
-
-//   try {
-//     // Call the deleteProduct function with documentId
-//     const deletionSuccess = await deleteProduct(documentId);
-
-//     // If deletion is successful, show success message
-//     if (deletionSuccess) {
-//       showToast('success', 'Product deleted successfully! ⭐');
-
-//       // Directly remove the product from the UI
-//       removeProductFromUI(productId);
-
-//       // Optionally, refetch the product list if necessary
-//       // renderAddedGoods(currentPage); // Reloading the product list if necessary
-//     } else {
-//       // If deletion fails, show error message
-//       showToast('fail', 'Product not deleted. ❎');
-//     }
-//   } catch (error) {
-//     showToast('fail', 'Product not deleted. ❎');
-//   }
-// }
-
-// Function to remove product from the UI directly
-function removeProductFromUI(productId) {
-  const productRow = document.querySelector(`[data-product-id="${productId}"]`);
-  if (productRow) {
-    productRow.remove(); // Removes the product element from the DOM
-  }
-}
-
-renderAddedGoods();
-
-// Handle form submission - UPDATE
-
-async function handleUpdateProductSubmit(e) {
-  e.preventDefault();
-  isSubmitting = true;
-
-  saveProductButton.innerHTML = 'UPDATING...';
-
-  const documentId = updateProductContainer.dataset.documentId;
-
-  const productData = await getProducts(currentPage, pageSize);
-  const existingProduct = productData.data.find(
-    (product) => product.documentId === documentId
-  );
-
-  // Prepare the update data, maintaining existing values if new ones are empty
-  const updateProductFormData = {
-    name: newItemNameInput.value.trim() || existingProduct.name,
-    amount_to_sell: newItemPriceInput.value
-      ? Number(newItemPriceInput.value)
-      : existingProduct.amount_to_sell,
-  };
-
-  // Only proceed if there are changes to be made
-  const hasChanges =
-    updateProductFormData.name !== existingProduct.name ||
-    updateProductFormData.amount_to_sell !== existingProduct.amount_to_sell;
-
-  if (!hasChanges) {
-    showToast('info', 'No changes detected. Please update fields to modify.');
-    isSubmitting = false;
-    return;
-  }
-
-  try {
-    const response = await updateProduct(documentId, {
-      data: { ...updateProductFormData },
-    });
-
-    if (response) {
-      isSubmitting = false;
-      // console.log('Product updated successfully:', response);
-      showToast('success', 'Product updated successfully! ⭐');
-
-      updateProductInTable(response.data);
-    } else {
-      showToast('fail', 'Product not updated. ❎');
-      isSubmitting = false;
-    }
-  } catch (error) {
-    console.error('Error adding product:', error);
-    showToast('fail', 'Product not updated. ❎');
-  } finally {
-    newItemNameInput.value = '';
-    newItemPriceInput.value = '';
-    isSubmitting = false;
-    saveProductButton.innerHTML = isSubmitting ? 'UPDATING...' : 'UPDATE';
-
-    closeModal();
-  }
-}
-
-if (saveProductButton) {
-  saveProductButton.addEventListener('click', function (e) {
-    handleUpdateProductSubmit(e);
-
-    isSubmitting = true
-      ? (saveProductButton.innerHTML = 'UPDATING...')
-      : 'Save';
-  });
-}
-
-// Update existing product in the table
-function updateProductInTable(product) {
-  const goodsTableBody = document.querySelector('.product-table tbody');
-  const existingRow = goodsTableBody.querySelector(
-    `tr[data-document-id="${product.documentId}"]`
-  );
-
-  if (existingRow) {
-    // Update the existing row with new product data
-    existingRow.innerHTML = `
-       <td class="py-1 productSerialNumber">${
-         Array.from(goodsTableBody.children).indexOf(existingRow) + 1
-       }</td>
-       <td class="py-1 productName">${product.name}</td>
-       <td class="py-1 productAmountBought">&#x20A6;${formatAmountWithCommas(
-         product.amount_bought
-       )}</td>
-       <td class="py-1 productQuantity">${product.quantity}</td>
-       <td class="py-1 productSellingPrice">&#x20A6;${formatAmountWithCommas(
-         product.amount_to_sell
-       )}</td>
- 
+      const row = document.createElement('tr');
+      row.classList.add('table-body-row');
+      row.innerHTML = `
        
-            <td class="py-1 action-buttons">
-               <button class="hero-btn-outline updateProductButton" data-product-id="${
-                 product.id
-               }">
-                  <i class="fa-solid fa-pen-to-square" data-product-id="${
-                    product.id
-                  }"></i>
+                <td class="py-1 productSerialNumber">${index + 1}</td>
+                <td class="py-1 productName">${productName}</td>
+                <td class="py-1 productDescription">${description}</td>
+                <td class="py-1 productAmountBought">&#x20A6;${formatAmountWithCommas(
+                  purchase_price
+                )}</td>
+                <td class="py-1 productQuantity">${quantity}</td>
+                <td class="py-1 productSellingPrice">&#x20A6;${formatAmountWithCommas(
+                  selling_price
+                )}</td>
+                <td class="py-1 action-buttons">
+                  <button
+                    class="hero-btn-outline openUpdateProductBtn"
+                    id="openUpdateProductBtn" data-staff-id="${product_id}"
+                  >
+                    <i class="fa-solid fa-pen-to-square"></i>
                   </button>
-
-               <button class="hero-btn-outline deleteProductModalButtons" data-product-id="${
-                 product.id
-               }"><i class="fa-solid fa-trash-can" data-product-id="${
-      product.id
-    }"></i>
+                  <button
+                    class="hero-btn-outline deleteProductBtn"
+                    id="deleteProductBtn" data-staff-id="${product_id}"
+                  >
+                    <i class="fa-solid fa-trash-can"></i>
                   </button>
-            </td>
-     `;
+                </td>
+    
+             `;
+      inventoryTableBody.appendChild(row);
 
-    const updateProductButtons = document.querySelectorAll(
-      '.updateProductButton'
-    );
-
-    updateProductButtons.forEach((button) => {
-      button.addEventListener('click', handleUpdateBtnClick);
+      return { productName, description };
     });
-
-    // Attach delete button modal trigger event listeners
-    const deleteProductModalButtons = document.querySelectorAll(
-      '.deleteProductModalButtons'
-    );
-
-    deleteProductModalButtons.forEach((button) => {
-      button.addEventListener('click', function () {
-        const productId = button.dataset.productId; // Get product ID
-        const productName = button
-          .closest('tr')
-          .querySelector('.productName').textContent;
-
-        deleteProductButton.dataset.productId = productId; // Pass the product ID to the delete button
-        const confirmationText = document.querySelector('.confirmation-text');
-        confirmationText.textContent = `Are you sure you want to delete "${productName}"?`;
-
-        // Show modal
-        confirmation.classList.add('active');
-        main.classList.add('blur');
-        sidebar.classList.add('blur');
-        main.classList.add('no-scroll');
-
-        // Dont delete
-        //  const documentId = button.dataset.documentId; // Get the documentId
-        //  deleteProductButton.dataset.productId = button.dataset.productId; // Pass it to the modal delete button
-        //  confirmation.classList.add('active'); // Show modal
-        //  main.classList.add('blur');
-        //  sidebar.classList.add('blur');
-        //  main.classList.add('no-scroll');
-      });
-    });
-
-    // Handle actual delete in the modal
-    deleteProductButton.addEventListener('click', async function () {
-      confirmation.classList.remove('active'); // Hide modal
-      main.classList.remove('blur');
-      sidebar.classList.remove('blur');
-      main.classList.remove('no-scroll');
-      await handleDeleteBtnClick({ target: deleteProductButton }); // Pass button as event target
-      renderAddedGoods();
-    });
+  } catch (error) {
+    console.error('Error rendering Product Inventory:', error);
+    inventoryTableBody.innerHTML =
+      '<tr><td colspan="6" class="table-error-text">Error loading Product Inventory.</td></tr>';
   }
 }
 
-// JS for modal
-const main = document.querySelector('.main');
-const sidebar = document.querySelector('.sidebar');
+// export function populateProductInventoryTable(productInventoryData) {
+//   const tbody = document.querySelector('.category-table tbody');
+//   const loadingRow = document.querySelector('.loading-row');
 
-const confirmation = document.querySelector('.confirmation');
+//   // Remove static rows and loading
 
-const closeModalButton = document.querySelectorAll('.closeModal');
-const closeImageModalBtn = document.querySelectorAll('.closeImageModal');
+//   const productInventory = productInventoryData.data;
 
-const cancelDelete = document.querySelector('.cancel-delete');
+//   if (tbody) tbody.innerHTML = '';
 
-cancelDelete.addEventListener('click', function () {
-  closeModal();
-});
+//   if (!productInventory.length) {
+//     const emptyRow = document.createElement('tr');
+//     emptyRow.innerHTML = `
+//         <td colspan="6" class="table-error-text">No Products found.</td>
+//       `;
+//     if (tbody) tbody.appendChild(emptyRow);
+//     return;
+//   }
 
-closeModalButton.forEach((closeButton) => {
-  closeButton.addEventListener('click', function () {
-    closeModal();
-  });
-});
+//   productInventory.forEach((product, index) => {
+//     const row = document.createElement('tr');
+//     row.classList.add('table-body-row');
 
-function closeModal() {
-  const addProductContainer = document.querySelector('.addProduct');
+//     //  console.log('product', product);
 
-  updateProductContainer.classList.remove('active');
-  addProductContainer.classList.remove('active');
-  confirmation.classList.remove('active');
+//     if (row)
+//       row.innerHTML = `
+//         <td class="py-1 productSerialNumber">${index + 1}</td>
+//         <td class="py-1 productName">${product.name}</td>
+//          <td class="py-1 productDescription">${product.description}</td>
 
-  main.classList.remove('blur');
-  sidebar.classList.remove('blur');
-  main.classList.remove('no-scroll');
-}
+//         <td class="py-1 action-buttons">
+//           <button class="hero-btn-outline editproductButton" data-product-id="${
+//             product.id
+//           }">
+//             <i class="fa-solid fa-pen-to-square"></i>
+//           </button>
+//           <button class="hero-btn-outline deleteproductButton" data-product-id="${
+//             product.id
+//           }">
+//             <i class="fa-solid fa-trash-can"></i>
+//           </button>
+//         </td>
+//       `;
 
-// JS for Modal
-document.addEventListener('DOMContentLoaded', function () {
-  const addButton = document.querySelector('.addProductButton');
-  const addProductContainer = document.querySelector('.addProduct');
+//     if (tbody) tbody.appendChild(row);
 
-  if (addButton) {
-    addButton.addEventListener('click', function () {
-      addProductContainer.classList.add('active');
-      main.classList.add('blur');
-      sidebar.classList.add('blur');
-      main.classList.add('no-scroll');
-    });
-  }
-});
+//     //  const deleteBtn = row.querySelector('.deleteShopButton');
+//     //  deleteBtn.addEventListener('click', async () => {
+//     //    const shopId = deleteBtn.dataset.shopId;
+//     //    await deleteShop(shopId);
+//     //  });
 
-function generateReceipt() {
-  let saleData = {
-    customer: 'John Doe',
-    date: new Date().toLocaleString(),
-    items: [
-      { name: 'Laptop', qty: 1, price: 250000 },
-      { name: 'Mouse', qty: 2, price: 5000 },
-    ],
-  };
+//     //  const updateShopBtn = row.querySelector('.editShopButton');
+//     //  updateShopBtn?.addEventListener('click', async () => {
+//     //    showGlobalLoader();
+//     //    const shopId = updateShopBtn.dataset.shopId;
 
-  document.getElementById('rCustomer').textContent = saleData.customer;
-  document.getElementById('rDate').textContent = saleData.date;
+//     //    const adminUpdateShopDataContainer = document.querySelector(
+//     //      '.adminUpdateShopData'
+//     //    );
 
-  let tbody = document.getElementById('receiptItems');
-  tbody.innerHTML = '';
-  let grandTotal = 0;
+//     //    if (adminUpdateShopDataContainer) {
+//     //      // Store shopId in modal container for reference
+//     //      adminUpdateShopDataContainer.dataset.shopId = shopId;
 
-  saleData.items.forEach((item) => {
-    let total = item.qty * item.price;
-    grandTotal += total;
+//     //      // Fetch Shop detail
+//     //      const shopDetail = await fetchShopDetail(shopId);
 
-    let row = `<tr>
-           <td>${item.name}</td>
-           <td>${item.qty}</td>
-           <td>₦${item.price}</td>
-           <td>₦${total}</td>
-       </tr>`;
-    tbody.innerHTML += row;
-  });
+//     //      //   console.log(shopDetail);
 
-  document.getElementById('rGrandTotal').textContent = grandTotal;
-
-  // Make receipt visible
-  document.getElementById('receipt').style.display = 'block';
-}
-
-// Function to print only the receipt
-function printReceipt() {
-  let receiptContent = document.getElementById('receipt').innerHTML;
-
-  let printWindow = window.open('', '', 'width=600,height=600');
-  printWindow.document.write(`
-       <html>
-       <head>
-           <title>Print Receipt</title>
-           <link rel="stylesheet" href="styles.css">
-       </head>
-       <body>
-           <h3>Store Name</h3>
-           ${receiptContent}
-       </body>
-       </html>
-   `);
-  printWindow.document.close();
-  printWindow.print();
-  printWindow.close();
-}
+//     //      // Call function to prefill modal inputs
+//     //      if (shopDetail?.data) {
+//     //        hideGlobalLoader();
+//     //        openUpdateShopModal(); // Show modal after data is ready
+//     //        setupUpdateShopForm(shopDetail.data);
+//     //      } else {
+//     //        hideGlobalLoader();
+//     //        showToast('fail', '❌ Failed to fetch shop details.');
+//     //      }
+//     //    }
+//     //  });
+//   });
+// }

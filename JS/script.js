@@ -11,7 +11,6 @@ import { fetchBusinessDetails } from './apiServices/business/businessResource.js
 import {
   checkAndPromptCreateStaff,
   openCreateStaffModal,
-  setupCreateStaffForm,
 } from './apiServices/user/userResource.js';
 import {
   clearFormInputs,
@@ -27,6 +26,11 @@ import {
   openDepositPosCapitalModal,
 } from './apiServices/pos/posResources.js';
 import { initAccountOverview } from './apiServices/account/accountOverview.js';
+import { setupCreateStaffForm } from './staff.js';
+import {
+  getProductCategories,
+  getProductInventory,
+} from './apiServices/inventory/inventoryResources.js';
 
 const userData = config.userData;
 const dummyShopId = config.dummyShopId;
@@ -145,6 +149,8 @@ export function closeModal() {
   const staffManage = document.querySelector('.staffManage');
   const addPosCharge = document.querySelector('.addPosCharge');
   const addMachineFee = document.querySelector('.addMachineFees');
+  const addCategory = document.querySelector('.addCategory');
+  const addProduct = document.querySelector('.addProduct');
 
   if (depositPosCapitalContainer) {
     depositPosCapitalContainer.classList.remove('active');
@@ -181,6 +187,16 @@ export function closeModal() {
   if (addMachineFee) {
     addMachineFee.classList.remove('active');
     //  delete addMachineFee.dataset.staffId;
+  }
+
+  if (addCategory) {
+    addCategory.classList.remove('active');
+    //  delete addCategory.dataset.staffId;
+  }
+
+  if (addProduct) {
+    addProduct.classList.remove('active');
+    //  delete addProduct.dataset.staffId;
   }
 
   clearFormInputs();
@@ -406,7 +422,12 @@ if (!userData) {
 
     //  List of pages not open to Staff
 
-    const restrictedStaffPages = ['manage', 'staff-profile', 'pos-management'];
+    const restrictedStaffPages = [
+      'manage',
+      'staff-profile',
+      'pos-management',
+      'inventory',
+    ];
     if (restrictedStaffPages.includes(currentPageName)) {
       window.location.href = 'index.html';
     }
@@ -449,8 +470,10 @@ if (isAdmin) {
     }
 
     //Admin api calls
-    getPosChargeSettings();
-    getPosMachineFeesettings();
+    //  getPosChargeSettings();
+    //  getPosMachineFeesettings();
+    //  getProductCategories();
+    //  getProductInventory();
   });
 }
 
@@ -471,6 +494,12 @@ export function setupModalCloseButtons() {
   const updateShopContainer = document.querySelector('.adminUpdateShopData');
   const addPosChargeContainer = document.querySelector('.addPosCharge');
   const addMachineFeesContainer = document.querySelector('.addMachineFees');
+  const addProductCategoryContainer = document.querySelector('.addCategory');
+  const addProductContainer = document.querySelector('.addProduct');
+  const updateProductContainer = document.querySelector('.updateProduct');
+  const createStaffContainer = document.querySelector('.addUser');
+  const updateStaffContainer = document.querySelector('.adminUpdateUserData');
+
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
 
@@ -482,8 +511,17 @@ export function setupModalCloseButtons() {
         addPosChargeContainer.classList.remove('active');
       if (addMachineFeesContainer)
         addMachineFeesContainer.classList.remove('active');
+      if (addProductCategoryContainer)
+        addProductCategoryContainer.classList.remove('active');
+      if (addProductContainer) addProductContainer.classList.remove('active');
+      if (updateProductContainer)
+        updateProductContainer.classList.remove('active');
+
+      if (createStaffContainer) createStaffContainer.classList.remove('active');
+      if (updateStaffContainer) updateStaffContainer.classList.remove('active');
 
       if (main) main.classList.remove('blur');
+
       if (sidebar) sidebar.classList.remove('blur');
     });
   });

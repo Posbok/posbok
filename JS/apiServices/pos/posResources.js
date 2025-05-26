@@ -8,6 +8,7 @@ import {
 } from '../../pos.js';
 import { depositPosCapitalForm, showToast } from '../../script.js';
 import { safeFetch } from '../utility/safeFetch.js';
+// import { safeFetch } from '../utility/safeFetch.js';
 
 const baseUrl = config.baseUrl;
 const userToken = config.token;
@@ -16,7 +17,7 @@ const dummyShopId = config.dummyShopId; // Dummy user data for testing
 
 const parsedUserData = userData ? JSON.parse(userData) : null;
 
-const shopId = parsedUserData?.shopId || dummyShopId;
+const shopId = parsedUserData?.shopId;
 
 // console.log(shopId);
 
@@ -102,7 +103,7 @@ export function openDepositPosCapitalModal() {
 
 export async function createPosTransaction(transactionDetail) {
   try {
-    //  console.log('Sending POST request...');
+    console.log('Sending POST request...');
     const posTransactionData = await safeFetch(
       `${baseUrl}/api/pos/transactions`,
       {
@@ -115,16 +116,18 @@ export async function createPosTransaction(transactionDetail) {
       }
     );
 
-    //  console.log('Response received...');
+    console.log('Response received...');
 
     if (posTransactionData) {
-      // console.log('POS transaction added successfully:', posTransactionData);
+      console.log('POS transaction added successfully:', posTransactionData);
       showToast('success', `✅ ${posTransactionData.message}`);
+      console.log(posTransactionData);
     }
 
     return posTransactionData;
   } catch (error) {
-    console.error('Error posting product:', error);
+    console.error('Error Creating POS Transaction:', error);
+    throw error;
   }
 }
 
@@ -269,6 +272,12 @@ export async function getPosChargeSettings() {
 
     return posChargeSettingsData;
   } catch (error) {
+    if (tbody)
+      tbody.innerHTML = `
+    <tr class="loading-row">
+      <td colspan="6" class="table-error-text">Error Loading POS Charges...</td>
+    </tr>
+  `;
     console.error('Error receiving POS COnfiguration settings:', error);
     throw error;
   }
@@ -348,6 +357,12 @@ export async function getPosMachineFeesettings() {
 
     return posMachineFeeSettingsData;
   } catch (error) {
+    if (tbody)
+      tbody.innerHTML = `
+    <tr class="loading-row">
+      <td colspan="6" class="table-error-text">Error Loading POS Machine Fees...</td>
+    </tr>
+  `;
     console.error('Error receiving POS COnfiguration settings:', error);
     throw error;
   }

@@ -1,3 +1,4 @@
+import { hideBtnLoader, hideGlobalLoader } from '../../helper/helper';
 import { showToast } from '../../script';
 
 // export async function safeFetch(url, options) {
@@ -23,6 +24,7 @@ export async function safeFetch(url, options) {
 
     if (!response.ok) {
       const data = await response.json();
+      hideGlobalLoader();
       throw new Error(data.message || `HTTP error! status: ${response.status}`);
     }
 
@@ -36,7 +38,9 @@ export async function safeFetch(url, options) {
         'warning',
         'Server is down or unreachable. Please try again later.'
       );
+      hideGlobalLoader();
     } else {
+      hideGlobalLoader();
       showToast('error', `❌ ${error.message}`);
     }
 

@@ -246,7 +246,8 @@ select {
 .signup,
 .addUser,
 .addPosCharge,
-.addMachineFee {
+.addMachineFee,
+.inventory {
    .checkbox {
       display: flex;
       align-items: center;
@@ -560,6 +561,14 @@ button:disabled:hover {
 
 .mr-2 {
    margin-right: 2rem;
+}
+
+.ml-1 {
+   margin-left: 1rem;
+}
+
+.ml-2 {
+   margin-left: 2rem;
 }
 
 .flex-gap-2 {

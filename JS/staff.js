@@ -12,11 +12,11 @@ import {
   openManageStaffModal,
   openUpdateStaffModal,
   removeStaffFromShop,
-  setupCreateStaffForm,
   updateUser,
 } from './apiServices/user/userResource';
 import { safeFetch } from './apiServices/utility/safeFetch';
 import {
+  clearFormInputs,
   hideBtnLoader,
   hideGlobalLoader,
   showBtnLoader,
@@ -60,6 +60,183 @@ window.addEventListener('DOMContentLoaded', async () => {
     console.warn('Failed to load shop data:', err.message);
   }
 });
+
+export function setupCreateStaffForm() {
+  const form = document.querySelector('.createStaffModal');
+
+  if (!form || form.dataset.bound === 'true') return;
+
+  form.dataset.bound = 'true';
+
+  // Password Validation start
+  // Wait for input in the password and confirm password fields
+  document.getElementById('staffPassword').addEventListener('input', () => {
+    const passwordInput = document.getElementById('staffPassword');
+    const pass = passwordInput.value;
+    const lengthErrorText = document.getElementById('password-length');
+
+    // Check if password is at least 6 characters long
+    if (pass.length < 6) {
+      passwordInput.classList.add('input-mismatch');
+      lengthErrorText.textContent =
+        'Password must be at least 6 characters long.';
+      lengthErrorText.style.display = 'block';
+      lengthErrorText.style.textAlign = 'left';
+    } else {
+      // Hide the length error message when password length is valid
+      passwordInput.classList.remove('input-mismatch');
+      lengthErrorText.style.display = 'none';
+    }
+  });
+
+  document
+    .getElementById('staffConfirmPassword')
+    .addEventListener('input', () => {
+      const passwordInput = document.getElementById('staffPassword');
+      const confirmPasswordInput = document.getElementById(
+        'staffConfirmPassword'
+      );
+      const pass = passwordInput.value;
+      const confirmVal = confirmPasswordInput.value;
+
+      const mismatchErrorText = document.getElementById('password-mismatch');
+
+      // Reset mismatch error text and input styling
+      confirmPasswordInput.classList.remove('input-match', 'input-mismatch');
+      mismatchErrorText.style.display = 'none';
+
+      // If password length is sufficient, check if the passwords match
+      if (confirmVal && pass !== confirmVal) {
+        confirmPasswordInput.classList.add('input-mismatch');
+        mismatchErrorText.textContent = 'Passwords do not match.';
+        mismatchErrorText.style.display = 'block';
+        mismatchErrorText.style.textAlign = 'left';
+      } else if (confirmVal && pass === confirmVal) {
+        // If passwords match, remove the mismatch class and add the match class
+        confirmPasswordInput.classList.add('input-match');
+      }
+    });
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      showGlobalLoader();
+      e.preventDefault();
+
+      const businessData = await fetchBusinessDetails();
+      const businessId = businessData.data.id;
+      const businessType = businessData.data.business_type;
+
+      // Password Validation Ctnd
+      const pass = document.getElementById('staffPassword').value;
+      const confirmPassword = document.getElementById(
+        'staffConfirmPassword'
+      ).value;
+
+      if (pass !== confirmPassword) {
+        showToast('fail', '❎ Passwords do not match.');
+        return;
+      }
+      // Password Validation end
+
+      const shopDropdown = document.getElementById('shopDropdown').value;
+      const staffLastName = document.getElementById('staffLastName').value;
+      const staffFirstName = document.getElementById('staffFirstName').value;
+      const staffAddress = document.getElementById('staffAddress').value;
+      const dateOfBirth = document.getElementById('dateOfBirth').value;
+      const staffStateOfOrigin =
+        document.getElementById('staffStateOfOrigin').value;
+      const staffLga = document.getElementById('staffLga').value;
+      const staffEmail = document.getElementById('staffEmail').value;
+      const staffPhoneNumber =
+        document.getElementById('staffPhoneNumber').value;
+      const staffPassword = document.getElementById('staffPassword').value;
+      const staffGuarantorName =
+        document.getElementById('staffGuarantorName').value;
+      const staffGuarantorPhoneNumber = document.getElementById(
+        'staffGuarantorPhoneNumber'
+      ).value;
+      const staffGuarantorAddress = document.getElementById(
+        'staffGuarantorAddress'
+      ).value;
+
+      //  Access type checkboxes
+      const accessTypeCheckboxes = document.querySelectorAll(
+        'input[name="accessType"]:checked'
+      );
+      const accessType = Array.from(accessTypeCheckboxes).map((cb) => cb.value);
+      const accessTypeValue = accessType[0] || null;
+
+      const accessTimeStart = document.getElementById('start-time').value;
+      const accessTimeEnd = document.getElementById('end-time').value;
+
+      const staffDetails = {
+        businessId: Number(businessId),
+        firstName: staffFirstName,
+        lastName: staffLastName,
+        address: staffAddress,
+        dateOfBirth,
+        stateOfOrigin: staffStateOfOrigin,
+        lga: staffLga,
+        email: staffEmail,
+        phoneNumber: staffPhoneNumber,
+        password: staffPassword,
+        guarantor: {
+          name: staffGuarantorName,
+          phoneNumber: staffGuarantorPhoneNumber,
+          address: staffGuarantorAddress,
+        },
+        accountType: 'STAFF',
+        accessTimeStart,
+        accessTimeEnd,
+        servicePermission: accessTypeValue,
+      };
+
+      const staffAssigningDetails = { shopId: Number(shopDropdown) };
+
+      // console.log('📦 Staff Details:', staffDetails);
+      // console.log('📦 Shop Details:', staffAssigningDetails);
+
+      if (!dateOfBirth) {
+        alert('Date of Birth is required.');
+        return; // Prevent form submission
+      }
+
+      try {
+        const data = await createStaff(staffDetails);
+        //   if (!data || !data.data || !data.data.user) {
+        //     //  showToast('fail', `❎ Failed to register staff.`);
+        //     return;
+        //   }
+        const userId = data.data.user.id;
+        try {
+          const assigned = await assignUserToShop(
+            userId,
+            staffAssigningDetails
+          );
+          showToast('success', `✅ ${assigned.message}`);
+          closeModal();
+          clearFormInputs();
+          const newUrl = new URL(window.location.href);
+          newUrl.searchParams.delete('from');
+          setTimeout(() => {
+            location.reload();
+          }, 1000);
+        } catch (assignErr) {
+          showToast(
+            'fail',
+            `❎ ${assignErr.message || 'Failed to assign user'}`
+          );
+        }
+
+        hideGlobalLoader();
+      } catch (err) {
+        // err.message will contain the "Email already in use"
+        hideGlobalLoader();
+        showToast('fail', `❎ ${err.message}`);
+      }
+    });
+  }
+}
 
 export function populateStaffTable(staffData = [], enrichedShopData = []) {
   const tbody = document.querySelector('.staff-table tbody');
@@ -230,11 +407,22 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
 
 export function populateShopDropdown(shopList = [], preselectedShopId = '') {
   //   console.log('shopList', shopList);
+
   const dropdown = document.getElementById('shopDropdown');
   const staffManageShopDropdown = document.getElementById(
     'staffManageShopDropdown'
   );
-  if (!dropdown || !staffManageShopDropdown) return;
+  const inventoryShopDropdown = document.getElementById(
+    'inventoryShopDropdown'
+  );
+
+  //   console.log('Trying direct test append');
+  //   const testOption = document.createElement('option');
+  //   testOption.value = 'test';
+  //   testOption.textContent = 'Test Shop';
+  //   inventoryShopDropdown.appendChild(testOption);
+
+  if (!dropdown || !staffManageShopDropdown || !inventoryShopDropdown) return;
 
   dropdown.addEventListener('change', function () {
     const selectedShopId = dropdown.value;
@@ -246,6 +434,9 @@ export function populateShopDropdown(shopList = [], preselectedShopId = '') {
   // Clear existing options except the default
   dropdown.innerHTML = `<option value="">Select a shop</option>`;
   staffManageShopDropdown.innerHTML = `<option value="">Select a shop</option>`;
+  inventoryShopDropdown.innerHTML = `<option value="">Select a shop</option>`;
+  console.log(inventoryShopDropdown);
+  console.log('inventoryShopDropdown');
 
   shopList.forEach((shop) => {
     const option1 = document.createElement('option');
@@ -259,6 +450,11 @@ export function populateShopDropdown(shopList = [], preselectedShopId = '') {
     option2.textContent = `${shop.shop_name} - ${shop.location}`;
     if (shop.id === preselectedShopId) option2.selected = true;
     if (staffManageShopDropdown) staffManageShopDropdown.appendChild(option2);
+
+    const option3 = document.createElement('option');
+    option3.value = shop.id;
+    option3.textContent = `${shop.shop_name} - ${shop.location}`;
+    if (inventoryShopDropdown) inventoryShopDropdown.appendChild(option3);
   });
 
   //   shopList.forEach((shop) => {
@@ -271,7 +467,7 @@ export function populateShopDropdown(shopList = [], preselectedShopId = '') {
   //     }
 
   //     if (dropdown) dropdown.appendChild(option);
-  //     if (staffManageShopDropdown) staffManageShopDropdown.appendChild(option);
+  //     if (inventoryShopDropdown) inventoryShopDropdown.appendChild(option);
   //   });
 }
 

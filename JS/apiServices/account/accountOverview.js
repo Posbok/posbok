@@ -1,4 +1,5 @@
 import config from '../../../config';
+import { showToast } from '../../script';
 import { getPosCapital } from '../pos/posResources';
 
 const userData = config.userData;
@@ -6,7 +7,7 @@ const dummyShopId = config.dummyShopId; // Dummy user data for testing
 
 const parsedUserData = userData ? JSON.parse(userData) : null;
 
-const shopId = parsedUserData?.shopId || dummyShopId;
+const shopId = parsedUserData?.shopId;
 
 const isStaff = parsedUserData?.accountType === 'STAFF';
 
@@ -24,7 +25,7 @@ export async function initAccountOverview() {
     //  updateGoodsUI(goodsData);
   } catch (error) {
     console.error('Error loading account overview:', error);
-    showToast('error', '❌ Failed to load account overview data.');
+    //  showToast('error', '❌ Failed to load account overview data.');
   }
 }
 

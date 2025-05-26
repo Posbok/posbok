@@ -17,14 +17,15 @@ export function clearFormInputs() {
   const updateStaffForm = document.querySelector('.adminUpdateUserDataModal');
   const updateShopForm = document.querySelector('.adminUpdateShopDataModal');
   const staffManageForm = document.querySelector('.staffManageModal');
-
   const depositPosCapitalForm = document.querySelector(
     '.depositPosCapitalModal'
   );
-
   const createPosTransactionForm = document.querySelector('.pos-method-form');
   const addPosChargeForm = document.querySelector('.addPosChargeModal');
   const addMachineFeesForm = document.querySelector('.addMachineFeesModal');
+  const addProductForm = document.querySelector('.addProductModal');
+  const addCategoryForm = document.querySelector('.addCategoryModal');
+  const updateProductForm = document.querySelector('.updateProductModal');
 
   //   console.log('activated');
 
@@ -172,6 +173,49 @@ export function clearFormInputs() {
 
     delete addMachineFeesForm.dataset.staffId;
   }
+
+  // Clear Add Product Form Inputs
+  if (addProductForm) {
+    addProductForm.querySelectorAll('input, textarea, select').forEach((el) => {
+      if (el.type === 'checkbox' || el.type === 'radio') {
+        el.checked = false;
+      } else {
+        el.value = '';
+      }
+    });
+
+    delete addProductForm.dataset.staffId;
+  }
+
+  // Clear Add Categoty Form Inputs
+  if (addCategoryForm) {
+    addCategoryForm
+      .querySelectorAll('input, textarea, select')
+      .forEach((el) => {
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          el.checked = false;
+        } else {
+          el.value = '';
+        }
+      });
+
+    delete addCategoryForm.dataset.staffId;
+  }
+
+  // Clear Update Product Form Inputs
+  if (updateProductForm) {
+    updateProductForm
+      .querySelectorAll('input, textarea, select')
+      .forEach((el) => {
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          el.checked = false;
+        } else {
+          el.value = '';
+        }
+      });
+
+    delete updateProductForm.dataset.staffId;
+  }
 }
 
 // function to format amounts with commas
@@ -221,6 +265,18 @@ document.addEventListener('DOMContentLoaded', function () {
     'addPosChargeMaxAmount'
   );
   const addPosChargeAmountInput = document.getElementById('addPosChargeAmount');
+  const addProductBoughtPriceInput = document.getElementById(
+    'addProductBoughtPrice'
+  );
+  const addProductSellingPriceInput = document.getElementById(
+    'addProductSellingPrice'
+  );
+  const addMachineFeesMinAmountInput = document.getElementById(
+    'addMachineFeesMinAmount'
+  );
+  const addMachineFeesMaxAmountInput = document.getElementById(
+    'addMachineFeesMaxAmount'
+  );
 
   if (posCapitalAmountInput)
     posCapitalAmountInput.addEventListener('input', function () {
@@ -245,6 +301,26 @@ document.addEventListener('DOMContentLoaded', function () {
   if (addPosChargeAmountInput)
     addPosChargeAmountInput.addEventListener('input', function () {
       formatAmountWithCommasOnInput(addPosChargeAmountInput);
+    });
+
+  if (addProductSellingPriceInput)
+    addProductSellingPriceInput.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(addProductSellingPriceInput);
+    });
+
+  if (addProductBoughtPriceInput)
+    addProductBoughtPriceInput.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(addProductBoughtPriceInput);
+    });
+
+  if (addMachineFeesMinAmountInput)
+    addMachineFeesMinAmountInput.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(addMachineFeesMinAmountInput);
+    });
+
+  if (addMachineFeesMaxAmountInput)
+    addMachineFeesMaxAmountInput.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(addMachineFeesMaxAmountInput);
     });
 });
 
@@ -313,4 +389,20 @@ export function hideBtnLoader(button) {
   spinner.classList.add('hidden');
   button.classList.remove('loading');
   button.disabled = false;
+}
+
+export function generateBarcode() {
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const alphanumerics = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+  const prefix = letters.charAt(Math.floor(Math.random() * letters.length));
+
+  let body = '';
+  for (let i = 0; i < 9; i++) {
+    body += alphanumerics.charAt(
+      Math.floor(Math.random() * alphanumerics.length)
+    );
+  }
+
+  return prefix + body;
 }

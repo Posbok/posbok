@@ -6,6 +6,8 @@ import {
   configurePosCharges,
   openAddMachineFeeModal,
   configurePosMachineFees,
+  getPosChargeSettings,
+  getPosMachineFeesettings,
 } from './apiServices/pos/posResources';
 import { closeModal, setupModalCloseButtons, showToast } from './script';
 import config from '../config.js';
@@ -23,7 +25,17 @@ import {
 const userData = config.userData;
 const dummyShopId = config.dummyShopId;
 
-const shopId = userData?.shopId || dummyShopId;
+const parsedUserData = userData ? JSON.parse(userData) : null;
+const isAdmin = parsedUserData?.accountType === 'ADMIN';
+
+if (isAdmin) {
+  document.addEventListener('DOMContentLoaded', () => {
+    getPosChargeSettings();
+    getPosMachineFeesettings();
+  });
+}
+
+const shopId = parsedUserData?.shopId;
 
 // JavaScript for POS Form
 
@@ -88,9 +100,11 @@ export async function handlePosFormSubmit() {
         //   machine_fee: Number(machineFeeInput),
       };
 
-      try {
-        //   console.log('📦 POS Ttransaction Details:', posFormData);
+      const posSubmitButton = document.querySelector('.posSubmitButton');
 
+      try {
+        console.log('📦 POS Ttransaction Details:', posFormData);
+        showBtnLoader(posSubmitButton);
         const posTransactionCreated = await createPosTransaction(posFormData);
 
         console.log(posTransactionCreated);
@@ -99,14 +113,12 @@ export async function handlePosFormSubmit() {
         //     'POS transaction sent successfully:',
         //     posTransactionCreated
         //   );
-        showToast('success', `✅ ${posTransactionCreated.message}`);
-      } catch (error) {
+        showToast('success', `✅ ${posTransactionCreated?.message}`);
+        hideBtnLoader(posSubmitButton);
+      } catch (err) {
         //   console.error('Error sending POS transaction:', error);
-        showToast(
-          'fail',
-          `❎ ${posTransactionCreated.message} || ❎ POS transaction not created.`
-        );
-      } finally {
+        hideBtnLoader(posSubmitButton);
+        showToast('fail', `❎ POS transaction not created: ${err?.message} `);
         // reset form inputs
         resetFormInputs();
       }

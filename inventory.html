@@ -28,6 +28,7 @@
 
    <script src="dist/main.bundle.js" defer></script>
    <script src="dist/goods.bundle.js" defer></script>
+   <!-- <script src="dist/staff.bundle.js" defer></script> -->
 
    <title>POSBOK &mdash;BUSINESS SYSTEM 1.0</title>
    <link rel="icon" type="image/x-icon" href="/img/favicon.png">
@@ -113,7 +114,7 @@
                </a>
             </div>
 
-            <h2 class="main-welcome">Welcome Back, <span class=" user-name"> </span></h2>
+            <h2 class="main-welcome">Welcome Back, <span class="user-name"> </span></h2>
          </div>
 
          <div class="main-heading_left">
@@ -132,8 +133,6 @@
                <button class="hero-btn-dark"> <a href="pos-management.html" class="button-link"></a>Pos
                   Management</button>
 
-
-
                <button class="hero-btn-dark"> <a href="staff-profile.html" class="button-link"></a>Staff
                   Profile</button>
 
@@ -144,29 +143,37 @@
          </div>
       </div>
 
+
+      <!-- Product Table -->
       <div class="goods card">
          <div class="goods-method">
             <h2 class="heading-text" style="margin-bottom: 1.5rem;">
-               GOODS
+               INVENtory
             </h2>
 
-
-
-
             <!-- <div class="table-header" style="display: flex; flex-direction: column; width: max-content;"> -->
+
             <div class="adminHeader">
-
-               <button class="hero-btn-dark">
-                  <a href="/manage.html" class="button-link"></a>
-                  Manage
+               <button class="hero-btn-dark openAddProductModalBtn mr-0 " id="openAddProductModalBtn">
+                  <span class="btn-text">Add Product</span>
+                  <span class="btn-spinner hidden"></span>
                </button>
-
-               <button class="hero-btn-dark addProductButton mr-0 ">Add Product</button>
             </div>
-            <h2 class="heading-subtext"> Available Products</h2>
+
+            <div class="adminAccordionContainer admin-view">
+
+
+               <!-- This is the placeholder for accordion shops -->
+               <div id="accordionProductInventory" class="accordion-container">
+
+               </div>
+
+            </div>
+
+            <!-- <h2 class="heading-subtext"> Available Products</h2> -->
             <!-- </div> -->
 
-            <div class="product-table-container">
+            <!-- <div class="product-table-container">
                <table class="product-table">
                   <thead>
                      <tr class="table-header-row">
@@ -181,19 +188,24 @@
 
                   <tbody>
 
-                     <!-- <tr class="loading-row">
-                        <td colspan="6" class="table-error-text">Loading Products...</td>
-                     </tr> -->
-
-                     <!-- 
                      <tr class="table-body-row" id="item-list">
                         <td class="py-1 productSerialNumber">1</td>
                         <td class="py-1 productName">New Age Powerbank</td>
                         <td class="py-1 productAmountBought">&#x20A6;13,500</td>
                         <td class="py-1 productQuantity">14</td>
                         <td class="py-1 productSellingPrice">&#x20A6;16,000</td>
-                        <td class="py-1 "><button class="hero-btn-light updateProductButton">Update Price</button></td>
-                     </tr> -->
+
+                        <td class="py-1 action-buttons">
+
+                           <button class="hero-btn-outline openUpdateProductBtn" id="openUpdateProductBtn">
+                              <i class="fa-solid fa-pen-to-square"></i>
+                           </button>
+
+                           <button class="hero-btn-outline deleteProductBtn" id="deleteProductBtn">
+                              <i class="fa-solid fa-trash-can"></i>
+                           </button>
+                        </td>
+                     </tr>
 
 
 
@@ -204,12 +216,84 @@
                   <button id="loadMoreButton" class="hero-btn-dark">Load More</button>
                </div>
 
+            </div> -->
+         </div>
+      </div>
+
+      <!-- Categories Table -->
+      <div class="goods card">
+         <div class="goods-method">
+            <h2 class="heading-text" style="margin-bottom: 1.5rem;">
+               Product Category
+            </h2>
+
+            <!-- <div class="table-header" style="display: flex; flex-direction: column; width: max-content;"> -->
+
+            <div class="adminHeader">
+
+               <button class="hero-btn-dark openAddCategoryModalBtn" id="openAddCategoryModalBtn">
+                  <span class="btn-text">Add Category</span>
+                  <span class="btn-spinner hidden"></span>
+               </button>
+
+               <!-- <button class="hero-btn-dark openAddProductModalBtn mr-0 " id="openAddProductModalBtn">
+                  <span class="btn-text">Add Product</span>
+                  <span class="btn-spinner hidden"></span>
+               </button> -->
+
+            </div>
+
+            <!-- <h2 class="heading-subtext"> Available Products</h2> -->
+            <!-- </div> -->
+
+            <div class="category-table-container">
+               <table class="category-table">
+                  <thead>
+                     <tr class="table-header-row">
+                        <th class="py-1">S/N</th>
+                        <th class="py-1">Category</th>
+                        <th class="py-1">Category Description</th>
+                        <th class="py-1">Action</th>
+                     </tr>
+                  </thead>
+
+                  <tbody>
+
+                     <!-- <tr class="loading-row">
+                        <td colspan="6" class="table-error-text">Loading Categorys...</td>
+                     </tr> -->
+
+                     <!-- <tr class="table-body-row" id="item-list">
+                        <td class="py-1 categorySerialNumber">1</td>
+                        <td class="py-1 categoryName">Oraimo Earbuds </td>
+                        <td class="py-1 categoryDescription">Oraimo Earbuds Description </td>
+
+                        <td class="py-1 action-buttons">
+
+                           <button class="hero-btn-outline openUpdateCategoryBtn" id="openUpdateCategoryBtn">
+                              <i class="fa-solid fa-pen-to-square"></i>
+                           </button>
+
+                           <button class="hero-btn-outline deleteCategoryBtn" id="deleteProductBtn">
+                              <i class="fa-solid fa-trash-can"></i>
+                           </button>
+                        </td>
+
+                     </tr> -->
+
+                  </tbody>
+               </table>
+
+               <!-- <div class="center-button mt-2">
+                  <button id="loadMoreButton" class="hero-btn-dark">Load More</button>
+               </div> -->
+
             </div>
          </div>
       </div>
 
-      <h2>Sales Receipt Demo</h2>
-      <button onclick="generateReceipt()">Generate Receipt</button>
+      <!-- <h2>Sales Receipt Demo</h2>
+            <button onclick="generateReceipt()">Generate Receipt</button> -->
 
       <div id="receipt" class="hidden">
          <h3>Store Name</h3>
@@ -253,10 +337,23 @@
       <div class="close closeModal" id="">&times;</div>
    </div>
 
-   <form class="updateProduct-form" name="updateProduct" netlify>
+   <form class="updateProduct-form updateProductModal" name="updateProduct">
       <div class="card updateProduct modal ">
          <div>
             <h1 class="heading-text addItemName">Update product</h1>
+         </div>
+
+
+         <!-- Assign to shop -->
+         <div class="modal-form_input">
+            <label for="updateProductCategory">Product Category</label>
+
+            <select id="updateProductCategory" class="form-control" required>
+               <option value="">Select a Category</option>
+               <option value="01">Category 1</option>
+               <option value="02">Category 2</option>
+               <option value="03">Category 3</option>
+            </select>
          </div>
 
          <div class="updateProduct-form_input">
@@ -269,8 +366,7 @@
             <label for="productBoughtPrice">Amount Bought</label>
 
             <div class="naira-input-container">
-               <input id="productBoughtPrice" type="text" placeholder="Bought Price"
-                  oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="productBoughtPrice" disabled>
+               <input id="productBoughtPrice" type="text" placeholder="Bought Price" name="productBoughtPrice" disabled>
                <span class="naira">&#x20A6;</span>
             </div>
          </div>
@@ -279,8 +375,8 @@
             <label for="previousItemPrice">Previous Selling Price</label>
 
             <div class="naira-input-container">
-               <input id="previousItemPrice" type="text" placeholder="Current Selling Price"
-                  oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="previousItemPrice" disabled>
+               <input id="previousItemPrice" type="text" placeholder="Current Selling Price" name="previousItemPrice"
+                  disabled>
                <span class="naira">&#x20A6;</span>
             </div>
          </div>
@@ -324,41 +420,70 @@
       </div>
    </form>
 
-   <form class="add-product-form" name="add-product" netlify>
+   <form class="modal-form addProductModal" name="modal">
       <div class="card addProduct modal ">
          <div>
             <h1 class="heading-text  addItemName">Add product</h1>
          </div>
 
-         <div class="addProduct-form_input">
-            <label for="addProductName">Item Name</label>
+         <!-- Assign Add Inventory to shop -->
+         <div class="modal-form_input">
+            <label for="inventoryShopDropdown">Select Shop</label>
 
-            <!-- <div class="naira-input-container"> -->
-            <input id="addProductName" type="text" placeholder="Enter Item Name" name="addProductName" required>
-            <!-- </div> -->
+            <select id="inventoryShopDropdown" class="form-control">
+               <option value="">Select a shop</option>
+               <!-- <option value="1">Loading Shops...</option> -->
+
+               <!-- Add Main shops dynamically -->
+            </select>
          </div>
 
-         <div class="addProduct-form_input">
+         <!-- Product Category -->
+         <div class="modal-form_input">
+            <label for="addProductCategory">Product Category</label>
+
+            <select id="addProductCategory" class="form-control" required>
+               <option value="">Select a Category</option>
+               <option value="01">Category 1</option>
+               <option value="02">Category 2</option>
+               <option value="03">Category 3</option>
+            </select>
+         </div>
+
+         <div class="modal-form_input">
+            <label for="addProductName">Product Name</label>
+
+            <input id="addProductName" type="text" placeholder="Enter Product Name" name="addProductName" required>
+         </div>
+
+         <div class="modal-form_input">
+            <label for="addProductDescription">Product Description</label>
+
+            <input id="addProductDescription" type="text" placeholder="Enter Product Description"
+               name="addProductDescription" required>
+         </div>
+
+         <div class="modal-form_input">
             <label for="productBoughtPrice">Amount Bought</label>
 
             <div class="naira-input-container">
                <input id="addProductBoughtPrice" type="text" placeholder="Enter Buying Price"
-                  oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="addProductBoughtPrice" required>
+                  name="addProductBoughtPrice" required>
                <span class="naira">&#x20A6;</span>
             </div>
          </div>
 
-         <div class="addProduct-form_input">
+         <div class="modal-form_input">
             <label for="productSellingPrice">Amount To Sell</label>
 
             <div class="naira-input-container">
                <input id="addProductSellingPrice" type="text" placeholder="Enter Selling Price"
-                  oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="addProductSellingPrice" required>
+                  name="addProductSellingPrice" required>
                <span class="naira">&#x20A6;</span>
             </div>
          </div>
 
-         <div class="addProduct-form_input">
+         <div class="modal-form_input">
             <label for="productQuantity">Product Quantity</label>
 
             <!-- <div class="naira-input-container"> -->
@@ -368,15 +493,51 @@
          </div>
 
          <div class="center-button">
-            <button class="hero-btn-dark  addProductModalBtn">SAVE</button>
+
+            <button class="hero-btn-dark addProductModalBtn" id="addProductModalBtn">
+               <span class="btn-text">Add Product</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
          </div>
 
          <div class="close closeModal" id="">&times;</div>
       </div>
    </form>
 
+   <form class="modal-form addCategoryModal" name="modal">
+      <div class="card addCategory modal">
+         <div>
+            <h1 class="heading-text  addItemName">Add Product Category</h1>
+         </div>
 
-   <form class="modal-form createShopModal" name="modal" netlify>
+         <!-- Category Name -->
+         <div class="modal-form_input">
+            <label for="addCategoryName">Category Name</label>
+
+            <input id="addCategoryName" type="text" placeholder="Enter Category Name" name="addCategoryName" required>
+         </div>
+
+         <!-- Category Description -->
+         <div class="modal-form_input">
+            <label for="addCategoryDescription">Category Description</label>
+
+            <input id="addCategoryDescription" type="text" placeholder="Enter Category Description"
+               name="addCategoryDescription" required>
+         </div>
+
+         <div class="center-button">
+
+            <button class="hero-btn-dark addCategorySubmitBtn" id="addCategorySubmitBtn">
+               <span class="btn-text">Add Category</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <form class="modal-form createShopModal" name="modal">
       <div class="card createShop modal">
          <div>
             <h1 class="heading-text">Create Shop</h1>

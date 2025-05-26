@@ -1,4 +1,5 @@
 import config from '../../../config.js';
+import { populateGoodsShopDropdown } from '../../goods.js';
 import { hideGlobalLoader, showGlobalLoader } from '../../helper/helper.js';
 import { closeModal, showToast } from '../../script.js';
 import { populateShopsTable } from '../../shops.js';
@@ -9,6 +10,8 @@ import { safeFetch } from '../utility/safeFetch.js';
 const baseUrl = config.baseUrl;
 const userToken = config.token;
 const userData = config.userData;
+
+const parsedUserData = userData ? JSON.parse(userData) : null;
 
 // const parsedUserData = userData ? JSON.parse(userData) : null;
 
@@ -109,8 +112,18 @@ export async function checkAndPromptCreateShop() {
   showLoadingRow();
 
   try {
-    const businessData = await fetchBusinessDetails();
-    const businessId = businessData?.data?.id;
+    // Get the business ID from user data
+
+    //  showGlobalLoader();
+    //  const businessData = await fetchBusinessDetails();
+    //  const businessId = businessData?.data?.id;
+
+    const userData = config.userData;
+
+    const parsedUserData = userData ? JSON.parse(userData) : null;
+    const businessId = parsedUserData
+      ? parsedUserData.businessId || null
+      : null;
 
     if (!businessId) {
       console.warn('⚠️ No businessId found — skipping fetchBusinessDetails.');
@@ -130,6 +143,7 @@ export async function checkAndPromptCreateShop() {
     //  console.log('fetchedData', fetchedData);
 
     if (fetchedData) {
+      // hideGlobalLoader();
       userShops = fetchedData.data.filter(
         (shop) => shop.business_id === businessId
       );
@@ -183,6 +197,7 @@ export async function checkAndPromptCreateShop() {
 
       populateShopsTable(enrichedShopData);
       populateShopDropdown(enrichedShopData, Number(preselectedShopId));
+      populateGoodsShopDropdown(enrichedShopData);
       // populateUserShop(userShops);
 
       //  console.log('checkAndPromptCreateShop data', enrichedShopData);
@@ -191,7 +206,7 @@ export async function checkAndPromptCreateShop() {
         openCreateShopModal();
       }
     }
-
+    hideGlobalLoader();
     return {
       fetchedData,
       userShops,
@@ -199,6 +214,7 @@ export async function checkAndPromptCreateShop() {
       businessId,
     };
   } catch (error) {
+    hideGlobalLoader();
     console.error('Error checking shop:', error.message);
     throw error;
   }
@@ -286,28 +302,11 @@ export function setupCreateShopForm() {
   }
 }
 
-export function setupModalCloseButtons() {
-  const closeModalButtons = document.querySelectorAll('.closeModal');
-  const createShopContainer = document.querySelector('.createShop');
-  const updateShopContainer = document.querySelector('.adminUpdateShopData');
-  const main = document.querySelector('.main');
-  const sidebar = document.querySelector('.sidebar');
-
-  closeModalButtons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      if (createShopContainer) createShopContainer.classList.remove('active');
-      if (updateShopContainer) updateShopContainer.classList.remove('active');
-      if (main) main.classList.remove('blur');
-      if (sidebar) sidebar.classList.remove('blur');
-    });
-  });
-}
-
 // More Shop functions for shop functionality
 
 export async function deleteShop(shopId) {
   try {
-    console.log('Sending POST request...');
+    //  console.log('Sending POST request...');
 
     showGlobalLoader();
 
