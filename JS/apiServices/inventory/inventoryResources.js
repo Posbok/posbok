@@ -188,7 +188,7 @@ export async function getProductInventory(shopId) {
 
 export async function getProductDetail(productId) {
   try {
-    console.log('Sending POST request...');
+    //  console.log('Sending POST request...');
 
     const fethedProductDetail = await safeFetch(
       `${baseUrl}/api/inventory/products/${productId}`,
@@ -249,10 +249,10 @@ export async function deleteProduct(productId, shopId) {
 }
 
 export async function updateProduct(productId, updateProductDetails, shopId) {
-  console.log('From API Request:', productId, updateProductDetails, shopId);
+  //   console.log('From API Request:', productId, updateProductDetails, shopId);
 
   try {
-    console.log('Sending POST request...', productId);
+    //  console.log('Sending POST request...', productId);
 
     const updateProductData = await safeFetch(
       `${baseUrl}/api/inventory/products/${productId}`,
@@ -267,7 +267,7 @@ export async function updateProduct(productId, updateProductDetails, shopId) {
     );
 
     if (updateProductData) {
-      console.log('Product info Updated successfully:', updateProductData);
+      // console.log('Product info Updated successfully:', updateProductData);
       showToast('success', `✅ ${updateProductData.message}`);
       await renderProductInventoryTable(shopId); // Refresh list or update UI
     }
@@ -286,7 +286,7 @@ export async function updateProductInventory(
   productId
 ) {
   try {
-    console.log('Sending POST request...');
+    //  console.log('Sending POST request...');
 
     const updateProductData = await safeFetch(
       `${baseUrl}/api/inventory/shops/${shopId}/inventory/${productId}`,
@@ -301,7 +301,7 @@ export async function updateProductInventory(
     );
 
     if (updateProductData) {
-      console.log('Product info Updated successfully:', updateProductData);
+      // console.log('Product info Updated successfully:', updateProductData);
       showToast('success', `✅ ${updateProductData.message}`);
       await renderProductInventoryTable(shopId); // Refresh list or update UI
     }
@@ -314,86 +314,27 @@ export async function updateProductInventory(
   }
 }
 
-// getProductCategories();
-
-// export async function getProducts() {
+// export async function getProducts(page = 1, pageSize = 25) {
 //   try {
-//     //  console.log('Sending GET request...');
-//     const response = await fetch(`${baseUrl}/api/products`, {
-//       method: 'GET',
-//       headers: {
-//         Authorization: `Bearer ${userToken}`,
-//         'Content-Type': 'application/json',
-//       },
-//     });
-
-//     //  console.log('Response received...');
+//     const response = await safeFetch(
+//       `${baseUrl}/api/inventory/products?page=1&limit=10`,
+//       {
+//         method: 'GET',
+//         headers: {
+//           Authorization: `Bearer ${userToken}`,
+//           'Content-Type': 'application/json',
+//         },
+//       }
+//     );
 
 //     if (!response.ok) {
 //       throw new Error(`HTTP error! status: ${response.status}`);
 //     }
 
 //     const data = await response.json();
-//     //  console.log('Products:', data);
-//     return data;
+//     return data; // Returns both product data and pagination meta
 //   } catch (error) {
-//     //  console.error('Error fetching products:', error);
-//     return [];
-//   }
-// }
-
-export async function getProducts(page = 1, pageSize = 25) {
-  try {
-    const response = await safeFetch(
-      `${baseUrl}/api/inventory/products?page=1&limit=10`,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data; // Returns both product data and pagination meta
-  } catch (error) {
-    console.error('Error fetching products:', error);
-    return { data: [], meta: { pagination: { pageCount: 1 } } };
-  }
-}
-
-// export async function addProduct(productData) {
-//   try {
-//     console.log('Sending POST request...');
-//     const response = await fetch(`${baseUrl}/api/products`, {
-//       method: 'POST',
-//       headers: {
-//         Authorization: `Bearer ${userToken}`,
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify(productData),
-//     });
-
-//     console.log('Response received...');
-
-//     if (!response.ok) {
-//       // Check if the response status is OK (2xx range)
-//       throw new Error(`HTTP error! status: ${response.status}`);
-//     }
-
-//     const data = await response.json();
-//     console.log('Product added successfully:', data);
-
-//     // Return success status and the data
-//     return { success: true, data };
-//   } catch (error) {
-//     console.error('Error posting product:', error);
-//     // Return failure status if there's an error
-//     return { success: false, error };
+//     console.error('Error fetching products:', error);
+//     return { data: [], meta: { pagination: { pageCount: 1 } } };
 //   }
 // }

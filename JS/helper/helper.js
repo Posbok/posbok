@@ -30,7 +30,9 @@ export function clearFormInputs() {
   const addCategoryForm = document.querySelector('.addCategoryModal');
   const updateProductForm = document.querySelector('.updateProductModal');
 
-  //   console.log('activated');
+  //   Clear Search Input
+  const searchProductInput = document.querySelector('.searchProductInput');
+  if (searchProductInput) searchProductInput.value = '';
 
   //   if (createStaffForm || updateStaffForm) {
   //     if (createStaffForm) createStaffForm.reset();

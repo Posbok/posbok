@@ -444,11 +444,11 @@ export function bindUpdateProductFormListener() {
         quantity: Number(updateProductQuantity),
       };
 
-      console.log(
-        'Updating Product Detail with:',
-        updateProductDetails,
-        productId
-      );
+      // console.log(
+      //   'Updating Product Detail with:',
+      //   updateProductDetails,
+      //   productId
+      // );
 
       const updateProductModalBtn = document.querySelector(
         '.updateProductModalBtn'
@@ -463,7 +463,7 @@ export function bindUpdateProductFormListener() {
         );
 
         if (!updatedProductData) {
-          console.log('fail', updatedProductData.message);
+          console.error('fail', updatedProductData.message);
           return;
         }
 
@@ -537,18 +537,18 @@ export function updateProductForm(productDetail) {
 
   const { name: categoryName, id: categoryId } = productCategory;
 
-  console.log(
-    inventoryId,
-    product_id,
-    quantity,
-    productName,
-    productDescription,
-    purchase_price,
-    selling_price,
-    categoryName,
-    categoryId,
-    shopId
-  );
+  //   console.log(
+  //     inventoryId,
+  //     product_id,
+  //     quantity,
+  //     productName,
+  //     productDescription,
+  //     purchase_price,
+  //     selling_price,
+  //     categoryName,
+  //     categoryId,
+  //     shopId
+  //   );
 
   document.querySelector('#updateProductCategory').value = categoryId || '';
   document.querySelector('#updateProductName').value = productName;
@@ -564,26 +564,27 @@ export function updateProductForm(productDetail) {
 document.addEventListener('DOMContentLoaded', () => {
   bindUpdateProductFormListener(); // Only once
 });
-function getFilters(role, shopId) {
-  const suffix = role === 'admin' ? `${role}_${shopId}` : role;
 
-  return {
-    startDate:
-      document.getElementById(`startDateFilter_${suffix}`)?.value || '',
-    endDate: document.getElementById(`endDateFilter_${suffix}`)?.value || '',
-    type: document.getElementById(`typeFilter_${suffix}`)?.value || '',
-    status: document.getElementById(`statusFilter_${suffix}`)?.value || '',
-  };
-}
+// function getFilters(role, shopId) {
+//   const suffix = role === 'admin' ? `${role}_${shopId}` : role;
 
-function resetFilters(role, shopId) {
-  const suffix = role === 'admin' ? `${role}_${shopId}` : role;
+//   return {
+//     startDate:
+//       document.getElementById(`startDateFilter_${suffix}`)?.value || '',
+//     endDate: document.getElementById(`endDateFilter_${suffix}`)?.value || '',
+//     type: document.getElementById(`typeFilter_${suffix}`)?.value || '',
+//     status: document.getElementById(`statusFilter_${suffix}`)?.value || '',
+//   };
+// }
 
-  document.getElementById(`startDateFilter_${suffix}`).value = '';
-  document.getElementById(`endDateFilter_${suffix}`).value = '';
-  document.getElementById(`typeFilter_${suffix}`).value = '';
-  document.getElementById(`statusFilter_${suffix}`).value = '';
-}
+// function resetFilters(role, shopId) {
+//   const suffix = role === 'admin' ? `${role}_${shopId}` : role;
+
+//   document.getElementById(`startDateFilter_${suffix}`).value = '';
+//   document.getElementById(`endDateFilter_${suffix}`).value = '';
+//   document.getElementById(`typeFilter_${suffix}`).value = '';
+//   document.getElementById(`statusFilter_${suffix}`).value = '';
+// }
 
 const adminAccordionContainer = document.querySelector(
   '.adminAccordionContainer'
@@ -600,7 +601,7 @@ if (isAdmin && adminAccordionContainer && container) {
 
   (async () => {
     if (container.dataset.accordionRendered === 'true') {
-      console.warn('Accordion already rendered. Skipping...');
+      // console.warn('Accordion already rendered. Skipping...');
       return;
     }
     container.dataset.accordionRendered = 'true';
@@ -644,7 +645,7 @@ if (isAdmin && adminAccordionContainer && container) {
 
                                  <div class="inventory-method-form_input ml-1 mr-1">
                                  <label for="searchProdutInventory_${shop.id}">Search Products:</label>
-                                 <input type="search" id="searchProdutInventory_${shop.id}"
+                                 <input type="search" id="searchProdutInventory_${shop.id}" class="searchProductInput"
                                     placeholder="Search Product Name or Description ">
                                 </div>
                               </div>
@@ -697,8 +698,8 @@ if (isAdmin && adminAccordionContainer && container) {
         renderFilteredProducts(shopId, filteredProducts);
       });
 
-      const filters = getFilters('admin', shop.id);
-      currentFiltersByShop[shop.id] = filters;
+      // const filters = getFilters('admin', shop.id);
+      // currentFiltersByShop[shop.id] = filters;
     });
 
     container.addEventListener('click', async function (e) {
@@ -723,8 +724,8 @@ if (isAdmin && adminAccordionContainer && container) {
         left: 0,
         behavior: 'smooth',
       });
-      const filters = getFilters('admin', shopId);
-      currentFiltersByShop[shopId] = filters;
+      // const filters = getFilters('admin', shopId);
+      // currentFiltersByShop[shopId] = filters;
       //  shopPageTracker[shopId] = 1;
 
       // await renderProductInventoryTable(shopId);
@@ -783,26 +784,77 @@ function renderFilteredProducts(shopId, productList) {
     const row = document.createElement('tr');
     row.classList.add('table-body-row');
     row.innerHTML = `
-      <td class="py-1 productSerialNumber">${index + 1}</td>
-      <td class="py-1 productName">${productName}</td>
-      <td class="py-1 productDescription">${description}</td>
-      <td class="py-1 productAmountBought">&#x20A6;${formatAmountWithCommas(
-        purchase_price
-      )}</td>
-      <td class="py-1 productQuantity">${quantity}</td>
-      <td class="py-1 productSellingPrice">&#x20A6;${formatAmountWithCommas(
-        selling_price
-      )}</td>
-      <td class="py-1 action-buttons">
-        <button class="hero-btn-outline openUpdateProductBtn" data-staff-id="${product_id}">
-          <i class="fa-solid fa-pen-to-square"></i>
-        </button>
-        <button class="hero-btn-outline deleteProductBtn" data-staff-id="${product_id}">
-          <i class="fa-solid fa-trash-can"></i>
-        </button>
-      </td>
-    `;
+       
+                <td class="py-1 productSerialNumber">${index + 1}</td>
+                <td class="py-1 productName">${productName}</td>
+                <td class="py-1 productDescription">${description}</td>
+                <td class="py-1 producCategory">${categoryName}</td>
+                <td class="py-1 productAmountBought">&#x20A6;${formatAmountWithCommas(
+                  purchase_price
+                )}</td>
+                <td class="py-1 productQuantity">${quantity}</td>
+                <td class="py-1 productSellingPrice">&#x20A6;${formatAmountWithCommas(
+                  selling_price
+                )}</td>
+                <td class="py-1 action-buttons">
+                  <button
+                    class="hero-btn-outline openUpdateProductBtn"
+                    id="openUpdateProductBtn" data-product-id="${product_id}"
+                  >
+                    <i class="fa-solid fa-pen-to-square"></i>
+                  </button>
+                  <button
+                    class="hero-btn-outline deleteProductBtn"
+                    id="deleteProductBtn" data-product-id="${product_id}"
+                  >
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </td>
+    
+             `;
     inventoryTableBody.appendChild(row);
+
+    const deleteProductBtn = row.querySelector(`.deleteProductBtn`);
+
+    deleteProductBtn.addEventListener('click', async () => {
+      const productId = deleteProductBtn.dataset.productId;
+      //   console.log('deleteProductBtn clicked', productId);
+      await deleteProduct(productId, shopId);
+    });
+
+    // Update Product Logic
+
+    const updateProductBtn = row.querySelector('.openUpdateProductBtn');
+
+    updateProductBtn?.addEventListener('click', async () => {
+      showGlobalLoader();
+      const productId = updateProductBtn.dataset.productId;
+
+      const updateProductModalContainer = document.querySelector(
+        '.updateProductModal'
+      );
+
+      if (updateProductModalContainer) {
+        // Store productId in modal container for reference
+        updateProductModalContainer.dataset.productId = productId;
+
+        // Fetch staff detail
+        const ProductDetail = await getProductDetail(productId);
+
+        //  console.log('Product detail received successfully:', ProductDetail);
+
+        // Call function to prefill modal inputs
+        if (ProductDetail?.success === true) {
+          hideGlobalLoader();
+          openUpdateProductButton(); // Show modal after data is ready
+
+          updateProductForm(ProductDetail);
+        } else {
+          hideGlobalLoader();
+          showToast('fail', '❌ Failed to fetch Product details.');
+        }
+      }
+    });
   });
 }
 
@@ -888,7 +940,7 @@ export async function renderProductInventoryTable(shopId) {
 
       deleteProductBtn.addEventListener('click', async () => {
         const productId = deleteProductBtn.dataset.productId;
-        console.log('deleteProductBtn clicked', productId);
+        //   console.log('deleteProductBtn clicked', productId);
         await deleteProduct(productId, shopId);
       });
 
