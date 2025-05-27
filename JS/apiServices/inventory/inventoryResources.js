@@ -2,6 +2,7 @@ import config from '../../../config';
 import {
   populateCategoriesDropdown,
   populateCategoryTable,
+  renderProductInventoryTable,
 } from '../../goods.js';
 import { hideGlobalLoader, showGlobalLoader } from '../../helper/helper.js';
 import { showToast } from '../../script.js';
@@ -153,21 +154,9 @@ export async function addInventory(inventoryDetails, shopId) {
 }
 
 export async function getProductInventory(shopId) {
-  const tbody = document.querySelector('.product-table tbody');
-  //   function showLoadingRow() {
-  //     if (tbody)
-  //       tbody.innerHTML = `
-  //     <tr class="loading-row">
-  //       <td colspan="6" class="table-error-text">Loading Product Categories...</td>
-  //     </tr>
-  //   `;
-  //   }
-
-  //   showLoadingRow();
-
   try {
     //  showGlobalLoader();
-    console.log('Sending  getProductInventory request...');
+    //  console.log('Sending  getProductInventory request...');
 
     const productInventoryData = await safeFetch(
       `${baseUrl}/api/inventory/shops/${shopId}/inventory`,
@@ -180,10 +169,10 @@ export async function getProductInventory(shopId) {
       }
     );
 
-    console.log('Response received...');
+    //  console.log('Response received...');
 
     if (productInventoryData) {
-      console.log(productInventoryData);
+      // console.log(productInventoryData);
       hideGlobalLoader();
     }
 
@@ -193,6 +182,134 @@ export async function getProductInventory(shopId) {
   } catch (error) {
     hideGlobalLoader();
     console.error('Error receiving Product Categories:', error);
+    throw error;
+  }
+}
+
+export async function getProductDetail(productId) {
+  try {
+    console.log('Sending POST request...');
+
+    const fethedProductDetail = await safeFetch(
+      `${baseUrl}/api/inventory/products/${productId}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    //  console.log('Response received...');
+
+    if (!fethedProductDetail) {
+      showToast('fail', `✅ ${fethedProductDetail.message}`);
+      return;
+    }
+
+    //  console.log('Product detail received successfully:', fethedProductDetail);
+
+    return fethedProductDetail;
+  } catch (error) {
+    console.error('Error Getting Product Detail:', error);
+    throw error;
+  }
+}
+
+export async function deleteProduct(productId, shopId) {
+  try {
+    //  console.log('Sending POST request...');
+
+    showGlobalLoader();
+
+    const fetchedData = await safeFetch(
+      `${baseUrl}/api/inventory/products/${productId}`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    if (fetchedData) {
+      // console.log('Staff deleted successfully:', fetchedData);
+      showToast('success', `✅ ${fetchedData.message}`);
+      await renderProductInventoryTable(shopId); // Refresh list or update UI
+      hideGlobalLoader();
+    }
+
+    return fetchedData;
+  } catch (error) {
+    hideGlobalLoader();
+    //  console.error('Error deleting Product', error);
+    showToast('error', '❌ Failed to delete Product');
+    throw error;
+  }
+}
+
+export async function updateProduct(productId, updateProductDetails, shopId) {
+  console.log('From API Request:', productId, updateProductDetails, shopId);
+
+  try {
+    console.log('Sending POST request...', productId);
+
+    const updateProductData = await safeFetch(
+      `${baseUrl}/api/inventory/products/${productId}`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updateProductDetails),
+      }
+    );
+
+    if (updateProductData) {
+      console.log('Product info Updated successfully:', updateProductData);
+      showToast('success', `✅ ${updateProductData.message}`);
+      await renderProductInventoryTable(shopId); // Refresh list or update UI
+    }
+
+    return updateProductData;
+  } catch (error) {
+    console.error('Error Updating Product Info', error);
+    showToast('error', '❌ Failed to Update Product info');
+    throw error;
+  }
+}
+
+export async function updateProductInventory(
+  updateInventoryDetails,
+  shopId,
+  productId
+) {
+  try {
+    console.log('Sending POST request...');
+
+    const updateProductData = await safeFetch(
+      `${baseUrl}/api/inventory/shops/${shopId}/inventory/${productId}`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updateInventoryDetails),
+      }
+    );
+
+    if (updateProductData) {
+      console.log('Product info Updated successfully:', updateProductData);
+      showToast('success', `✅ ${updateProductData.message}`);
+      await renderProductInventoryTable(shopId); // Refresh list or update UI
+    }
+
+    return updateProductData;
+  } catch (error) {
+    console.error('Error Updating Product Info', error);
+    showToast('error', '❌ Failed to Update Product info');
     throw error;
   }
 }
@@ -280,52 +397,3 @@ export async function getProducts(page = 1, pageSize = 25) {
 //     return { success: false, error };
 //   }
 // }
-
-export async function updateProduct(documentId, productData) {
-  try {
-    //  console.log('Sending PUT request...');
-    const response = await fetch(`${baseUrl}/api/products/${documentId}`, {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(productData),
-    });
-    //  console.log('Response received...');
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    //  console.log('Product updated successfully:', data);
-    return data;
-  } catch (error) {
-    console.error('Error updating product:', error);
-  }
-}
-
-export async function deleteProduct(documentId) {
-  try {
-    console.log('Sending DELETE request...');
-    const response = await fetch(`${baseUrl}/api/products/${documentId}`, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-        'Content-Type': 'application/json',
-      },
-    });
-
-    console.log('Response received...');
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    console.log('Product deleted successfully');
-    return true; // Return true if deletion was successful
-  } catch (error) {
-    console.error('Error deleting product:', error);
-    return false; // Return false if there was an error
-  }
-}

@@ -292,28 +292,6 @@
          </div>
       </div>
 
-      <!-- <h2>Sales Receipt Demo</h2>
-            <button onclick="generateReceipt()">Generate Receipt</button> -->
-
-      <div id="receipt" class="hidden">
-         <h3>Store Name</h3>
-         <p><strong>Date:</strong> <span id="rDate"></span></p>
-         <p><strong>Customer:</strong> <span id="rCustomer"></span></p>
-         <table border="1" width="100%">
-            <thead>
-               <tr>
-                  <th>Item</th>
-                  <th>Qty</th>
-                  <th>Price</th>
-                  <th>Total</th>
-               </tr>
-            </thead>
-            <tbody id="receiptItems"></tbody>
-         </table>
-         <p><strong>Grand Total:</strong> ₦<span id="rGrandTotal"></span></p>
-         <button class="btn" onclick="printReceipt()">Print</button>
-      </div>
-
    </main>
 
    <div id="toast" class="toast">This is a toast message!</div>
@@ -344,7 +322,7 @@
          </div>
 
 
-         <!-- Assign to shop -->
+         <!-- Updatee Product Category -->
          <div class="modal-form_input">
             <label for="updateProductCategory">Product Category</label>
 
@@ -357,53 +335,45 @@
          </div>
 
          <div class="updateProduct-form_input">
-            <label for="updateProductItemName">Item Name</label>
+            <label for="updateProductName">Product Name</label>
 
-            <input id="updateProductName" type="text" placeholder="Item Name" name="updateProductName" disabled>
+            <input id="updateProductName" type="text" placeholder="Product Name" name="updateProductName" required>
          </div>
 
          <div class="updateProduct-form_input">
-            <label for="productBoughtPrice">Amount Bought</label>
+            <label for="updateProductDescription">Product Description</label>
+
+            <input id="updateProductDescription" type="text" placeholder="Product Description"
+               name="updateProductDescription" required>
+         </div>
+
+         <div class="updateProduct-form_input">
+            <label for="updateProductBoughtPrice">Amount Bought</label>
 
             <div class="naira-input-container">
-               <input id="productBoughtPrice" type="text" placeholder="Bought Price" name="productBoughtPrice" disabled>
+               <input id="updateProductBoughtPrice" type="text" placeholder="Bought Price"
+                  name="updateProductBoughtPrice" required>
                <span class="naira">&#x20A6;</span>
             </div>
          </div>
 
          <div class="updateProduct-form_input">
-            <label for="previousItemPrice">Previous Selling Price</label>
+            <label for="updateProductSellingPrice">Previous Selling Price</label>
 
             <div class="naira-input-container">
-               <input id="previousItemPrice" type="text" placeholder="Current Selling Price" name="previousItemPrice"
-                  disabled>
+               <input id="updateProductSellingPrice" type="text" placeholder="Current Selling Price"
+                  name="updateProductSellingPrice" required>
                <span class="naira">&#x20A6;</span>
             </div>
          </div>
 
-         <!-- <div class="updateProduct-form_input">
-            <label for="updateProductItemQuantity">Item Quantity</label>
-
-            <input id="updateProductQuantity" type="text" placeholder="Item Quantity" name="updateProductQuantity"
-               disabled>
-         </div> -->
-
          <div class="updateProduct-form_input">
-            <label for="newItemName">New Item Name</label>
+            <label for="updateProductQuantity">Product Quantity</label>
 
-            <input id="newItemName" type="text" placeholder="Enter New Name" name="newItemName" required>
-
+            <input id="updateProductQuantity" type="text" placeholder="Product Quantity" name="updateProductQuantity"
+               required>
          </div>
 
-         <div class="updateProduct-form_input">
-            <label for="newItemSellingPrice">New Selling Price</label>
-
-            <div class="naira-input-container">
-               <input id="newItemSellingPrice" type="text" placeholder="Enter New Price"
-                  oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="newItemSellingPrice" required>
-               <span class="naira">&#x20A6;</span>
-            </div>
-         </div>
 
          <!-- <div class="updateProduct-form_input">
             <label for="newItemQuantity">New Item Quantity</label>
@@ -412,8 +382,14 @@
 
          </div> -->
 
+
+
          <div class="center-button">
-            <button class="hero-btn-dark saveProductButton">UPDATE</button>
+
+            <button class="hero-btn-dark updateProductModalBtn" id="updateProductModalBtn">
+               <span class="btn-text">update Product</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
          </div>
 
          <div class="close closeModal" id="">&times;</div>

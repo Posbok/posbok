@@ -151,6 +151,7 @@ export function closeModal() {
   const addMachineFee = document.querySelector('.addMachineFees');
   const addCategory = document.querySelector('.addCategory');
   const addProduct = document.querySelector('.addProduct');
+  const updateProduct = document.querySelector('.updateProduct');
 
   if (depositPosCapitalContainer) {
     depositPosCapitalContainer.classList.remove('active');
@@ -197,6 +198,11 @@ export function closeModal() {
   if (addProduct) {
     addProduct.classList.remove('active');
     //  delete addProduct.dataset.staffId;
+  }
+
+  if (updateProduct) {
+    updateProduct.classList.remove('active');
+    //  delete updateProduct.dataset.staffId;
   }
 
   clearFormInputs();
@@ -277,21 +283,16 @@ const onAuthPage = authPages.some((page) => currentPage.includes(page));
 // If token exists and user is on an auth page, redirect to index
 if (token && onAuthPage) {
   window.location.href = 'index.html';
-  console.log('go to index.html because token exists and onAuthPage is true');
+  //   console.log('go to index.html because token exists and onAuthPage is true');
 }
-
-// If no token and user is on a protected page, redirect to login
-// if (!token && !onAuthPage) {
-//   window.location.href = 'login.html';
-// }
 
 if (!token) {
   if (!onAuthPage) {
     window.location.href = 'login.html';
-    console.log('!onAuthPage');
+    //  console.log('!onAuthPage');
   } else {
     // If you're already on an auth page, don't redirect again
-    console.log('On auth page, no token, staying put.');
+    //  console.log('On auth page, no token, staying put.');
   }
 }
 

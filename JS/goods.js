@@ -3,8 +3,12 @@ import {
   addInventory,
   createProduct,
   createProductCategory,
+  deleteProduct,
   getProductCategories,
+  getProductDetail,
   getProductInventory,
+  updateProduct,
+  updateProductInventory,
 } from './apiServices/inventory/inventoryResources';
 
 import { checkAndPromptCreateShop } from './apiServices/shop/shopResource';
@@ -12,6 +16,7 @@ import { checkAndPromptCreateShop } from './apiServices/shop/shopResource';
 import {
   clearFormInputs,
   formatAmountWithCommas,
+  formatAmountWithCommasOnInput,
   generateBarcode,
   getAmountForSubmission,
   hideBtnLoader,
@@ -84,7 +89,7 @@ export function openUpdateProductButton() {
   if (main) main.classList.add('blur');
   if (sidebar) sidebar.classList.add('blur');
 
-  addProductForm();
+  //   updateProductForm();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -274,7 +279,7 @@ export function populateCategoriesDropdown(categoriesData = []) {
 
     const option2 = document.createElement('option');
     option2.value = category.id;
-    option2.textContent = `${category.category_name} - ${category.location}`;
+    option2.textContent = `${category.name}`;
     if (updateProductCategoryDropdown)
       updateProductCategoryDropdown.appendChild(option2);
   });
@@ -388,6 +393,177 @@ export function createProductForm() {
   }
 }
 
+export function bindUpdateProductFormListener() {
+  const form = document.querySelector('.updateProductModal');
+  if (!form) return;
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const productId = form.dataset.productId;
+      const shopId = form.dataset.shopId;
+
+      if (!productId) {
+        showToast('fail', '❎ No Product selected for update.');
+        return;
+      }
+
+      if (!shopId) {
+        showToast('fail', '❎ No shop selected for update.');
+        return;
+      }
+
+      const updateProductCategory = document.querySelector(
+        '#updateProductCategory'
+      ).value;
+      const updateProductName =
+        document.querySelector('#updateProductName').value;
+      const updateProductDescription = document.querySelector(
+        '#updateProductDescription'
+      ).value;
+      const updateProductBoughtPrice = document.querySelector(
+        '#updateProductBoughtPrice'
+      ).value;
+      const updateProductSellingPrice = document.querySelector(
+        '#updateProductSellingPrice'
+      ).value;
+      const updateProductQuantity = document.querySelector(
+        '#updateProductQuantity'
+      ).value;
+
+      const updateProductDetails = {
+        categoryId: updateProductCategory,
+        name: updateProductName,
+        description: updateProductDescription,
+        purchasePrice: Number(getAmountForSubmission(updateProductBoughtPrice)),
+        sellingPrice: Number(getAmountForSubmission(updateProductSellingPrice)),
+      };
+
+      const updateInventoryDetails = {
+        quantity: Number(updateProductQuantity),
+      };
+
+      console.log(
+        'Updating Product Detail with:',
+        updateProductDetails,
+        productId
+      );
+
+      const updateProductModalBtn = document.querySelector(
+        '.updateProductModalBtn'
+      );
+
+      try {
+        showBtnLoader(updateProductModalBtn);
+        const updatedProductData = await updateProduct(
+          productId,
+          updateProductDetails,
+          shopId
+        );
+
+        if (!updatedProductData) {
+          console.log('fail', updatedProductData.message);
+          return;
+        }
+
+        //   console.log('Adding Products with:', addProductDetails);
+
+        try {
+          const inventoryData = await updateProductInventory(
+            updateInventoryDetails,
+            shopId,
+            productId
+          );
+
+          if (inventoryData) {
+            showToast('success', `✅ ${inventoryData.message}`);
+            closeModal();
+            clearFormInputs();
+            await renderProductInventoryTable(shopId);
+          }
+        } catch (inventoryDataErr) {
+          showToast(
+            'fail',
+            `❎ ${inventoryDataErr.message || 'Failed to Update inventory'}`
+          );
+          console.error(
+            'Error During Inventory Updating:',
+            inventoryDataErr.message
+          );
+        }
+        hideBtnLoader(updateProductModalBtn);
+        //   hideGlobalLoader();
+      } catch (err) {
+        hideBtnLoader(updateProductModalBtn);
+
+        console.error('Error Updating product:', err);
+        showToast('fail', `❎ ${err.message}`);
+        return;
+      }
+    });
+  }
+}
+
+export function updateProductForm(productDetail) {
+  //   console.log('Product Detail:', productDetail);
+
+  const form = document.querySelector('.updateProductModal');
+  if (!form) return;
+
+  //   if (!form || form.dataset.bound === 'true') return;
+  //   form.dataset.bound = 'true';
+
+  const product = productDetail.data;
+  const productCategory = product.ProductCategory;
+  const productInventory = product.inventory[0];
+
+  const shopId = productInventory?.Shop.id;
+  const productId = product.id;
+
+  form.dataset.productId = productId;
+  form.dataset.shopId = shopId;
+
+  // Save user.id in the form for later use
+
+  const { id: inventoryId, product_id, quantity } = productInventory;
+
+  const {
+    name: productName,
+    description: productDescription,
+    purchase_price,
+    selling_price,
+  } = product;
+
+  const { name: categoryName, id: categoryId } = productCategory;
+
+  console.log(
+    inventoryId,
+    product_id,
+    quantity,
+    productName,
+    productDescription,
+    purchase_price,
+    selling_price,
+    categoryName,
+    categoryId,
+    shopId
+  );
+
+  document.querySelector('#updateProductCategory').value = categoryId || '';
+  document.querySelector('#updateProductName').value = productName;
+  document.querySelector('#updateProductDescription').value =
+    productDescription;
+  document.querySelector('#updateProductBoughtPrice').value =
+    formatAmountWithCommas(purchase_price) || '';
+  document.querySelector('#updateProductSellingPrice').value =
+    formatAmountWithCommas(selling_price) || '';
+  document.querySelector('#updateProductQuantity').value = quantity || '';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  bindUpdateProductFormListener(); // Only once
+});
 function getFilters(role, shopId) {
   const suffix = role === 'admin' ? `${role}_${shopId}` : role;
 
@@ -481,7 +657,9 @@ if (isAdmin && adminAccordionContainer && container) {
                                           <thead>
                                       <tr class="table-header-row">
                                           <th class="py-1">S/N</th>
-                          <th class="py-1">Products</th>
+                          <th class="py-1">Product Name</th>
+                          <th class="py-1">Product Description</th>
+                          <th class="py-1">Product Category</th>
                           <th class="py-1">Buying Price</th>
                           <th class="py-1">Quantity</th>
                           <th class="py-1">Selling Price</th>
@@ -680,6 +858,7 @@ export async function renderProductInventoryTable(shopId) {
                 <td class="py-1 productSerialNumber">${index + 1}</td>
                 <td class="py-1 productName">${productName}</td>
                 <td class="py-1 productDescription">${description}</td>
+                <td class="py-1 producCategory">${categoryName}</td>
                 <td class="py-1 productAmountBought">&#x20A6;${formatAmountWithCommas(
                   purchase_price
                 )}</td>
@@ -690,13 +869,13 @@ export async function renderProductInventoryTable(shopId) {
                 <td class="py-1 action-buttons">
                   <button
                     class="hero-btn-outline openUpdateProductBtn"
-                    id="openUpdateProductBtn" data-staff-id="${product_id}"
+                    id="openUpdateProductBtn" data-product-id="${product_id}"
                   >
                     <i class="fa-solid fa-pen-to-square"></i>
                   </button>
                   <button
                     class="hero-btn-outline deleteProductBtn"
-                    id="deleteProductBtn" data-staff-id="${product_id}"
+                    id="deleteProductBtn" data-product-id="${product_id}"
                   >
                     <i class="fa-solid fa-trash-can"></i>
                   </button>
@@ -704,6 +883,48 @@ export async function renderProductInventoryTable(shopId) {
     
              `;
       inventoryTableBody.appendChild(row);
+
+      const deleteProductBtn = row.querySelector(`.deleteProductBtn`);
+
+      deleteProductBtn.addEventListener('click', async () => {
+        const productId = deleteProductBtn.dataset.productId;
+        console.log('deleteProductBtn clicked', productId);
+        await deleteProduct(productId, shopId);
+      });
+
+      // Update Product Logic
+
+      const updateProductBtn = row.querySelector('.openUpdateProductBtn');
+
+      updateProductBtn?.addEventListener('click', async () => {
+        showGlobalLoader();
+        const productId = updateProductBtn.dataset.productId;
+
+        const updateProductModalContainer = document.querySelector(
+          '.updateProductModal'
+        );
+
+        if (updateProductModalContainer) {
+          // Store productId in modal container for reference
+          updateProductModalContainer.dataset.productId = productId;
+
+          // Fetch staff detail
+          const ProductDetail = await getProductDetail(productId);
+
+          //  console.log('Product detail received successfully:', ProductDetail);
+
+          // Call function to prefill modal inputs
+          if (ProductDetail?.success === true) {
+            hideGlobalLoader();
+            openUpdateProductButton(); // Show modal after data is ready
+
+            updateProductForm(ProductDetail);
+          } else {
+            hideGlobalLoader();
+            showToast('fail', '❌ Failed to fetch Product details.');
+          }
+        }
+      });
 
       return { productName, description };
     });

@@ -342,6 +342,7 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
     if (tbody) tbody.appendChild(row);
 
     const deleteBtn = row.querySelector('.deleteStaffButton');
+
     deleteBtn.addEventListener('click', async () => {
       const staffId = deleteBtn.dataset.staffId;
       await deleteUser(staffId);
