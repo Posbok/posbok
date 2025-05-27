@@ -21,6 +21,7 @@ import {
 } from './helper/helper.js';
 import {
   addPosCapital,
+  getCurrentBusinessDay,
   getPosChargeSettings,
   getPosMachineFeesettings,
   openDepositPosCapitalModal,
@@ -80,10 +81,72 @@ export function showToast(type, message) {
 
   setTimeout(() => {
     toast.classList.remove('show');
-  }, 3000);
+  }, 5000);
 }
 
 // Function to deposit POS Capital - Added to script.js because of scope.
+
+export function openBusinessDayModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const openBusinessDayContainer = document.querySelector('.openBusinessDay');
+
+  if (openBusinessDayContainer)
+    openBusinessDayContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  // isUserLoggedIN() is a conditional functions used for functions that needs to run automatically - it basically checks if the user is logged in before it fetchs. It is present in the helper.js file
+
+  if (!isUserLoggedIn()) {
+    console.log('User not logged in. Skipping business day check.');
+    return;
+  }
+
+  if (isStaff) {
+    const businessDay = await getCurrentBusinessDay();
+
+    if (businessDay === false) {
+      // const businessInitBtnDiv = document.querySelector('.businessInitBtnDiv');
+
+      // const openBusinessDayBtn = document.createElement('button');
+      // openBusinessDayBtn.classList.add('openBusinessDayBtn businessInitBtn');
+      // openBusinessDayBtn.id = 'openBusinessDayBtn';
+      // openBusinessDayBtn.innerText = 'Open Business Day';
+
+      // console.log(openBusinessDayBtn);
+
+      // businessInitBtnDiv.appendChild(openBusinessDayBtn);
+      // // businessInitBtnDiv.innerHTML = openBusinessDayBtn;
+
+      // console.log(businessInitBtnDiv);
+      // No open day: show modal to open day
+      openBusinessDayModal();
+      console.log('a');
+    } else if (businessDay === null) {
+      // Other failure: show fallback
+      console.log('b');
+    } else {
+      // Open day exists
+      console.log('c');
+      initAccountOverview();
+    }
+  }
+});
+
+// Function to deposit POS Capital - Added to script.js because of scope.
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Setup for Opening Pos Deposit Capital Modal
+
+  setupModalCloseButtons();
+  document
+    .querySelector('#depositPosCapitalBtn')
+    ?.addEventListener('click', openDepositPosCapitalModal);
+});
+
 export function depositPosCapitalForm() {
   const form = document.querySelector('.depositPosCapitalModal');
 
@@ -120,13 +183,6 @@ export function depositPosCapitalForm() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  // isUserLoggedIN() is a conditional functions used for functions that needs to run automatically - it basically checks if the user is logged in before it fetchs. It is present in the helper.js file
-  if (isUserLoggedIn()) {
-    initAccountOverview();
-  }
-});
-
 // JS For Modal
 
 const main = document.querySelector('.main');
@@ -152,6 +208,7 @@ export function closeModal() {
   const addCategory = document.querySelector('.addCategory');
   const addProduct = document.querySelector('.addProduct');
   const updateProduct = document.querySelector('.updateProduct');
+  const openBusinessDay = document.querySelector('.openBusinessDay');
 
   if (depositPosCapitalContainer) {
     depositPosCapitalContainer.classList.remove('active');
@@ -203,6 +260,10 @@ export function closeModal() {
   if (updateProduct) {
     updateProduct.classList.remove('active');
     //  delete updateProduct.dataset.staffId;
+  }
+  if (openBusinessDay) {
+    openBusinessDay.classList.remove('active');
+    //  delete openBusinessDay.dataset.staffId;
   }
 
   clearFormInputs();
@@ -476,17 +537,6 @@ if (isAdmin) {
     //  getPosMachineFeesettings();
     //  getProductCategories();
     //  getProductInventory();
-  });
-}
-
-if (isStaff) {
-  document.addEventListener('DOMContentLoaded', () => {
-    // Setup for Opening Pos Deposit Capital Modal
-
-    setupModalCloseButtons();
-    document
-      .querySelector('#depositPosCapitalBtn')
-      ?.addEventListener('click', openDepositPosCapitalModal);
   });
 }
 

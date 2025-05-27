@@ -62,8 +62,8 @@
       </div>
 
 
-      <div class="left-button">
-         <button class="depositPosCapitalBtn mb-2" id="depositPosCapitalBtn">Deposit</button>
+      <div class="left-button businessInitBtnDiv">
+         <button class="depositPosCapitalBtn businessInitBtn mb-2" id="depositPosCapitalBtn">Deposit</button>
       </div>
 
 
@@ -301,6 +301,53 @@
    <div id="global-loader" class="loader-overlay hidden">
       <div class="spinner"></div>
    </div>
+
+   <form class="modal-form openBusinessDayModal" name="modal">
+      <div class="card openBusinessDay modal  ">
+         <div>
+            <h1 class="heading-text">open Business Day</h1>
+         </div>
+
+         <!-- Pos Capital -->
+         <div class="modal-form_input">
+            <label for="openPosCapitalAmount">POS Capital:</label>
+
+            <div class="naira-input-container">
+               <input id="openPosCapitalAmount" type="text" placeholder="Enter Amount" name="openPosCapitalAmount"
+                  required>
+               <span class="naira">&#x20A6;</span>
+            </div>
+         </div>
+
+         <!-- Opening Cash -->
+         <div class="modal-form_input">
+            <label for="openCashAmount">OpenIng Cash:</label>
+
+            <div class="naira-input-container">
+               <input id="openCashAmount" type="text" placeholder="Enter Amount" name="openCashAmount" required>
+               <span class="naira">&#x20A6;</span>
+            </div>
+         </div>
+
+         <!-- Open Business Day Note -->
+         <div class="modal-form_input">
+            <label for="openNotes">Note:</label>
+
+            <input id="openNotes" type="text" placeholder="Opening business for Monday Shift" name="openNotes" required>
+         </div>
+
+         <div class="center-button">
+            <button class="hero-btn-dark openBusinessDayBtn  mt-2 mb-1  has-spinner" type="submit">
+               <span class="btn-text">Login</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+
+            <button class="hero-btn-dark submitPosCapital" type="submit">DEPOSIT</button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
 
    <form class="depositPosCapital-form depositPosCapitalModal" name="depositPosCapital">
       <div class="card depositPosCapital modal ">

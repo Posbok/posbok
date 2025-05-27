@@ -752,7 +752,7 @@ button:disabled:hover {
 .hero-btn-outline,
 .hero-btn-dark_square,
 .hero-btn-danger,
-.depositPosCapitalBtn {
+.businessInitBtn {
   position: relative;
   background-color: #0F7A89;
   color: #fff;
@@ -773,7 +773,7 @@ button:disabled:hover {
   .hero-btn-outline:not(:last-child),
   .hero-btn-dark_square:not(:last-child),
   .hero-btn-danger:not(:last-child),
-  .depositPosCapitalBtn:not(:last-child) {
+  .businessInitBtn:not(:last-child) {
     margin-right: 1.5rem; }
     @media only screen and (max-width: 75em) {
       .hero-btn-dark:not(:last-child),
@@ -781,14 +781,14 @@ button:disabled:hover {
       .hero-btn-outline:not(:last-child),
       .hero-btn-dark_square:not(:last-child),
       .hero-btn-danger:not(:last-child),
-      .depositPosCapitalBtn:not(:last-child) {
+      .businessInitBtn:not(:last-child) {
         margin-bottom: 1.5rem; } }
   .hero-btn-dark:hover,
   .hero-btn-light:hover,
   .hero-btn-outline:hover,
   .hero-btn-dark_square:hover,
   .hero-btn-danger:hover,
-  .depositPosCapitalBtn:hover {
+  .businessInitBtn:hover {
     transform: scale(1.03);
     box-shadow: inset 0 0 0 2px #51cf66; }
   .hero-btn-dark:active,
@@ -796,7 +796,7 @@ button:disabled:hover {
   .hero-btn-outline:active,
   .hero-btn-dark_square:active,
   .hero-btn-danger:active,
-  .depositPosCapitalBtn:active {
+  .businessInitBtn:active {
     transform: scale(1);
     background-color: #0F7A89; }
   .hero-btn-dark .button-link,
@@ -804,7 +804,7 @@ button:disabled:hover {
   .hero-btn-outline .button-link,
   .hero-btn-dark_square .button-link,
   .hero-btn-danger .button-link,
-  .depositPosCapitalBtn .button-link {
+  .businessInitBtn .button-link {
     position: absolute;
     top: 0;
     left: 0;
@@ -830,14 +830,14 @@ button:disabled:hover {
 .load-more-button {
   display: none; }
 
-.depositPosCapitalBtn {
+.businessInitBtn {
   background-color: #fff;
   color: #0F7A89;
   font-size: 1.6rem; }
-  .depositPosCapitalBtn:hover {
+  .businessInitBtn:hover {
     transform: scale(1.07);
     background-color: #eef1f6; }
-  .depositPosCapitalBtn:active {
+  .businessInitBtn:active {
     transform: scale(1.04);
     background-color: #fff; }
 

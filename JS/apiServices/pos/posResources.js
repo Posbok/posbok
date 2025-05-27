@@ -31,6 +31,76 @@ function getCurrentDateISO() {
   return localMidnight.toISOString();
 }
 
+// export async function getCurrentBusinessDay() {
+//   try {
+//     console.log('Sending POST request...');
+
+//     const currentBusinessDayData = await safeFetch(
+//       `${baseUrl}/api/pos/business-day?shopId=${shopId}`,
+//       {
+//         method: 'GET',
+//         headers: {
+//           Authorization: `Bearer ${userToken}`,
+//         },
+//       }
+//     );
+
+//     console.log('Response received...');
+
+//     console.log(currentBusinessDayData);
+//     return currentBusinessDayData;
+//   } catch (err) {
+//     // Handle the case where no business day is open (e.g., 404)
+//     if (
+//       err.message.includes('No business day found') ||
+//       err.message.includes('404')
+//     ) {
+//       console.warn('No open business day found.');
+//       return false; // Or return null or custom value if preferred
+//     }
+
+//     // For other errors, log and return null
+//     console.error('Failed to fetch current business day:', err.message);
+//     return null;
+//   }
+// }
+
+export async function getCurrentBusinessDay() {
+  try {
+    console.log('Sending GET request...');
+
+    const currentBusinessDayData = await safeFetch(
+      `${baseUrl}/api/pos/business-day?shopId=${shopId}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    console.log('Response received...');
+    console.log(currentBusinessDayData);
+    return currentBusinessDayData;
+  } catch (err) {
+    const message = err.message.toLowerCase();
+
+    // Handle case where backend clearly tells us there's no open business day
+    if (
+      message.includes('no open business day') ||
+      message.includes('no business day found') ||
+      message.includes('404')
+    ) {
+      console.warn('No open business day found.');
+      return false;
+    }
+
+    // Other unexpected or connection-level errors
+    console.error('Failed to fetch current business day:', err.message);
+    return null;
+  }
+}
+
 export async function addPosCapital(posCapitalDetails) {
   console.log(posCapitalDetails);
   try {
@@ -365,26 +435,5 @@ export async function getPosMachineFeesettings() {
   `;
     console.error('Error receiving POS COnfiguration settings:', error);
     throw error;
-  }
-}
-
-export async function getCurrentBusinessDay(shopId) {
-  try {
-    const fetchedData = await safeFetch(
-      `${baseUrl}/api/business-day?shopId=${shopId}`,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      }
-    );
-
-    if (fetchedData) {
-      return fetchedData?.data || null;
-    }
-  } catch (err) {
-    console.error('Failed to fetch current business day:', err.message);
-    return null;
   }
 }

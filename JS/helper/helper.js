@@ -29,6 +29,7 @@ export function clearFormInputs() {
   const addProductForm = document.querySelector('.addProductModal');
   const addCategoryForm = document.querySelector('.addCategoryModal');
   const updateProductForm = document.querySelector('.updateProductModal');
+  const openBusinessDayForm = document.querySelector('.openBusinessDayModal');
 
   //   Clear Search Input
   const searchProductInput = document.querySelector('.searchProductInput');
@@ -220,6 +221,21 @@ export function clearFormInputs() {
       });
 
     delete updateProductForm.dataset.staffId;
+  }
+
+  // Clear Open Business Day  Inputs
+  if (openBusinessDayForm) {
+    openBusinessDayForm
+      .querySelectorAll('input, textarea, select')
+      .forEach((el) => {
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          el.checked = false;
+        } else {
+          el.value = '';
+        }
+      });
+
+    delete openBusinessDayForm.dataset.staffId;
   }
 }
 

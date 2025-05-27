@@ -413,9 +413,6 @@ export function populateShopDropdown(shopList = [], preselectedShopId = '') {
   const staffManageShopDropdown = document.getElementById(
     'staffManageShopDropdown'
   );
-  const inventoryShopDropdown = document.getElementById(
-    'inventoryShopDropdown'
-  );
 
   //   console.log('Trying direct test append');
   //   const testOption = document.createElement('option');
@@ -423,7 +420,9 @@ export function populateShopDropdown(shopList = [], preselectedShopId = '') {
   //   testOption.textContent = 'Test Shop';
   //   inventoryShopDropdown.appendChild(testOption);
 
-  if (!dropdown || !staffManageShopDropdown || !inventoryShopDropdown) return;
+  if (!dropdown || !staffManageShopDropdown) return;
+
+  //   console.log(dropdown);
 
   dropdown.addEventListener('change', function () {
     const selectedShopId = dropdown.value;
@@ -435,9 +434,8 @@ export function populateShopDropdown(shopList = [], preselectedShopId = '') {
   // Clear existing options except the default
   dropdown.innerHTML = `<option value="">Select a shop</option>`;
   staffManageShopDropdown.innerHTML = `<option value="">Select a shop</option>`;
-  inventoryShopDropdown.innerHTML = `<option value="">Select a shop</option>`;
-  console.log(inventoryShopDropdown);
-  console.log('inventoryShopDropdown');
+
+  console.log(dropdown);
 
   shopList.forEach((shop) => {
     const option1 = document.createElement('option');
@@ -451,11 +449,6 @@ export function populateShopDropdown(shopList = [], preselectedShopId = '') {
     option2.textContent = `${shop.shop_name} - ${shop.location}`;
     if (shop.id === preselectedShopId) option2.selected = true;
     if (staffManageShopDropdown) staffManageShopDropdown.appendChild(option2);
-
-    const option3 = document.createElement('option');
-    option3.value = shop.id;
-    option3.textContent = `${shop.shop_name} - ${shop.location}`;
-    if (inventoryShopDropdown) inventoryShopDropdown.appendChild(option3);
   });
 
   //   shopList.forEach((shop) => {
