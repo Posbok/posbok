@@ -473,21 +473,33 @@ button:disabled:hover {
    display: none;
 }
 
-.businessInitBtn {
-   background-color: $color-grey-light-1;
-   color: $color-grey-dark-1;
-   font-size: 1.6rem;
+.businessInitBtnDiv {
+   display: flex;
+   align-items: center;
 
-   &:hover {
-      transform: scale(1.07);
-      background-color: $color-grey-light-2;
+   .hero-btn-danger {
+      margin-bottom: 0;
    }
 
-   &:active {
-      transform: scale(1.04);
+   .businessInitBtn {
       background-color: $color-grey-light-1;
+      color: $color-grey-dark-1;
+      // font-size: 1.6rem;
+      margin-bottom: 0;
+
+      &:hover {
+         transform: scale(1.07);
+         background-color: $color-grey-light-2;
+      }
+
+      &:active {
+         transform: scale(1.04);
+         background-color: $color-grey-light-1;
+      }
    }
 }
+
+
 
 .hero-btn-light {
    background-color: $color-grey-dark-1;
@@ -541,6 +553,10 @@ button:disabled:hover {
 
 .mt-1 {
    margin-top: 1rem;
+}
+
+.mb-0 {
+   margin-bottom: 0rem;
 }
 
 .mb-1 {

@@ -58,14 +58,15 @@
       </header>
 
       <div>
-         <h1 class="heading-text business-name">EAROT COMMUNICATIONS</h1>
+         <h1 class="heading-text business-name">Business Name</h1>
       </div>
 
 
       <div class="left-button businessInitBtnDiv">
-         <button class="depositPosCapitalBtn businessInitBtn mb-2" id="depositPosCapitalBtn">Deposit</button>
+         <!-- <button class="openBusinessDayBtn businessInitBtn mb-2" id="openBusinessDayBtn">Deposit</button>
+         <button class="closeBusinessDayBtn businessInitBtn mb-2" id="closeBusinessDayBtn">Deposit</button>
+         <button class="depositPosCapitalBtn businessInitBtn mb-2" id="depositPosCapitalBtn">Close Business Day</button> -->
       </div>
-
 
       <div class="action">
          <a class="action-link" id="sellIndexTab" href="sell.html">
@@ -302,8 +303,9 @@
       <div class="spinner"></div>
    </div>
 
-   <form class="modal-form openBusinessDayModal" name="modal">
-      <div class="card openBusinessDay modal  ">
+   <!-- Open Business Day Modals -->
+   <form class="modal-form openBusinessDayModal staffBusinessDayContainer" name="modal">
+      <div class="card openStaffBusinessDay modal  ">
          <div>
             <h1 class="heading-text">open Business Day</h1>
          </div>
@@ -331,25 +333,146 @@
 
          <!-- Open Business Day Note -->
          <div class="modal-form_input">
-            <label for="openNotes">Note:</label>
+            <label for="openingNotes">Note:</label>
 
-            <input id="openNotes" type="text" placeholder="Opening business for Monday Shift" name="openNotes" required>
+            <input id="openingNotes" type="text" placeholder="Opening business for Monday Shift" name="openingNotes"
+               value="Opening business for Monday Shift" required>
          </div>
 
          <div class="center-button">
-            <button class="hero-btn-dark openBusinessDayBtn  mt-2 mb-1  has-spinner" type="submit">
-               <span class="btn-text">Login</span>
+            <button class="hero-btn-dark openBusinessDaySubmitBtn  mt-2 mb-1  has-spinner" type="submit">
+               <span class="btn-text">Submit </span>
                <span class="btn-spinner hidden"></span>
             </button>
 
-            <button class="hero-btn-dark submitPosCapital" type="submit">DEPOSIT</button>
          </div>
 
          <div class="close closeModal" id="">&times;</div>
       </div>
    </form>
 
-   <form class="depositPosCapital-form depositPosCapitalModal" name="depositPosCapital">
+   <form class="modal-form openBusinessDayModal adminBusinessDayContainer" name="modal">
+      <div class="card openAdminBusinessDay modal  ">
+         <div>
+            <h1 class="heading-text">open Business Day</h1>
+         </div>
+
+         <!-- Assign Business Day Opening to shop -->
+         <div class="modal-form_input">
+            <label for="businessDayShopDropdown">Select Shop</label>
+
+            <select id="businessDayShopDropdown" class="form-control" required>
+               <option value="">Select a shop</option>
+               <!-- <option value="1">Loading Shops...</option> -->
+
+               <!-- Add Main shops dynamically -->
+            </select>
+         </div>
+
+         <!-- Pos Capital -->
+         <div class="modal-form_input">
+            <label for="adminOpenPosCapitalAmount">POS Capital:</label>
+
+            <div class="naira-input-container">
+               <input id="adminOpenPosCapitalAmount" type="text" placeholder="Enter Amount"
+                  name="adminOpenPosCapitalAmount" required>
+               <span class="naira">&#x20A6;</span>
+            </div>
+         </div>
+
+         <!-- Opening Cash -->
+         <div class="modal-form_input">
+            <label for="adminOpenCashAmount">OpenIng Cash:</label>
+
+            <div class="naira-input-container">
+               <input id="adminOpenCashAmount" type="text" placeholder="Enter Amount" name="adminOpenCashAmount"
+                  required>
+               <span class="naira">&#x20A6;</span>
+            </div>
+         </div>
+
+         <!-- Open Business Day Note -->
+         <div class="modal-form_input">
+            <label for="adminOpeningNotes">Note:</label>
+
+            <input id="adminOpeningNotes" type="text" placeholder="Opening business for Monday Shift"
+               name="adminOpeningNotes" value="Opening business for Monday Shift" required>
+         </div>
+
+         <div class="center-button">
+            <button class="hero-btn-dark adminOpenBusinessDaySubmitBtn  mt-2 mb-1  has-spinner" type="submit">
+               <span class="btn-text">Submit </span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <!-- Close Business Day Modals -->
+   <form class="modal-form closeBusinessDayModal staffCloseBusinessDayContainer" name="modal">
+
+      <div class="card confirmation closeBusinessDay modal ">
+         <h1 class="confirmation-text">Are you sure you want to Close Business Day <span id="confirmation-text"></span>?
+         </h1>
+
+
+         <div class="confirmation-btn_container">
+
+            <button class="hero-btn-dark cancel-close">Cancel</button>
+
+            <button class="hero-btn-danger closeBusinessDayBtn  mt-2 has-spinner" type="submit">
+               <span class="btn-text">Close Business Day </span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+
+
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <form class="modal-form closeBusinessDayModal adminCloseBusinessDayContainer" name="modal">
+
+      <div class="card confirmation adminCloseBusinessDay modal ">
+         <h1 class="confirmation-text">Are you sure you want to Close Business Day <span id="confirmation-text"></span>?
+         </h1>
+
+
+         <!-- Assign Business Day Close to shop -->
+         <div class="modal-form_input">
+            <label for="closeBusinessDayShopDropdown">Select Shop</label>
+
+            <select id="closeBusinessDayShopDropdown" class="form-control" required>
+               <option value="">Select a shop</option>
+               <!-- <option value="1">Loading Shops...</option> -->
+
+               <!-- Add Main shops dynamically -->
+            </select>
+         </div>
+
+
+         <div class="confirmation-btn_container">
+
+            <button class="hero-btn-dark adminCancel-close">Cancel</button>
+
+            <button class="hero-btn-danger closeBusinessDayBtn  mt-2 has-spinner" type="submit">
+               <span class="btn-text">Close Business Day </span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+
+
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <!-- Deposit POS Capital Modals -->
+   <form class="depositPosCapital-form depositPosCapitalModal staffDepositPosCapitalModal" name="depositPosCapital">
       <div class="card depositPosCapital modal ">
          <div>
             <h1 class="heading-text addItemName">Deposit POS Capital</h1>
@@ -365,7 +488,52 @@
          </div>
 
          <div class="center-button">
-            <button class="hero-btn-dark submitPosCapital" type="submit">DEPOSIT</button>
+
+            <button class="hero-btn-dark submitPosCapital  mt-2 mb-1  has-spinner" type="submit">
+               <span class="btn-text">DEPOSIT </span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <form class="depositPosCapital-form depositPosCapitalModal adminDepositPosCapitalModal" name="depositPosCapital">
+      <div class="card adminDepositPosCapital modal ">
+         <div>
+            <h1 class="heading-text addItemName">Deposit POS Capital</h1>
+         </div>
+
+
+         <!-- Assign Pos Capital Deposit to shop -->
+         <div class="modal-form_input">
+            <label for="adminDepositposCapitalShopDropdown">Select Shop</label>
+
+            <select id="adminDepositposCapitalShopDropdown" class="form-control" required>
+               <option value="">Select a shop</option>
+               <!-- <option value="1">Loading Shops...</option> -->
+
+               <!-- Add Main shops dynamically -->
+            </select>
+         </div>
+
+         <div class="depositPosCapital-form_input">
+            <label for="adminPosCapitalAmount">Enter Amount</label>
+
+            <div class="naira-input-container">
+               <input id="adminPosCapitalAmount" type="text" placeholder="Enter Amount" name="adminPosCapitalAmount"
+                  required>
+               <span class="naira">&#x20A6;</span>
+            </div>
+         </div>
+
+         <div class="center-button">
+
+            <button class="hero-btn-dark submitPosCapital  mt-2 mb-1  has-spinner" type="submit">
+               <span class="btn-text">DEPOSIT </span>
+               <span class="btn-spinner hidden"></span>
+            </button>
          </div>
 
          <div class="close closeModal" id="">&times;</div>

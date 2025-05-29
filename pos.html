@@ -240,16 +240,16 @@
                <div class="pos-method-form_input">
                   <label for="customerName">Customer Name</label>
 
-                  <input id="posCustomerName" type="text" placeholder="Enter Customer Name" name="posCustomerName"
-                     required>
+                  <input class="posCustomerName" id="posCustomerName" type="text" placeholder="Enter Customer Name"
+                     name="posCustomerName" required>
                </div>
 
                <!-- CUSTOMER PHONE NUMBER -->
                <div class="pos-method-form_input">
                   <label for="posCustomerPhone">Customer Phone Number</label>
 
-                  <input id="posCustomerPhone" type="text" placeholder="Enter Customer Phone Number"
-                     name="posCustomerPhone" required>
+                  <input class="posCustomerPhone" id="posCustomerPhone" type="text"
+                     placeholder="Enter Customer Phone Number" name="posCustomerPhone" required>
                </div>
 
                <div class="pos-method-form_input posRemarksDiv">
@@ -376,16 +376,16 @@
                <div class="pos-method-form_input">
                   <label for="customerName">Customer Name</label>
 
-                  <input id="posCustomerName" type="text" placeholder="Enter Customer Name" name="posCustomerName"
-                     required>
+                  <input class="posCustomerName" id="posCustomerName" type="text" placeholder="Enter Customer Name"
+                     name="posCustomerName" required>
                </div>
 
                <!-- CUSTOMER PHONE NUMBER -->
                <div class="pos-method-form_input">
                   <label for="posCustomerPhone">Customer Phone Number</label>
 
-                  <input id="posCustomerPhone" type="text" placeholder="Enter Customer Phone Number"
-                     name="posCustomerPhone" required>
+                  <input class="posCustomerPhone" id="posCustomerPhone" type="text"
+                     placeholder="Enter Customer Phone Number" name="posCustomerPhone" required>
                </div>
 
                <div class="pos-method-form_input posRemarksDiv">
@@ -498,8 +498,8 @@
    }
 
    // Set it as default value
-   document.getElementById('posCustomerPhone').value = generateRandomPhoneNumber();
-   // document.getElementById('posTransactionConfirmation').value = generateRandomPhoneNumber();
+   document.querySelector('.posCustomerPhone').value = generateRandomPhoneNumber();
+   // document.querySelector('.posTransactionConfirmation').value = generateRandomPhoneNumber();
 
    function generateRandomName() {
       const names = ['Divine', 'Desmond', 'Susan', 'Gift', 'Precious', 'Onyeka', 'Brilliant'];
@@ -509,7 +509,7 @@
       return `${name}`;
    }
 
-   document.getElementById('posCustomerName').value = generateRandomName();
+   document.querySelector('.posCustomerName').value = generateRandomName();
 
 </script>
 

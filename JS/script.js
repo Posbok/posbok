@@ -15,15 +15,23 @@ import {
 import {
   clearFormInputs,
   getAmountForSubmission,
+  hideBtnLoader,
   hideGlobalLoader,
   isUserLoggedIn,
+  populateBusinessShopDropdown,
+  showBtnLoader,
   showGlobalLoader,
 } from './helper/helper.js';
 import {
   addPosCapital,
+  closeBusinessDay,
   getCurrentBusinessDay,
   getPosChargeSettings,
   getPosMachineFeesettings,
+  openAdminCloseBusinessDayModal,
+  openAdminDepositPosCapitalModal,
+  openBusinessDay,
+  openCloseBusinessDayModal,
   openDepositPosCapitalModal,
 } from './apiServices/pos/posResources.js';
 import { initAccountOverview } from './apiServices/account/accountOverview.js';
@@ -39,7 +47,10 @@ const dummyShopId = config.dummyShopId;
 let parsedUserData = null;
 
 parsedUserData = userData ? JSON.parse(userData) : null;
-const shopId = parsedUserData?.shopId || dummyShopId;
+
+const isAdmin = parsedUserData?.accountType === 'ADMIN';
+const isStaff = parsedUserData?.accountType === 'STAFF';
+const shopId = parsedUserData?.shopId;
 
 // Normalize current page name from pathname
 const currentPage = window.location.pathname.toLowerCase();
@@ -62,6 +73,7 @@ sideNavs.forEach((nav) => {
 // Toast notification
 
 // JavaScript to show toast
+
 export function showToast(type, message) {
   const toast = document.getElementById('toast');
 
@@ -71,30 +83,193 @@ export function showToast(type, message) {
   }
 
   toast.textContent = message;
-
-  // Reset class to clear previous toast type
-  toast.className = 'toast';
-
-  // Add the appropriate type (success or fail)
+  toast.className = 'toast'; // Reset classes
   toast.classList.add(type);
   toast.classList.add('show');
 
+  // Hide after 5 seconds
   setTimeout(() => {
     toast.classList.remove('show');
+
+    setTimeout(() => {
+      toast.className = 'toast'; // Cleanup
+      toast.textContent = '';
+    }, 500); // Wait for transition to complete
   }, 5000);
 }
 
+// export function showToast(type, message) {
+//   const toast = document.getElementById('toast');
+
+//   console.log('showing toast');
+
+//   if (!toast) {
+//     console.warn('⚠️ Toast element not found in DOM.');
+//     return;
+//   }
+
+//   toast.textContent = message;
+
+//   // Reset class to clear previous toast type
+//   toast.className = 'toast';
+
+//   // Add the appropriate type (success or fail)
+//   toast.classList.add(type);
+//   toast.classList.add('show');
+
+//   // After 5s, remove classes and clear message
+//   setTimeout(() => {
+//     toast.classList.remove('show');
+
+//     // Optional: Also clear the message and type class
+//     setTimeout(() => {
+//       toast.className = 'toast';
+//       toast.textContent = '';
+//     }, 500); // Small delay after hiding
+//   }, 5000);
+// }
+
 // Function to deposit POS Capital - Added to script.js because of scope.
 
-export function openBusinessDayModal() {
+export function openStaffBusinessDayModal() {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
-  const openBusinessDayContainer = document.querySelector('.openBusinessDay');
+  const openStaffBusinessDayContainer = document.querySelector(
+    '.openStaffBusinessDay'
+  );
 
-  if (openBusinessDayContainer)
-    openBusinessDayContainer.classList.add('active');
+  if (openStaffBusinessDayContainer)
+    openStaffBusinessDayContainer.classList.add('active');
   if (main) main.classList.add('blur');
   if (sidebar) sidebar.classList.add('blur');
+}
+
+export function openAdminBusinessDayModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const openAdminBusinessDayContainer = document.querySelector(
+    '.openAdminBusinessDay'
+  );
+
+  if (openAdminBusinessDayContainer)
+    openAdminBusinessDayContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
+const adminBusinessDayContainer = document.querySelector(
+  '.adminBusinessDayContainer'
+);
+
+if (isAdmin && adminBusinessDayContainer) {
+  async function loadShopDropdown() {
+    try {
+      showGlobalLoader();
+      const { enrichedShopData } = await checkAndPromptCreateShop();
+      populateBusinessShopDropdown(enrichedShopData, 'businessDayShopDropdown');
+      populateBusinessShopDropdown(
+        enrichedShopData,
+        'adminDepositposCapitalShopDropdown'
+      );
+      populateBusinessShopDropdown(
+        enrichedShopData,
+        'closeBusinessDayShopDropdown'
+      );
+      hideGlobalLoader();
+    } catch (err) {
+      hideGlobalLoader();
+      console.error('Failed to load dropdown:', err.message);
+    }
+  }
+
+  loadShopDropdown();
+}
+
+async function renderBusinessDayButtons() {
+  const businessInitBtnDiv = document.querySelector('.businessInitBtnDiv');
+
+  if (isStaff) {
+    const businessDay = await getCurrentBusinessDay();
+
+    if (!businessInitBtnDiv) return;
+
+    businessInitBtnDiv.innerHTML = ''; // Clear current buttons
+
+    if (businessDay === false) {
+      const openBusinessDayBtn = document.createElement('button');
+      openBusinessDayBtn.classList.add('openBusinessDayBtn', 'businessInitBtn');
+      openBusinessDayBtn.id = 'openBusinessDayBtn';
+      openBusinessDayBtn.innerText = 'Open Business Day';
+      businessInitBtnDiv.appendChild(openBusinessDayBtn);
+
+      document
+        .querySelector('#openBusinessDayBtn')
+        ?.addEventListener('click', openStaffBusinessDayModal);
+
+      openStaffBusinessDayModal();
+    } else if (businessDay.success === null) {
+      // fallback
+      businessInitBtnDiv.innerHTML = `
+    <p class="text-danger">⚠️ Failed to fetch business day status. Please refresh or try again later.</p>
+  `;
+    } else {
+      businessInitBtnDiv.innerHTML = `
+      <button class="hero-btn-danger closeBusinessDayModal mb-0" id="closeBusinessDayModal">Close Business Day</button>
+      <button class="depositPosCapitalBtn businessInitBtn" id="depositPosCapitalBtn">Deposit POS Capital</button>
+    `;
+
+      setupModalCloseButtons();
+
+      document
+        .querySelector('#depositPosCapitalBtn')
+        ?.addEventListener('click', openDepositPosCapitalModal);
+
+      document
+        .querySelector('#closeBusinessDayModal')
+        ?.addEventListener('click', openCloseBusinessDayModal);
+
+      initAccountOverview();
+    }
+    //   else if (businessDay.data.status === 'closed')
+    //    businessInitBtnDiv.innerHTML = `
+    //   <button class="viewSummaryBtn businessInitBtn" id="viewSummaryBtn">📊 View Business Day Summary</button>
+    // `;
+
+    //   }
+  }
+
+  if (isAdmin) {
+    if (!businessInitBtnDiv) return;
+
+    businessInitBtnDiv.innerHTML = `
+    <button class="businessInitBtn" id="openBusinessDayBtn">Open Business Day</button>
+
+    <button class="businessInitBtn" id="depositPosCapitalBtn">Deposit POS Capital</button>
+
+    <button class=" hero-btn-danger adminCloseBusinessDayModal  " id="adminCloseBusinessDayModal">Close Business Day</button>
+
+  `;
+
+    document
+      .querySelector('#openBusinessDayBtn')
+      ?.addEventListener('click', openAdminBusinessDayModal);
+    document
+      .querySelector('#adminCloseBusinessDayModal')
+      ?.addEventListener('click', openAdminCloseBusinessDayModal);
+    document
+      .querySelector('#depositPosCapitalBtn')
+      ?.addEventListener('click', openAdminDepositPosCapitalModal);
+
+    setupModalCloseButtons();
+
+    initAccountOverview();
+  }
+  //   else if (businessDay.data.status === 'closed')
+  //    businessInitBtnDiv.innerHTML = `
+  //   <button class="viewSummaryBtn businessInitBtn" id="viewSummaryBtn">📊 View Business Day Summary</button>
+  // `;
+
+  //   }
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -105,83 +280,265 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
-  if (isStaff) {
-    const businessDay = await getCurrentBusinessDay();
-
-    if (businessDay === false) {
-      // const businessInitBtnDiv = document.querySelector('.businessInitBtnDiv');
-
-      // const openBusinessDayBtn = document.createElement('button');
-      // openBusinessDayBtn.classList.add('openBusinessDayBtn businessInitBtn');
-      // openBusinessDayBtn.id = 'openBusinessDayBtn';
-      // openBusinessDayBtn.innerText = 'Open Business Day';
-
-      // console.log(openBusinessDayBtn);
-
-      // businessInitBtnDiv.appendChild(openBusinessDayBtn);
-      // // businessInitBtnDiv.innerHTML = openBusinessDayBtn;
-
-      // console.log(businessInitBtnDiv);
-      // No open day: show modal to open day
-      openBusinessDayModal();
-      console.log('a');
-    } else if (businessDay === null) {
-      // Other failure: show fallback
-      console.log('b');
-    } else {
-      // Open day exists
-      console.log('c');
-      initAccountOverview();
-    }
+  if (isStaff || isAdmin) {
+    await renderBusinessDayButtons();
   }
 });
 
-// Function to deposit POS Capital - Added to script.js because of scope.
+// Function to Open Business Day - Added to script.js because of scope.
 
-document.addEventListener('DOMContentLoaded', () => {
-  // Setup for Opening Pos Deposit Capital Modal
+export function bindOpenBusinessDayFormListener() {
+  const form = isAdmin
+    ? document.querySelector('.adminBusinessDayContainer')
+    : document.querySelector('.staffBusinessDayContainer');
 
-  setupModalCloseButtons();
-  document
-    .querySelector('#depositPosCapitalBtn')
-    ?.addEventListener('click', openDepositPosCapitalModal);
-});
-
-export function depositPosCapitalForm() {
-  const form = document.querySelector('.depositPosCapitalModal');
-
-  if (!form || form.dataset.bound === 'true') return;
-
-  form.dataset.bound = 'true';
+  if (!form) return;
 
   if (form) {
     form.addEventListener('submit', async function (e) {
       e.preventDefault();
 
-      const posDepositAmount = document.querySelector('#posCapitalAmount');
+      const businessDayShopDropdown = document.querySelector(
+        '#businessDayShopDropdown'
+      );
+      const openingCashAmount = isAdmin
+        ? document.querySelector('#adminOpenCashAmount')
+        : document.querySelector('#openCashAmount');
+
+      const openingNotes = isAdmin
+        ? document.querySelector('#adminOpeningNotes').value
+        : document.querySelector('#openingNotes').value;
+
+      const openPosCapitalAmount = isAdmin
+        ? document.querySelector('#adminOpenPosCapitalAmount')
+        : document.querySelector('#openPosCapitalAmount');
+
+      const openBusinessDayDetails = {
+        shopId: isAdmin ? businessDayShopDropdown.value : shopId,
+        openingCash: Number(getAmountForSubmission(openingCashAmount)),
+        notes: openingNotes,
+      };
 
       const posCapitalDetails = {
-        shopId: shopId,
+        shopId: isAdmin ? businessDayShopDropdown.value : shopId,
+        amount: Number(getAmountForSubmission(openPosCapitalAmount)),
+      };
+
+      // console.log('Opening Business Day with:', openBusinessDayDetails);
+      // console.log('Depositing POS Capital with:', posCapitalDetails);
+      const submitPosCapital = document.querySelector('.submitPosCapital');
+
+      try {
+        showGlobalLoader();
+        showBtnLoader(submitPosCapital);
+        const openBusinessDayData = await openBusinessDay(
+          openBusinessDayDetails
+        );
+
+        //   if (!openBusinessDayData) {
+        //     showToast('fail', openBusinessDayData.message);
+        //     return;
+        //   }
+
+        //   const shopId = Number(inventoryShopDropdown);
+
+        if (!openBusinessDayData) {
+          showToast('fail', openBusinessDayData.message);
+
+          return;
+        }
+
+        //   console.log('Adding Products with:', addProductDetails);
+
+        try {
+          const posCapitalDepositData = await addPosCapital(posCapitalDetails);
+
+          if (posCapitalDepositData) {
+            showToast('success', `✅ ${posCapitalDepositData.message}`);
+            closeModal();
+            clearFormInputs();
+            await getCurrentBusinessDay(shopId);
+            await renderBusinessDayButtons();
+            initAccountOverview();
+          }
+        } catch (posCapitalDepositDataErr) {
+          showToast(
+            'fail',
+            `❎ ${
+              posCapitalDepositDataErr.message ||
+              'Failed to Add posCapitalDeposit'
+            }`
+          );
+          console.error(
+            'Error During posCapitalDeposit Adding:',
+            posCapitalDepositDataErr.message
+          );
+        }
+        showToast('success', `✅ ${openBusinessDayData.message}`);
+        hideBtnLoader(submitPosCapital);
+        hideGlobalLoader();
+      } catch (err) {
+        hideBtnLoader(submitPosCapital);
+
+        console.error('Error Creating product:', err);
+        showToast('fail', `❎ ${err.message}`);
+      } finally {
+        hideBtnLoader(submitPosCapital);
+        hideGlobalLoader();
+      }
+    });
+  }
+}
+
+export function openBusinessDayForm() {
+  const form = isAdmin
+    ? document.querySelector('.adminBusinessDayContainer')
+    : document.querySelector('.staffBusinessDayContainer');
+
+  if (!form) return;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  bindOpenBusinessDayFormListener(); // Only once
+});
+
+// Function to deposit POS Capital - Added to script.js because of scope.
+
+export function bindDepositPosCapitalFormListener() {
+  const form = isAdmin
+    ? document.querySelector('.adminDepositPosCapitalModal')
+    : document.querySelector('.staffDepositPosCapitalModal');
+
+  if (!form) return;
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const adminDepositposCapitalShopDropdown = document.querySelector(
+        '#adminDepositposCapitalShopDropdown'
+      ).value;
+
+      const posDepositAmount = isAdmin
+        ? document.querySelector('#adminPosCapitalAmount')
+        : document.querySelector('#posCapitalAmount');
+
+      const posCapitalDetails = {
+        shopId: isAdmin ? adminDepositposCapitalShopDropdown : shopId,
         amount: Number(getAmountForSubmission(posDepositAmount)),
       };
 
-      console.log('Sending POS Capital with:', posCapitalDetails);
+      // console.log('Sending POS Capital with:', posCapitalDetails);
+      const submitPosCapital = document.querySelector('.submitPosCapital');
 
       try {
-        const data = addPosCapital(posCapitalDetails);
-        if (data) {
+        showBtnLoader(submitPosCapital);
+        showGlobalLoader();
+        const addPosCapitalData = await addPosCapital(posCapitalDetails);
+
+        if (addPosCapitalData) {
+          //  initAccountOverview();
+          showToast('success', `✅ ${addPosCapitalData.message}`);
           closeModal();
-          initAccountOverview();
         }
 
         // closeModal(); // close modal after success
       } catch (err) {
         console.error('Error adding POS Capital:', err.message);
         showToast('fail', `❎ ${err.message}`);
+      } finally {
+        hideBtnLoader(submitPosCapital);
+        hideGlobalLoader();
       }
     });
   }
 }
+
+export function depositPosCapitalForm() {
+  const form = isAdmin
+    ? document.querySelector('.adminDepositPosCapitalModal')
+    : document.querySelector('.staffDepositPosCapitalModal');
+
+  if (!form) return;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  bindDepositPosCapitalFormListener(); // Only once
+});
+
+// Close Business Day
+
+export function bindCloseBusinessDayFormListener() {
+  const form = isAdmin
+    ? document.querySelector('.adminCloseBusinessDayContainer')
+    : document.querySelector('.staffCloseBusinessDayContainer');
+
+  if (!form) return;
+
+  const cancelCloseBusinessDayBtn = isAdmin
+    ? document.querySelector('.adminCancel-close')
+    : document.querySelector('.cancel-close');
+  if (cancelCloseBusinessDayBtn)
+    cancelCloseBusinessDayBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeModal();
+    });
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const closeBusinessDayShopDropdown = document.getElementById(
+        'closeBusinessDayShopDropdown'
+      ).value;
+
+      const closeBusinessDayDetails = {
+        shopId: isAdmin ? closeBusinessDayShopDropdown : shopId,
+      };
+
+      // console.log('Closing Business Day with:', closeBusinessDayDetails);
+      const closeBusinessDayBtn = document.querySelector(
+        '.closeBusinessDayBtn'
+      );
+
+      // console.log(closeBusinessDayBtn);
+
+      try {
+        showBtnLoader(closeBusinessDayBtn);
+        showGlobalLoader();
+        const closeBusinessDayData = await closeBusinessDay(
+          closeBusinessDayDetails
+        );
+
+        if (closeBusinessDayData) {
+          //  initAccountOverview();
+          closeModal();
+          hideBtnLoader(closeBusinessDayBtn);
+          hideGlobalLoader();
+        }
+
+        closeModal(); // close modal after success
+      } catch (err) {
+        hideBtnLoader(closeBusinessDayBtn);
+        hideGlobalLoader();
+        console.error('Error adding POS Capital:', err.message);
+        showToast('fail', `❎ ${err.message}`);
+      }
+    });
+  }
+}
+
+export function closeBusinessDayForm() {
+  const form = isAdmin
+    ? document.querySelector('.adminCloseBusinessDayContainer')
+    : document.querySelector('.staffCloseBusinessDayContainer');
+
+  if (!form) return;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  bindCloseBusinessDayFormListener(); // Only once
+});
 
 // JS For Modal
 
@@ -208,7 +565,15 @@ export function closeModal() {
   const addCategory = document.querySelector('.addCategory');
   const addProduct = document.querySelector('.addProduct');
   const updateProduct = document.querySelector('.updateProduct');
-  const openBusinessDay = document.querySelector('.openBusinessDay');
+  const openAdminBusinessDay = document.querySelector('.openAdminBusinessDay');
+  const openStaffBusinessDay = document.querySelector('.openStaffBusinessDay');
+  const closeBusinessDay = document.querySelector('.closeBusinessDay');
+  const adminCloseBusinessDay = document.querySelector(
+    '.adminCloseBusinessDay'
+  );
+  const adminDepositPosCapital = document.querySelector(
+    '.adminDepositPosCapital'
+  );
 
   if (depositPosCapitalContainer) {
     depositPosCapitalContainer.classList.remove('active');
@@ -261,9 +626,29 @@ export function closeModal() {
     updateProduct.classList.remove('active');
     //  delete updateProduct.dataset.staffId;
   }
-  if (openBusinessDay) {
-    openBusinessDay.classList.remove('active');
-    //  delete openBusinessDay.dataset.staffId;
+
+  if (openStaffBusinessDay) {
+    openStaffBusinessDay.classList.remove('active');
+    //  delete openStaffBusinessDay.dataset.staffId;
+  }
+  if (openAdminBusinessDay) {
+    openAdminBusinessDay.classList.remove('active');
+    //  delete openAdminBusinessDay.dataset.staffId;
+  }
+
+  if (closeBusinessDay) {
+    closeBusinessDay.classList.remove('active');
+    //  delete closeBusinessDay.dataset.staffId;
+  }
+
+  if (adminCloseBusinessDay) {
+    adminCloseBusinessDay.classList.remove('active');
+    //  delete adminCloseBusinessDay.dataset.staffId;
+  }
+
+  if (adminDepositPosCapital) {
+    adminDepositPosCapital.classList.remove('active');
+    //  delete adminDepositPosCapital.dataset.staffId;
   }
 
   clearFormInputs();
@@ -505,9 +890,6 @@ if (!userData) {
     //  }
   }
 }
-
-const isAdmin = parsedUserData?.accountType === 'ADMIN';
-const isStaff = parsedUserData?.accountType === 'STAFF';
 
 if (isAdmin) {
   document.addEventListener('DOMContentLoaded', () => {

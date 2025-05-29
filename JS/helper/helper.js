@@ -298,6 +298,17 @@ document.addEventListener('DOMContentLoaded', function () {
   const addMachineFeesMaxAmountInput = document.getElementById(
     'addMachineFeesMaxAmount'
   );
+  const openPosCapitalAmountInput = document.getElementById(
+    'openPosCapitalAmount'
+  );
+  const openCashAmountInput = document.getElementById('openCashAmount');
+  const adminOpenPosCapitalAmount = document.getElementById(
+    'adminOpenPosCapitalAmount'
+  );
+  const adminOpenCashAmount = document.getElementById('adminOpenCashAmount');
+  const adminPosCapitalAmount = document.getElementById(
+    'adminPosCapitalAmount'
+  );
 
   if (posCapitalAmountInput)
     posCapitalAmountInput.addEventListener('input', function () {
@@ -342,6 +353,31 @@ document.addEventListener('DOMContentLoaded', function () {
   if (addMachineFeesMaxAmountInput)
     addMachineFeesMaxAmountInput.addEventListener('input', function () {
       formatAmountWithCommasOnInput(addMachineFeesMaxAmountInput);
+    });
+
+  if (openCashAmountInput)
+    openCashAmountInput.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(openCashAmountInput);
+    });
+
+  if (openPosCapitalAmountInput)
+    openPosCapitalAmountInput.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(openPosCapitalAmountInput);
+    });
+
+  if (adminOpenCashAmount)
+    adminOpenCashAmount.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(adminOpenCashAmount);
+    });
+
+  if (adminOpenPosCapitalAmount)
+    adminOpenPosCapitalAmount.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(adminOpenPosCapitalAmount);
+    });
+
+  if (adminPosCapitalAmount)
+    adminPosCapitalAmount.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(adminPosCapitalAmount);
     });
 });
 

@@ -185,6 +185,10 @@ body {
    transform: translateX(-50%);
    font-size: 1.6rem;
    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+   opacity: 0;
+   transition: opacity 0.3s ease, top 0.3s ease;
+   top: 0;
 }
 
 // Success toast
@@ -209,32 +213,36 @@ body {
 
 // Toast visibility
 .toast.show {
+   // visibility: visible;
+   // animation: fadein 0.5s, fadeout 0.5s 2.5s;
+
    visibility: visible;
-   animation: fadein 0.5s, fadeout 0.5s 2.5s;
+   opacity: 1;
+   top: 3rem;
 }
 
-// Toast fade in
-@keyframes fadein {
-   from {
-      top: 0;
-      opacity: 0;
-   }
+// // Toast fade in
+// @keyframes fadein {
+//    from {
+//       top: 0;
+//       opacity: 0;
+//    }
 
-   to {
-      top: 30px;
-      opacity: 1;
-   }
-}
+//    to {
+//       top: 30px;
+//       opacity: 1;
+//    }
+// }
 
-// Toast fade out
-@keyframes fadeout {
-   from {
-      top: 30px;
-      opacity: 1;
-   }
+// // Toast fade out
+// @keyframes fadeout {
+//    from {
+//       top: 30px;
+//       opacity: 1;
+//    }
 
-   to {
-      top: 0;
-      opacity: 0;
-   }
-}
+//    to {
+//       top: 0;
+//       opacity: 0;
+//    }
+// }

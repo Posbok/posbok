@@ -6,7 +6,11 @@ import {
   populateMachineFeesTable,
   populatePosChargesTable,
 } from '../../pos.js';
-import { depositPosCapitalForm, showToast } from '../../script.js';
+import {
+  closeBusinessDayForm,
+  depositPosCapitalForm,
+  showToast,
+} from '../../script.js';
 import { safeFetch } from '../utility/safeFetch.js';
 // import { safeFetch } from '../utility/safeFetch.js';
 
@@ -16,6 +20,9 @@ const userData = config.userData;
 const dummyShopId = config.dummyShopId; // Dummy user data for testing
 
 const parsedUserData = userData ? JSON.parse(userData) : null;
+
+const isAdmin = parsedUserData?.accountType === 'ADMIN';
+const isStaff = parsedUserData?.accountType === 'STAFF';
 
 const shopId = parsedUserData?.shopId;
 
@@ -31,39 +38,94 @@ function getCurrentDateISO() {
   return localMidnight.toISOString();
 }
 
-// export async function getCurrentBusinessDay() {
-//   try {
-//     console.log('Sending POST request...');
+// Deposit POS Capital Modal FOrm
+export function openDepositPosCapitalModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const depositPosCapitalContainer =
+    document.querySelector('.depositPosCapital');
 
-//     const currentBusinessDayData = await safeFetch(
-//       `${baseUrl}/api/pos/business-day?shopId=${shopId}`,
-//       {
-//         method: 'GET',
-//         headers: {
-//           Authorization: `Bearer ${userToken}`,
-//         },
-//       }
-//     );
+  if (depositPosCapitalContainer)
+    depositPosCapitalContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
 
-//     console.log('Response received...');
+  depositPosCapitalForm();
+}
 
-//     console.log(currentBusinessDayData);
-//     return currentBusinessDayData;
-//   } catch (err) {
-//     // Handle the case where no business day is open (e.g., 404)
-//     if (
-//       err.message.includes('No business day found') ||
-//       err.message.includes('404')
-//     ) {
-//       console.warn('No open business day found.');
-//       return false; // Or return null or custom value if preferred
-//     }
+export function openAdminDepositPosCapitalModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const adminDepositPosCapitalContainer = document.querySelector(
+    '.adminDepositPosCapital'
+  );
 
-//     // For other errors, log and return null
-//     console.error('Failed to fetch current business day:', err.message);
-//     return null;
-//   }
-// }
+  if (adminDepositPosCapitalContainer)
+    adminDepositPosCapitalContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  depositPosCapitalForm();
+}
+
+// Close Business Modal FOrm
+export function openCloseBusinessDayModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const closeBusinessDayContainer = document.querySelector('.closeBusinessDay');
+
+  if (closeBusinessDayContainer)
+    closeBusinessDayContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  closeBusinessDayForm();
+}
+
+export function openAdminCloseBusinessDayModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const adminCloseBusinessDayContainer = document.querySelector(
+    '.adminCloseBusinessDay'
+  );
+
+  if (adminCloseBusinessDayContainer)
+    adminCloseBusinessDayContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  closeBusinessDayForm();
+}
+
+export function openaddPosChargeModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const addPosChargeContainer = document.querySelector('.addPosCharge');
+
+  if (addPosChargeContainer) addPosChargeContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  //   console.log('object');
+
+  addPosChargeForm();
+}
+
+export function openAddMachineFeeModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const addMachineFeesContainer = document.querySelector('.addMachineFees');
+
+  if (addMachineFeesContainer) addMachineFeesContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  //   console.log('object 1');
+
+  addMachineFeeForm();
+}
+
+// API CALLS
 
 export async function getCurrentBusinessDay() {
   try {
@@ -101,10 +163,79 @@ export async function getCurrentBusinessDay() {
   }
 }
 
-export async function addPosCapital(posCapitalDetails) {
-  console.log(posCapitalDetails);
+export async function openBusinessDay(openBusinessDayDetails) {
+  console.log(openBusinessDayDetails);
   try {
+    showGlobalLoader();
     console.log('Sending POST request...');
+
+    const openBusinessDayData = await safeFetch(
+      `${baseUrl}/api/pos/business-day/`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(openBusinessDayDetails),
+      }
+    );
+
+    console.log('Response received...');
+
+    if (openBusinessDayData) {
+      console.log('Business Opened successfully:', openBusinessDayData);
+      // showToast('success', `✅ ${openBusinessDayData.message}`);
+      hideGlobalLoader();
+    }
+
+    return openBusinessDayData;
+  } catch (error) {
+    //  hideGlobalLoader();
+    console.error('Error Opening Business:', error);
+    throw error;
+  }
+}
+
+export async function closeBusinessDay(closeBusinessDayDetails) {
+  console.log(closeBusinessDayDetails);
+  try {
+    showGlobalLoader();
+    //  console.log('Sending POST request...');
+
+    const closeBusinessDayData = await safeFetch(
+      `${baseUrl}/api/pos/business-day/close`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(closeBusinessDayDetails),
+      }
+    );
+
+    //  console.log('Response received...');
+
+    if (closeBusinessDayData) {
+      console.log('Business Closed successfully:', closeBusinessDayData);
+      // showToast('success', `✅ ${closeBusinessDayData.message}`);
+      hideGlobalLoader();
+    }
+
+    return closeBusinessDayData;
+  } catch (error) {
+    //  hideGlobalLoader();
+    console.error('Error Closing Business:', error);
+    throw error;
+  }
+}
+
+export async function addPosCapital(posCapitalDetails) {
+  //   console.log(posCapitalDetails);
+  try {
+    showGlobalLoader();
+    //  console.log('Sending POST request...');
 
     const addPosCapitalData = await safeFetch(`${baseUrl}/api/pos/capital`, {
       method: 'POST',
@@ -115,15 +246,17 @@ export async function addPosCapital(posCapitalDetails) {
       body: JSON.stringify(posCapitalDetails),
     });
 
-    console.log('Response received...');
+    //  console.log('Response received...');
 
     if (addPosCapitalData) {
-      console.log('POS Capital added successfully:', addPosCapitalData);
-      showToast('success', `✅ ${addPosCapitalData.message}`);
+      // console.log('POS Capital added successfully:', addPosCapitalData);
+      // showToast('success', `✅ ${addPosCapitalData.message}`);
+      // hideGlobalLoader();
     }
 
     return addPosCapitalData;
   } catch (error) {
+    //  hideGlobalLoader();
     console.error('Error Add POS Capital:', error);
     throw error;
   }
@@ -157,23 +290,9 @@ export async function getPosCapital(shopId) {
   }
 }
 
-export function openDepositPosCapitalModal() {
-  const main = document.querySelector('.main');
-  const sidebar = document.querySelector('.sidebar');
-  const depositPosCapitalContainer =
-    document.querySelector('.depositPosCapital');
-
-  if (depositPosCapitalContainer)
-    depositPosCapitalContainer.classList.add('active');
-  if (main) main.classList.add('blur');
-  if (sidebar) sidebar.classList.add('blur');
-
-  depositPosCapitalForm();
-}
-
 export async function createPosTransaction(transactionDetail) {
   try {
-    console.log('Sending POST request...');
+    //  console.log('Sending POST request...');
     const posTransactionData = await safeFetch(
       `${baseUrl}/api/pos/transactions`,
       {
@@ -186,7 +305,7 @@ export async function createPosTransaction(transactionDetail) {
       }
     );
 
-    console.log('Response received...');
+    //  console.log('Response received...');
 
     if (posTransactionData) {
       console.log('POS transaction added successfully:', posTransactionData);
@@ -241,34 +360,6 @@ export async function getPosTransactions({
     console.error('Error receiving POS Transaction:', error);
     throw error;
   }
-}
-
-export function openaddPosChargeModal() {
-  const main = document.querySelector('.main');
-  const sidebar = document.querySelector('.sidebar');
-  const addPosChargeContainer = document.querySelector('.addPosCharge');
-
-  if (addPosChargeContainer) addPosChargeContainer.classList.add('active');
-  if (main) main.classList.add('blur');
-  if (sidebar) sidebar.classList.add('blur');
-
-  //   console.log('object');
-
-  addPosChargeForm();
-}
-
-export function openAddMachineFeeModal() {
-  const main = document.querySelector('.main');
-  const sidebar = document.querySelector('.sidebar');
-  const addMachineFeesContainer = document.querySelector('.addMachineFees');
-
-  if (addMachineFeesContainer) addMachineFeesContainer.classList.add('active');
-  if (main) main.classList.add('blur');
-  if (sidebar) sidebar.classList.add('blur');
-
-  //   console.log('object 1');
-
-  addMachineFeeForm();
 }
 
 export async function configurePosCharges(posChargesDetails) {

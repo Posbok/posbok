@@ -45,8 +45,31 @@ const adminPosContainer = document.querySelector('.adminPosContainer');
 
 const staffPosContainer = document.querySelector('.staffPosContainer');
 
-if ((isAdmin && adminPosContainer) || staffPosContainer) {
+// if ((isAdmin && adminPosContainer) || staffPosContainer) {
+//   if (adminPosContainer) adminPosContainer.style.display = 'block';
+//   if (staffPosContainer) staffPosContainer.style.display = 'none';
+
+//   async function loadShopDropdown() {
+//     try {
+//       showGlobalLoader();
+//       const { enrichedShopData } = await checkAndPromptCreateShop();
+//       populateBusinessShopDropdown(enrichedShopData, 'posShopDropdown');
+//       hideGlobalLoader();
+//     } catch (err) {
+//       hideGlobalLoader();
+//       console.error('Failed to load dropdown:', err.message);
+//     }
+//   }
+
+//   loadShopDropdown();
+// } else {
+//   if (adminPosContainer) adminPosContainer.style.display = 'none';
+//   if (staffPosContainer) staffPosContainer.style.display = 'block';
+// }
+
+if (isAdmin && adminPosContainer) {
   if (adminPosContainer) adminPosContainer.style.display = 'block';
+  if (staffPosContainer) staffPosContainer.innerHTML = '';
   if (staffPosContainer) staffPosContainer.style.display = 'none';
 
   async function loadShopDropdown() {
@@ -63,6 +86,7 @@ if ((isAdmin && adminPosContainer) || staffPosContainer) {
 
   loadShopDropdown();
 } else {
+  if (adminPosContainer) adminPosContainer.innerHTML = '';
   if (adminPosContainer) adminPosContainer.style.display = 'none';
   if (staffPosContainer) staffPosContainer.style.display = 'block';
 }
@@ -84,7 +108,7 @@ export async function handlePosFormSubmit() {
     posForm.addEventListener('submit', async function (e) {
       e.preventDefault();
 
-      const posShopDropdown = document.getElementById('posShopDropdown').value;
+      const posShopDropdown = document.getElementById('posShopDropdown')?.value;
       const amount = document.getElementById('posTransactionAmount').value;
       const customerName = document.getElementById('posCustomerName').value;
       const customerPhone = document.getElementById('posCustomerPhone').value;

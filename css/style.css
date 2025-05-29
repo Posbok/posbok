@@ -119,7 +119,10 @@ body {
   top: 3rem;
   transform: translateX(-50%);
   font-size: 1.6rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transition: opacity 0.3s ease, top 0.3s ease;
+  top: 0; }
 
 .toast.success {
   background-color: #10AB2B; }
@@ -135,23 +138,8 @@ body {
 
 .toast.show {
   visibility: visible;
-  animation: fadein 0.5s, fadeout 0.5s 2.5s; }
-
-@keyframes fadein {
-  from {
-    top: 0;
-    opacity: 0; }
-  to {
-    top: 30px;
-    opacity: 1; } }
-
-@keyframes fadeout {
-  from {
-    top: 30px;
-    opacity: 1; }
-  to {
-    top: 0;
-    opacity: 0; } }
+  opacity: 1;
+  top: 3rem; }
 
 body.home {
   background-image: linear-gradient(to right top, rgba(111, 193, 204, 0.9), rgba(21, 70, 76, 0.83)), url(/img/home.jpeg);
@@ -830,16 +818,21 @@ button:disabled:hover {
 .load-more-button {
   display: none; }
 
-.businessInitBtn {
-  background-color: #fff;
-  color: #0F7A89;
-  font-size: 1.6rem; }
-  .businessInitBtn:hover {
-    transform: scale(1.07);
-    background-color: #eef1f6; }
-  .businessInitBtn:active {
-    transform: scale(1.04);
-    background-color: #fff; }
+.businessInitBtnDiv {
+  display: flex;
+  align-items: center; }
+  .businessInitBtnDiv .hero-btn-danger {
+    margin-bottom: 0; }
+  .businessInitBtnDiv .businessInitBtn {
+    background-color: #fff;
+    color: #0F7A89;
+    margin-bottom: 0; }
+    .businessInitBtnDiv .businessInitBtn:hover {
+      transform: scale(1.07);
+      background-color: #eef1f6; }
+    .businessInitBtnDiv .businessInitBtn:active {
+      transform: scale(1.04);
+      background-color: #fff; }
 
 .hero-btn-light {
   background-color: #0F7A89;
@@ -880,6 +873,9 @@ button:disabled:hover {
 
 .mt-1 {
   margin-top: 1rem; }
+
+.mb-0 {
+  margin-bottom: 0rem; }
 
 .mb-1 {
   margin-bottom: 1rem; }
@@ -1294,12 +1290,12 @@ body.authentication {
   .modal .confirmation-btn_container {
     display: flex;
     gap: 1rem;
+    align-items: center;
     justify-content: end;
     margin-top: 5rem; }
     .modal .confirmation-btn_container .hero-btn-dark {
-      font-size: 1.2rem;
-      padding-left: 1rem; }
-      .modal .confirmation-btn_container .hero-btn-dark.cancel-delete {
+      font-size: 1.2rem; }
+      .modal .confirmation-btn_container .hero-btn-dark.cancel-delete, .modal .confirmation-btn_container .hero-btn-dark.adminCancel-close, .modal .confirmation-btn_container .hero-btn-dark.cancel-close {
         color: inherit;
         background: linear-gradient(to bottom, #fff, #eef1f6);
         margin-bottom: 0; }
