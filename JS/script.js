@@ -1,6 +1,6 @@
 import config from '../config.js';
 import flatpickr from 'flatpickr';
-import './apiServices/product';
+import './apiServices/sales/salesResources.js';
 import { logoutUser } from './apiServices/login';
 import {
   checkAndPromptCreateShop,

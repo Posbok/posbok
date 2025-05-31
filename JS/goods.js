@@ -733,6 +733,7 @@ if (isAdmin && adminAccordionContainer && container) {
       const shopInventorySection = document.getElementById(
         `shop-report-${shopId}`
       );
+
       if (
         shopInventorySection &&
         shopInventorySection.dataset.loaded !== 'true'

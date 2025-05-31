@@ -2,14 +2,21 @@
    padding-left: 3rem;
 }
 
-.naira-input-container {
+.search-input-container input {
+   padding-left: 4rem;
+}
+
+
+.naira-input-container,
+.search-input-container {
    position: relative;
    display: flex;
    align-items: center;
    width: 100%;
 }
 
-.naira {
+.naira,
+.searchIcon {
    position: absolute;
    font-family: inherit;
    font-weight: 500;
@@ -404,7 +411,8 @@ button:disabled:hover {
 .hero-btn-outline,
 .hero-btn-dark_square,
 .hero-btn-danger,
-.businessInitBtn {
+.businessInitBtn,
+.sellProductCategoryBtn {
    position: relative;
    background-color: $color-grey-dark-1;
    color: $color-grey-light-1;
@@ -471,6 +479,42 @@ button:disabled:hover {
 
 .load-more-button {
    display: none;
+}
+
+.sellProductCategory-section {
+
+   .sellProductCategoryBtn {
+      margin: 0;
+
+      background-color: $color-grey-light-1;
+      color: $color-grey-dark-1;
+
+      &:hover {
+         transform: scale(1.07);
+         background-color: $color-grey-light-2;
+      }
+
+      &:active {
+         transform: scale(1.04);
+         background-color: $color-grey-dark-1;
+         color: $color-grey-light-1;
+      }
+
+      &.active {
+         background-color: $color-grey-dark-1;
+         color: $color-grey-light-1;
+
+         &:hover {
+            transform: scale(1.03);
+            box-shadow: inset 0 0 0 2px $color-primary;
+         }
+
+         &:active {
+            transform: scale(1);
+            background-color: $color-grey-dark-1;
+         }
+      }
+   }
 }
 
 .businessInitBtnDiv {

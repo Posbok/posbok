@@ -116,6 +116,10 @@
 
          <div class="main-heading_left">
             <button class="hero-btn-dark logoutButton">LOGOUT</button>
+            <div class="cartIconDiv mr-2">
+               <i class="fa-solid fa-cart-shopping main-heading-cart "></i>
+               <span class="cart-counter">XX</span>
+            </div>
             <i class="fa-solid fa-circle-user main-heading-profile--image"></i>
          </div>
       </header>
@@ -127,15 +131,42 @@
                <h1 class="heading-text">Sell Item</h1>
             </div>
 
-            <div class="sellProduct-method-form_input">
-               <label for="productInput b">Search Item To Sell:</label>
+            <div class="sellProductSearch-section mb-2">
 
-               <div class="input-container">
-                  <input type="text" id="productInput" placeholder="Type to search" required>
+               <div class="sellProduct-method-form_input ">
+                  <div class="search-input-container">
+                     <input type="search" id="searchSellProdutItem" class="searchSellProdutItem"
+                        placeholder="Search Product Name or Description ">
+                     <span class="searchIcon"><i class="fa-solid fa-magnifying-glass mr-2"></i></span>
+                  </div>
+               </div>
+            </div>
+
+            <div class=" sellProductCategory-section">
+               <!-- <button class="sellProductCategoryBtn active" type="button">
+                  All
+               </button> -->
+
+            </div>
+
+            <div class="sellProduct-method-form_input">
+
+               <div class="input-container sellProductName">
+                  <input type="text" id="productInput" disabled required>
                   <i class="fa fa-times clear-icon" id="clearIcon" aria-hidden="true"></i>
                </div>
 
                <ul class="autocomplete-list" id="autocompleteList"></ul>
+            </div>
+
+            <div class="sellProduct-form_input">
+               <label for="productBoughtPrice ">Amount Bought</label>
+
+               <div class="naira-input-container">
+                  <input id="productBoughtPrice" type="text" placeholder="Select An Item Above"
+                     name="productBoughtPrice" disabled>
+                  <span class="naira">&#x20A6;</span>
+               </div>
             </div>
 
             <div class="sellProduct-form_input">

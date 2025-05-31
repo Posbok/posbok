@@ -90,6 +90,29 @@
             margin-bottom: 0;
          }
 
+         .cartIconDiv {
+            position: relative;
+            display: flex;
+
+            .main-heading-cart {
+               font-size: 3rem;
+               border-radius: 100px;
+               // border: 0px solid $color-primary;
+
+
+            }
+
+            .cart-counter {
+               position: absolute;
+               top: -1rem;
+               right: -1.6rem;
+               font-size: 1.2rem;
+               font-weight: 600;
+               color: $color-secondary-dark;
+               border-radius: 100px;
+            }
+         }
+
          .main-heading-profile--image {
             font-size: 4rem;
             border-radius: 100px;
@@ -99,6 +122,7 @@
                border: 2px solid $color-primary;
             }
          }
+
 
       }
    }

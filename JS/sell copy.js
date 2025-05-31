@@ -3,216 +3,147 @@ import {
   getProductInventory,
 } from './apiServices/inventory/inventoryResources';
 import { getProducts } from './apiServices/sales/salesResources';
-import {
-  formatAmountWithCommas,
-  hideGlobalLoader,
-  showGlobalLoader,
-} from './helper/helper';
+import { formatAmountWithCommas } from './helper/helper';
 
+const phoneAccessories = [
+  { name: 'Phone Case', price: '₦1000' },
+  { name: 'Screen Protector', price: '₦1500' },
+  { name: 'Charging Cable', price: '₦800' },
+  { name: 'Power Bank', price: '₦2000' },
+  { name: 'Bluetooth Earphones', price: '₦3000' },
+  { name: 'Wireless Charger', price: '₦1500' },
+  { name: 'Car Phone Holder', price: '₦1200' },
+  { name: 'Selfie Stick', price: '₦700' },
+  { name: 'Headphones', price: '₦2500' },
+  { name: 'Phone Stand', price: '₦600' },
+  { name: 'USB Adapter', price: '₦900' },
+  { name: 'Phone Grip', price: '₦300' },
+  { name: 'Earbuds', price: '₦1800' },
+  { name: 'Mobile Lens Kit', price: '₦2200' },
+  { name: 'Smartwatch Band', price: '₦1500' },
+  { name: 'AirPods', price: '₦1500' },
+  { name: 'Bluetooth Earphones', price: '₦800' },
+  { name: 'Charging Cable', price: '₦300' },
+  { name: 'Durable Phone Case', price: '₦1000' },
+  { name: 'Earbuds', price: '₦1800' },
+  { name: 'Fingerprint Lock', price: '₦2500' },
+  { name: 'Gaming Controller', price: '₦3500' },
+  { name: 'Headphones', price: '₦2500' },
+  { name: 'iPhone Case', price: '₦1000' },
+  { name: 'JBL Speakers', price: '₦5000' },
+  { name: 'Keyboard Cover', price: '₦800' },
+  { name: 'LED Phone Case', price: '₦2000' },
+  { name: 'Mobile Lens Kit', price: '₦2200' },
+  { name: 'Noise Cancelling Earphones', price: '₦3500' },
+  { name: 'OnePlus Charger', price: '₦1200' },
+  { name: 'PopSocket', price: '₦500' },
+  { name: 'Quick Charge Adapter', price: '₦1500' },
+  { name: 'Ring Holder Stand', price: '₦600' },
+  { name: 'Selfie Stick', price: '₦700' },
+  { name: 'Smartwatch Band', price: '₦1500' },
+  { name: 'Screen Protector', price: '₦1500' },
+  { name: 'USB Adapter', price: '₦900' },
+  { name: 'Wireless Charger', price: '₦1500' },
+  { name: 'Xiaomi Power Bank', price: '₦2500' },
+  { name: 'Zoom Lens', price: '₦3000' },
+  { name: 'Zipper Earphones', price: '₦1200' },
+  { name: 'Zigzag Phone Stand', price: '₦800' },
+  { name: '360 Degree Phone Holder', price: '₦1200' },
+  { name: 'Anti-Blue Light Glasses', price: '₦800' },
+  { name: 'Foldable Bluetooth Keyboard', price: '₦2500' },
+  { name: 'Game Controller Grip', price: '₦600' },
+  { name: 'Holographic Phone Case', price: '₦1800' },
+  { name: 'In-Ear Gaming Earphones', price: '₦2200' },
+  { name: 'Jogging Arm Band', price: '₦500' },
+  { name: 'Kevlar Charging Cable', price: '₦1200' },
+  { name: 'Laptop Stand for Phones', price: '₦1500' },
+  { name: 'Magnetic Car Mount', price: '₦700' },
+  { name: 'NFC Tags for Phones', price: '₦400' },
+  { name: 'Outdoor Waterproof Speaker', price: '₦3000' },
+  { name: 'Portable UV Phone Sanitizer', price: '₦3500' },
+  { name: 'Quad Lock Bike Mount', price: '₦2000' },
+  { name: 'Retractable Charging Cable', price: '₦1000' },
+  { name: 'Solar Power Bank', price: '₦4500' },
+  { name: 'Telescopic Camera Lens', price: '₦2800' },
+  { name: 'Universal Phone Holder Clip', price: '₦600' },
+  { name: 'Virtual Reality Headset', price: '₦3500' },
+  { name: 'Waterproof Phone Pouch', price: '₦800' },
+];
+
+let currentPage = 1;
+const pageSize = 25;
 let allProducts = [];
-let allCategories = [];
-let activeCategoryId = null; // null means "All"
 
-const searchSellProdutItem = document.getElementById('searchSellProdutItem');
-const sellProductCategorySection = document.querySelector(
-  '.sellProductCategory-section'
-);
-
-const sellProductName = document.querySelector('.sellProductName');
 const productInput = document.getElementById('productInput');
 const autocompleteList = document.getElementById('autocompleteList');
-const productBoughtPrice = document.getElementById('productBoughtPrice');
-const itemSellingprice = document.getElementById('itemSellingPrice');
+const priceInput = document.getElementById('itemSellingPrice');
 
-// Initial display of all products & Categories
+productInput.addEventListener('input', () => {
+  if (productInput.value.length > 0) {
+    clearIcon.classList.add('show');
+  } else {
+    clearIcon.classList.remove('show');
+  }
+});
+
+// Clear the input field when the "X" icon is clicked
+clearIcon.addEventListener('click', () => {
+  productInput.value = '';
+  clearIcon.classList.remove('show');
+  productInput.focus();
+});
+
+// Initial display of all products
 displayAllProducts();
-displayAllCategories();
 
 async function fetchAllProducts() {
   let products = [];
 
   try {
-    const productInventoryData = await getProductInventory(88); // Fetch products
+    const productInventoryData = await getProductInventory(91); // Fetch products for current page
+    const productCategoryData = await getProductCategories(91); // Fetch products for current page
 
-    if (productInventoryData) {
-      // console.log(`Fetching product inventory:`, productInventoryData.data);
-      products = products.concat(productInventoryData.data); // Add data to all products array
+    console.log(`Fetching product of ${productInventoryData}`);
+
+    if (productInventoryData && productInventoryData.data) {
+      products = products.concat(productInventoryData.data); // Add current page data to all products array
     }
 
-    //  console.log('Products', products);
+    // Check if there are more pages
+    morePages = page < productInventoryData;
+    page++; // Increment page for the next request
+    console.log(products);
   } catch (error) {
     console.error('Error fetching products:', error);
-    throw error;
+    morePages = false; // Exit loop if there's an error
   }
 
-  //   console.log(products);
+  console.log(products);
   return products;
-}
-
-async function fetchAllCategories() {
-  let categories = [];
-
-  try {
-    const productCategoryData = await getProductCategories(88); // Fetch Categories
-
-    if (productCategoryData) {
-      // console.log(`Fetching product categories:`, productCategoryData.data);
-      categories = categories.concat(productCategoryData.data); // Add data to all Categories array
-    }
-
-    //  console.log('Categories', categories);
-  } catch (error) {
-    console.error('Error fetching categories:', error);
-    throw error;
-  }
-
-  //   console.log(categories);
-  return categories;
 }
 
 async function displayAllProducts() {
   try {
-    showGlobalLoader();
     allProducts = await fetchAllProducts(); // Fetch and store all products
 
-    console.log(`Total products fetched:`, allProducts);
+    console.log(`Total products fetched: ${allProducts.length}`);
 
     updateAutocompleteList(allProducts); // Populate the autocomplete dropdown with all products
 
     // Autocomplete filter on input
-    searchSellProdutItem.addEventListener('input', function () {
-      const inputValue = searchSellProdutItem.value.toLowerCase();
-
-      if (inputValue.value === '') {
-        sellProductName.style.display = 'none';
-        autocompleteList.style.display = 'none';
-        return;
-      } else if (inputValue.length > 0) {
-        sellProductName.style.display = 'block';
-        autocompleteList.style.display = 'block';
-
-        let filteredProducts = allProducts;
-
-        // Filter by selected category (if any)
-        if (activeCategoryId !== null) {
-          filteredProducts = filteredProducts.filter(
-            (product) => product.Product.ProductCategory.id === activeCategoryId
-          );
-        }
-
-        // Further filter by input value
-        filteredProducts = filteredProducts.filter(
-          (product) =>
-            product.Product.name.toLowerCase().includes(inputValue) ||
-            product.Product.description.toLowerCase().includes(inputValue)
-        );
-
-        updateAutocompleteList(filteredProducts);
-
-        return;
-      } else {
-        sellProductName.style.display = 'none';
-        autocompleteList.style.display = 'none';
-        return;
-      }
-    });
-
-    //  searchSellProdutItem.addEventListener('click', function () {
-    //    autocompleteList.style.display = 'block';
-    //  });
-  } catch (error) {
-    console.error('Error displaying products:', error);
-  } finally {
-    hideGlobalLoader();
-  }
-}
-
-async function displayAllCategories() {
-  try {
-    showGlobalLoader();
-    allCategories = await fetchAllCategories(); // Fetch and store all Categories
-
-    console.log(`Total Categories fetched:`, allCategories);
-
-    const allBtn = document.createElement('button');
-    allBtn.classList.add('sellProductCategoryBtn');
-    allBtn.type = 'button';
-    allBtn.textContent = 'All';
-    allBtn.dataset.categoryId = 'all';
-
-    allBtn.addEventListener('click', function () {
-      document.querySelectorAll('.sellProductCategoryBtn').forEach((btn) => {
-        btn.classList.remove('active');
-      });
-
-      allBtn.classList.add('active');
-      activeCategoryId = null; // Reset filter to all
-
-      sellProductName.style.display = 'block';
-      autocompleteList.style.display = 'block';
-
-      let filteredProducts = allProducts;
-
-      const inputValue = searchSellProdutItem.value.toLowerCase().trim();
-      if (inputValue.length > 0) {
-        filteredProducts = filteredProducts.filter(
-          (product) =>
-            product.Product.name.toLowerCase().includes(inputValue) ||
-            product.Product.description.toLowerCase().includes(inputValue)
-        );
-      }
-
+    productInput.addEventListener('input', function () {
+      const inputValue = productInput.value.toLowerCase();
+      const filteredProducts = allProducts.filter((product) =>
+        product.name.toLowerCase().includes(inputValue)
+      );
       updateAutocompleteList(filteredProducts);
     });
 
-    sellProductCategorySection.appendChild(allBtn);
-
-    allCategories.forEach((category) => {
-      const categoryBtn = document.createElement('button');
-      categoryBtn.classList.add('sellProductCategoryBtn');
-      categoryBtn.type = 'button';
-      categoryBtn.textContent = category.name;
-      categoryBtn.dataset.categoryId = category.id;
-
-      categoryBtn.addEventListener('click', function () {
-        // Remove active class from all other buttons
-        document.querySelectorAll('.sellProductCategoryBtn').forEach((btn) => {
-          btn.classList.remove('active');
-        });
-
-        // Toggle current button as active
-        categoryBtn.classList.add('active');
-        activeCategoryId = parseInt(categoryBtn.dataset.categoryId);
-
-        sellProductName.style.display = 'block';
-        autocompleteList.style.display = 'block';
-
-        const categoryId = parseInt(categoryBtn.dataset.categoryId);
-
-        let filteredProducts = allProducts.filter(
-          //  (product) => product.Product.ProductCategory.id === categoryId
-          (product) => product.Product.ProductCategory.id === activeCategoryId
-        );
-
-        const inputValue = searchSellProdutItem.value.toLowerCase().trim();
-
-        if (inputValue.length > 0) {
-          filteredProducts = filteredProducts.filter(
-            (product) =>
-              product.Product.name.toLowerCase().includes(inputValue) ||
-              product.Product.description.toLowerCase().includes(inputValue)
-          );
-        }
-
-        updateAutocompleteList(filteredProducts);
-      });
-
-      sellProductCategorySection.appendChild(categoryBtn);
+    productInput.addEventListener('click', function () {
+      autocompleteList.style.display = 'block';
     });
   } catch (error) {
     console.error('Error displaying products:', error);
-  } finally {
-    hideGlobalLoader();
   }
 }
 
@@ -228,23 +159,12 @@ function updateAutocompleteList(products) {
   } else {
     products.forEach((product) => {
       const listItem = document.createElement('li');
-      // listItem.textContent = product.Product.name;
-      // listItem.classList.add('autocomplete-list-item');
-      listItem.innerHTML = `         
-         <li class="autocomplete-list-item">
-            <p>${product.Product.name}</p>
-            <small>${product.Product.description}</span>
-         </li>
-         `;
+      listItem.textContent = product.name;
+      listItem.classList.add('autocomplete-list-item');
 
       listItem.addEventListener('click', function () {
-        productInput.value = product.Product.name;
-        productBoughtPrice.value = formatAmountWithCommas(
-          product.Product.purchase_price
-        );
-        itemSellingprice.value = formatAmountWithCommas(
-          product.Product.selling_price
-        );
+        productInput.value = product.name;
+        priceInput.value = formatAmountWithCommas(product.amount_to_sell);
         autocompleteList.style.display = 'none';
       });
       autocompleteList.appendChild(listItem);
@@ -265,7 +185,7 @@ function updateAutocompleteList(products) {
 //       listItem.classList.add('autocomplete-list-item');
 
 //       listItem.addEventListener('click', function () {
-//         searchSellProdutItem.value = product.name;
+//         productInput.value = product.name;
 //         priceInput.value = formatAmountWithCommas(product.amount_to_sell);
 //         autocompleteList.style.display = 'none';
 //       });
@@ -274,12 +194,12 @@ function updateAutocompleteList(products) {
 //     });
 
 //     // Autocompelte filter
-//     searchSellProdutItem.addEventListener('click', function () {
+//     productInput.addEventListener('click', function () {
 //       autocompleteList.style.display = 'block';
 //     });
 
-//     searchSellProdutItem.addEventListener('input', function () {
-//       const inputValue = searchSellProdutItem.value.toLowerCase();
+//     productInput.addEventListener('input', function () {
+//       const inputValue = productInput.value.toLowerCase();
 //       const filteredProducts = products.filter((product) =>
 //         product.name.toLowerCase().includes(inputValue)
 //       );
@@ -299,7 +219,7 @@ function updateAutocompleteList(products) {
 //           listItem.classList.add('autocomplete-list-item');
 
 //           listItem.addEventListener('click', function () {
-//             searchSellProdutItem.value = product.name;
+//             productInput.value = product.name;
 //             priceInput.value = formatAmountWithCommas(product.amount_to_sell);
 //             autocompleteList.innerHTML = '';
 //           });
@@ -313,11 +233,11 @@ function updateAutocompleteList(products) {
 // }
 
 // Close the suggestions list when clicking outside
-// document.addEventListener('click', function (event) {
-//   if (!event.target.matches('#searchSellProdutItem')) {
-//     autocompleteList.style.display = 'none';
-//   }
-// });
+document.addEventListener('click', function (event) {
+  if (!event.target.matches('#productInput')) {
+    autocompleteList.style.display = 'none';
+  }
+});
 
 // JS for the checkboxes and selling of an item
 let checkboxStatus;
@@ -401,7 +321,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // JS for Selling Products and adding to localStorage
-const soldProductName = document.getElementById('searchSellProdutItem');
+const soldProductName = document.getElementById('productInput');
 const soldProductPrice = document.getElementById('soldProductPrice');
 const productBalancePrice = document.getElementById('productBalancePrice');
 const soldProductRemark = document.getElementById('soldProductRemark');

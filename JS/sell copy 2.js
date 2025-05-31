@@ -87,26 +87,18 @@ async function displayAllProducts() {
         sellProductName.style.display = 'none';
         autocompleteList.style.display = 'none';
         return;
-      } else if (inputValue.length > 0) {
+      } else if (inputValue.length > 1) {
         sellProductName.style.display = 'block';
         autocompleteList.style.display = 'block';
 
-        let filteredProducts = allProducts;
-
-        // Filter by selected category (if any)
-        if (activeCategoryId !== null) {
-          filteredProducts = filteredProducts.filter(
-            (product) => product.Product.ProductCategory.id === activeCategoryId
-          );
-        }
-
-        // Further filter by input value
-        filteredProducts = filteredProducts.filter(
+        const filteredProducts = allProducts.filter(
           (product) =>
             product.Product.name.toLowerCase().includes(inputValue) ||
-            product.Product.description.toLowerCase().includes(inputValue)
+            product.Product.description.toLowerCase().includes(inputValue) ||
+            product.Product.ProductCategory.name
+              .toLowerCase()
+              .includes(inputValue)
         );
-
         updateAutocompleteList(filteredProducts);
 
         return;
@@ -151,18 +143,7 @@ async function displayAllCategories() {
       sellProductName.style.display = 'block';
       autocompleteList.style.display = 'block';
 
-      let filteredProducts = allProducts;
-
-      const inputValue = searchSellProdutItem.value.toLowerCase().trim();
-      if (inputValue.length > 0) {
-        filteredProducts = filteredProducts.filter(
-          (product) =>
-            product.Product.name.toLowerCase().includes(inputValue) ||
-            product.Product.description.toLowerCase().includes(inputValue)
-        );
-      }
-
-      updateAutocompleteList(filteredProducts);
+      updateAutocompleteList(allProducts);
     });
 
     sellProductCategorySection.appendChild(allBtn);
@@ -182,27 +163,16 @@ async function displayAllCategories() {
 
         // Toggle current button as active
         categoryBtn.classList.add('active');
-        activeCategoryId = parseInt(categoryBtn.dataset.categoryId);
 
         sellProductName.style.display = 'block';
         autocompleteList.style.display = 'block';
 
+        activeCategoryId = parseInt(categoryBtn.dataset.categoryId);
+
         const categoryId = parseInt(categoryBtn.dataset.categoryId);
-
-        let filteredProducts = allProducts.filter(
-          //  (product) => product.Product.ProductCategory.id === categoryId
-          (product) => product.Product.ProductCategory.id === activeCategoryId
+        const filteredProducts = allProducts.filter(
+          (product) => product.Product.ProductCategory.id === categoryId
         );
-
-        const inputValue = searchSellProdutItem.value.toLowerCase().trim();
-
-        if (inputValue.length > 0) {
-          filteredProducts = filteredProducts.filter(
-            (product) =>
-              product.Product.name.toLowerCase().includes(inputValue) ||
-              product.Product.description.toLowerCase().includes(inputValue)
-          );
-        }
 
         updateAutocompleteList(filteredProducts);
       });
