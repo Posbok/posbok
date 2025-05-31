@@ -1,3 +1,4 @@
+import config from '../config';
 import {
   getProductCategories,
   getProductInventory,
@@ -18,6 +19,17 @@ const sellProductCategorySection = document.querySelector(
   '.sellProductCategory-section'
 );
 
+const userData = config.userData;
+const dummyShopId = config.dummyShopId;
+
+let parsedUserData = null;
+
+parsedUserData = userData ? JSON.parse(userData) : null;
+
+const isAdmin = parsedUserData?.accountType === 'ADMIN';
+const isStaff = parsedUserData?.accountType === 'STAFF';
+const shopId = parsedUserData?.shopId;
+
 const sellProductName = document.querySelector('.sellProductName');
 const productInput = document.getElementById('productInput');
 const autocompleteList = document.getElementById('autocompleteList');
@@ -32,7 +44,9 @@ async function fetchAllProducts() {
   let products = [];
 
   try {
-    const productInventoryData = await getProductInventory(88); // Fetch products
+    const productInventoryData = await getProductInventory(
+      isAdmin ? businessDayShopDropdown.value : shopId
+    ); // Fetch products
 
     if (productInventoryData) {
       // console.log(`Fetching product inventory:`, productInventoryData.data);
@@ -53,7 +67,9 @@ async function fetchAllCategories() {
   let categories = [];
 
   try {
-    const productCategoryData = await getProductCategories(88); // Fetch Categories
+    const productCategoryData = await getProductCategories(
+      isAdmin ? businessDayShopDropdown.value : shopId
+    ); // Fetch Categories
 
     if (productCategoryData) {
       // console.log(`Fetching product categories:`, productCategoryData.data);
