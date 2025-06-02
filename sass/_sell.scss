@@ -1,6 +1,7 @@
 // Most CSS for Sell can be found in table.scss and modalContents.scss
 
-.sellProduct {
+.sellProduct,
+.adminSellProduct {
    height: min-content;
    color: $color-secondary-dark;
 
@@ -15,10 +16,12 @@
             margin-top: 2rem;
             font-size: 1.5rem;
 
-            .sellProductName {
+            .sellProductName,
+            .adminSellProductName {
                display: none;
             }
 
+            .adminAutocomplete-list,
             .autocomplete-list {
                list-style: none;
                padding: 0;
@@ -76,7 +79,8 @@
       }
    }
 
-   .sellProductCategory-section {
+   .sellProductCategory-section,
+   .adminSellProductCategory-section {
       display: flex;
       align-items: center;
       gap: 1rem;

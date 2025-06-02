@@ -484,6 +484,7 @@ select {
 
 .addProduct .checkbox,
 .sellProduct .checkbox,
+.adminSellProduct .checkbox,
 .updateProduct .checkbox,
 .depositPosCapital .checkbox,
 .modal .checkbox,
@@ -499,6 +500,7 @@ select {
   margin-top: 1.5rem; }
   .addProduct .checkbox label,
   .sellProduct .checkbox label,
+  .adminSellProduct .checkbox label,
   .updateProduct .checkbox label,
   .depositPosCapital .checkbox label,
   .modal .checkbox label,
@@ -511,6 +513,7 @@ select {
   @media only screen and (max-width: 30.5em) {
     .addProduct .checkbox .checkbox-container,
     .sellProduct .checkbox .checkbox-container,
+    .adminSellProduct .checkbox .checkbox-container,
     .updateProduct .checkbox .checkbox-container,
     .depositPosCapital .checkbox .checkbox-container,
     .modal .checkbox .checkbox-container,
@@ -523,6 +526,7 @@ select {
 
 .addProduct-form_input,
 .sellProduct-form_input,
+.adminSellProduct-form_input,
 .updateProduct-form_input,
 .depositPosCapital-form_input,
 .modal-form_input,
@@ -536,6 +540,7 @@ select {
   align-items: center; }
   .addProduct-form_input.sellStatus,
   .sellProduct-form_input.sellStatus,
+  .adminSellProduct-form_input.sellStatus,
   .updateProduct-form_input.sellStatus,
   .depositPosCapital-form_input.sellStatus,
   .modal-form_input.sellStatus,
@@ -547,6 +552,7 @@ select {
     display: block; }
     .addProduct-form_input.sellStatus label,
     .sellProduct-form_input.sellStatus label,
+    .adminSellProduct-form_input.sellStatus label,
     .updateProduct-form_input.sellStatus label,
     .depositPosCapital-form_input.sellStatus label,
     .modal-form_input.sellStatus label,
@@ -558,6 +564,7 @@ select {
       width: min-content; }
   .addProduct-form_input .password-container,
   .sellProduct-form_input .password-container,
+  .adminSellProduct-form_input .password-container,
   .updateProduct-form_input .password-container,
   .depositPosCapital-form_input .password-container,
   .modal-form_input .password-container,
@@ -574,6 +581,8 @@ select {
     .addProduct-form_input .password-container #password-mismatch,
     .sellProduct-form_input .password-container #password-length,
     .sellProduct-form_input .password-container #password-mismatch,
+    .adminSellProduct-form_input .password-container #password-length,
+    .adminSellProduct-form_input .password-container #password-mismatch,
     .updateProduct-form_input .password-container #password-length,
     .updateProduct-form_input .password-container #password-mismatch,
     .depositPosCapital-form_input .password-container #password-length,
@@ -594,6 +603,7 @@ select {
   @media only screen and (max-width: 30.5em) {
     .addProduct-form_input,
     .sellProduct-form_input,
+    .adminSellProduct-form_input,
     .updateProduct-form_input,
     .depositPosCapital-form_input,
     .modal-form_input,
@@ -606,6 +616,7 @@ select {
       display: block; } }
   .addProduct-form_input label,
   .sellProduct-form_input label,
+  .adminSellProduct-form_input label,
   .updateProduct-form_input label,
   .depositPosCapital-form_input label,
   .modal-form_input label,
@@ -619,6 +630,8 @@ select {
   .addProduct-form_input select,
   .sellProduct-form_input input,
   .sellProduct-form_input select,
+  .adminSellProduct-form_input input,
+  .adminSellProduct-form_input select,
   .updateProduct-form_input input,
   .updateProduct-form_input select,
   .depositPosCapital-form_input input,
@@ -640,6 +653,8 @@ select {
     .addProduct-form_input select:disabled,
     .sellProduct-form_input input:disabled,
     .sellProduct-form_input select:disabled,
+    .adminSellProduct-form_input input:disabled,
+    .adminSellProduct-form_input select:disabled,
     .updateProduct-form_input input:disabled,
     .updateProduct-form_input select:disabled,
     .depositPosCapital-form_input input:disabled,
@@ -663,6 +678,7 @@ select {
       cursor: not-allowed; }
   .addProduct-form_input select,
   .sellProduct-form_input select,
+  .adminSellProduct-form_input select,
   .updateProduct-form_input select,
   .depositPosCapital-form_input select,
   .modal-form_input select,
@@ -677,6 +693,8 @@ select {
 .addProduct .hero-btn-danger,
 .sellProduct .hero-btn-dark,
 .sellProduct .hero-btn-danger,
+.adminSellProduct .hero-btn-dark,
+.adminSellProduct .hero-btn-danger,
 .updateProduct .hero-btn-dark,
 .updateProduct .hero-btn-danger,
 .depositPosCapital .hero-btn-dark,
@@ -746,6 +764,7 @@ button:disabled:hover {
 .hero-btn-dark_square,
 .hero-btn-danger,
 .businessInitBtn,
+.adminSellProductCategoryBtn,
 .sellProductCategoryBtn {
   position: relative;
   background-color: #0F7A89;
@@ -768,6 +787,7 @@ button:disabled:hover {
   .hero-btn-dark_square:not(:last-child),
   .hero-btn-danger:not(:last-child),
   .businessInitBtn:not(:last-child),
+  .adminSellProductCategoryBtn:not(:last-child),
   .sellProductCategoryBtn:not(:last-child) {
     margin-right: 1.5rem; }
     @media only screen and (max-width: 75em) {
@@ -777,6 +797,7 @@ button:disabled:hover {
       .hero-btn-dark_square:not(:last-child),
       .hero-btn-danger:not(:last-child),
       .businessInitBtn:not(:last-child),
+      .adminSellProductCategoryBtn:not(:last-child),
       .sellProductCategoryBtn:not(:last-child) {
         margin-bottom: 1.5rem; } }
   .hero-btn-dark:hover,
@@ -785,6 +806,7 @@ button:disabled:hover {
   .hero-btn-dark_square:hover,
   .hero-btn-danger:hover,
   .businessInitBtn:hover,
+  .adminSellProductCategoryBtn:hover,
   .sellProductCategoryBtn:hover {
     transform: scale(1.03);
     box-shadow: inset 0 0 0 2px #51cf66; }
@@ -794,6 +816,7 @@ button:disabled:hover {
   .hero-btn-dark_square:active,
   .hero-btn-danger:active,
   .businessInitBtn:active,
+  .adminSellProductCategoryBtn:active,
   .sellProductCategoryBtn:active {
     transform: scale(1);
     background-color: #0F7A89; }
@@ -803,6 +826,7 @@ button:disabled:hover {
   .hero-btn-dark_square .button-link,
   .hero-btn-danger .button-link,
   .businessInitBtn .button-link,
+  .adminSellProductCategoryBtn .button-link,
   .sellProductCategoryBtn .button-link {
     position: absolute;
     top: 0;
@@ -829,23 +853,41 @@ button:disabled:hover {
 .load-more-button {
   display: none; }
 
+.adminSellProductCategory-section .adminSellProductCategoryBtn,
+.adminSellProductCategory-section .sellProductCategoryBtn,
+.sellProductCategory-section .adminSellProductCategoryBtn,
 .sellProductCategory-section .sellProductCategoryBtn {
   margin: 0;
   background-color: #fff;
   color: #0F7A89; }
+  .adminSellProductCategory-section .adminSellProductCategoryBtn:hover,
+  .adminSellProductCategory-section .sellProductCategoryBtn:hover,
+  .sellProductCategory-section .adminSellProductCategoryBtn:hover,
   .sellProductCategory-section .sellProductCategoryBtn:hover {
     transform: scale(1.07);
     background-color: #eef1f6; }
+  .adminSellProductCategory-section .adminSellProductCategoryBtn:active,
+  .adminSellProductCategory-section .sellProductCategoryBtn:active,
+  .sellProductCategory-section .adminSellProductCategoryBtn:active,
   .sellProductCategory-section .sellProductCategoryBtn:active {
     transform: scale(1.04);
     background-color: #0F7A89;
     color: #fff; }
+  .adminSellProductCategory-section .adminSellProductCategoryBtn.active,
+  .adminSellProductCategory-section .sellProductCategoryBtn.active,
+  .sellProductCategory-section .adminSellProductCategoryBtn.active,
   .sellProductCategory-section .sellProductCategoryBtn.active {
     background-color: #0F7A89;
     color: #fff; }
+    .adminSellProductCategory-section .adminSellProductCategoryBtn.active:hover,
+    .adminSellProductCategory-section .sellProductCategoryBtn.active:hover,
+    .sellProductCategory-section .adminSellProductCategoryBtn.active:hover,
     .sellProductCategory-section .sellProductCategoryBtn.active:hover {
       transform: scale(1.03);
       box-shadow: inset 0 0 0 2px #51cf66; }
+    .adminSellProductCategory-section .adminSellProductCategoryBtn.active:active,
+    .adminSellProductCategory-section .sellProductCategoryBtn.active:active,
+    .sellProductCategory-section .adminSellProductCategoryBtn.active:active,
     .sellProductCategory-section .sellProductCategoryBtn.active:active {
       transform: scale(1);
       background-color: #0F7A89; }
@@ -1252,19 +1294,28 @@ body.authentication {
     .inventory-method-form .hero-btn-dark {
       margin-top: 3rem; }
 
-.sellProduct {
+.sellProduct,
+.adminSellProduct {
   height: min-content;
   color: #205329; }
-  .sellProduct-method {
+  .sellProduct-method,
+  .adminSellProduct-method {
     margin: 0 auto;
     padding: 1rem 2rem;
     overflow: hidden; }
-    .sellProduct-method-form_input {
+    .sellProduct-method-form_input,
+    .adminSellProduct-method-form_input {
       margin-top: 2rem;
       font-size: 1.5rem; }
-      .sellProduct-method-form_input .sellProductName {
+      .sellProduct-method-form_input .sellProductName,
+      .sellProduct-method-form_input .adminSellProductName,
+      .adminSellProduct-method-form_input .sellProductName,
+      .adminSellProduct-method-form_input .adminSellProductName {
         display: none; }
-      .sellProduct-method-form_input .autocomplete-list {
+      .sellProduct-method-form_input .adminAutocomplete-list,
+      .sellProduct-method-form_input .autocomplete-list,
+      .adminSellProduct-method-form_input .adminAutocomplete-list,
+      .adminSellProduct-method-form_input .autocomplete-list {
         list-style: none;
         padding: 0;
         margin: 0;
@@ -1278,29 +1329,54 @@ body.authentication {
         border-radius: 4px;
         display: none; }
         @media only screen and (max-width: 18.8em) {
-          .sellProduct-method-form_input .autocomplete-list {
+          .sellProduct-method-form_input .adminAutocomplete-list,
+          .sellProduct-method-form_input .autocomplete-list,
+          .adminSellProduct-method-form_input .adminAutocomplete-list,
+          .adminSellProduct-method-form_input .autocomplete-list {
             width: 75%; } }
-        .sellProduct-method-form_input .autocomplete-list::-webkit-scrollbar {
+        .sellProduct-method-form_input .adminAutocomplete-list::-webkit-scrollbar,
+        .sellProduct-method-form_input .autocomplete-list::-webkit-scrollbar,
+        .adminSellProduct-method-form_input .adminAutocomplete-list::-webkit-scrollbar,
+        .adminSellProduct-method-form_input .autocomplete-list::-webkit-scrollbar {
           width: .8rem; }
-          .sellProduct-method-form_input .autocomplete-list::-webkit-scrollbar-thumb {
+          .sellProduct-method-form_input .adminAutocomplete-list::-webkit-scrollbar-thumb,
+          .sellProduct-method-form_input .autocomplete-list::-webkit-scrollbar-thumb,
+          .adminSellProduct-method-form_input .adminAutocomplete-list::-webkit-scrollbar-thumb,
+          .adminSellProduct-method-form_input .autocomplete-list::-webkit-scrollbar-thumb {
             background-color: #51cf66;
             border-radius: 10px; }
-            .sellProduct-method-form_input .autocomplete-list::-webkit-scrollbar-thumb:active {
+            .sellProduct-method-form_input .adminAutocomplete-list::-webkit-scrollbar-thumb:active,
+            .sellProduct-method-form_input .autocomplete-list::-webkit-scrollbar-thumb:active,
+            .adminSellProduct-method-form_input .adminAutocomplete-list::-webkit-scrollbar-thumb:active,
+            .adminSellProduct-method-form_input .autocomplete-list::-webkit-scrollbar-thumb:active {
               background-color: #10AB2B; }
-          .sellProduct-method-form_input .autocomplete-list::-webkit-scrollbar-track {
+          .sellProduct-method-form_input .adminAutocomplete-list::-webkit-scrollbar-track,
+          .sellProduct-method-form_input .autocomplete-list::-webkit-scrollbar-track,
+          .adminSellProduct-method-form_input .adminAutocomplete-list::-webkit-scrollbar-track,
+          .adminSellProduct-method-form_input .autocomplete-list::-webkit-scrollbar-track {
             background-color: #ebfbee; }
-        .sellProduct-method-form_input .autocomplete-list-item {
+        .sellProduct-method-form_input .adminAutocomplete-list-item,
+        .sellProduct-method-form_input .autocomplete-list-item,
+        .adminSellProduct-method-form_input .adminAutocomplete-list-item,
+        .adminSellProduct-method-form_input .autocomplete-list-item {
           padding: 10px;
           cursor: pointer;
           background-color: #fff;
           border-bottom: 1px solid #51cf66;
           transition: background-color 0.2s; }
-          .sellProduct-method-form_input .autocomplete-list-item:hover {
+          .sellProduct-method-form_input .adminAutocomplete-list-item:hover,
+          .sellProduct-method-form_input .autocomplete-list-item:hover,
+          .adminSellProduct-method-form_input .adminAutocomplete-list-item:hover,
+          .adminSellProduct-method-form_input .autocomplete-list-item:hover {
             background-color: #0F7A89;
             color: #ebfbee; }
-    .sellProduct-method-form .hero-btn-dark {
+    .sellProduct-method-form .hero-btn-dark,
+    .adminSellProduct-method-form .hero-btn-dark {
       margin-top: 3rem; }
-  .sellProduct .sellProductCategory-section {
+  .sellProduct .sellProductCategory-section,
+  .sellProduct .adminSellProductCategory-section,
+  .adminSellProduct .sellProductCategory-section,
+  .adminSellProduct .adminSellProductCategory-section {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -1311,11 +1387,20 @@ body.authentication {
     scrollbar-width: thin;
     /* For Firefox */
     scrollbar-color: #ccc transparent; }
-    .sellProduct .sellProductCategory-section::-webkit-scrollbar {
+    .sellProduct .sellProductCategory-section::-webkit-scrollbar,
+    .sellProduct .adminSellProductCategory-section::-webkit-scrollbar,
+    .adminSellProduct .sellProductCategory-section::-webkit-scrollbar,
+    .adminSellProduct .adminSellProductCategory-section::-webkit-scrollbar {
       height: 6px; }
-    .sellProduct .sellProductCategory-section::-webkit-scrollbar-track {
+    .sellProduct .sellProductCategory-section::-webkit-scrollbar-track,
+    .sellProduct .adminSellProductCategory-section::-webkit-scrollbar-track,
+    .adminSellProduct .sellProductCategory-section::-webkit-scrollbar-track,
+    .adminSellProduct .adminSellProductCategory-section::-webkit-scrollbar-track {
       background: transparent; }
-    .sellProduct .sellProductCategory-section::-webkit-scrollbar-thumb {
+    .sellProduct .sellProductCategory-section::-webkit-scrollbar-thumb,
+    .sellProduct .adminSellProductCategory-section::-webkit-scrollbar-thumb,
+    .adminSellProduct .sellProductCategory-section::-webkit-scrollbar-thumb,
+    .adminSellProduct .adminSellProductCategory-section::-webkit-scrollbar-thumb {
       background-color: #aaa;
       border-radius: 4px; }
 

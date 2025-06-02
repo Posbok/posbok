@@ -247,6 +247,7 @@ select {
 
 .addProduct,
 .sellProduct,
+.adminSellProduct,
 .updateProduct,
 .depositPosCapital,
 .modal,
@@ -412,6 +413,7 @@ button:disabled:hover {
 .hero-btn-dark_square,
 .hero-btn-danger,
 .businessInitBtn,
+.adminSellProductCategoryBtn,
 .sellProductCategoryBtn {
    position: relative;
    background-color: $color-grey-dark-1;
@@ -481,8 +483,10 @@ button:disabled:hover {
    display: none;
 }
 
+.adminSellProductCategory-section,
 .sellProductCategory-section {
 
+   .adminSellProductCategoryBtn,
    .sellProductCategoryBtn {
       margin: 0;
 

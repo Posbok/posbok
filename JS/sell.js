@@ -4,9 +4,11 @@ import {
   getProductInventory,
 } from './apiServices/inventory/inventoryResources';
 import { getProducts } from './apiServices/sales/salesResources';
+import { checkAndPromptCreateShop } from './apiServices/shop/shopResource';
 import {
   formatAmountWithCommas,
   hideGlobalLoader,
+  populateBusinessShopDropdown,
   showGlobalLoader,
 } from './helper/helper';
 
@@ -14,39 +16,86 @@ let allProducts = [];
 let allCategories = [];
 let activeCategoryId = null; // null means "All"
 
-const searchSellProdutItem = document.getElementById('searchSellProdutItem');
-const sellProductCategorySection = document.querySelector(
-  '.sellProductCategory-section'
-);
-
 const userData = config.userData;
 const dummyShopId = config.dummyShopId;
-
 let parsedUserData = null;
-
 parsedUserData = userData ? JSON.parse(userData) : null;
 
 const isAdmin = parsedUserData?.accountType === 'ADMIN';
 const isStaff = parsedUserData?.accountType === 'STAFF';
 const shopId = parsedUserData?.shopId;
 
-const sellProductName = document.querySelector('.sellProductName');
-const productInput = document.getElementById('productInput');
-const autocompleteList = document.getElementById('autocompleteList');
-const productBoughtPrice = document.getElementById('productBoughtPrice');
-const itemSellingprice = document.getElementById('itemSellingPrice');
+const searchSellProdutItem = document.getElementById(
+  isAdmin ? 'adminSearchSellProdutItem' : 'searchSellProdutItem'
+);
+
+const sellProductCategorySection = document.querySelector(
+  isAdmin ? '.adminSellProductCategory-section' : '.sellProductCategory-section'
+);
+
+const sellProductName = document.querySelector(
+  isAdmin ? '.adminSellProductName' : '.sellProductName'
+);
+const productInput = document.getElementById(
+  isAdmin ? 'adminProductInput' : 'productInput'
+);
+const autocompleteList = document.getElementById(
+  isAdmin ? 'adminAutocompleteList' : 'autocompleteList'
+);
+const productBoughtPrice = document.getElementById(
+  isAdmin ? 'adminProductBoughtPrice' : 'productBoughtPrice'
+);
+const itemSellingprice = document.getElementById(
+  isAdmin ? 'adminItemSellingPrice' : 'itemSellingPrice'
+);
+
+const sellProductShopDropdown = document.getElementById(
+  'sellProductShopDropdown'
+);
+
+console.log(productInput);
+
+const adminSellContainer = document.querySelector('.adminSellContainer');
+const staffSellContainer = document.querySelector('.staffSellContainer');
 
 // Initial display of all products & Categories
-displayAllProducts();
-displayAllCategories();
+if (isStaff) {
+  displayAllProducts();
+  displayAllCategories();
+} else {
+  //   displayAllProducts();
+  //   displayAllCategories();
+}
 
-async function fetchAllProducts() {
+if (isAdmin && adminSellContainer) {
+  if (adminSellContainer) adminSellContainer.style.display = 'block';
+  if (staffSellContainer) staffSellContainer.innerHTML = '';
+  if (staffSellContainer) staffSellContainer.style.display = 'none';
+
+  async function loadShopDropdown() {
+    try {
+      showGlobalLoader();
+      const { enrichedShopData } = await checkAndPromptCreateShop();
+      populateBusinessShopDropdown(enrichedShopData, 'sellProductShopDropdown');
+      hideGlobalLoader();
+    } catch (err) {
+      hideGlobalLoader();
+      console.error('Failed to load dropdown:', err.message);
+    }
+  }
+
+  loadShopDropdown();
+} else {
+  if (adminSellContainer) adminSellContainer.innerHTML = '';
+  if (adminSellContainer) adminSellContainer.style.display = 'none';
+  if (staffSellContainer) staffSellContainer.style.display = 'block';
+}
+
+async function fetchAllProducts(shopId) {
   let products = [];
 
   try {
-    const productInventoryData = await getProductInventory(
-      isAdmin ? businessDayShopDropdown.value : shopId
-    ); // Fetch products
+    const productInventoryData = await getProductInventory(shopId); // Fetch products
 
     if (productInventoryData) {
       // console.log(`Fetching product inventory:`, productInventoryData.data);
@@ -68,7 +117,7 @@ async function fetchAllCategories() {
 
   try {
     const productCategoryData = await getProductCategories(
-      isAdmin ? businessDayShopDropdown.value : shopId
+      isAdmin ? sellProductShopDropdown.value : shopId
     ); // Fetch Categories
 
     if (productCategoryData) {
@@ -86,10 +135,107 @@ async function fetchAllCategories() {
   return categories;
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+  const adminSellProductSearchSection = document.querySelector(
+    '.adminSellProductSearch-section'
+  );
+  const adminSellProductCategorySection = document.querySelector(
+    '.adminSellProductCategory-section'
+  );
+  const adminSellProductName = document.querySelector('.adminSellProductName');
+  const adminAutocompleteList = document.getElementById(
+    'adminAutocompleteList'
+  );
+
+  if (adminSellProductSearchSection)
+    adminSellProductSearchSection.style.display = 'none';
+  if (adminSellProductCategorySection)
+    adminSellProductCategorySection.style.display = 'none';
+  if (adminSellProductName) adminSellProductName.style.display = 'none';
+  if (adminAutocompleteList) adminAutocompleteList.style.display = 'none';
+});
+
+if (isAdmin && sellProductShopDropdown) {
+  sellProductShopDropdown.addEventListener('change', () => {
+    const selectedShopId = sellProductShopDropdown.value;
+
+    const adminSellProductSearchSection = document.querySelector(
+      '.adminSellProductSearch-section'
+    );
+    const adminSellProductCategorySection = document.querySelector(
+      '.adminSellProductCategory-section'
+    );
+    const adminSellProductName = document.querySelector(
+      '.adminSellProductName'
+    );
+    const adminAutocompleteList = document.getElementById(
+      'adminAutocompleteList'
+    );
+
+    if (!selectedShopId) {
+      // Hide sections if no shop selected
+      if (adminSellProductSearchSection)
+        adminSellProductSearchSection.style.display = 'none';
+      if (adminSellProductCategorySection)
+        adminSellProductCategorySection.style.display = 'none';
+      if (adminSellProductName) adminSellProductName.style.display = 'none';
+      if (adminAutocompleteList) adminAutocompleteList.style.display = 'none';
+      return; // Stop execution if shop is empty
+    }
+
+    // Show sections
+    if (adminSellProductSearchSection)
+      adminSellProductSearchSection.style.display = 'block';
+    if (adminSellProductCategorySection)
+      adminSellProductCategorySection.style.display = 'block';
+    //  if (adminSellProductName) adminSellProductName.style.display = 'block';
+    //  if (adminAutocompleteList) adminAutocompleteList.style.display = 'block';
+
+    // Re-fetch products and categories
+    displayAllProducts();
+    displayAllCategories();
+  });
+}
+
+// if (isAdmin && sellProductShopDropdown) {
+//   sellProductShopDropdown.addEventListener('change', () => {
+//     if (sellProductShopDropdown.value === '') {
+//       const adminSellProductSearchSection = document.querySelector(
+//         '.adminSellProductSearch-section'
+//       );
+//       const adminSellProductCategorySection = document.querySelector(
+//         '.adminSellProductCategory-section'
+//       );
+
+//       console.log('object');
+
+//       if (adminSellProductSearchSection) {
+//         adminSellProductSearchSection.style.display = 'none';
+//       }
+//       if (adminSellProductCategorySection) {
+//         adminSellProductCategorySection.style.display = 'none';
+//       }
+//     }
+//     displayAllProducts(); // Re-fetch based on selected shop
+//     displayAllCategories(); // Re-fetch based on selected shop
+
+//     //  const allBtn = sellProductCategorySection.querySelector(
+//     //    '[data-category-id="all"]'
+//     //  );
+//     //  if (allBtn) allBtn.click();
+//   });
+// }
+
 async function displayAllProducts() {
   try {
     showGlobalLoader();
-    allProducts = await fetchAllProducts(); // Fetch and store all products
+
+    const selectedShopId =
+      isAdmin && sellProductShopDropdown
+        ? sellProductShopDropdown.value
+        : shopId;
+
+    allProducts = await fetchAllProducts(selectedShopId); // Fetch and store all products
 
     console.log(`Total products fetched:`, allProducts);
 
@@ -146,6 +292,11 @@ async function displayAllProducts() {
 async function displayAllCategories() {
   try {
     showGlobalLoader();
+
+    // Clear old category buttons
+    sellProductCategorySection.innerHTML = '';
+    activeCategoryId = null; // Reset category filter
+
     allCategories = await fetchAllCategories(); // Fetch and store all Categories
 
     console.log(`Total Categories fetched:`, allCategories);
@@ -180,6 +331,8 @@ async function displayAllCategories() {
 
       updateAutocompleteList(filteredProducts);
     });
+
+    console.log(sellProductCategorySection);
 
     sellProductCategorySection.appendChild(allBtn);
 
@@ -337,13 +490,19 @@ function updateAutocompleteList(products) {
 
 // JS for the checkboxes and selling of an item
 let checkboxStatus;
-const balancePaymentInput = document.getElementById('productBalancePrice');
+// const balancePaymentInput = document.getElementById('productBalancePrice');
 
 document.addEventListener('DOMContentLoaded', function () {
-  const completedCheckbox = document.getElementById('completedCheckbox');
-  const balanceCheckbox = document.getElementById('balanceCheckbox');
+  const completedCheckbox = document.getElementById(
+    isAdmin ? 'adminCompletedCheckbox' : 'completedCheckbox'
+  );
+  const balanceCheckbox = document.getElementById(
+    isAdmin ? 'adminBalanceCheckbox' : 'balanceCheckbox'
+  );
   const balancePayment = document.querySelector('.balancePayment');
-  const balancePaymentInput = document.getElementById('productBalancePrice');
+  const balancePaymentInput = document.getElementById(
+    isAdmin ? 'adminProductBalancePrice' : 'productBalancePrice'
+  );
   const checkboxes = document.querySelectorAll('input[type="radio"]');
 
   function updateStatus() {

@@ -124,8 +124,147 @@
          </div>
       </header>
 
-      <form class="sell-product-form" name="sell-product" netlify>
-         <div class="card sellProduct">
+      <!-- Admin Sell Form -->
+      <div class="adminSellContainer admin-view card adminSellProduct">
+         <form class="sell-product-form" name="sell-product">
+
+            <div>
+               <h1 class="heading-text">Admin: Sell Item</h1>
+            </div>
+
+            <!-- Assign Sell transaction to shop -->
+            <div class="adminSellProduct-method-form_input">
+               <label for="sellProductShopDropdown">Select Shop</label>
+
+               <select id="sellProductShopDropdown" class="form-control" required>
+                  <option value="">Select a shop</option>
+                  <!-- <option value="1">Loading Shops...</option> -->
+
+                  <!-- Add Main shops dynamically -->
+               </select>
+            </div>
+
+
+            <div class="adminSellProductSearch-section mb-2">
+
+               <div class="adminSellProduct-method-form_input ">
+                  <div class="search-input-container">
+                     <input type="search" id="adminSearchSellProdutItem" class="adminSearchSellProdutItem"
+                        placeholder="Search Product Name or Description ">
+                     <span class="searchIcon"><i class="fa-solid fa-magnifying-glass mr-2"></i></span>
+                  </div>
+               </div>
+            </div>
+
+
+            <div class=" adminSellProductCategory-section">
+               <!-- <button class="adminSellProductCategoryBtn active" type="button">
+                  All
+               </button> -->
+
+            </div>
+
+            <div class="adminSellProduct-method-form_input">
+
+               <div class="input-container adminSellProductName">
+                  <input type="text" id="adminProductInput" disabled required>
+                  <i class="fa fa-times clear-icon" id="adminClearIcon" aria-hidden="true"></i>
+               </div>
+
+               <ul class="adminAutocomplete-list" id="adminAutocompleteList"></ul>
+            </div>
+
+            <div class="adminSellProduct-form_input">
+               <label for="adminProductBoughtPrice ">Amount Bought</label>
+
+               <div class="naira-input-container">
+                  <input id="adminProductBoughtPrice" type="text" placeholder="Select An Item Above"
+                     name="adminProductBoughtPrice" disabled>
+                  <span class="naira">&#x20A6;</span>
+               </div>
+            </div>
+
+            <div class="adminSellProduct-form_input">
+               <label for="productSellingPrice ">Amount To Sell</label>
+
+               <div class="naira-input-container">
+                  <input id="adminItemSellingPrice" type="text" placeholder="Select An Item Above"
+                     name="adminItemSellingPrice" disabled>
+                  <span class="naira">&#x20A6;</span>
+               </div>
+            </div>
+
+            <div class="adminSellProduct-form_input">
+               <label for="productSoldPrice ">Amount Sold</label>
+
+               <div class="naira-input-container">
+                  <input id="adminSoldProductPrice" type="text" placeholder="Enter Sold Price"
+                     name="adminSoldProductPrice" oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
+                  <span class="naira">&#x20A6;</span>
+               </div>
+            </div>
+
+            <div class="adminSellProduct-form_input salesPaymentType">
+               <label for="adminPaymentTypeOption">Select Payment Type:</label>
+
+               <select id="adminPaymentTypeOption" name="adminPaymentTypeOption">
+                  <option value="card">Card</option>
+                  <option value="transfer">Transfer</option>
+                  <option value="cash">Cash</option>
+               </select>
+            </div>
+
+            <div class="adminSellProduct-form_input sellStatus">
+               <label for="Status" class="heading-subtext">Status</label>
+
+               <div class="checkbox">
+                  <div class="checkbox-container">
+                     <input id="adminCompletedCheckbox" type="radio" name="adminSellStatus" required>
+                     <label for="adminCompletedCheckbox">Completed</label>
+                  </div>
+
+                  <div class="checkbox-container">
+                     <input id="adminBalanceCheckbox" type="radio" name="adminSellStatus" required>
+                     <label for="adminBalanceCheckbox">Balance</label>
+                  </div>
+               </div>
+            </div>
+
+            <div class="adminSellProduct-form_input balancePayment">
+               <label for="productBalanceAmount">Balance Amount</label>
+
+               <div class="naira-input-container">
+                  <input id="adminProductBalancePrice" type="text" placeholder="Enter Balance Amount"
+                     name="adminProductBalancePrice" oninput="this.value=this.value.replace(/[^0-9-]/g,'')" required>
+                  <span class="naira">&#x20A6;</span>
+               </div>
+            </div>
+
+            <div class="adminSellProduct-form_input">
+               <label for="productSoldRemark">Remarks</label>
+
+               <!-- <div class="naira-input-container"> -->
+               <input id="adminSoldProductRemark" type="text" placeholder="Remarks" name="adminSoldProductRemark"
+                  required>
+               <!-- </div> -->
+            </div>
+
+            <div class="center-button">
+               <button class="hero-btn-dark mb-2 addToCartButton has-spinner" type="submit">
+                  <span class="btn-text"> Add To Cart</span>
+                  <span class="btn-spinner hidden"></span>
+               </button>
+
+               <!-- <button class="hero-btn-dark adminSellProductActionButton">Sell</button> -->
+            </div>
+
+         </form>
+      </div>
+
+      <!-- Staff Sell Form -->
+
+      <div class="staffSellContainer staff-view card sellProduct">
+         <form class="sell-product-form" name="sell-product">
 
             <div>
                <h1 class="heading-text">Sell Item</h1>
@@ -234,11 +373,15 @@
             </div>
 
             <div class="center-button">
-               <button class="hero-btn-dark sellProductActionButton">Sell</button>
+               <button class="hero-btn-dark mb-2 addToCartButton has-spinner" type="submit">
+                  <span class="btn-text"> Add To Cart</span>
+                  <span class="btn-spinner hidden"></span>
+               </button>
+               <!-- <button class="hero-btn-dark sellProductActionButton">Sell</button> -->
             </div>
 
-         </div>
-      </form>
+         </form>
+      </div>
 
    </main>
 
