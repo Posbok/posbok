@@ -1,149 +1,385 @@
+import config from '../config';
 import {
   getProductCategories,
   getProductInventory,
 } from './apiServices/inventory/inventoryResources';
 import { getProducts } from './apiServices/sales/salesResources';
-import { formatAmountWithCommas } from './helper/helper';
+import { checkAndPromptCreateShop } from './apiServices/shop/shopResource';
+import {
+  formatAmountWithCommas,
+  getAmountForSubmission,
+  hideGlobalLoader,
+  populateBusinessShopDropdown,
+  showGlobalLoader,
+} from './helper/helper';
 
-const phoneAccessories = [
-  { name: 'Phone Case', price: '₦1000' },
-  { name: 'Screen Protector', price: '₦1500' },
-  { name: 'Charging Cable', price: '₦800' },
-  { name: 'Power Bank', price: '₦2000' },
-  { name: 'Bluetooth Earphones', price: '₦3000' },
-  { name: 'Wireless Charger', price: '₦1500' },
-  { name: 'Car Phone Holder', price: '₦1200' },
-  { name: 'Selfie Stick', price: '₦700' },
-  { name: 'Headphones', price: '₦2500' },
-  { name: 'Phone Stand', price: '₦600' },
-  { name: 'USB Adapter', price: '₦900' },
-  { name: 'Phone Grip', price: '₦300' },
-  { name: 'Earbuds', price: '₦1800' },
-  { name: 'Mobile Lens Kit', price: '₦2200' },
-  { name: 'Smartwatch Band', price: '₦1500' },
-  { name: 'AirPods', price: '₦1500' },
-  { name: 'Bluetooth Earphones', price: '₦800' },
-  { name: 'Charging Cable', price: '₦300' },
-  { name: 'Durable Phone Case', price: '₦1000' },
-  { name: 'Earbuds', price: '₦1800' },
-  { name: 'Fingerprint Lock', price: '₦2500' },
-  { name: 'Gaming Controller', price: '₦3500' },
-  { name: 'Headphones', price: '₦2500' },
-  { name: 'iPhone Case', price: '₦1000' },
-  { name: 'JBL Speakers', price: '₦5000' },
-  { name: 'Keyboard Cover', price: '₦800' },
-  { name: 'LED Phone Case', price: '₦2000' },
-  { name: 'Mobile Lens Kit', price: '₦2200' },
-  { name: 'Noise Cancelling Earphones', price: '₦3500' },
-  { name: 'OnePlus Charger', price: '₦1200' },
-  { name: 'PopSocket', price: '₦500' },
-  { name: 'Quick Charge Adapter', price: '₦1500' },
-  { name: 'Ring Holder Stand', price: '₦600' },
-  { name: 'Selfie Stick', price: '₦700' },
-  { name: 'Smartwatch Band', price: '₦1500' },
-  { name: 'Screen Protector', price: '₦1500' },
-  { name: 'USB Adapter', price: '₦900' },
-  { name: 'Wireless Charger', price: '₦1500' },
-  { name: 'Xiaomi Power Bank', price: '₦2500' },
-  { name: 'Zoom Lens', price: '₦3000' },
-  { name: 'Zipper Earphones', price: '₦1200' },
-  { name: 'Zigzag Phone Stand', price: '₦800' },
-  { name: '360 Degree Phone Holder', price: '₦1200' },
-  { name: 'Anti-Blue Light Glasses', price: '₦800' },
-  { name: 'Foldable Bluetooth Keyboard', price: '₦2500' },
-  { name: 'Game Controller Grip', price: '₦600' },
-  { name: 'Holographic Phone Case', price: '₦1800' },
-  { name: 'In-Ear Gaming Earphones', price: '₦2200' },
-  { name: 'Jogging Arm Band', price: '₦500' },
-  { name: 'Kevlar Charging Cable', price: '₦1200' },
-  { name: 'Laptop Stand for Phones', price: '₦1500' },
-  { name: 'Magnetic Car Mount', price: '₦700' },
-  { name: 'NFC Tags for Phones', price: '₦400' },
-  { name: 'Outdoor Waterproof Speaker', price: '₦3000' },
-  { name: 'Portable UV Phone Sanitizer', price: '₦3500' },
-  { name: 'Quad Lock Bike Mount', price: '₦2000' },
-  { name: 'Retractable Charging Cable', price: '₦1000' },
-  { name: 'Solar Power Bank', price: '₦4500' },
-  { name: 'Telescopic Camera Lens', price: '₦2800' },
-  { name: 'Universal Phone Holder Clip', price: '₦600' },
-  { name: 'Virtual Reality Headset', price: '₦3500' },
-  { name: 'Waterproof Phone Pouch', price: '₦800' },
-];
-
-let currentPage = 1;
-const pageSize = 25;
 let allProducts = [];
+let allCategories = [];
+let activeCategoryId = null; // null means "All"
 
-const productInput = document.getElementById('productInput');
-const autocompleteList = document.getElementById('autocompleteList');
-const priceInput = document.getElementById('itemSellingPrice');
+const userData = config.userData;
+const dummyShopId = config.dummyShopId;
+let parsedUserData = null;
+parsedUserData = userData ? JSON.parse(userData) : null;
 
-productInput.addEventListener('input', () => {
-  if (productInput.value.length > 0) {
-    clearIcon.classList.add('show');
-  } else {
-    clearIcon.classList.remove('show');
+const isAdmin = parsedUserData?.accountType === 'ADMIN';
+const isStaff = parsedUserData?.accountType === 'STAFF';
+const shopId = parsedUserData?.shopId;
+
+const searchSellProdutItem = document.getElementById(
+  isAdmin ? 'adminSearchSellProdutItem' : 'searchSellProdutItem'
+);
+
+const sellProductCategorySection = document.querySelector(
+  isAdmin ? '.adminSellProductCategory-section' : '.sellProductCategory-section'
+);
+
+const sellProductName = document.querySelector(
+  isAdmin ? '.adminSellProductName' : '.sellProductName'
+);
+const productInput = document.getElementById(
+  isAdmin ? 'adminProductInput' : 'productInput'
+);
+const autocompleteList = document.getElementById(
+  isAdmin ? 'adminAutocompleteList' : 'autocompleteList'
+);
+const productBoughtPrice = document.getElementById(
+  isAdmin ? 'adminProductBoughtPrice' : 'productBoughtPrice'
+);
+const itemSellingprice = document.getElementById(
+  isAdmin ? 'adminItemSellingPrice' : 'itemSellingPrice'
+);
+
+const sellProductShopDropdown = document.getElementById(
+  'sellProductShopDropdown'
+);
+
+const adminSellContainer = document.querySelector('.adminSellContainer');
+const staffSellContainer = document.querySelector('.staffSellContainer');
+
+// Initial display of all products & Categories
+if (isStaff) {
+  displayAllProducts();
+  displayAllCategories();
+} else {
+  //   displayAllProducts();
+  //   displayAllCategories();
+}
+
+if (isAdmin && adminSellContainer) {
+  if (adminSellContainer) adminSellContainer.style.display = 'block';
+  if (staffSellContainer) staffSellContainer.innerHTML = '';
+  if (staffSellContainer) staffSellContainer.style.display = 'none';
+
+  async function loadShopDropdown() {
+    try {
+      showGlobalLoader();
+      const { enrichedShopData } = await checkAndPromptCreateShop();
+      populateBusinessShopDropdown(enrichedShopData, 'sellProductShopDropdown');
+
+      syncDropdownWithCartShop();
+
+      hideGlobalLoader();
+    } catch (err) {
+      hideGlobalLoader();
+      console.error('Failed to load dropdown:', err.message);
+    }
   }
-});
 
-// Clear the input field when the "X" icon is clicked
-clearIcon.addEventListener('click', () => {
-  productInput.value = '';
-  clearIcon.classList.remove('show');
-  productInput.focus();
-});
+  loadShopDropdown();
+} else {
+  if (adminSellContainer) adminSellContainer.innerHTML = '';
+  if (adminSellContainer) adminSellContainer.style.display = 'none';
+  if (staffSellContainer) staffSellContainer.style.display = 'block';
+}
 
-// Initial display of all products
-displayAllProducts();
-
-async function fetchAllProducts() {
+async function fetchAllProducts(shopId) {
   let products = [];
 
   try {
-    const productInventoryData = await getProductInventory(91); // Fetch products for current page
-    const productCategoryData = await getProductCategories(91); // Fetch products for current page
+    const productInventoryData = await getProductInventory(shopId); // Fetch products
 
-    console.log(`Fetching product of ${productInventoryData}`);
-
-    if (productInventoryData && productInventoryData.data) {
-      products = products.concat(productInventoryData.data); // Add current page data to all products array
+    if (productInventoryData) {
+      // console.log(`Fetching product inventory:`, productInventoryData.data);
+      products = products.concat(productInventoryData.data); // Add data to all products array
     }
 
-    // Check if there are more pages
-    morePages = page < productInventoryData;
-    page++; // Increment page for the next request
-    console.log(products);
+    //  console.log('Products', products);
   } catch (error) {
     console.error('Error fetching products:', error);
-    morePages = false; // Exit loop if there's an error
+    throw error;
   }
 
-  console.log(products);
+  //   console.log(products);
   return products;
 }
 
+async function fetchAllCategories() {
+  let categories = [];
+
+  try {
+    const productCategoryData = await getProductCategories(
+      isAdmin ? sellProductShopDropdown.value : shopId
+    ); // Fetch Categories
+
+    if (productCategoryData) {
+      // console.log(`Fetching product categories:`, productCategoryData.data);
+      categories = categories.concat(productCategoryData.data); // Add data to all Categories array
+    }
+
+    //  console.log('Categories', categories);
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    throw error;
+  }
+
+  //   console.log(categories);
+  return categories;
+}
+
+const adminSellProductSearchSection = document.querySelector(
+  '.adminSellProductSearch-section'
+);
+const adminSellProductCategorySection = document.querySelector(
+  '.adminSellProductCategory-section'
+);
+const adminSellProductName = document.querySelector('.adminSellProductName');
+const adminAutocompleteList = document.getElementById('adminAutocompleteList');
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (adminSellProductSearchSection)
+    adminSellProductSearchSection.style.display = 'none';
+  if (adminSellProductCategorySection)
+    adminSellProductCategorySection.style.display = 'none';
+  if (adminSellProductName) adminSellProductName.style.display = 'none';
+  if (adminAutocompleteList) adminAutocompleteList.style.display = 'none';
+});
+
+if (isAdmin && sellProductShopDropdown) {
+  sellProductShopDropdown.addEventListener('change', () => {
+    const selectedShopId = sellProductShopDropdown.value;
+
+    const adminSellProductSearchSection = document.querySelector(
+      '.adminSellProductSearch-section'
+    );
+    const adminSellProductCategorySection = document.querySelector(
+      '.adminSellProductCategory-section'
+    );
+    const adminSellProductName = document.querySelector(
+      '.adminSellProductName'
+    );
+    const adminAutocompleteList = document.getElementById(
+      'adminAutocompleteList'
+    );
+
+    if (!selectedShopId) {
+      // Hide sections if no shop selected
+      if (adminSellProductSearchSection)
+        adminSellProductSearchSection.style.display = 'none';
+      if (adminSellProductCategorySection)
+        adminSellProductCategorySection.style.display = 'none';
+      if (adminSellProductName) adminSellProductName.style.display = 'none';
+      if (adminAutocompleteList) adminAutocompleteList.style.display = 'none';
+      return; // Stop execution if shop is empty
+    }
+
+    // Show sections
+    if (adminSellProductSearchSection)
+      adminSellProductSearchSection.style.display = 'block';
+    if (adminSellProductCategorySection)
+      adminSellProductCategorySection.style.display = 'block';
+    //  if (adminSellProductName) adminSellProductName.style.display = 'block';
+    //  if (adminAutocompleteList) adminAutocompleteList.style.display = 'block';
+
+    // Re-fetch products and categories
+    displayAllProducts();
+    displayAllCategories();
+  });
+}
+
+// if (isAdmin && sellProductShopDropdown) {
+//   sellProductShopDropdown.addEventListener('change', () => {
+//     if (sellProductShopDropdown.value === '') {
+//       const adminSellProductSearchSection = document.querySelector(
+//         '.adminSellProductSearch-section'
+//       );
+//       const adminSellProductCategorySection = document.querySelector(
+//         '.adminSellProductCategory-section'
+//       );
+
+//       console.log('object');
+
+//       if (adminSellProductSearchSection) {
+//         adminSellProductSearchSection.style.display = 'none';
+//       }
+//       if (adminSellProductCategorySection) {
+//         adminSellProductCategorySection.style.display = 'none';
+//       }
+//     }
+//     displayAllProducts(); // Re-fetch based on selected shop
+//     displayAllCategories(); // Re-fetch based on selected shop
+
+//     //  const allBtn = sellProductCategorySection.querySelector(
+//     //    '[data-category-id="all"]'
+//     //  );
+//     //  if (allBtn) allBtn.click();
+//   });
+// }
+
 async function displayAllProducts() {
   try {
-    allProducts = await fetchAllProducts(); // Fetch and store all products
+    showGlobalLoader();
 
-    console.log(`Total products fetched: ${allProducts.length}`);
+    const selectedShopId =
+      isAdmin && sellProductShopDropdown
+        ? sellProductShopDropdown.value
+        : shopId;
+
+    allProducts = await fetchAllProducts(selectedShopId); // Fetch and store all products
+
+    console.log(`Total products fetched:`, allProducts);
 
     updateAutocompleteList(allProducts); // Populate the autocomplete dropdown with all products
 
     // Autocomplete filter on input
-    productInput.addEventListener('input', function () {
-      const inputValue = productInput.value.toLowerCase();
-      const filteredProducts = allProducts.filter((product) =>
-        product.name.toLowerCase().includes(inputValue)
-      );
+    searchSellProdutItem.addEventListener('input', function () {
+      const inputValue = searchSellProdutItem.value.toLowerCase();
+
+      if (inputValue.value === '') {
+        sellProductName.style.display = 'none';
+        autocompleteList.style.display = 'none';
+        return;
+      } else if (inputValue.length > 0) {
+        sellProductName.style.display = 'block';
+        autocompleteList.style.display = 'block';
+
+        let filteredProducts = allProducts;
+
+        // Filter by selected category (if any)
+        if (activeCategoryId !== null) {
+          filteredProducts = filteredProducts.filter(
+            (product) => product.Product.ProductCategory.id === activeCategoryId
+          );
+        }
+
+        // Further filter by input value
+        filteredProducts = filteredProducts.filter(
+          (product) =>
+            product.Product.name.toLowerCase().includes(inputValue) ||
+            product.Product.description.toLowerCase().includes(inputValue)
+        );
+
+        updateAutocompleteList(filteredProducts);
+
+        return;
+      } else {
+        sellProductName.style.display = 'none';
+        autocompleteList.style.display = 'none';
+        return;
+      }
+    });
+
+    //  searchSellProdutItem.addEventListener('click', function () {
+    //    autocompleteList.style.display = 'block';
+    //  });
+  } catch (error) {
+    console.error('Error displaying products:', error);
+  } finally {
+    hideGlobalLoader();
+  }
+}
+
+async function displayAllCategories() {
+  try {
+    showGlobalLoader();
+
+    // Clear old category buttons
+    sellProductCategorySection.innerHTML = '';
+    activeCategoryId = null; // Reset category filter
+
+    allCategories = await fetchAllCategories(); // Fetch and store all Categories
+
+    console.log(`Total Categories fetched:`, allCategories);
+
+    const allBtn = document.createElement('button');
+    allBtn.classList.add('sellProductCategoryBtn');
+    allBtn.type = 'button';
+    allBtn.textContent = 'All';
+    allBtn.dataset.categoryId = 'all';
+
+    allBtn.addEventListener('click', function () {
+      document.querySelectorAll('.sellProductCategoryBtn').forEach((btn) => {
+        btn.classList.remove('active');
+      });
+
+      allBtn.classList.add('active');
+      activeCategoryId = null; // Reset filter to all
+
+      sellProductName.style.display = 'block';
+      autocompleteList.style.display = 'block';
+
+      let filteredProducts = allProducts;
+
+      const inputValue = searchSellProdutItem.value.toLowerCase().trim();
+      if (inputValue.length > 0) {
+        filteredProducts = filteredProducts.filter(
+          (product) =>
+            product.Product.name.toLowerCase().includes(inputValue) ||
+            product.Product.description.toLowerCase().includes(inputValue)
+        );
+      }
+
       updateAutocompleteList(filteredProducts);
     });
 
-    productInput.addEventListener('click', function () {
-      autocompleteList.style.display = 'block';
+    sellProductCategorySection.appendChild(allBtn);
+
+    allCategories.forEach((category) => {
+      const categoryBtn = document.createElement('button');
+      categoryBtn.classList.add('sellProductCategoryBtn');
+      categoryBtn.type = 'button';
+      categoryBtn.textContent = category.name;
+      categoryBtn.dataset.categoryId = category.id;
+
+      categoryBtn.addEventListener('click', function () {
+        // Remove active class from all other buttons
+        document.querySelectorAll('.sellProductCategoryBtn').forEach((btn) => {
+          btn.classList.remove('active');
+        });
+
+        // Toggle current button as active
+        categoryBtn.classList.add('active');
+        activeCategoryId = parseInt(categoryBtn.dataset.categoryId);
+
+        sellProductName.style.display = 'block';
+        autocompleteList.style.display = 'block';
+
+        const categoryId = parseInt(categoryBtn.dataset.categoryId);
+
+        let filteredProducts = allProducts.filter(
+          //  (product) => product.Product.ProductCategory.id === categoryId
+          (product) => product.Product.ProductCategory.id === activeCategoryId
+        );
+
+        const inputValue = searchSellProdutItem.value.toLowerCase().trim();
+
+        if (inputValue.length > 0) {
+          filteredProducts = filteredProducts.filter(
+            (product) =>
+              product.Product.name.toLowerCase().includes(inputValue) ||
+              product.Product.description.toLowerCase().includes(inputValue)
+          );
+        }
+
+        updateAutocompleteList(filteredProducts);
+      });
+
+      sellProductCategorySection.appendChild(categoryBtn);
     });
   } catch (error) {
     console.error('Error displaying products:', error);
+  } finally {
+    hideGlobalLoader();
   }
 }
 
@@ -159,12 +395,23 @@ function updateAutocompleteList(products) {
   } else {
     products.forEach((product) => {
       const listItem = document.createElement('li');
-      listItem.textContent = product.name;
-      listItem.classList.add('autocomplete-list-item');
+      // listItem.textContent = product.Product.name;
+      // listItem.classList.add('autocomplete-list-item');
+      listItem.innerHTML = `         
+         <li class="autocomplete-list-item">
+            <p>${product.Product.name}</p>
+            <small>${product.Product.description}</span>
+         </li>
+         `;
 
       listItem.addEventListener('click', function () {
-        productInput.value = product.name;
-        priceInput.value = formatAmountWithCommas(product.amount_to_sell);
+        productInput.value = product.Product.name;
+        productBoughtPrice.value = formatAmountWithCommas(
+          product.Product.purchase_price
+        );
+        itemSellingprice.value = formatAmountWithCommas(
+          product.Product.selling_price
+        );
         autocompleteList.style.display = 'none';
       });
       autocompleteList.appendChild(listItem);
@@ -185,7 +432,7 @@ function updateAutocompleteList(products) {
 //       listItem.classList.add('autocomplete-list-item');
 
 //       listItem.addEventListener('click', function () {
-//         productInput.value = product.name;
+//         searchSellProdutItem.value = product.name;
 //         priceInput.value = formatAmountWithCommas(product.amount_to_sell);
 //         autocompleteList.style.display = 'none';
 //       });
@@ -194,12 +441,12 @@ function updateAutocompleteList(products) {
 //     });
 
 //     // Autocompelte filter
-//     productInput.addEventListener('click', function () {
+//     searchSellProdutItem.addEventListener('click', function () {
 //       autocompleteList.style.display = 'block';
 //     });
 
-//     productInput.addEventListener('input', function () {
-//       const inputValue = productInput.value.toLowerCase();
+//     searchSellProdutItem.addEventListener('input', function () {
+//       const inputValue = searchSellProdutItem.value.toLowerCase();
 //       const filteredProducts = products.filter((product) =>
 //         product.name.toLowerCase().includes(inputValue)
 //       );
@@ -219,7 +466,7 @@ function updateAutocompleteList(products) {
 //           listItem.classList.add('autocomplete-list-item');
 
 //           listItem.addEventListener('click', function () {
-//             productInput.value = product.name;
+//             searchSellProdutItem.value = product.name;
 //             priceInput.value = formatAmountWithCommas(product.amount_to_sell);
 //             autocompleteList.innerHTML = '';
 //           });
@@ -233,98 +480,116 @@ function updateAutocompleteList(products) {
 // }
 
 // Close the suggestions list when clicking outside
-document.addEventListener('click', function (event) {
-  if (!event.target.matches('#productInput')) {
-    autocompleteList.style.display = 'none';
-  }
-});
+// document.addEventListener('click', function (event) {
+//   if (!event.target.matches('#searchSellProdutItem')) {
+//     autocompleteList.style.display = 'none';
+//   }
+// });
 
 // JS for the checkboxes and selling of an item
-let checkboxStatus;
-const balancePaymentInput = document.getElementById('productBalancePrice');
+// let checkboxStatus;
+// // const balancePaymentInput = document.getElementById('productBalancePrice');
 
-document.addEventListener('DOMContentLoaded', function () {
-  const completedCheckbox = document.getElementById('completedCheckbox');
-  const balanceCheckbox = document.getElementById('balanceCheckbox');
-  const balancePayment = document.querySelector('.balancePayment');
-  const balancePaymentInput = document.getElementById('productBalancePrice');
-  const checkboxes = document.querySelectorAll('input[type="radio"]');
+// document.addEventListener('DOMContentLoaded', function () {
+//   const completedCheckbox = document.getElementById(
+//     isAdmin ? 'adminCompletedCheckbox' : 'completedCheckbox'
+//   );
+//   const balanceCheckbox = document.getElementById(
+//     isAdmin ? 'adminBalanceCheckbox' : 'balanceCheckbox'
+//   );
+//   const balancePayment = document.querySelector('.balancePayment');
+//   const balancePaymentInput = document.getElementById(
+//     isAdmin ? 'adminProductBalancePrice' : 'productBalancePrice'
+//   );
+//   const checkboxes = document.querySelectorAll('input[type="radio"]');
 
-  function updateStatus() {
-    if (completedCheckbox.checked) {
-      checkboxStatus = 'Completed';
-      balancePayment.style.display = 'none';
-      balancePaymentInput.value = '';
-      balancePaymentInput.disabled = true;
-    } else {
-      checkboxStatus = 'Balance';
-      balancePayment.style.display = 'block';
-      balancePaymentInput.disabled = false;
-    }
-  }
+//   function updateStatus() {
+//     if (completedCheckbox.checked) {
+//       checkboxStatus = 'Completed';
+//       balancePayment.style.display = 'none';
+//       balancePaymentInput.value = '';
+//       balancePaymentInput.disabled = true;
+//     } else {
+//       checkboxStatus = 'Balance';
+//       balancePayment.style.display = 'block';
+//       balancePaymentInput.disabled = false;
+//     }
+//   }
 
-  updateStatus();
+//   updateStatus();
 
-  checkboxes.forEach((checkbox) => {
-    checkbox.addEventListener('change', function () {
-      checkboxes.forEach((otherCheckbox) => {
-        if (otherCheckbox !== checkbox) {
-          otherCheckbox.checked = false;
-          otherCheckbox.removeAttribute('required');
-        }
-      });
+//   checkboxes.forEach((checkbox) => {
+//     checkbox.addEventListener('change', function () {
+//       checkboxes.forEach((otherCheckbox) => {
+//         if (otherCheckbox !== checkbox) {
+//           otherCheckbox.checked = false;
+//           otherCheckbox.removeAttribute('required');
+//         }
+//       });
 
-      if (checkbox === completedCheckbox) {
-        completedCheckbox.checked = true;
-        balancePayment.style.display = 'none';
-        balancePaymentInput.disabled = true;
-        balancePaymentInput.value = '';
+//       if (checkbox === completedCheckbox) {
+//         completedCheckbox.checked = true;
+//         balancePayment.style.display = 'none';
+//         balancePaymentInput.disabled = true;
+//         balancePaymentInput.value = '';
 
-        checkboxStatus = 'Completed';
-      } else {
-        balanceCheckbox.checked = true;
-        balancePayment.style.display = 'block';
-        balancePaymentInput.disabled = false;
-        checkboxStatus = 'Balance';
-      }
-      updateStatus();
-    });
-  });
+//         checkboxStatus = 'Completed';
+//       } else {
+//         balanceCheckbox.checked = true;
+//         balancePayment.style.display = 'block';
+//         balancePaymentInput.disabled = false;
+//         checkboxStatus = 'Balance';
+//       }
+//       updateStatus();
+//     });
+//   });
 
-  balancePaymentInput.addEventListener('input', function () {
-    const inputValue = balancePaymentInput.value.trim(); // Trim to remove leading/trailing spaces
+//   balancePaymentInput.addEventListener('input', function () {
+//     const inputValue = balancePaymentInput.value.trim(); // Trim to remove leading/trailing spaces
 
-    if (
-      inputValue === '-' ||
-      (!isNaN(inputValue) && parseFloat(inputValue) >= 0)
-    ) {
-      balanceCheckbox.checked = true;
-      completedCheckbox.checked = false;
-      completedCheckbox.removeAttribute('required');
-      checkboxStatus = 'Balance';
-    } else {
-      return;
+//     if (
+//       inputValue === '-' ||
+//       (!isNaN(inputValue) && parseFloat(inputValue) >= 0)
+//     ) {
+//       balanceCheckbox.checked = true;
+//       completedCheckbox.checked = false;
+//       completedCheckbox.removeAttribute('required');
+//       checkboxStatus = 'Balance';
+//     } else {
+//       return;
 
-      // completedCheckbox.checked = true;
-      // balanceCheckbox.checked = false;
-      // checkboxStatus = 'Completed';
-      // balancePayment.style.display = 'none';
-      // balancePaymentInput.disabled = true;
+//       // completedCheckbox.checked = true;
+//       // balanceCheckbox.checked = false;
+//       // checkboxStatus = 'Completed';
+//       // balancePayment.style.display = 'none';
+//       // balancePaymentInput.disabled = true;
 
-      balanceCheckbox.checked = false;
-      completedCheckbox.checked = false;
-      checkboxStatus = 'Invalid';
-    }
+//       balanceCheckbox.checked = false;
+//       completedCheckbox.checked = false;
+//       checkboxStatus = 'Invalid';
+//     }
 
-    updateStatus();
-  });
-});
+//     updateStatus();
+//   });
+// });
 
 // JS for Selling Products and adding to localStorage
-const soldProductName = document.getElementById('productInput');
-const soldProductPrice = document.getElementById('soldProductPrice');
-const productBalancePrice = document.getElementById('productBalancePrice');
-const soldProductRemark = document.getElementById('soldProductRemark');
+const soldProductName = document.getElementById(
+  isAdmin ? 'adminProductInput' : 'productInput'
+);
+const soldProductPrice = document.getElementById(
+  isAdmin ? 'adminSoldProductPrice' : 'soldProductPrice'
+);
+const soldProductQuantity = document.getElementById(
+  isAdmin ? 'adminSoldProductQuantity' : 'soldProductQuantity'
+);
+
+// const productBalancePrice = document.getElementById(
+//   isAdmin ? '' : 'productBalancePrice'
+// );
+// const soldProductRemark = document.getElementById(
+//   isAdmin ? '' : 'soldProductRemark'
+// );
 
 function handleSellProduct() {
   let soldProductNameInput = soldProductName.value;
@@ -356,27 +621,269 @@ function handleSellProduct() {
   return soldProductFormData;
 }
 
-const sellProductForm = document.querySelector('.sell-product-form');
+function handleAddToCart() {
+  let soldProductNameInput = soldProductName.value;
+  let soldProductPriceInput = Number(
+    getAmountForSubmission(soldProductPrice.value)
+  );
+  let soldProductQuantityInput = Number(soldProductQuantity.value);
+  let shopId = isAdmin ? sellProductShopDropdown.value : parsedUserData.shopId;
 
-if (sellProductForm) {
-  sellProductForm.addEventListener('submit', function (e) {
-    const balancePayment = document.querySelector('.balancePayment');
-    const balancePaymentInput = document.getElementById('productBalancePrice');
+  const storedData =
+    JSON.parse(localStorage.getItem('addToCartFormData')) || [];
 
-    e.preventDefault();
-    handleSellProduct();
+  // Ensure shopId consistency
+  if (storedData.length > 0 && storedData[0].shopId !== shopId) {
+    alert(
+      'Cannot add item from a different shop. Clear cart or switch back to original shop.'
+    );
+    return;
+  }
 
-    soldProductName.value = '';
-    priceInput.value = '';
-    soldProductPrice.value = '';
-    productBalancePrice.value = '';
-    soldProductRemark.value = '';
-    completedCheckbox.checked = false;
-    balanceCheckbox.checked = false;
-    balancePayment.style.display = 'block';
-    balancePaymentInput.disabled = false;
+  const addToCartFormData = {
+    soldProductNameInput,
+    soldProductPriceInput,
+    soldProductQuantityInput,
+    shopId,
+  };
+
+  const allCartData = [addToCartFormData, ...storedData];
+
+  localStorage.setItem('addToCartFormData', JSON.stringify(allCartData));
+
+  return addToCartFormData;
+}
+
+export function addProductToCart() {
+  const adminAddToCartForm = document.querySelector(
+    isAdmin ? '.adminAddToCartForm' : '.addToCartForm'
+  );
+
+  if (!adminAddToCartForm || adminAddToCartForm.dataset.bound === 'true')
+    return;
+
+  adminAddToCartForm.dataset.bound = 'true';
+
+  if (adminAddToCartForm) {
+    adminAddToCartForm.addEventListener('submit', function (e) {
+      showGlobalLoader();
+      e.preventDefault();
+      handleAddToCart();
+
+      soldProductName.value = '';
+      soldProductPrice.value = '';
+      soldProductQuantity.value = '';
+      if (searchSellProdutItem) searchSellProdutItem.value = '';
+      if (productBoughtPrice) productBoughtPrice.value = '';
+      if (itemSellingprice) itemSellingprice.value = '';
+
+      if (adminSellProductName) adminSellProductName.style.display = 'none';
+      if (adminAutocompleteList) adminAutocompleteList.style.display = 'none';
+
+      hideGlobalLoader();
+    });
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  addProductToCart();
+});
+
+const cartBtn = document.querySelector('.cartIconDiv');
+const cartSlider = document.querySelector('.cart-slider-content');
+const cartOverlay = document.querySelector('.cart-slider-overlay');
+const closeCartBtn = document.querySelector('.close-cart-btn');
+
+cartBtn.addEventListener('click', () => {
+  cartSlider.classList.add('open');
+  cartOverlay.classList.add('visible');
+  renderCartItemsFromStorage();
+});
+
+// cartBtn.click();
+
+closeCartBtn.addEventListener('click', () => {
+  cartSlider.classList.remove('open');
+  cartOverlay.classList.remove('visible');
+});
+
+cartOverlay.addEventListener('click', () => {
+  cartSlider.classList.remove('open');
+  cartOverlay.classList.remove('visible');
+});
+
+function renderCartItemsFromStorage() {
+  const cart = JSON.parse(localStorage.getItem('addToCartFormData')) || [];
+  const container = document.querySelector('.cart-items-container');
+  updateCartCounter();
+
+  // Clear existing items
+  container.innerHTML = '';
+
+  if (cart.length === 0) {
+    container.innerHTML = <p>Your cart is empty.</p>;
+    return;
+  }
+
+  cart.forEach((item, index) => {
+    const itemDiv = document.createElement('div');
+    itemDiv.classList.add('cart-item');
+
+    itemDiv.innerHTML = `
+      <div class="item-header">
+        <h2 class="item-name">${item.soldProductNameInput}</h2>
+        <button class="remove-item-btn" data-index="${index}">&times;</button>
+      </div>
+      <div class="item-details">
+        <h2 class="unit-price">₦${item.soldProductPriceInput.toLocaleString()}</h2>
+        <div class="quantity-control">
+          <button class="decrease-btn" data-index="${index}">-</button>
+             <span >${item.soldProductQuantityInput}</span>
+             <button class="increase-btn" data-index="${index}">+</button>
+          </div>
+           <h2 class="sum-total">₦${(
+             item.soldProductPriceInput * item.soldProductQuantityInput
+           ).toLocaleString()}</h2>
+      </div>`;
+
+    container.appendChild(itemDiv);
+  });
+
+  attachCartListeners(); // attach logic for +, -, remove
+}
+
+const checkoutBtn = document.querySelector('.proceed-btn');
+const backToCartBtn = document.querySelector('#backToCart');
+const cartSliderContent = document.querySelector('.cart-slider-content');
+
+checkoutBtn.addEventListener('click', () => {
+  cartSliderContent.classList.add('checkout-active');
+});
+
+backToCartBtn.addEventListener('click', () => {
+  cartSliderContent.classList.remove('checkout-active');
+});
+
+function attachCartListeners() {
+  // Remove item
+  document.querySelectorAll('.remove-item-btn').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const index = e.target.dataset.index;
+      const cart = JSON.parse(localStorage.getItem('addToCartFormData')) || [];
+      cart.splice(index, 1);
+      localStorage.setItem('addToCartFormData', JSON.stringify(cart));
+      renderCartItemsFromStorage(); // re-render
+    });
+  });
+
+  // Increase quantity
+  document.querySelectorAll('.increase-btn').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const index = e.target.dataset.index;
+      const cart = JSON.parse(localStorage.getItem('addToCartFormData')) || [];
+      cart[index].soldProductQuantityInput += 1;
+      localStorage.setItem('addToCartFormData', JSON.stringify(cart));
+      renderCartItemsFromStorage(); // re-render
+    });
+  });
+
+  // Decrease quantity
+  document.querySelectorAll('.decrease-btn').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const index = e.target.dataset.index;
+      const cart = JSON.parse(localStorage.getItem('addToCartFormData')) || [];
+      if (cart[index].soldProductQuantityInput > 1) {
+        cart[index].soldProductQuantityInput -= 1;
+        localStorage.setItem('addToCartFormData', JSON.stringify(cart));
+        renderCartItemsFromStorage(); // re-render
+      }
+    });
   });
 }
+
+let currentSelectedShopId = ''; // Track previously selected shop
+
+//  Sync dropdown on load
+// function syncDropdownWithCartShop() {
+//   const cart = JSON.parse(localStorage.getItem('addToCartFormData')) || [];
+//   const dropdown = document.getElementById('sellProductShopDropdown');
+
+//   if (cart.length > 0 && cart[0].shopId) {
+//     dropdown.value = cart[0].shopId;
+//     currentSelectedShopId = cart[0].shopId;
+
+//     // Fetch products for the already selected shop
+//     fetchAllProducts(currentSelectedShopId).then((products) => {
+//       allProducts = products;
+//     });
+//   }
+// }
+
+function syncDropdownWithCartShop() {
+  const cart = JSON.parse(localStorage.getItem('addToCartFormData')) || [];
+  const dropdown = document.getElementById('sellProductShopDropdown');
+
+  if (cart.length > 0 && cart[0].shopId) {
+    const cartShopId = cart[0].shopId;
+
+    // Set the value of the dropdown
+    dropdown.value = cartShopId;
+    currentSelectedShopId = cartShopId;
+
+    // Optional: fetch products for that shop
+    fetchAllProducts(cartShopId).then((products) => {
+      allProducts = products;
+      displayAllProducts(); // or whatever your product render function is
+    });
+  }
+}
+
+// Run sync function immediately after DOM is ready
+// document.addEventListener('DOMContentLoaded', () => {
+//   syncDropdownWithCartShop();
+// });
+
+document
+  .getElementById('sellProductShopDropdown')
+  .addEventListener('change', async function (e) {
+    const selectedShopId = e.target.value;
+    const cart = JSON.parse(localStorage.getItem('addToCartFormData')) || [];
+
+    if (!selectedShopId) return;
+
+    if (cart.length > 0) {
+      const cartShopId = cart[0].shopId;
+
+      if (selectedShopId && selectedShopId !== cartShopId) {
+        const confirmed = confirm(
+          'Switching shop will clear your current cart. Do you want to proceed?'
+        );
+
+        if (confirmed) {
+          localStorage.removeItem('addToCartFormData');
+          currentSelectedShopId = selectedShopId;
+          allProducts = await fetchAllProducts(selectedShopId); // ✅ fetch new shop's products
+          displayAllProducts(); // ✅ re-render product UI
+        } else {
+          // Revert to the previous selection
+          e.target.value = cartShopId;
+          currentSelectedShopId = cartShopId;
+          allProducts = await fetchAllProducts(cartShopId); // ✅ fetch original shop's products
+          displayAllProducts(); // ✅ re-render product UI
+        }
+      } else {
+        // Same shop, proceed
+        currentSelectedShopId = selectedShopId;
+        allProducts = await fetchAllProducts(selectedShopId);
+        displayAllProducts();
+      }
+    } else {
+      // No cart yet, so we’re free to fetch products for selected shop
+      currentSelectedShopId = selectedShopId;
+      allProducts = await fetchAllProducts(selectedShopId); // ✅ fetch
+      displayAllProducts(); // ✅ render
+    }
+  });
 
 // // JS to dispaly Item to be sold
 // const sellButtons = document.querySelectorAll('.sellButton');

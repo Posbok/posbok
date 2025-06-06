@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+   <meta name="description" content="POSBOK" />
+
+   <link
+      href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400,400i,600|Nunito:300,300i,400,600&display=swap"
+      rel="stylesheet" />
+
+   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="css/style.css" />
+   <link rel="shortcut icon" type="image/png" href="img/favicon.png" />
+   <script src="https://kit.fontawesome.com/d0cbf0cdf0.js" crossorigin="anonymous"></script>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+   <script defer src="https://unpkg.com/smoothscroll-polyfill@0.4.4/dist/smoothscroll.min.js"></script>
+
+   <!-- <script defer type="module" src="JS/script.js"></script>
+   <script defer type="module" src="JS/reports.js"></script> -->
+   <!-- <script defer type="module" src="JS/goods.js"></script> -->
+
+
+   <script src="/dist/main.bundle.js" defer></script>
+   <script src="/dist/shops.bundle.js" defer></script>
+   <!-- <script src="dist/reports.bundle.js" defer></script> -->
+
+   <title>POSBOK &mdash;BUSINESS SYSTEM 1.0</title>
+   <link rel="icon" type="image/x-icon" href="/img/favicon.png">
+</head>
+
+<body class="container">
+
+   <nav class="sidebar">
+      <div class="sidebar-fixed">
+
+         <div class="sidebar-header">
+            <a href="/index.html" class="sidebar-header-link">
+               <img src="img/logo.png" alt="Logo" class="sidebar-header-logo" />
+               <span>POSBOK</span>
+            </a>
+         </div>
+
+         <ul class="side-nav">
+            <a href="/pos.html" class="side-nav_link" id="posNav">
+               <li class="side-nav_item ">
+                  <i class="fas fa-exchange-alt icon"></i>
+                  <span>POS</span>
+               </li>
+            </a>
+         </ul>
+
+         <ul class="side-nav">
+            <a href="/sell.html" class="side-nav_link" id="sellNav">
+               <li class="side-nav_item ">
+                  <i class="fas fa-cart-shopping icon"></i>
+                  <span>SELL</span>
+               </li>
+            </a>
+         </ul>
+
+         <!-- <ul class="side-nav">
+            <a href="/charging.html" class="side-nav_link">
+               <li class="side-nav_item">
+                  <i class="fas fa-bolt icon"></i>
+                  <span>CHARGING</span>
+               </li>
+            </a>
+         </ul>
+
+         <ul class="side-nav">
+            <a href="/simRegistration.html" class="side-nav_link">
+               <li class="side-nav_item ">
+                  <i class="fas fa-sim-card icon"></i>
+                  <span class="simReg-long">SIM REGISTRATION</span>
+                  <span class="simReg-short">SIM REG.</span>
+               </li>
+            </a>
+         </ul> -->
+
+         <ul class="side-nav">
+            <a href="/reports.html" class="side-nav_link" id="reportsNav">
+               <li class="side-nav_item ">
+                  <i class="fas fa-chart-pie icon"></i>
+                  <span>REPORTS</span>
+               </li>
+            </a>
+         </ul>
+
+         <ul class="side-nav">
+            <a href="/manage.html" class="side-nav_link" id="manageNav">
+               <li class="side-nav_item active">
+                  <i class="fa-solid fa-users-gear icon"></i>
+                  <span>MANAGE</span>
+               </li>
+            </a>
+         </ul>
+      </div>
+   </nav>
+
+
+   <main class="main">
+      <header class="main-heading card">
+         <div class="main-heading_intro">
+
+            <div>
+               <a href="/index.html">
+                  <img src="img/logo.png" alt="Logo" class="main-heading_logo" />
+               </a>
+            </div>
+
+            <h2 class="main-welcome">Welcome Back, <span class=" user-name"> </span></h2>
+         </div>
+
+         <div class="main-heading_left">
+
+            <button class="hero-btn-dark logoutButton">LOGOUT</button>
+            <i class="fa-solid fa-circle-user main-heading-profile--image"></i>
+         </div>
+      </header>
+
+      <div class="reports card">
+         <div class="reports-method">
+
+            <div class="adminHeader">
+               <h2 class="heading-subtext" style=""> Quick Actions </h2>
+
+               <button class="hero-btn-dark"> <a href="pos-management.html" class="button-link"></a>POS
+                  Management</button>
+
+               <button class="hero-btn-dark"> <a href="inventory.html" class="button-link"></a>Inventory</button>
+
+
+               <button class="hero-btn-dark"> <a href="staff-profile.html" class="button-link"></a>Staff
+                  Profile</button>
+
+               <button class="hero-btn-dark"> <a href="manage.html" class="button-link"></a>Manage</button>
+
+            </div>
+
+         </div>
+      </div>
+
+
+
+      <section class="shops card">
+         <div class="shops-method">
+            <h2 class="heading-text" style="margin-bottom: 1.5rem;">
+               Available SHops
+            </h2>
+
+            <!-- <div class="table-header" style="display: flex; flex-direction: column; width: max-content;"> -->
+            <div class="adminHeader">
+
+               <button class="hero-btn-dark openShopModalBtn" id="openShopModalBtn">
+                  <span class="btn-text">Create Shop</span>
+                  <span class="btn-spinner hidden"></span>
+               </button>
+
+            </div>
+            <!-- <h2 class="heading-subtext"> Staff Informations</h2> -->
+            <!-- </div> -->
+
+            <div class="shops-table-container">
+               <table class="shops-table">
+                  <thead>
+                     <tr class="table-header-row">
+                        <th class="py-1">S/N</th>
+                        <th class="py-1">Shop Name</th>
+                        <th class="py-1">Shop Location</th>
+                        <th class="py-1">Service Type</th>
+                        <th class="py-1">Shop Manager</th>
+                        <th class="py-1">Action</th>
+                     </tr>
+                  </thead>
+
+                  <tbody>
+
+                     <tr class="loading-row">
+                        <td colspan="6" class="table-error-text"></td>
+                     </tr>
+
+                     <!-- <tr class="table-body-row" id="item-list">
+                        <td class="py-1 shopSerialNumber">1</td>
+                        <td class="py-1 shopName">Shop 1
+                        <td class="py-1 shopLocation">Shop Address</td>
+                        <td class="py-1 shopServiceType">POS & SELL</td>
+                        <td class="py-1 shopManager">Shop Manager Name</td>
+
+                        <td class="py-1 action-buttons">
+
+                           <button class="hero-btn-outline editShopButton"><i
+                                 class="fa-solid fa-pen-to-square"></i></button>
+
+                           <button class="hero-btn-outline deleteShopButton"><i
+                                 class="fa-solid fa-trash-can"></i></button>
+                        </td>
+                     </tr>
+
+                     <tr class="table-body-row" id="item-list">
+                        <td class="py-1 shopSerialNumber">2</td>
+                        <td class="py-1 shopName">Shop 2
+                        <td class="py-1 shopLocation">Shop Address</td>
+                        <td class="py-1 shopServiceType">POS</td>
+                        <td class="py-1 shopManager">Shop Manager Name</td>
+
+                        <td class="py-1 action-buttons">
+
+                           <button class="hero-btn-outline editShopButton"><i
+                                 class="fa-solid fa-pen-to-square"></i></button>
+
+                           <button class="hero-btn-outline deleteShopButton"><i
+                                 class="fa-solid fa-trash-can"></i></button>
+                        </td>
+                     </tr> -->
+
+                  </tbody>
+               </table>
+
+               <!-- <div class="center-button mt-2">
+                  <button id="loadMoreButton" class="hero-btn-dark">Load More</button>
+               </div> -->
+
+            </div>
+         </div>
+      </section>
+   </main>
+
+   <form class="modal-form addPosCharge-form addPosChargeModal" id="addPosChargeModal" name="addPosCharge">
+      <div class="card addPosCharge modal">
+         <div>
+            <h1 class="heading-text">Configure POS Charges</h1>
+         </div>
+
+         <!-- POS Charges Transaction Type -->
+         <div class="modal-form_input">
+            <label for="addPosChargeTransactionType">TransactionType:</label>
+
+            <select id="addPosChargeTransactionType" class="form-control" required>
+               <option value="">Select Transaction Type</option>
+               <option value="withdrawal">Withdraw</option>
+               <option value="deposit">Deposit</option>
+               <option value="withdrawal_transfer">Withdrawal/Transfer</option>
+               <option value="bill_Payment">Bill Payment</option>
+            </select>
+         </div>
+
+         <!-- POS MIN Amount -->
+         <div class="modal-form_input">
+            <label for="addPosChargeMinAmount">Minimum Amount: </label>
+
+            <input id="addPosChargeMinAmount" type="text" placeholder="Enter Minimum Amount"
+               name="addPosChargeMinAmount" required>
+         </div>
+
+         <!-- POS MAX Amount -->
+         <div class="modal-form_input">
+            <label for="addPosChargeMaxAmount">Maximum Amount: </label>
+
+            <input id="addPosChargeMaxAmount" type="text" placeholder="Enter Maximum Amount"
+               name="addPosChargeMaxAmount" required>
+         </div>
+
+         <!-- POS Charge Amount -->
+         <div class="modal-form_input">
+            <label for="addPosChargeAmount">Charge Amount: </label>
+
+            <input id="addPosChargeAmount" type="text" placeholder="Enter Charge Amount" name="addPosChargeAmount"
+               required>
+         </div>
+
+         <div class="center-button">
+
+            <button class="hero-btn-dark addPosChargeBtn has-spinner">
+               <span class="btn-text">Add POS Charge</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <form class="modal-form addMachineFees-form addMachineFeesModal" id="addMachineFeesModal" name="addMachineFees">
+      <div class="card addMachineFees modal">
+         <div>
+            <h1 class="heading-text">Configure POS Machine Fees</h1>
+         </div>
+
+         <!-- POS Machine Fees MIN Amount -->
+         <div class="modal-form_input">
+            <label for="addMachineFeesMinAmount">Minimum Amount: </label>
+
+            <input id="addMachineFeesMinAmount" type="text" placeholder="Enter Minimum Amount"
+               name="addMachineFeesMinAmount" required>
+         </div>
+
+         <!-- POS Machine Fees MAX Amount -->
+         <div class="modal-form_input">
+            <label for="addMachineFeesMaxAmount">Maximum Amount: </label>
+
+            <input id="addMachineFeesMaxAmount" type="text" placeholder="Enter Maximum Amount"
+               name="addMachineFeesMaxAmount" required>
+         </div>
+
+         <!-- POS Machine Fees isPercentage -->
+         <div class="modal-form_input">
+            <label for="addMachineFeesPercentageType">Percentage:</label>
+
+            <select id="addMachineFeesPercentageType" class="form-control" required>
+               <option value="">Select Percentage</option>
+               <option value="true">True</option>
+               <option value="false">False</option>
+            </select>
+         </div>
+
+         <!-- POS Machine Fees Percentage -->
+         <div class="modal-form_input percentageRateDiv">
+            <label for="addMachineFeesPercentageRate">Percentage Rate: </label>
+
+            <input id="addMachineFeesPercentageRate" type="number" step="any" placeholder="Enter Percentage Rate"
+               name="addMachineFeesPercentageRate" required>
+         </div>
+
+         <!-- POS Machine Fees Amount -->
+         <div class="modal-form_input machineFeesAmountDiv">
+            <label for="addMachineFeesAmount">Fee Amount: </label>
+
+            <input id="addMachineFeesAmount" type="number" placeholder="Enter Fee Amount" name="addMachineFeesAmount"
+               required>
+         </div>
+
+         <div class="center-button">
+            <button class="hero-btn-dark addMachineFeeBtn has-spinner">
+               <span class="btn-text">Add Machine Fee</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <form class="modal-form createShopModal" name="modal" netlify>
+      <div class="card createShop modal">
+         <div>
+            <h1 class="heading-text">Create Shop</h1>
+         </div>
+
+         <!-- Use my Business Info -->
+         <div class="modal-form_input mb-1">
+            <div class="checkbox">
+               <div class="checkbox-container">
+                  <input id="useBusinessInfo" type="checkbox" name="useBusinessInfo">
+                  <label for="useBusinessInfo">Use my Business Info</label>
+               </div>
+            </div>
+         </div>
+
+
+         <!-- Shop Name -->
+         <div class="modal-form_input">
+            <label for="shopName">Shop Name</label>
+
+            <input id="shopName" type="text" placeholder="Enter Shop Name" name="shopName" required>
+         </div>
+
+         <!-- Shop Address -->
+         <div class="modal-form_input">
+            <label for="shopAddress">Shop Address</label>
+
+            <input id="shopAddress" type="text" placeholder="Enter Shop Address" name="shopAddress" required>
+         </div>
+
+         <!-- Service Type -->
+         <div class="modal-form_input mb-1">
+            <label for="serviceType" class="heading-subtext">Service Type</label>
+
+            <div class="checkbox">
+               <div class="checkbox-container">
+                  <input id="posShopCheckbox" type="radio" name="serviceType" value="POS_TRANSACTIONS">
+                  <label for="posShopCheckbox">POS</label>
+               </div>
+
+               <div class="checkbox-container">
+                  <input id="sellShopCheckbox" type="radio" name="serviceType" value="INVENTORY_SALES">
+                  <label for="sellShopCheckbox">SELL</label>
+               </div>
+
+               <div class="checkbox-container">
+                  <input id="posAndSellShopCheckbox" type="radio" name="serviceType" value="BOTH">
+                  <label for="posAndSellShopCheckbox">POS & SELL</label>
+               </div>
+            </div>
+         </div>
+
+         <!-- Assign Staff Checkbox -->
+         <div class="modal-form_input mb-1">
+            <div class="checkbox">
+               <div class="checkbox-container">
+                  <input id="assignStaffCheckbox" type="checkbox" name="assignStaff">
+                  <label for="assignStaffCheckbox">Assign a staff to this shop after creation</label>
+               </div>
+            </div>
+         </div>
+
+         <div class="center-button">
+            <button class="hero-btn-dark createShopSubmitButton has-spinner" type="submit">
+               <span class="btn-text">Create SHop</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <form class="modal-form adminUpdateShopDataModal" name="modal" netlify>
+      <div class="card adminUpdateShopData modal">
+         <div>
+            <h1 class="heading-text">Update Shop Data</h1>
+         </div>
+
+         <!-- Shop name -->
+         <div class="modal-form_input">
+            <label for="updateShopName">Shop Name</label>
+
+            <input id="updateShopName" type="text" placeholder="Enter Shop Name" name="updateShopName">
+         </div>
+
+         <!-- Shop Address -->
+         <div class="modal-form_input">
+            <label for="updateShopAddress">Shop Address</label>
+
+            <input id="updateShopAddress" type="text" placeholder="Enter Shop Address" name="updateShopAddress">
+         </div>
+
+         <!-- Shop Access Service -->
+         <div class="modal-form_input mb-1">
+            <label for="updateShopAccessType" class="heading-subtext">Access Type</label>
+
+            <div class="checkbox">
+               <div class="checkbox-container mb-1">
+                  <input id="updateShopPosCheckbox" type="radio" name="updateShopAccessType" value="POS_TRANSACTIONS">
+                  <label for="updateShopPosCheckbox">POS</label>
+               </div>
+
+               <div class="checkbox-container mb-1">
+                  <input id="updateShopSellCheckbox" type="radio" name="updateShopAccessType" value="INVENTORY_SALES">
+                  <label for="updateShopSellCheckbox">SELL</label>
+               </div>
+
+               <div class="checkbox-container mb-1">
+                  <input id="updateShopPosAndSellCheckbox" type="radio" name="updateShopAccessType" value="BOTH">
+                  <label for="updateShopPosAndSellCheckbox">POS & SELL</label>
+               </div>
+            </div>
+         </div>
+
+         <div class="center-button">
+            <button class="hero-btn-dark  updateShopBtn has-spinner" type="submit">
+               <span class="btn-text">Update Shop Details</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <div id="toast" class="toast">This is a toast message!</div>
+
+
+   <div id="global-loader" class="loader-overlay hidden">
+      <div class="spinner"></div>
+   </div>
+</body>
+
+</html>

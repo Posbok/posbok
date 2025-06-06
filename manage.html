@@ -28,8 +28,7 @@
 
 
    <script src="/dist/main.bundle.js" defer></script>
-   <script src="/dist/shops.bundle.js" defer></script>
-   <script src="/dist/pos.bundle.js" defer></script>
+   <script src="/dist/business.bundle.js" defer></script>
    <!-- <script src="dist/reports.bundle.js" defer></script> -->
 
    <title>POSBOK &mdash;BUSINESS SYSTEM 1.0</title>
@@ -141,6 +140,9 @@
                <button class="hero-btn-dark"> <a href="staff-profile.html" class="button-link"></a>Staff
                   Profile</button>
 
+               <button class="hero-btn-dark"> <a href="shop-management.html" class="button-link"></a>Shop
+                  Management</button>
+
             </div>
 
          </div>
@@ -148,206 +150,101 @@
 
       <!-- <button id="openShopModalBtn">Create Shop</button> -->
 
-      <section class="shops card">
+      <section class="businessDetails card">
          <div class="shops-method">
             <h2 class="heading-text" style="margin-bottom: 1.5rem;">
-               Available SHops
+               Business Details
             </h2>
 
             <!-- <div class="table-header" style="display: flex; flex-direction: column; width: max-content;"> -->
-            <div class="adminHeader">
 
-               <button class="hero-btn-dark openShopModalBtn" id="openShopModalBtn">
-                  <span class="btn-text">Create Shop</span>
-                  <span class="btn-spinner hidden"></span>
-               </button>
+            <!-- Business Name -->
+            <div class="business-form_input">
+               <label for="businessName">Business Name</label>
+
+               <input id="businessName" type="text" name="businessName" disabled>
+            </div>
+
+            <!-- Business address -->
+            <div class="business-form_input">
+               <label for="businessAddress">Business Address </label>
+
+               <input id="businessAddress" type="text" name="businessAddress" disabled>
+            </div>
+
+            <!-- Phone Number -->
+            <div class="business-form_input">
+               <label for="businessPhoneNumber">Phone Number </label>
+
+               <input id="businessPhoneNumber" type="text" name="businessPhoneNumber" disabled>
+            </div>
+
+            <!-- State Of Operation -->
+            <div class="business-form_input">
+               <label for="businessState">State Of Operatiton </label>
+
+               <input id="businessState" type="text" name="businessState" disabled>
+            </div>
+
+            <!-- CAC Reg Number -->
+            <div class="business-form_input">
+               <label for="businessCacRegNo">CAC Reg Number</label>
+
+               <input id="businessCacRegNo" type="text" name="businessCacRegNo" disabled>
+            </div>
+
+            <!-- Tax ID -->
+            <div class="business-form_input">
+               <label for="businessTaxId">Tax ID</label>
+
+               <input id="businessTaxId" type="text" name="businessTaxId" disabled>
+            </div>
+
+            <!-- NIN -->
+            <div class="business-form_input">
+               <label for="businessNin">NIN</label>
+
+               <input id="businessNin" type="number" name="businessNin" disabled>
+            </div>
+
+            <!-- Business Type -->
+            <div class="business-form_input mb-1">
+               <label for="businessType" class="heading-subtext">Business Type</label>
+
+
+               <input id="businessType" type="text" name="businessType" disabled>
+            </div>
+
+            <!-- Business Staff Size -->
+            <div class="business-form_input">
+               <label for="businessStaffSize">Staff Size</label>
+
+               <input id="businessStaffSize" type="number" name="businessStaffSize" disabled>
+            </div>
+
+            <!-- Version Preference -->
+            <div class="business-form_input  mb-1">
+               <label for="businessVersionPreference" class="heading-subtext">Version Preference</label>
+
+
+               <input id="businessVersionPreference" type="text" name="businessVersionPreference" disabled>
 
             </div>
-            <!-- <h2 class="heading-subtext"> Staff Informations</h2> -->
-            <!-- </div> -->
 
-            <div class="shops-table-container">
-               <table class="shops-table">
-                  <thead>
-                     <tr class="table-header-row">
-                        <th class="py-1">S/N</th>
-                        <th class="py-1">Shop Name</th>
-                        <th class="py-1">Shop Location</th>
-                        <th class="py-1">Service Type</th>
-                        <th class="py-1">Shop Manager</th>
-                        <th class="py-1">Action</th>
-                     </tr>
-                  </thead>
+         </div>
 
-                  <tbody>
+         <div class="center-button">
 
-                     <tr class="loading-row">
-                        <td colspan="6" class="table-error-text"></td>
-                     </tr>
-
-                     <!-- <tr class="table-body-row" id="item-list">
-                        <td class="py-1 shopSerialNumber">1</td>
-                        <td class="py-1 shopName">Shop 1
-                        <td class="py-1 shopLocation">Shop Address</td>
-                        <td class="py-1 shopServiceType">POS & SELL</td>
-                        <td class="py-1 shopManager">Shop Manager Name</td>
-
-                        <td class="py-1 action-buttons">
-
-                           <button class="hero-btn-outline editShopButton"><i
-                                 class="fa-solid fa-pen-to-square"></i></button>
-
-                           <button class="hero-btn-outline deleteShopButton"><i
-                                 class="fa-solid fa-trash-can"></i></button>
-                        </td>
-                     </tr>
-
-                     <tr class="table-body-row" id="item-list">
-                        <td class="py-1 shopSerialNumber">2</td>
-                        <td class="py-1 shopName">Shop 2
-                        <td class="py-1 shopLocation">Shop Address</td>
-                        <td class="py-1 shopServiceType">POS</td>
-                        <td class="py-1 shopManager">Shop Manager Name</td>
-
-                        <td class="py-1 action-buttons">
-
-                           <button class="hero-btn-outline editShopButton"><i
-                                 class="fa-solid fa-pen-to-square"></i></button>
-
-                           <button class="hero-btn-outline deleteShopButton"><i
-                                 class="fa-solid fa-trash-can"></i></button>
-                        </td>
-                     </tr> -->
-
-                  </tbody>
-               </table>
-
-               <!-- <div class="center-button mt-2">
-                  <button id="loadMoreButton" class="hero-btn-dark">Load More</button>
-               </div> -->
-
-            </div>
+            <button class="hero-btn-dark openUpdateBusinessModalBtn" id="openUpdateBusinessModalBtn">
+               <span class="btn-text">Update Business Details</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
          </div>
       </section>
 
    </main>
 
-   <form class="modal-form addPosCharge-form addPosChargeModal" id="addPosChargeModal" name="addPosCharge">
-      <div class="card addPosCharge modal">
-         <div>
-            <h1 class="heading-text">Configure POS Charges</h1>
-         </div>
-
-         <!-- POS Charges Transaction Type -->
-         <div class="modal-form_input">
-            <label for="addPosChargeTransactionType">TransactionType:</label>
-
-            <select id="addPosChargeTransactionType" class="form-control" required>
-               <option value="">Select Transaction Type</option>
-               <option value="withdrawal">Withdraw</option>
-               <option value="deposit">Deposit</option>
-               <option value="withdrawal_transfer">Withdrawal/Transfer</option>
-               <option value="bill_Payment">Bill Payment</option>
-            </select>
-         </div>
-
-         <!-- POS MIN Amount -->
-         <div class="modal-form_input">
-            <label for="addPosChargeMinAmount">Minimum Amount: </label>
-
-            <input id="addPosChargeMinAmount" type="text" placeholder="Enter Minimum Amount"
-               name="addPosChargeMinAmount" required>
-         </div>
-
-         <!-- POS MAX Amount -->
-         <div class="modal-form_input">
-            <label for="addPosChargeMaxAmount">Maximum Amount: </label>
-
-            <input id="addPosChargeMaxAmount" type="text" placeholder="Enter Maximum Amount"
-               name="addPosChargeMaxAmount" required>
-         </div>
-
-         <!-- POS Charge Amount -->
-         <div class="modal-form_input">
-            <label for="addPosChargeAmount">Charge Amount: </label>
-
-            <input id="addPosChargeAmount" type="text" placeholder="Enter Charge Amount" name="addPosChargeAmount"
-               required>
-         </div>
-
-         <div class="center-button">
-
-            <button class="hero-btn-dark addPosChargeBtn has-spinner">
-               <span class="btn-text">Add POS Charge</span>
-               <span class="btn-spinner hidden"></span>
-            </button>
-         </div>
-
-         <div class="close closeModal" id="">&times;</div>
-      </div>
-   </form>
-
-   <form class="modal-form addMachineFees-form addMachineFeesModal" id="addMachineFeesModal" name="addMachineFees">
-      <div class="card addMachineFees modal">
-         <div>
-            <h1 class="heading-text">Configure POS Machine Fees</h1>
-         </div>
-
-         <!-- POS Machine Fees MIN Amount -->
-         <div class="modal-form_input">
-            <label for="addMachineFeesMinAmount">Minimum Amount: </label>
-
-            <input id="addMachineFeesMinAmount" type="text" placeholder="Enter Minimum Amount"
-               name="addMachineFeesMinAmount" required>
-         </div>
-
-         <!-- POS Machine Fees MAX Amount -->
-         <div class="modal-form_input">
-            <label for="addMachineFeesMaxAmount">Maximum Amount: </label>
-
-            <input id="addMachineFeesMaxAmount" type="text" placeholder="Enter Maximum Amount"
-               name="addMachineFeesMaxAmount" required>
-         </div>
-
-         <!-- POS Machine Fees isPercentage -->
-         <div class="modal-form_input">
-            <label for="addMachineFeesPercentageType">Percentage:</label>
-
-            <select id="addMachineFeesPercentageType" class="form-control" required>
-               <option value="">Select Percentage</option>
-               <option value="true">True</option>
-               <option value="false">False</option>
-            </select>
-         </div>
-
-         <!-- POS Machine Fees Percentage -->
-         <div class="modal-form_input percentageRateDiv">
-            <label for="addMachineFeesPercentageRate">Percentage Rate: </label>
-
-            <input id="addMachineFeesPercentageRate" type="number" placeholder="Enter Percentage Rate"
-               name="addMachineFeesPercentageRate" required>
-         </div>
-
-         <!-- POS Machine Fees Amount -->
-         <div class="modal-form_input machineFeesAmountDiv">
-            <label for="addMachineFeesAmount">Fee Amount: </label>
-
-            <input id="addMachineFeesAmount" type="number" placeholder="Enter Fee Amount" name="addMachineFeesAmount"
-               required>
-         </div>
-
-         <div class="center-button">
-            <button class="hero-btn-dark addMachineFeeBtn has-spinner">
-               <span class="btn-text">Add Machine Fee</span>
-               <span class="btn-spinner hidden"></span>
-            </button>
-         </div>
-
-         <div class="close closeModal" id="">&times;</div>
-      </div>
-   </form>
-
-   <form class="modal-form createShopModal" name="modal" netlify>
+   <form class="modal-form createShopModal" name="modal">
       <div class="card createShop modal">
          <div>
             <h1 class="heading-text">Create Shop</h1>
@@ -421,51 +318,46 @@
       </div>
    </form>
 
-   <form class="modal-form adminUpdateShopDataModal" name="modal" netlify>
-      <div class="card adminUpdateShopData modal">
+   <form class="modal-form adminUpdateBusinessDataModal" name="modal">
+      <div class="card adminUpdateBusinessData modal ">
          <div>
-            <h1 class="heading-text">Update Shop Data</h1>
+            <h1 class="heading-text">Update Business Details</h1>
          </div>
 
-         <!-- Shop name -->
+         <!-- Business name -->
          <div class="modal-form_input">
-            <label for="updateShopName">Shop Name</label>
+            <label for="updateBusinessName">Business Name</label>
 
-            <input id="updateShopName" type="text" placeholder="Enter Shop Name" name="updateShopName">
+            <input id="updateBusinessName" type="text" placeholder="Enter Business Name" name="updateBusinessName">
          </div>
 
-         <!-- Shop Address -->
+         <!-- Business Address -->
          <div class="modal-form_input">
-            <label for="updateShopAddress">Shop Address</label>
+            <label for="updateBusinessAddress">Business Address</label>
 
-            <input id="updateShopAddress" type="text" placeholder="Enter Shop Address" name="updateShopAddress">
+            <input id="updateBusinessAddress" type="text" placeholder="Enter Business Address"
+               name="updateBusinessAddress">
          </div>
 
-         <!-- Shop Access Service -->
-         <div class="modal-form_input mb-1">
-            <label for="updateShopAccessType" class="heading-subtext">Access Type</label>
+         <!-- Business PhoneNumber -->
+         <div class="modal-form_input">
+            <label for="updateBusinessPhoneNumber">Business Phone Number</label>
 
-            <div class="checkbox">
-               <div class="checkbox-container mb-1">
-                  <input id="updateShopPosCheckbox" type="radio" name="updateShopAccessType" value="POS_TRANSACTIONS">
-                  <label for="updateShopPosCheckbox">POS</label>
-               </div>
+            <input id="updateBusinessPhoneNumber" type="text" placeholder="Enter Business Phone Number"
+               name="updateBusinessPhoneNumber">
+         </div>
 
-               <div class="checkbox-container mb-1">
-                  <input id="updateShopSellCheckbox" type="radio" name="updateShopAccessType" value="INVENTORY_SALES">
-                  <label for="updateShopSellCheckbox">SELL</label>
-               </div>
+         <!-- Business State Of Operation -->
+         <div class="modal-form_input">
+            <label for="updateBusinessStateOfOperation"> State Of Operation</label>
 
-               <div class="checkbox-container mb-1">
-                  <input id="updateShopPosAndSellCheckbox" type="radio" name="updateShopAccessType" value="BOTH">
-                  <label for="updateShopPosAndSellCheckbox">POS & SELL</label>
-               </div>
-            </div>
+            <input id="updateBusinessStateOfOperation" type="text" placeholder="Enter Business State Of Operation"
+               name="updateBusinessStateOfOperation">
          </div>
 
          <div class="center-button">
-            <button class="hero-btn-dark  updateShopBtn has-spinner" type="submit">
-               <span class="btn-text">Update Shop Details</span>
+            <button class="hero-btn-dark  updateBusinessBtn has-spinner" type="submit">
+               <span class="btn-text">Update Business</span>
                <span class="btn-spinner hidden"></span>
             </button>
          </div>

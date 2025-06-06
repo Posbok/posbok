@@ -94,18 +94,27 @@
             position: relative;
             display: flex;
 
+            &:hover {
+               cursor: pointer;
+            }
+
+
             .main-heading-cart {
                font-size: 3rem;
                border-radius: 100px;
                // border: 0px solid $color-primary;
+
+               &:hover {
+                  transform: scale(1.03);
+               }
 
 
             }
 
             .cart-counter {
                position: absolute;
-               top: -1rem;
-               right: -1.6rem;
+               top: -1.4rem;
+               right: -1rem;
                font-size: 1.2rem;
                font-weight: 600;
                color: $color-secondary-dark;

@@ -1,4 +1,5 @@
 import config from '../../../config.js';
+import { showToast } from '../../script.js';
 import { safeFetch } from '../utility/safeFetch.js';
 
 const baseUrl = config.baseUrl;
@@ -39,6 +40,36 @@ export async function fetchBusinessDetails() {
     return fetchedData;
   } catch (error) {
     console.error('Error checking shop:', error.message);
+    throw error;
+  }
+}
+
+export async function updateBusiness(businessid, businessUpdatedDetails) {
+  try {
+    console.log('Sending POST request...');
+
+    const updateBusinessData = await safeFetch(
+      `${baseUrl}/api/businesses/${businessid}`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(businessUpdatedDetails),
+      }
+    );
+
+    if (updateBusinessData) {
+      console.log('Business info Updated successfully:', updateBusinessData);
+      showToast('success', `✅ ${updateBusinessData.message}`);
+      fetchBusinessDetails(); // Refresh list or update UI
+    }
+
+    return updateBusinessData;
+  } catch (error) {
+    console.error('Error Updating Business Info', error);
+    showToast('error', '❌ Failed to Update Business info');
     throw error;
   }
 }

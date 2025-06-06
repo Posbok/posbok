@@ -492,7 +492,8 @@ select {
 .addUser .checkbox,
 .addPosCharge .checkbox,
 .addMachineFee .checkbox,
-.inventory .checkbox {
+.inventory .checkbox,
+.business .checkbox {
   display: flex;
   align-items: center;
   gap: 1.1rem;
@@ -508,7 +509,8 @@ select {
   .addUser .checkbox label,
   .addPosCharge .checkbox label,
   .addMachineFee .checkbox label,
-  .inventory .checkbox label {
+  .inventory .checkbox label,
+  .business .checkbox label {
     margin-bottom: 0; }
   @media only screen and (max-width: 30.5em) {
     .addProduct .checkbox .checkbox-container,
@@ -521,7 +523,8 @@ select {
     .addUser .checkbox .checkbox-container,
     .addPosCharge .checkbox .checkbox-container,
     .addMachineFee .checkbox .checkbox-container,
-    .inventory .checkbox .checkbox-container {
+    .inventory .checkbox .checkbox-container,
+    .business .checkbox .checkbox-container {
       padding-bottom: 0; } }
 
 .addProduct-form_input,
@@ -534,7 +537,8 @@ select {
 .addUser-form_input,
 .addPosCharge-form_input,
 .addMachineFee-form_input,
-.inventory-form_input {
+.inventory-form_input,
+.business-form_input {
   margin-top: 2rem;
   display: flex;
   align-items: center; }
@@ -548,7 +552,8 @@ select {
   .addUser-form_input.sellStatus,
   .addPosCharge-form_input.sellStatus,
   .addMachineFee-form_input.sellStatus,
-  .inventory-form_input.sellStatus {
+  .inventory-form_input.sellStatus,
+  .business-form_input.sellStatus {
     display: block; }
     .addProduct-form_input.sellStatus label,
     .sellProduct-form_input.sellStatus label,
@@ -560,7 +565,8 @@ select {
     .addUser-form_input.sellStatus label,
     .addPosCharge-form_input.sellStatus label,
     .addMachineFee-form_input.sellStatus label,
-    .inventory-form_input.sellStatus label {
+    .inventory-form_input.sellStatus label,
+    .business-form_input.sellStatus label {
       width: min-content; }
   .addProduct-form_input .password-container,
   .sellProduct-form_input .password-container,
@@ -572,7 +578,8 @@ select {
   .addUser-form_input .password-container,
   .addPosCharge-form_input .password-container,
   .addMachineFee-form_input .password-container,
-  .inventory-form_input .password-container {
+  .inventory-form_input .password-container,
+  .business-form_input .password-container {
     display: flex;
     flex-direction: column;
     gap: .5rem;
@@ -598,7 +605,9 @@ select {
     .addMachineFee-form_input .password-container #password-length,
     .addMachineFee-form_input .password-container #password-mismatch,
     .inventory-form_input .password-container #password-length,
-    .inventory-form_input .password-container #password-mismatch {
+    .inventory-form_input .password-container #password-mismatch,
+    .business-form_input .password-container #password-length,
+    .business-form_input .password-container #password-mismatch {
       font-size: medium; }
   @media only screen and (max-width: 30.5em) {
     .addProduct-form_input,
@@ -611,7 +620,8 @@ select {
     .addUser-form_input,
     .addPosCharge-form_input,
     .addMachineFee-form_input,
-    .inventory-form_input {
+    .inventory-form_input,
+    .business-form_input {
       margin-top: 1.5rem;
       display: block; } }
   .addProduct-form_input label,
@@ -624,7 +634,8 @@ select {
   .addUser-form_input label,
   .addPosCharge-form_input label,
   .addMachineFee-form_input label,
-  .inventory-form_input label {
+  .inventory-form_input label,
+  .business-form_input label {
     width: 20rem; }
   .addProduct-form_input input,
   .addProduct-form_input select,
@@ -647,7 +658,9 @@ select {
   .addMachineFee-form_input input,
   .addMachineFee-form_input select,
   .inventory-form_input input,
-  .inventory-form_input select {
+  .inventory-form_input select,
+  .business-form_input input,
+  .business-form_input select {
     width: 100%; }
     .addProduct-form_input input:disabled,
     .addProduct-form_input select:disabled,
@@ -670,7 +683,9 @@ select {
     .addMachineFee-form_input input:disabled,
     .addMachineFee-form_input select:disabled,
     .inventory-form_input input:disabled,
-    .inventory-form_input select:disabled {
+    .inventory-form_input select:disabled,
+    .business-form_input input:disabled,
+    .business-form_input select:disabled {
       background-color: #eef1f6;
       box-shadow: 0 0 0.2rem 0.5rem rgba(248, 153, 66, 0.36);
       color: #999;
@@ -686,7 +701,8 @@ select {
   .addUser-form_input select,
   .addPosCharge-form_input select,
   .addMachineFee-form_input select,
-  .inventory-form_input select {
+  .inventory-form_input select,
+  .business-form_input select {
     width: 100%; }
 
 .addProduct .hero-btn-dark,
@@ -710,12 +726,18 @@ select {
 .addMachineFee .hero-btn-dark,
 .addMachineFee .hero-btn-danger,
 .inventory .hero-btn-dark,
-.inventory .hero-btn-danger {
+.inventory .hero-btn-danger,
+.business .hero-btn-dark,
+.business .hero-btn-danger {
   display: inline;
   margin-top: 3rem;
   align-self: center;
   padding: 1rem 3rem;
   margin-top: 2rem; }
+
+.business-form_input input:disabled {
+  background-color: none;
+  box-shadow: 1px 2px rgba(32, 83, 41, 0.5); }
 
 .signup-form_input {
   margin-top: 0rem; }
@@ -1166,13 +1188,17 @@ button:disabled:hover {
       .main-heading_left .cartIconDiv {
         position: relative;
         display: flex; }
+        .main-heading_left .cartIconDiv:hover {
+          cursor: pointer; }
         .main-heading_left .cartIconDiv .main-heading-cart {
           font-size: 3rem;
           border-radius: 100px; }
+          .main-heading_left .cartIconDiv .main-heading-cart:hover {
+            transform: scale(1.03); }
         .main-heading_left .cartIconDiv .cart-counter {
           position: absolute;
-          top: -1rem;
-          right: -1.6rem;
+          top: -1.4rem;
+          right: -1rem;
           font-size: 1.2rem;
           font-weight: 600;
           color: #205329;
@@ -1483,6 +1509,131 @@ body.authentication {
 @media only screen and (max-width: 50.3em) {
   .sidebar.blur::before {
     background-color: none; } }
+
+.cart-slider-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 99999;
+  display: none; }
+  .cart-slider-overlay.visible {
+    display: block; }
+
+.cart-slider-content {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 100%;
+  overflow: hidden;
+  max-width: 350px;
+  height: 100vh;
+  color: #205329;
+  background-color: #ebfbee;
+  z-index: 99999;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+  transition: right 0.3s ease-in-out; }
+  .cart-slider-content.open {
+    display: block;
+    right: 0; }
+  .cart-slider-content .slider-wrapper {
+    display: flex;
+    width: 700px;
+    transition: transform 0.4s ease-in-out; }
+    .cart-slider-content .slider-wrapper .cart-view,
+    .cart-slider-content .slider-wrapper .checkout-view {
+      width: 350px;
+      padding: 2.5rem 1.5rem;
+      box-sizing: border-box; }
+    .cart-slider-content .slider-wrapper .cart-view {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      box-sizing: border-box;
+      padding: 1.5rem; }
+    .cart-slider-content .slider-wrapper .checkout-view .hero-btn-dark {
+      margin-top: 3rem; }
+    .cart-slider-content .slider-wrapper .checkout-view button#backToCart {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: #205329;
+      cursor: pointer;
+      margin-bottom: 1rem; }
+  .cart-slider-content .cart-slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem; }
+    .cart-slider-content .cart-slider-header .heading-text {
+      margin: 0;
+      color: inherit; }
+    .cart-slider-content .cart-slider-header .close-cart-btn {
+      position: relative; }
+  .cart-slider-content .cart-items-container {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 1rem; }
+  .cart-slider-content .cart-item {
+    border-bottom: 1px solid #0F7A89;
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 0.5rem;
+    transition: background-color 0.3s ease; }
+    .cart-slider-content .cart-item .remove-item-btn,
+    .cart-slider-content .cart-item .unit-price {
+      transition: color 0.3s ease; }
+    .cart-slider-content .cart-item:hover {
+      background-color: #0F7A89;
+      color: #fff; }
+      .cart-slider-content .cart-item:hover .remove-item-btn,
+      .cart-slider-content .cart-item:hover .unit-price {
+        color: #fff !important; }
+    .cart-slider-content .cart-item .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center; }
+      .cart-slider-content .cart-item .item-header .item-name {
+        font-weight: bold; }
+      .cart-slider-content .cart-item .item-header .remove-item-btn {
+        background: transparent;
+        border: none;
+        color: red;
+        font-size: 2rem;
+        padding: 1rem;
+        cursor: pointer; }
+    .cart-slider-content .cart-item .item-details {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.3rem; }
+      .cart-slider-content .cart-item .item-details .unit-price {
+        font-size: 1.2rem;
+        color: #666; }
+      .cart-slider-content .cart-item .item-details .quantity-control {
+        display: flex;
+        align-items: center; }
+        .cart-slider-content .cart-item .item-details .quantity-control button {
+          width: 15px;
+          height: 15px;
+          font-size: 1rem;
+          background: #ddd;
+          border: none;
+          cursor: pointer; }
+        .cart-slider-content .cart-item .item-details .quantity-control span {
+          padding: 0 10px; }
+  .cart-slider-content .cart-footer {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #ddd; }
+    .cart-slider-content .cart-footer .cart-total {
+      margin-bottom: 1rem; }
+
+.hidden {
+  display: none; }
 
 .reports,
 .goods,

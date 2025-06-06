@@ -7,14 +7,14 @@ import { getProducts } from './apiServices/sales/salesResources';
 import { checkAndPromptCreateShop } from './apiServices/shop/shopResource';
 import {
   formatAmountWithCommas,
+  getAmountForSubmission,
+  hideBtnLoader,
   hideGlobalLoader,
   populateBusinessShopDropdown,
+  showBtnLoader,
   showGlobalLoader,
 } from './helper/helper';
-
-let allProducts = [];
-let allCategories = [];
-let activeCategoryId = null; // null means "All"
+import { closeModal, showToast } from './script';
 
 const userData = config.userData;
 const dummyShopId = config.dummyShopId;
@@ -23,7 +23,15 @@ parsedUserData = userData ? JSON.parse(userData) : null;
 
 const isAdmin = parsedUserData?.accountType === 'ADMIN';
 const isStaff = parsedUserData?.accountType === 'STAFF';
+const userId = parsedUserData?.id;
 const shopId = parsedUserData?.shopId;
+
+const cartKey = `cart_${userId}`;
+
+let allProducts = [];
+let allCategories = [];
+let activeCategoryId = null; // null means "All"
+let selectedProduct = null;
 
 const searchSellProdutItem = document.getElementById(
   isAdmin ? 'adminSearchSellProdutItem' : 'searchSellProdutItem'
@@ -53,8 +61,6 @@ const sellProductShopDropdown = document.getElementById(
   'sellProductShopDropdown'
 );
 
-console.log(productInput);
-
 const adminSellContainer = document.querySelector('.adminSellContainer');
 const staffSellContainer = document.querySelector('.staffSellContainer');
 
@@ -77,6 +83,9 @@ if (isAdmin && adminSellContainer) {
       showGlobalLoader();
       const { enrichedShopData } = await checkAndPromptCreateShop();
       populateBusinessShopDropdown(enrichedShopData, 'sellProductShopDropdown');
+
+      syncDropdownWithCartShop();
+
       hideGlobalLoader();
     } catch (err) {
       hideGlobalLoader();
@@ -94,12 +103,19 @@ if (isAdmin && adminSellContainer) {
 async function fetchAllProducts(shopId) {
   let products = [];
 
+  console.log('Fetching products for shop:', shopId);
+
   try {
     const productInventoryData = await getProductInventory(shopId); // Fetch products
 
     if (productInventoryData) {
       // console.log(`Fetching product inventory:`, productInventoryData.data);
       products = products.concat(productInventoryData.data); // Add data to all products array
+
+      if (adminSellProductSearchSection)
+        adminSellProductSearchSection.style.display = 'block';
+      if (adminSellProductCategorySection)
+        adminSellProductCategorySection.style.display = 'block';
     }
 
     //  console.log('Products', products);
@@ -135,18 +151,17 @@ async function fetchAllCategories() {
   return categories;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const adminSellProductSearchSection = document.querySelector(
-    '.adminSellProductSearch-section'
-  );
-  const adminSellProductCategorySection = document.querySelector(
-    '.adminSellProductCategory-section'
-  );
-  const adminSellProductName = document.querySelector('.adminSellProductName');
-  const adminAutocompleteList = document.getElementById(
-    'adminAutocompleteList'
-  );
+const adminSellProductSearchSection = document.querySelector(
+  '.adminSellProductSearch-section'
+);
+const adminSellProductCategorySection = document.querySelector(
+  '.adminSellProductCategory-section'
+);
+const adminSellProductName = document.querySelector('.adminSellProductName');
+const adminAutocompleteList = document.getElementById('adminAutocompleteList');
+// const
 
+document.addEventListener('DOMContentLoaded', () => {
   if (adminSellProductSearchSection)
     adminSellProductSearchSection.style.display = 'none';
   if (adminSellProductCategorySection)
@@ -332,8 +347,6 @@ async function displayAllCategories() {
       updateAutocompleteList(filteredProducts);
     });
 
-    console.log(sellProductCategorySection);
-
     sellProductCategorySection.appendChild(allBtn);
 
     allCategories.forEach((category) => {
@@ -407,6 +420,8 @@ function updateAutocompleteList(products) {
          `;
 
       listItem.addEventListener('click', function () {
+        selectedProduct = product.Product; // Store selected product to later get the product ID
+
         productInput.value = product.Product.name;
         productBoughtPrice.value = formatAmountWithCommas(
           product.Product.purchase_price
@@ -489,149 +504,547 @@ function updateAutocompleteList(products) {
 // });
 
 // JS for the checkboxes and selling of an item
-let checkboxStatus;
-// const balancePaymentInput = document.getElementById('productBalancePrice');
 
 document.addEventListener('DOMContentLoaded', function () {
-  const completedCheckbox = document.getElementById(
-    isAdmin ? 'adminCompletedCheckbox' : 'completedCheckbox'
-  );
-  const balanceCheckbox = document.getElementById(
-    isAdmin ? 'adminBalanceCheckbox' : 'balanceCheckbox'
-  );
-  const balancePayment = document.querySelector('.balancePayment');
-  const balancePaymentInput = document.getElementById(
-    isAdmin ? 'adminProductBalancePrice' : 'productBalancePrice'
-  );
-  const checkboxes = document.querySelectorAll('input[type="radio"]');
+  const completedRadio = document.getElementById('completedCheckbox');
+  const balanceRadio = document.getElementById('balanceCheckbox');
+  const balancePaymentSection = document.querySelector('.balancePayment');
+  const balancePaymentInput = document.getElementById('productBalancePrice');
+  const radios = document.querySelectorAll('input[name="completedCheckbox"]');
 
-  function updateStatus() {
-    if (completedCheckbox.checked) {
-      checkboxStatus = 'Completed';
-      balancePayment.style.display = 'none';
+  function updateUIBasedOnStatus() {
+    if (completedRadio.checked) {
+      balancePaymentSection.style.display = 'none';
       balancePaymentInput.value = '';
       balancePaymentInput.disabled = true;
-    } else {
-      checkboxStatus = 'Balance';
-      balancePayment.style.display = 'block';
+    } else if (balanceRadio.checked) {
+      balancePaymentSection.style.display = 'block';
       balancePaymentInput.disabled = false;
     }
   }
 
-  updateStatus();
+  // Default to "Completed" on load
+  completedRadio.checked = true;
+  updateUIBasedOnStatus();
 
-  checkboxes.forEach((checkbox) => {
-    checkbox.addEventListener('change', function () {
-      checkboxes.forEach((otherCheckbox) => {
-        if (otherCheckbox !== checkbox) {
-          otherCheckbox.checked = false;
-          otherCheckbox.removeAttribute('required');
-        }
-      });
-
-      if (checkbox === completedCheckbox) {
-        completedCheckbox.checked = true;
-        balancePayment.style.display = 'none';
-        balancePaymentInput.disabled = true;
-        balancePaymentInput.value = '';
-
-        checkboxStatus = 'Completed';
-      } else {
-        balanceCheckbox.checked = true;
-        balancePayment.style.display = 'block';
-        balancePaymentInput.disabled = false;
-        checkboxStatus = 'Balance';
-      }
-      updateStatus();
-    });
-  });
-
-  balancePaymentInput.addEventListener('input', function () {
-    const inputValue = balancePaymentInput.value.trim(); // Trim to remove leading/trailing spaces
-
-    if (
-      inputValue === '-' ||
-      (!isNaN(inputValue) && parseFloat(inputValue) >= 0)
-    ) {
-      balanceCheckbox.checked = true;
-      completedCheckbox.checked = false;
-      completedCheckbox.removeAttribute('required');
-      checkboxStatus = 'Balance';
-    } else {
-      return;
-
-      // completedCheckbox.checked = true;
-      // balanceCheckbox.checked = false;
-      // checkboxStatus = 'Completed';
-      // balancePayment.style.display = 'none';
-      // balancePaymentInput.disabled = true;
-
-      balanceCheckbox.checked = false;
-      completedCheckbox.checked = false;
-      checkboxStatus = 'Invalid';
-    }
-
-    updateStatus();
+  // Listen to radio change
+  radios.forEach((radio) => {
+    radio.addEventListener('change', updateUIBasedOnStatus);
   });
 });
 
 // JS for Selling Products and adding to localStorage
-const soldProductName = document.getElementById('searchSellProdutItem');
-const soldProductPrice = document.getElementById('soldProductPrice');
-const productBalancePrice = document.getElementById('productBalancePrice');
-const soldProductRemark = document.getElementById('soldProductRemark');
+const soldProductName = document.getElementById(
+  isAdmin ? 'adminProductInput' : 'productInput'
+);
+const soldProductPrice = document.getElementById(
+  isAdmin ? 'adminSoldProductPrice' : 'soldProductPrice'
+);
+const soldProductQuantity = document.getElementById(
+  isAdmin ? 'adminSoldProductQuantity' : 'soldProductQuantity'
+);
 
-function handleSellProduct() {
-  let soldProductNameInput = soldProductName.value;
-  let soldProductPriceInput = Number(soldProductPrice.value);
-  let productBalancePriceInput = Number(productBalancePrice.value);
-  let soldProductRemarkInput = soldProductRemark.value;
-  let id = Math.random();
+// const productBalancePrice = document.getElementById(
+//   isAdmin ? '' : 'productBalancePrice'
+// );
+// const soldProductRemark = document.getElementById(
+//   isAdmin ? '' : 'soldProductRemark'
+// );
 
-  if (productBalancePriceInput === 0 || productBalancePriceInput === '') {
-    productBalancePriceInput = '-';
+export function sellProductForm() {
+  const form = document.querySelector('#checkout-form');
+
+  if (!form || form.dataset.bound === 'true') return;
+
+  form.dataset.bound = 'true';
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const customerName = document.getElementById('sellCustomerName').value;
+      const customerPhone = document.getElementById('sellCustomerPhone').value;
+      const paymentMethod = document.getElementById('paymentTypeOption').value;
+      const amountPaid = document.getElementById('amount-paid').value;
+      const remarks = document.getElementById('soldProductRemark').value;
+
+      const checkoutSubmitBtn = document.querySelector('.checkoutSubmitBtn');
+
+      const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+
+      if (cart.length === 0) {
+        showToast('fail', '❎ Your cart is empty. Please add items to sell.');
+        hideBtnLoader(checkoutSubmitBtn);
+        return;
+      }
+
+      const sellProductDetails = {
+        shopId: Number(cart[0]?.shopId),
+        customerName,
+        customerPhone,
+        paymentMethod,
+        amountPaid: Number(getAmountForSubmission(amountPaid)),
+        remarks,
+        items: cart.map((item) => ({
+          productId: item.productId, // ensure this exists
+          quantity: item.soldProductQuantityInput,
+          sellingPrice: item.soldProductPriceInput,
+        })),
+      };
+
+      try {
+        showBtnLoader(checkoutSubmitBtn);
+
+        showToast('info', 'ℹ️ Inplementation in progress. Try again Later');
+        console.log('Submitting Sales Details:', sellProductDetails);
+
+        //   const data = await createProductCategory(addProductCategoryDetails);
+
+        //   if (data) {
+        //   hideBtnLoader(checkoutSubmitBtn);
+        //     closeModal();
+        //   }
+
+        closeModal(); // close modal after success
+      } catch (err) {
+        console.error('Error Selling Product:', err.message);
+        hideBtnLoader(checkoutSubmitBtn);
+        showToast('fail', `❎ ${err.message}`);
+      }
+    });
+  }
+}
+
+sellProductForm();
+
+document.addEventListener(
+  'DOMContentLoaded',
+  updateCartCounter,
+  updateCartTotalUI
+);
+
+function updateCartCounter() {
+  const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+  const counter = document.querySelector('.cart-counter');
+
+  if (counter) {
+    counter.textContent = cart.length;
+  }
+}
+
+function handleAddToCart() {
+  if (!selectedProduct || !selectedProduct.id) {
+    showToast('error', 'Please select a product from the list first.');
+    return;
   }
 
-  const soldProductFormData = {
-    soldProductNameInput,
-    soldProductPriceInput,
-    productBalancePriceInput,
-    soldProductRemarkInput,
-    checkboxStatus,
-    id,
-  };
+  let soldProductNameInput = soldProductName.value;
+  let soldProductPriceInput = Number(
+    getAmountForSubmission(soldProductPrice.value)
+  );
+  let soldProductQuantityInput = Number(soldProductQuantity.value);
+  let shopId = isAdmin ? sellProductShopDropdown.value : parsedUserData.shopId;
 
-  const storedData =
-    JSON.parse(localStorage.getItem('soldProductFormData')) || [];
+  const storedData = JSON.parse(localStorage.getItem(cartKey)) || []; // This is wher throws the error
 
-  const allData = [soldProductFormData, ...storedData];
+  // Ensure shopId consistency
+  if (storedData.length > 0 && storedData[0].shopId !== shopId) {
+    alert(
+      'Cannot add item from a different shop. Clear cart or switch back to original shop.'
+    );
+    return;
+  }
 
-  localStorage.setItem('soldProductFormData', JSON.stringify(allData));
+  const existingIndex = storedData.findIndex(
+    (item) => item.productId === selectedProduct.id
+  );
 
-  return soldProductFormData;
+  if (existingIndex !== -1) {
+    const existingItem = storedData[existingIndex];
+
+    if (existingItem.soldProductPriceInput !== soldProductPriceInput) {
+      const confirmUpdate = confirm(
+        `This product is already in the cart with a different price.\n\nOld Price: ₦${existingItem.soldProductPriceInput}\nNew Price: ₦${soldProductPriceInput}\n\nDo you want to update the price?`
+      );
+
+      if (confirmUpdate) {
+        // Update both quantity and price
+        existingItem.soldProductQuantityInput += soldProductQuantityInput;
+        existingItem.soldProductPriceInput = soldProductPriceInput;
+      } else {
+        // Only update quantity, keep old price
+        existingItem.soldProductQuantityInput += soldProductQuantityInput;
+      }
+    } else {
+      // Price is the same, just update quantity
+      existingItem.soldProductQuantityInput += soldProductQuantityInput;
+    }
+  } else {
+    const newItem = {
+      productId: selectedProduct.id,
+      soldProductNameInput,
+      soldProductPriceInput,
+      soldProductQuantityInput,
+      shopId,
+    };
+    storedData.push(newItem);
+  }
+
+  localStorage.setItem(cartKey, JSON.stringify(storedData));
+  updateCartCounter();
+  updateCartTotalUI();
+  showToast(
+    'success',
+    `✅ ${soldProductNameInput} added to cart successfully!`
+  );
+
+  //   const cartItem = {
+  //     productId: selectedProduct.id,
+  //     soldProductNameInput,
+  //     soldProductPriceInput,
+  //     soldProductQuantityInput,
+  //     shopId,
+  //   };
+
+  //   const allCartData = [cartItem, ...storedData];
+
+  //   localStorage.setItem(cartKey, JSON.stringify(allCartData));
+  //   updateCartCounter();
+  //   updateCartTotalUI();
+  //   selectedProduct = null;
+
+  //   showToast('success', '✅ Item added to cart successfully!');
+
+  //   return cartItem;
 }
 
-const sellProductForm = document.querySelector('.sell-product-form');
+export function addProductToCart() {
+  const adminAddToCartForm = document.querySelector(
+    isAdmin ? '.adminAddToCartForm' : '.addToCartForm'
+  );
 
-if (sellProductForm) {
-  sellProductForm.addEventListener('submit', function (e) {
-    const balancePayment = document.querySelector('.balancePayment');
-    const balancePaymentInput = document.getElementById('productBalancePrice');
+  if (!adminAddToCartForm || adminAddToCartForm.dataset.bound === 'true')
+    return;
 
-    e.preventDefault();
-    handleSellProduct();
+  adminAddToCartForm.dataset.bound = 'true';
 
-    soldProductName.value = '';
-    priceInput.value = '';
-    soldProductPrice.value = '';
-    productBalancePrice.value = '';
-    soldProductRemark.value = '';
-    completedCheckbox.checked = false;
-    balanceCheckbox.checked = false;
-    balancePayment.style.display = 'block';
-    balancePaymentInput.disabled = false;
+  //   const addToCartButton = document.querySelector(
+  //     isAdmin ? '.adminAddToCartButton' : '.addToCartButton'
+  //   );
+
+  if (adminAddToCartForm) {
+    adminAddToCartForm.addEventListener('submit', function (e) {
+      showGlobalLoader();
+      e.preventDefault();
+      handleAddToCart();
+
+      soldProductName.value = '';
+      soldProductPrice.value = '';
+      soldProductQuantity.value = '';
+      if (searchSellProdutItem) searchSellProdutItem.value = '';
+      if (productBoughtPrice) productBoughtPrice.value = '';
+      if (itemSellingprice) itemSellingprice.value = '';
+
+      if (adminSellProductName) adminSellProductName.style.display = 'none';
+      if (adminAutocompleteList) adminAutocompleteList.style.display = 'none';
+
+      hideGlobalLoader();
+    });
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  addProductToCart();
+});
+
+// document.addEventListener('DOMContentLoaded', function () {
+//   const cartIcon = document.querySelector('.cartIconDiv');
+//   const cartSlider = document.querySelector('.cart-slider-content');
+//   const closeCartBtn = document.querySelector('.close-cart-btn');
+
+//   // Debug check
+//   console.log('Loaded:', { cartIcon, cartSlider, closeCartBtn });
+
+//   // Open Cart
+//   cartIcon?.addEventListener('click', () => {
+//     console.log('Cart icon clicked');
+//     cartSlider.style.display = 'block';
+//   });
+
+//   // Close Cart
+//   closeCartBtn?.addEventListener('click', () => {
+//     console.log('Close button clicked');
+//     cartSlider.style.display = 'none';
+//   });
+// });
+
+document.addEventListener('DOMContentLoaded', function () {
+  const cartIcon = document.querySelector('.cartIconDiv');
+  const cartSliderOverlay = document.querySelector('.cart-slider-overlay');
+  const cartSlider = document.querySelector('.cart-slider-content');
+  const closeCartBtn = document.querySelector('.close-cart-btn');
+
+  const sliderWrapper = document.querySelector('.slider-wrapper');
+  const proceedToCheckoutBtn = document.querySelector('.proceed-btn');
+  const backToCartBtn = document.getElementById('backToCart');
+
+  // Open Cart Slider
+  cartIcon?.addEventListener('click', () => {
+    //  cartSlider.style.display = 'block';
+    cartSlider.classList.add('open');
+    cartSliderOverlay.style.display = 'block';
+    sliderWrapper.style.transform = 'translateX(0%)'; // Always reset to Cart View
+    renderCartItemsFromStorage();
+  });
+
+  //   cartIcon.click();
+
+  // Close Cart Slider
+  closeCartBtn?.addEventListener('click', () => {
+    //  cartSlider.style.display = 'none';
+    cartSlider.classList.remove('open');
+    cartSliderOverlay.style.display = 'none';
+  });
+
+  // Proceed to Checkout View
+  proceedToCheckoutBtn?.addEventListener('click', () => {
+    const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+
+    if (cart.length === 0) {
+      showToast('fail', '❎ Your cart is empty. Please add items to sell.');
+      return;
+    }
+
+    sliderWrapper.style.transform = 'translateX(-50%)';
+  });
+
+  // Go Back to Cart View
+  backToCartBtn?.addEventListener('click', () => {
+    sliderWrapper.style.transform = 'translateX(0%)';
+  });
+
+  cartSliderOverlay.addEventListener('click', () => {
+    cartSlider.classList.remove('open');
+    cartSliderOverlay.style.display = 'none';
+  });
+});
+
+// document.addEventListener('DOMContentLoaded', function () {
+//   const sliderWrapper = document.querySelector('.slider-wrapper');
+//   const proceedToCheckoutBtn = document.querySelector('.proceed-btn');
+//   const backToCartBtn = document.getElementById('backToCart');
+
+//   proceedToCheckoutBtn?.addEventListener('click', function (e) {
+//     e.preventDefault();
+//     const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+
+//     if (cart.length === 0) {
+//       showToast('fail', '❎ Your cart is empty. Please add items to sell.');
+//       return;
+//     } else {
+//       sliderWrapper.style.transform = 'translateX(-50%)';
+//     }
+//   });
+
+//   backToCartBtn?.addEventListener('click', function () {
+//     sliderWrapper.style.transform = 'translateX(0%)';
+//   });
+// });
+
+function renderCartItemsFromStorage() {
+  const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+  const container = document.querySelector('.cart-items-container');
+  updateCartCounter();
+  updateCartTotalUI();
+
+  // Clear existing items
+  container.innerHTML = '';
+
+  if (cart.length === 0) {
+    container.innerHTML = `<h1>Your cart is empty.</h1>`;
+    return;
+  }
+
+  cart.forEach((item, index) => {
+    const itemDiv = document.createElement('div');
+    itemDiv.classList.add('cart-item');
+
+    itemDiv.innerHTML = `
+      <div class="item-header">
+        <h2 class="item-name">${item.soldProductNameInput}</h2>
+        <button class="remove-item-btn" data-index="${index}">&times;</button>
+      </div>
+      <div class="item-details">
+        <h2 class="unit-price">₦${item.soldProductPriceInput.toLocaleString()}</h2>
+        <div class="quantity-control">
+          <button class="decrease-btn" data-index="${index}">-</button>
+             <span >${item.soldProductQuantityInput}</span>
+             <button class="increase-btn" data-index="${index}">+</button>
+          </div>
+           <h2 class="sum-total">₦${(
+             item.soldProductPriceInput * item.soldProductQuantityInput
+           ).toLocaleString()}</h2>
+      </div>`;
+
+    container.appendChild(itemDiv);
+  });
+
+  attachCartListeners(); // attach logic for +, -, remove
+}
+
+function attachCartListeners() {
+  // Remove item
+  document.querySelectorAll('.remove-item-btn').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const index = e.target.dataset.index;
+      const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+      cart.splice(index, 1);
+      localStorage.setItem(cartKey, JSON.stringify(cart));
+      renderCartItemsFromStorage(); // re-render
+    });
+  });
+
+  // Increase quantity
+  document.querySelectorAll('.increase-btn').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const index = e.target.dataset.index;
+      const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+      cart[index].soldProductQuantityInput += 1;
+      localStorage.setItem(cartKey, JSON.stringify(cart));
+      renderCartItemsFromStorage(); // re-render
+    });
+  });
+
+  // Decrease quantity
+  document.querySelectorAll('.decrease-btn').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const index = e.target.dataset.index;
+      const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+      if (cart[index].soldProductQuantityInput > 1) {
+        cart[index].soldProductQuantityInput -= 1;
+        localStorage.setItem(cartKey, JSON.stringify(cart));
+        renderCartItemsFromStorage(); // re-render
+      }
+    });
   });
 }
+
+function getCartFromLocalStorage() {
+  return JSON.parse(localStorage.getItem(cartKey)) || [];
+}
+
+function calculateTotal() {
+  const cart = getCartFromLocalStorage();
+  let total = 0;
+
+  cart.forEach((item) => {
+    total += item.soldProductPriceInput * item.soldProductQuantityInput;
+  });
+
+  return total;
+}
+
+function updateCartTotalUI() {
+  const total = calculateTotal();
+  const totalFormatted = `₦${total.toLocaleString()}`;
+
+  // Option 1: Inject into footer
+  const totalEl = document.querySelector('.cart-total');
+  if (totalEl) {
+    totalEl.innerHTML = `<strong>Total:</strong> ${totalFormatted}`;
+  }
+
+  // Option 2: Inject into button text
+  const proceedBtn = document.querySelector('.proceed-btn');
+  if (proceedBtn) {
+    proceedBtn.textContent = `Proceed to Checkout (${totalFormatted})`;
+  }
+}
+
+let currentSelectedShopId = ''; // Track previously selected shop
+
+//  Sync dropdown on load
+// function syncDropdownWithCartShop() {
+//   const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+//   const dropdown = document.getElementById('sellProductShopDropdown');
+
+//   if (cart.length > 0 && cart[0].shopId) {
+//     dropdown.value = cart[0].shopId;
+//     currentSelectedShopId = cart[0].shopId;
+
+//     // Fetch products for the already selected shop
+//     fetchAllProducts(currentSelectedShopId).then((products) => {
+//       allProducts = products;
+//     });
+//   }
+// }
+
+function syncDropdownWithCartShop() {
+  const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+  const dropdown = document.getElementById('sellProductShopDropdown');
+
+  if (cart.length > 0 && cart[0].shopId) {
+    const cartShopId = cart[0].shopId;
+
+    // Set the value of the dropdown
+    dropdown.value = cartShopId;
+    currentSelectedShopId = cartShopId;
+
+    // Optional: fetch products for that shop
+    fetchAllProducts(cartShopId).then((products) => {
+      allProducts = products;
+      displayAllProducts();
+      displayAllCategories();
+    });
+  }
+}
+
+// Run sync function immediately after DOM is ready
+// document.addEventListener('DOMContentLoaded', () => {
+//   syncDropdownWithCartShop();
+// });
+
+document
+  .getElementById('sellProductShopDropdown')
+  .addEventListener('change', async function (e) {
+    const selectedShopId = e.target.value;
+    const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+
+    if (!selectedShopId) return;
+
+    if (cart.length > 0) {
+      const cartShopId = cart[0].shopId;
+
+      if (selectedShopId && selectedShopId !== cartShopId) {
+        const confirmed = confirm(
+          'Switching shop will clear your current cart. Do you want to proceed?'
+        );
+
+        if (confirmed) {
+          localStorage.removeItem(cartKey);
+          currentSelectedShopId = selectedShopId;
+          allProducts = await fetchAllProducts(selectedShopId); // ✅ fetch new shop's products
+          displayAllProducts(); // ✅ re-render product UI
+        } else {
+          // Revert to the previous selection
+          e.target.value = cartShopId;
+          currentSelectedShopId = cartShopId;
+          allProducts = await fetchAllProducts(cartShopId); // ✅ fetch original shop's products
+          displayAllProducts(); // ✅ re-render product UI
+        }
+      } else {
+        // Same shop, proceed
+        currentSelectedShopId = selectedShopId;
+        allProducts = await fetchAllProducts(selectedShopId);
+        displayAllProducts();
+      }
+    } else {
+      // No cart yet, so we’re free to fetch products for selected shop
+      currentSelectedShopId = selectedShopId;
+      allProducts = await fetchAllProducts(selectedShopId); // ✅ fetch
+      displayAllProducts(); // ✅ render
+    }
+  });
 
 // // JS to dispaly Item to be sold
 // const sellButtons = document.querySelectorAll('.sellButton');

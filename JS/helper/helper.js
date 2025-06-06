@@ -309,6 +309,12 @@ document.addEventListener('DOMContentLoaded', function () {
   const adminPosCapitalAmount = document.getElementById(
     'adminPosCapitalAmount'
   );
+  const adminSoldProductPrice = document.getElementById(
+    'adminSoldProductPrice'
+  );
+  const soldProductPrice = document.getElementById('soldProductPrice');
+  const amountPaid = document.getElementById('amount-paid');
+  const productBalancePrice = document.getElementById('productBalancePrice');
 
   if (posCapitalAmountInput)
     posCapitalAmountInput.addEventListener('input', function () {
@@ -378,6 +384,26 @@ document.addEventListener('DOMContentLoaded', function () {
   if (adminPosCapitalAmount)
     adminPosCapitalAmount.addEventListener('input', function () {
       formatAmountWithCommasOnInput(adminPosCapitalAmount);
+    });
+
+  if (adminSoldProductPrice)
+    adminSoldProductPrice.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(adminSoldProductPrice);
+    });
+
+  if (soldProductPrice)
+    soldProductPrice.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(soldProductPrice);
+    });
+
+  if (productBalancePrice)
+    productBalancePrice.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(productBalancePrice);
+    });
+
+  if (amountPaid)
+    amountPaid.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(amountPaid);
     });
 });
 

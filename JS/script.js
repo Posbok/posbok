@@ -574,6 +574,9 @@ export function closeModal() {
   const adminDepositPosCapital = document.querySelector(
     '.adminDepositPosCapital'
   );
+  const adminUpdateBusinessData = document.querySelector(
+    '.adminUpdateBusinessData'
+  );
 
   if (depositPosCapitalContainer) {
     depositPosCapitalContainer.classList.remove('active');
@@ -649,6 +652,10 @@ export function closeModal() {
   if (adminDepositPosCapital) {
     adminDepositPosCapital.classList.remove('active');
     //  delete adminDepositPosCapital.dataset.staffId;
+  }
+
+  if (adminUpdateBusinessData) {
+    adminUpdateBusinessData.classList.remove('active');
   }
 
   clearFormInputs();
@@ -874,6 +881,7 @@ if (!userData) {
       'manage',
       'staff-profile',
       'pos-management',
+      'shop-management',
       'inventory',
     ];
     if (restrictedStaffPages.includes(currentPageName)) {

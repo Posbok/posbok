@@ -118,7 +118,7 @@
             <button class="hero-btn-dark logoutButton">LOGOUT</button>
             <div class="cartIconDiv mr-2">
                <i class="fa-solid fa-cart-shopping main-heading-cart "></i>
-               <span class="cart-counter"></span>
+               <span class="cart-counter">XX</span>
             </div>
             <i class="fa-solid fa-circle-user main-heading-profile--image"></i>
          </div>
@@ -126,7 +126,7 @@
 
       <!-- Admin Sell Form -->
       <div class="adminSellContainer admin-view card adminSellProduct">
-         <form class="sell-product-form adminAddToCartForm" name="sell-product">
+         <form class="sell-product-form" name="sell-product">
 
             <div>
                <h1 class="heading-text">Admin: Sell Item</h1>
@@ -156,7 +156,7 @@
                </div>
             </div>
 
-            <!-- Category -->
+
             <div class=" adminSellProductCategory-section">
                <!-- <button class="adminSellProductCategoryBtn active" type="button">
                   All
@@ -174,7 +174,6 @@
                <ul class="adminAutocomplete-list" id="adminAutocompleteList"></ul>
             </div>
 
-            <!-- Amount Bought -->
             <div class="adminSellProduct-form_input">
                <label for="adminProductBoughtPrice ">Amount Bought</label>
 
@@ -185,7 +184,6 @@
                </div>
             </div>
 
-            <!-- Amount to sell -->
             <div class="adminSellProduct-form_input">
                <label for="productSellingPrice ">Amount To Sell</label>
 
@@ -196,9 +194,8 @@
                </div>
             </div>
 
-            <!-- Amount Sold -->
             <div class="adminSellProduct-form_input">
-               <label for="adminProductSoldPrice ">Amount Sold</label>
+               <label for="productSoldPrice ">Amount Sold</label>
 
                <div class="naira-input-container">
                   <input id="adminSoldProductPrice" type="text" placeholder="Enter Sold Price"
@@ -207,17 +204,53 @@
                </div>
             </div>
 
-            <!-- Sold Quantity -->
-            <div class="adminSellProduct-form_input">
-               <label for="adminSoldProductQuantity">Quantity</label>
+            <div class="adminSellProduct-form_input salesPaymentType">
+               <label for="adminPaymentTypeOption">Select Payment Type:</label>
 
-               <input id="adminSoldProductQuantity" type="text" placeholder="Enter Quantity"
-                  name="adminSoldProductQuantity" oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
+               <select id="adminPaymentTypeOption" name="adminPaymentTypeOption">
+                  <option value="card">Card</option>
+                  <option value="transfer">Transfer</option>
+                  <option value="cash">Cash</option>
+               </select>
             </div>
 
+            <div class="adminSellProduct-form_input sellStatus">
+               <label for="Status" class="heading-subtext">Status</label>
+
+               <div class="checkbox">
+                  <div class="checkbox-container">
+                     <input id="adminCompletedCheckbox" type="radio" name="adminSellStatus" required>
+                     <label for="adminCompletedCheckbox">Completed</label>
+                  </div>
+
+                  <div class="checkbox-container">
+                     <input id="adminBalanceCheckbox" type="radio" name="adminSellStatus" required>
+                     <label for="adminBalanceCheckbox">Balance</label>
+                  </div>
+               </div>
+            </div>
+
+            <div class="adminSellProduct-form_input balancePayment">
+               <label for="productBalanceAmount">Balance Amount</label>
+
+               <div class="naira-input-container">
+                  <input id="adminProductBalancePrice" type="text" placeholder="Enter Balance Amount"
+                     name="adminProductBalancePrice" oninput="this.value=this.value.replace(/[^0-9-]/g,'')" required>
+                  <span class="naira">&#x20A6;</span>
+               </div>
+            </div>
+
+            <div class="adminSellProduct-form_input">
+               <label for="productSoldRemark">Remarks</label>
+
+               <!-- <div class="naira-input-container"> -->
+               <input id="adminSoldProductRemark" type="text" placeholder="Remarks" name="adminSoldProductRemark"
+                  required>
+               <!-- </div> -->
+            </div>
 
             <div class="center-button">
-               <button class="hero-btn-dark mb-2 adminAddToCartButton has-spinner" type="submit">
+               <button class="hero-btn-dark mb-2 addToCartButton has-spinner" type="submit">
                   <span class="btn-text"> Add To Cart</span>
                   <span class="btn-spinner hidden"></span>
                </button>
@@ -229,9 +262,9 @@
       </div>
 
       <!-- Staff Sell Form -->
-      <!-- Staff Sell Form -->
+
       <div class="staffSellContainer staff-view card sellProduct">
-         <form class="sell-product-form addToCartForm" name="sell-product">
+         <form class="sell-product-form" name="sell-product">
 
             <div>
                <h1 class="heading-text">Sell Item</h1>
@@ -295,13 +328,49 @@
                </div>
             </div>
 
-            <div class="sellProduct-form_input">
-               <label for="soldProductQuantity">Quantity</label>
+            <div class="sellProduct-form_input salesPaymentType">
+               <label for="paymentTypeOption">Select Payment Type:</label>
 
-               <input id="soldProductQuantity" type="text" placeholder="Enter Quantity" name="soldProductQuantity"
-                  oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
+               <select id="paymentTypeOption" name="paymentTypeOption">
+                  <option value="card">Card</option>
+                  <option value="transfer">Transfer</option>
+                  <option value="cash">Cash</option>
+               </select>
             </div>
 
+            <div class="sellProduct-form_input sellStatus">
+               <label for="Status" class="heading-subtext">Status</label>
+
+               <div class="checkbox">
+                  <div class="checkbox-container">
+                     <input id="completedCheckbox" type="radio" name="completedCheckbox" required>
+                     <label for="completedCheckbox">Completed</label>
+                  </div>
+
+                  <div class="checkbox-container">
+                     <input id="balanceCheckbox" type="radio" name="balanceCheckbox" required>
+                     <label for="balanceCheckbox">Balance</label>
+                  </div>
+               </div>
+            </div>
+
+            <div class="sellProduct-form_input balancePayment">
+               <label for="productBalanceAmount">Balance Amount</label>
+
+               <div class="naira-input-container">
+                  <input id="productBalancePrice" type="text" placeholder="Enter Balance Amount"
+                     name="productBalancePrice" oninput="this.value=this.value.replace(/[^0-9-]/g,'')" required>
+                  <span class="naira">&#x20A6;</span>
+               </div>
+            </div>
+
+            <div class="sellProduct-form_input">
+               <label for="productSoldRemark">Remarks</label>
+
+               <!-- <div class="naira-input-container"> -->
+               <input id="soldProductRemark" type="text" placeholder="Remarks" name="soldProductRemark" required>
+               <!-- </div> -->
+            </div>
 
             <div class="center-button">
                <button class="hero-btn-dark mb-2 addToCartButton has-spinner" type="submit">
@@ -316,7 +385,7 @@
 
    </main>
 
-   <!-- Create Shop Form -->
+
    <form class="modal-form createShopModal" name="modal" netlify>
       <div class="card createShop modal">
          <div>
@@ -389,209 +458,13 @@
       </div>
    </form>
 
-
-   <!-- Open Business Day Modals -->
-   <form class="modal-form openBusinessDayModal staffBusinessDayContainer" name="modal">
-      <div class="card openStaffBusinessDay modal  ">
-         <div>
-            <h1 class="heading-text">open Business Day</h1>
-         </div>
-
-         <!-- Pos Capital -->
-         <div class="modal-form_input">
-            <label for="openPosCapitalAmount">POS Capital:</label>
-
-            <div class="naira-input-container">
-               <input id="openPosCapitalAmount" type="text" placeholder="Enter Amount" name="openPosCapitalAmount"
-                  required>
-               <span class="naira">&#x20A6;</span>
-            </div>
-         </div>
-
-         <!-- Opening Cash -->
-         <div class="modal-form_input">
-            <label for="openCashAmount">OpenIng Cash:</label>
-
-            <div class="naira-input-container">
-               <input id="openCashAmount" type="text" placeholder="Enter Amount" name="openCashAmount" required>
-               <span class="naira">&#x20A6;</span>
-            </div>
-         </div>
-
-         <!-- Open Business Day Note -->
-         <div class="modal-form_input">
-            <label for="openingNotes">Note:</label>
-
-            <input id="openingNotes" type="text" placeholder="Opening business for Monday Shift" name="openingNotes"
-               value="Opening business for Monday Shift" required>
-         </div>
-
-         <div class="center-button">
-            <button class="hero-btn-dark openBusinessDaySubmitBtn  mt-2 mb-1  has-spinner" type="submit">
-               <span class="btn-text">Submit </span>
-               <span class="btn-spinner hidden"></span>
-            </button>
-
-         </div>
-
-         <div class="close closeModal" id="">&times;</div>
-      </div>
-   </form>
-
-   <!-- Cart Slider -->
-   <div class="cart-slider-overlay"></div>
-
-   <div class="cart-slider-content ">
-      <div class="slider-wrapper" style="display: flex; width: 200%;">
-
-         <!-- Cart View -->
-         <div class="cart-view ">
-            <div class="cart-slider-header">
-               <h2 class="heading-text">Your Cart</h2>
-               <div class="close closeModal close-cart-btn" id="">&times;</div>
-            </div>
-
-            <div class="cart-items-container">
-               <!-- JS will populate items here -->
-            </div>
-
-            <div class="cart-footer">
-
-               <h1 class="cart-total">
-                  <strohng>Total:</strohng>
-               </h1>
-
-               <div class="center-button">
-                  <button class="proceed-btn hero-btn-dark">Proceed to Checkout</button>
-               </div>
-            </div>
-         </div>
-
-         <!-- Checkout View -->
-         <div class="checkout-view ">
-            <button id="backToCart"><i class="fa-solid fa-arrow-left"></i> Back</button>
-            <h1 class="heading-text">Checkout</h1>
-            <form id="checkout-form">
-
-               <!-- CUSTOMER NAME -->
-               <div class="sellProduct-form_input">
-                  <label for="customerName">Customer Name</label>
-
-                  <input class="sellCustomerName" id="sellCustomerName" type="text" placeholder="Enter Customer Name"
-                     name="sellCustomerName" required>
-               </div>
-
-               <!-- CUSTOMER PHONE NUMBER -->
-               <div class="sellProduct-form_input">
-                  <label for="sellCustomerPhone">Customer Phone Number</label>
-
-                  <input class="sellCustomerPhone" id="sellCustomerPhone" type="text"
-                     placeholder="Enter Customer Phone Number" name="sellCustomerPhone" required>
-               </div>
-
-               <div class="sellProduct-form_input">
-                  <label for="amount-paid">Amount Paid</label>
-
-                  <div class="naira-input-container">
-                     <input id="amount-paid" type="text" placeholder="Enter Amount Paid" name="amount-paid" required>
-                     <span class="naira">&#x20A6;</span>
-                  </div>
-               </div>
-
-               <div class="sellProduct-form_input salesPaymentType">
-                  <label for="paymentTypeOption">Select Payment Type:</label>
-
-                  <select id="paymentTypeOption" name="paymentTypeOption">
-                     <option value="card">Card</option>
-                     <option value="transfer">Transfer</option>
-                     <option value="cash">Cash</option>
-                  </select>
-               </div>
-
-               <div class="sellProduct-form_input sellStatus">
-                  <label for="Status" class="heading-subtext">Status</label>
-
-                  <div class="checkbox">
-                     <div class="checkbox-container">
-                        <input id="completedCheckbox" type="radio" name="completedCheckbox" value="completed" required>
-                        <label for="completedCheckbox">Completed</label>
-                     </div>
-
-                     <div class="checkbox-container">
-                        <input id="balanceCheckbox" type="radio" name="completedCheckbox" value="balance" required>
-                        <label for="balanceCheckbox">Balance</label>
-                     </div>
-                  </div>
-               </div>
-
-
-               <div class="sellProduct-form_input balancePayment">
-                  <label for="productBalanceAmount">Balance Amount</label>
-
-                  <div class="naira-input-container">
-                     <input id="productBalancePrice" type="text" placeholder="Enter Balance Amount"
-                        name="productBalancePrice" required>
-                     <span class="naira">&#x20A6;</span>
-                  </div>
-               </div>
-
-               <div class="sellProduct-form_input">
-                  <label for="productSoldRemark">Remarks</label>
-
-                  <!-- <div class="naira-input-container"> -->
-                  <input id="soldProductRemark" type="text" placeholder="Remarks" name="soldProductRemark" required>
-                  <!-- </div> -->
-               </div>
-
-               <div class="center-button">
-                  <button class="hero-btn-dark mb-2 checkoutSubmitBtn has-spinner" type="submit">
-                     <span class="btn-text">Checkout</span>
-                     <span class="btn-spinner hidden"></span>
-                  </button>
-                  <!-- <button class="hero-btn-dark sellProductActionButton">Sell</button> -->
-               </div>
-
-
-            </form>
-         </div>
-      </div>
-
-   </div>
-
    <div id="toast" class="toast">This is a toast message!</div>
 
    <div id="global-loader" class="loader-overlay hidden">
       <div class="spinner"></div>
    </div>
 
+   <!--  -->
 </body>
-
-
-<script>
-   // Sample prefixes for Nigerian numbers
-   const prefixes = ['079', '089', '089', '099', '093'];
-
-   // Generate random number
-   function generateRandomPhoneNumber() {
-      const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-      const randomDigits = Math.floor(10000000 + Math.random() * 90000000); // 8 digits
-      return prefix + randomDigits;
-   }
-
-   // Set it as default value
-   document.querySelector('.sellCustomerPhone').value = generateRandomPhoneNumber();
-   // document.querySelector('.posTransactionConfirmation').value = generateRandomPhoneNumber();
-
-   function generateRandomName() {
-      const names = ['Divine', 'Desmond', 'Susan', 'Gift', 'Precious', 'Onyeka', 'Brilliant'];
-
-      const name = names[Math.floor(Math.random() * names.length)];
-
-      return `${name}`;
-   }
-
-   document.querySelector('.sellCustomerName').value = generateRandomName();
-
-</script>
 
 </html>

@@ -10,7 +10,7 @@ module.exports = {
     reports: './JS/reports.js',
     sell: './JS/sell.js',
     staff: './JS/staff.js',
-    simReg: './JS/simReg.js',
+    business: './JS/business.js',
     signup: './JS/signup.js',
     shops: './JS/shops.js',
     user: './JS/user.js',
