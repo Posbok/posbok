@@ -2,17 +2,35 @@
    padding-left: 3rem;
 }
 
+.penEdit-input-container input {
+   padding-right: 3rem;
+}
+
 .search-input-container input {
    padding-left: 4rem;
 }
 
 
 .naira-input-container,
-.search-input-container {
-   position: relative;
-   display: flex;
-   align-items: center;
-   width: 100%;
+.penEdit-input-container,
+.search-input-container,
+{
+position: relative;
+display: flex;
+align-items: center;
+width: 100%;
+}
+
+.penEditIcon {
+   position: absolute;
+   font-family: inherit;
+   font-weight: 500;
+   color: $color-secondary-dark;
+   font-size: 1.6rem;
+   right: 10px;
+   filter: opacity(0.2);
+   // top: 50%;
+   // transform: translateY(-50%);
 }
 
 .naira,
@@ -241,7 +259,8 @@ select {
    cursor: pointer;
 }
 
-.modal-form .modal .heading-text {
+.modal-form .modal .heading-text,
+.slider-form .slider .heading-text {
    color: $color-grey-dark-2;
 }
 
@@ -251,6 +270,7 @@ select {
 .updateProduct,
 .depositPosCapital,
 .modal,
+.slider,
 .signup,
 .addUser,
 .addPosCharge,
@@ -344,8 +364,9 @@ select {
    }
 }
 
+.slider-form_input input:disabled,
 .business-form_input input:disabled {
-   background-color: none;
+   // background-color: none;
    box-shadow: 1px 2px rgba(32, 83, 41, 0.5);
 }
 
@@ -365,7 +386,8 @@ select {
 
 }
 
-.modal-form_input {
+.modal-form_input,
+.slider-form_input {
    .checkbox {
       display: block;
 

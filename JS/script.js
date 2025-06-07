@@ -10,6 +10,7 @@ import {
 import { fetchBusinessDetails } from './apiServices/business/businessResource.js';
 import {
   checkAndPromptCreateStaff,
+  fetchProfileDetails,
   openCreateStaffModal,
 } from './apiServices/user/userResource.js';
 import {
@@ -97,6 +98,195 @@ export function showToast(type, message) {
     }, 500); // Wait for transition to complete
   }, 5000);
 }
+
+//  Get & Update Profile
+
+document.addEventListener('DOMContentLoaded', function () {
+  const profileIcon = document.querySelector('.profileIconDiv');
+  const profileSliderOverlay = document.querySelector(
+    '.profile-slider-overlay'
+  );
+  const profileSlider = document.querySelector('.profile-slider-content');
+  const closeProfileBtn = document.querySelector('.close-profile-btn');
+
+  const sliderWrapper = document.querySelector('.slider-wrapper');
+  const proceedToCheckoutBtn = document.querySelector('.proceed-btn');
+  const backToProfileBtn = document.getElementById('backToProfile');
+
+  //   profileIcon.click();
+
+  // OpenProfile Slider
+  profileIcon?.addEventListener('click', async () => {
+    showGlobalLoader();
+    profileSlider.classList.add('open');
+    profileSliderOverlay.classList.add('visible');
+    sliderWrapper.style.transform = 'translateX(0%)'; // Always reset toprofile View
+    renderUserprofileDetails();
+    //  hideGlobalLoader();
+  });
+
+  // Closeprofile Slider
+  closeProfileBtn?.addEventListener('click', () => {
+    profileSlider.classList.remove('open');
+    profileSliderOverlay.classList.remove('visible');
+  });
+
+  // Proceed to Checkout View
+  //   proceedToCheckoutBtn?.addEventListener('click', () => {
+
+  //     if (profile.length === 0) {
+  //       showToast('fail', '❎ Profile Unavailable.');
+  //       return;
+  //     }
+
+  //     sliderWrapper.style.transform = 'translateX(-50%)';
+  //   });
+
+  // Go Back toprofile View
+  backToProfileBtn?.addEventListener('click', () => {
+    sliderWrapper.style.transform = 'translateX(0%)';
+  });
+
+  profileSliderOverlay.addEventListener('click', () => {
+    profileSlider.classList.remove('open');
+    profileSliderOverlay.classList.remove('visible');
+  });
+});
+
+export async function renderUserprofileDetails() {
+  showGlobalLoader();
+
+  const profileData = await fetchProfileDetails();
+
+  const userData = profileData?.data?.user;
+
+  const firstName = userData?.firstName || 'First Name Not Available';
+  const lastName = userData?.lastName || 'Last Name Not Available';
+  const address = userData?.address || 'Address Not Available';
+  const phoneNumber = userData?.phoneNumber || 'Phone Number Not Available';
+  const email = userData?.email || 'Email Not Available';
+  const dateOfBirth = userData?.dateOfBirth || 'Date of Birth Not Available';
+  const stateOfOrigin = userData?.stateOfOrigin || 'State Not Available';
+  const lga = userData?.lga || 'LGA Not Available';
+  const accountType = userData?.accountType || 'Account Type Not Available';
+  const servicePermission =
+    userData?.servicePermission || 'Permission Not Available';
+  const businessName = userData?.businessName || 'Business Name Not Available';
+
+  // DOM Elements
+  document.getElementById('userProfileFirstName').value = firstName;
+  document.getElementById('userProfileLastName').value = lastName;
+  document.getElementById('userProfileAddress').value = address;
+  document.getElementById('userProfilePhoneNumber').value = phoneNumber;
+  document.getElementById('userProfileEmail').value = email;
+  document.getElementById('userProfileDate Of Birth').value = dateOfBirth;
+  document.getElementById('userProfileStateOfOrigin').value = stateOfOrigin;
+  document.getElementById('userProfilelga').value = lga;
+  document.getElementById('userProfileAccountType').value = accountType;
+  document.getElementById('userProfileServicePermission').value =
+    servicePermission === 'BOTH' ? 'POS & SALES' : servicePermission;
+  document.getElementById('userProfileBusinessName').value = businessName;
+
+  hideGlobalLoader();
+}
+
+export function bindUpdateCategoryFormListener() {
+  const form = document.querySelector('.updateCategoryModal');
+  if (!form) return;
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const categoryId = form.dataset.categoryId;
+
+      if (!categoryId) {
+        showToast('fail', '❎ No Category selected for update.');
+        return;
+      }
+
+      const updateCategoryName = document.querySelector(
+        '#updateCategoryName'
+      ).value;
+      const updateCategoryDescription = document.querySelector(
+        '#updateCategoryDescription'
+      ).value;
+
+      const updateCategoryDetails = {
+        name: updateCategoryName,
+        description: updateCategoryDescription,
+      };
+
+      // console.log(
+      //   'Updating Category Detail with:',
+      //   updateCategoryDetails,
+      //   categoryId
+      // );
+
+      const updateCategoryModalBtn = document.querySelector(
+        '.updateCategoryModalBtn'
+      );
+
+      try {
+        showBtnLoader(updateCategoryModalBtn);
+        const updatedCategoryData = await updateCategory(
+          categoryId,
+          updateCategoryDetails
+        );
+
+        if (!updatedCategoryData) {
+          console.error('fail', updatedCategoryData.message);
+          return;
+        }
+
+        closeModal();
+        hideBtnLoader(updateCategoryModalBtn);
+        //   hideGlobalLoader();
+      } catch (err) {
+        hideBtnLoader(updateCategoryModalBtn);
+
+        console.error('Error Updating Category:', err);
+        showToast('fail', `❎ ${err.message}`);
+        return;
+      }
+    });
+  }
+}
+
+export function updateCategoryForm(categoryDetail) {
+  //   console.log('Category Detail:', CategoryDetail);
+
+  const form = document.querySelector('.updateCategoryModal');
+  if (!form) return;
+
+  //   form.dataset.categoryId = categoryId;
+
+  //   if (!form || form.dataset.bound === 'true') return;
+  //   form.dataset.bound = 'true';
+
+  //   console.log(categoryDetail.data);
+
+  const categories = categoryDetail.data;
+
+  categories.forEach((category) => {
+    console.log('category', category.id);
+    console.log('dataset', form.dataset.categoryId);
+
+    if (category.id === Number(form.dataset.categoryId)) {
+      const categoryName = category.name;
+      const categoryDescription = category.description;
+      const categoryId = category.id;
+
+      document.querySelector('#updateCategoryName').value = categoryName;
+      document.querySelector('#updateCategoryDescription').value =
+        categoryDescription;
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  bindUpdateCategoryFormListener(); // Only once
+});
 
 // export function showToast(type, message) {
 //   const toast = document.getElementById('toast');
@@ -577,6 +767,7 @@ export function closeModal() {
   const adminUpdateBusinessData = document.querySelector(
     '.adminUpdateBusinessData'
   );
+  const updateCategory = document.querySelector('.updateCategory');
 
   if (depositPosCapitalContainer) {
     depositPosCapitalContainer.classList.remove('active');
@@ -656,6 +847,10 @@ export function closeModal() {
 
   if (adminUpdateBusinessData) {
     adminUpdateBusinessData.classList.remove('active');
+  }
+
+  if (updateCategory) {
+    updateCategory.classList.remove('active');
   }
 
   clearFormInputs();

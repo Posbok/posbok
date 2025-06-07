@@ -5,7 +5,7 @@ import {
   renderProductInventoryTable,
 } from '../../goods.js';
 import { hideGlobalLoader, showGlobalLoader } from '../../helper/helper.js';
-import { showToast } from '../../script.js';
+import { closeModal, showToast } from '../../script.js';
 import { safeFetch } from '../utility/safeFetch.js';
 
 const baseUrl = config.baseUrl;
@@ -248,6 +248,39 @@ export async function deleteProduct(productId, shopId) {
   }
 }
 
+export async function deleteCategory(categoryId) {
+  try {
+    //  console.log('Sending POST request...');
+
+    showGlobalLoader();
+
+    const fetchedData = await safeFetch(
+      `${baseUrl}/api/inventory/categories/${categoryId}`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    if (fetchedData) {
+      // console.log('Staff deleted successfully:', fetchedData);
+      showToast('success', `✅ ${fetchedData.message}`);
+      await getProductCategories(); // Refresh list or update UI
+      hideGlobalLoader();
+    }
+
+    return fetchedData;
+  } catch (error) {
+    hideGlobalLoader();
+    //  console.error('Error deleting Category', error);
+    //  showToast('error', `❌ Failed to delete Category`);
+    showToast('error', `❌ ${error.message}`);
+    throw error;
+  }
+}
+
 export async function updateProduct(productId, updateProductDetails, shopId) {
   //   console.log('From API Request:', productId, updateProductDetails, shopId);
 
@@ -276,6 +309,39 @@ export async function updateProduct(productId, updateProductDetails, shopId) {
   } catch (error) {
     console.error('Error Updating Product Info', error);
     showToast('error', '❌ Failed to Update Product info');
+    throw error;
+  }
+}
+
+export async function updateCategory(categoryId, updateCategoryDetails) {
+  //   console.log('From API Request:', categoryId, updateCategoryDetails);
+
+  try {
+    //  console.log('Sending POST request...', categoryId);
+
+    const updateCategoryData = await safeFetch(
+      `${baseUrl}/api/inventory/categories/${categoryId}`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updateCategoryDetails),
+      }
+    );
+
+    if (updateCategoryData) {
+      // console.log('Categories info Updated successfully:', updateCategoryData);
+      showToast('success', `✅ ${updateCategoryData.message}`);
+      closeModal();
+      await getProductCategories(); // Refresh list or update UI
+    }
+
+    return updateCategoryData;
+  } catch (error) {
+    console.error('Error Updating Categories Info', error);
+    showToast('error', '❌ Failed to Update Categories info');
     throw error;
   }
 }

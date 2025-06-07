@@ -136,6 +136,10 @@
                <button class="hero-btn-dark"> <a href="staff-profile.html" class="button-link"></a>Staff
                   Profile</button>
 
+
+               <button class="hero-btn-dark"> <a href="shop-management.html" class="button-link"></a>Shop
+                  Management</button>
+
                <button class="hero-btn-dark"> <a href="manage.html" class="button-link"></a>Manage</button>
 
             </div>
@@ -314,6 +318,36 @@
 
       <div class="close closeModal" id="">&times;</div>
    </div>
+
+   <form class="modal-form updateCategoryModal" name="updateCategory">
+      <div class="card updateCategory modal ">
+         <div>
+            <h1 class="heading-text addItemName">Update Category</h1>
+         </div>
+
+         <div class="modal-form_input">
+            <label for="updateCategoryName">Category Name</label>
+
+            <input id="updateCategoryName" type="text" placeholder="Category Name" name="updateCategoryName" required>
+         </div>
+
+         <div class="modal-form_input">
+            <label for="updateCategoryDescription">Category Description</label>
+
+            <input id="updateCategoryDescription" type="text" placeholder="Category Description"
+               name="updateCategoryDescription" required>
+         </div>
+
+         <div class="center-button">
+            <button class="hero-btn-dark updateCategoryModalBtn" id="updateCategoryModalBtn">
+               <span class="btn-text">update Category</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
 
    <form class="updateProduct-form updateProductModal" name="updateProduct">
       <div class="card updateProduct modal ">

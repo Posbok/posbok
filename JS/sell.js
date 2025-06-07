@@ -597,6 +597,7 @@ export function sellProductForm() {
 
         showToast('info', 'ℹ️ Inplementation in progress. Try again Later');
         console.log('Submitting Sales Details:', sellProductDetails);
+        hideBtnLoader(checkoutSubmitBtn);
 
         //   const data = await createProductCategory(addProductCategoryDetails);
 
@@ -788,22 +789,20 @@ document.addEventListener('DOMContentLoaded', function () {
   const proceedToCheckoutBtn = document.querySelector('.proceed-btn');
   const backToCartBtn = document.getElementById('backToCart');
 
+  //   cartIcon.click();
+
   // Open Cart Slider
   cartIcon?.addEventListener('click', () => {
-    //  cartSlider.style.display = 'block';
     cartSlider.classList.add('open');
-    cartSliderOverlay.style.display = 'block';
+    cartSliderOverlay.classList.add('visible');
     sliderWrapper.style.transform = 'translateX(0%)'; // Always reset to Cart View
     renderCartItemsFromStorage();
   });
 
-  //   cartIcon.click();
-
   // Close Cart Slider
   closeCartBtn?.addEventListener('click', () => {
-    //  cartSlider.style.display = 'none';
     cartSlider.classList.remove('open');
-    cartSliderOverlay.style.display = 'none';
+    cartSliderOverlay.classList.remove('visible');
   });
 
   // Proceed to Checkout View
@@ -825,7 +824,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   cartSliderOverlay.addEventListener('click', () => {
     cartSlider.classList.remove('open');
-    cartSliderOverlay.style.display = 'none';
+    cartSliderOverlay.classList.remove('visible');
   });
 });
 

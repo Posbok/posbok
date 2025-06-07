@@ -3,10 +3,12 @@ import {
   addInventory,
   createProduct,
   createProductCategory,
+  deleteCategory,
   deleteProduct,
   getProductCategories,
   getProductDetail,
   getProductInventory,
+  updateCategory,
   updateProduct,
   updateProductInventory,
 } from './apiServices/inventory/inventoryResources';
@@ -92,6 +94,16 @@ export function openUpdateProductButton() {
   //   updateProductForm();
 }
 
+export function openUpdateCategoryButton() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const updateCategoryContainer = document.querySelector('.updateCategory');
+
+  if (updateCategoryContainer) updateCategoryContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // Setup for Opening Pos Charges Modal
   setupModalCloseButtons();
@@ -107,6 +119,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document
     .querySelector('#openUpdateProductBtn')
     ?.addEventListener('click', openUpdateProductButton);
+
+  document
+    .querySelector('.openUpdateCategoryButton')
+    ?.addEventListener('click', openUpdateCategoryButton);
 });
 
 export function addProductCategoryForm() {
@@ -187,12 +203,13 @@ export function populateCategoryTable(productCategoriesData) {
          <td class="py-1 categoryDescription">${category.description}</td>
 
         <td class="py-1 action-buttons">
-          <button class="hero-btn-outline editcategoryButton" data-category-id="${
+          <button class="hero-btn-outline openUpdateCategoryButton" data-category-id="${
             category.id
           }">
             <i class="fa-solid fa-pen-to-square"></i>
           </button>
-          <button class="hero-btn-outline deletecategoryButton" data-category-id="${
+
+          <button class="hero-btn-outline deleteCategoryButton" data-category-id="${
             category.id
           }">
             <i class="fa-solid fa-trash-can"></i>
@@ -201,6 +218,49 @@ export function populateCategoryTable(productCategoriesData) {
       `;
 
     if (tbody) tbody.appendChild(row);
+
+    const deleteCategoryButton = row.querySelector(`.deleteCategoryButton`);
+
+    deleteCategoryButton.addEventListener('click', async () => {
+      const categoryId = deleteCategoryButton.dataset.categoryId;
+      // console.log('deleteCategoryButton clicked', categoryId);
+      await deleteCategory(categoryId);
+    });
+
+    // Update Product Logic
+
+    const updateCategoryBtn = row.querySelector('.openUpdateCategoryButton');
+
+    updateCategoryBtn?.addEventListener('click', async () => {
+      showGlobalLoader();
+      const categoryId = updateCategoryBtn.dataset.categoryId;
+
+      const updateCategoryModalContainer = document.querySelector(
+        '.updateCategoryModal'
+      );
+
+      if (updateCategoryModalContainer) {
+        // Store categoryId in modal container for reference
+        updateCategoryModalContainer.dataset.categoryId = categoryId;
+
+        console.log(updateCategoryModalContainer.dataset.categoryId);
+        // Fetch staff detail
+        const CategoryDetail = await getProductCategories(categoryId);
+
+        //  console.log('Category detail received successfully:', CategoryDetail);
+
+        // Call function to prefill modal inputs
+        if (CategoryDetail?.success === true) {
+          hideGlobalLoader();
+          openUpdateCategoryButton(); // Show modal after data is ready
+
+          updateCategoryForm(CategoryDetail);
+        } else {
+          hideGlobalLoader();
+          showToast('fail', '❌ Failed to fetch Category details.');
+        }
+      }
+    });
 
     //  const deleteBtn = row.querySelector('.deleteShopButton');
     //  deleteBtn.addEventListener('click', async () => {
@@ -393,6 +453,7 @@ export function createProductForm() {
   }
 }
 
+//  Update Product
 export function bindUpdateProductFormListener() {
   const form = document.querySelector('.updateProductModal');
   if (!form) return;
@@ -563,6 +624,105 @@ export function updateProductForm(productDetail) {
 
 document.addEventListener('DOMContentLoaded', () => {
   bindUpdateProductFormListener(); // Only once
+});
+
+//  Update Category
+export function bindUpdateCategoryFormListener() {
+  const form = document.querySelector('.updateCategoryModal');
+  if (!form) return;
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const categoryId = form.dataset.categoryId;
+
+      if (!categoryId) {
+        showToast('fail', '❎ No Category selected for update.');
+        return;
+      }
+
+      const updateCategoryName = document.querySelector(
+        '#updateCategoryName'
+      ).value;
+      const updateCategoryDescription = document.querySelector(
+        '#updateCategoryDescription'
+      ).value;
+
+      const updateCategoryDetails = {
+        name: updateCategoryName,
+        description: updateCategoryDescription,
+      };
+
+      // console.log(
+      //   'Updating Category Detail with:',
+      //   updateCategoryDetails,
+      //   categoryId
+      // );
+
+      const updateCategoryModalBtn = document.querySelector(
+        '.updateCategoryModalBtn'
+      );
+
+      try {
+        showBtnLoader(updateCategoryModalBtn);
+        const updatedCategoryData = await updateCategory(
+          categoryId,
+          updateCategoryDetails
+        );
+
+        if (!updatedCategoryData) {
+          console.error('fail', updatedCategoryData.message);
+          return;
+        }
+
+        closeModal();
+        hideBtnLoader(updateCategoryModalBtn);
+        //   hideGlobalLoader();
+      } catch (err) {
+        hideBtnLoader(updateCategoryModalBtn);
+
+        console.error('Error Updating Category:', err);
+        showToast('fail', `❎ ${err.message}`);
+        return;
+      }
+    });
+  }
+}
+
+export function updateCategoryForm(categoryDetail) {
+  //   console.log('Category Detail:', CategoryDetail);
+
+  const form = document.querySelector('.updateCategoryModal');
+  if (!form) return;
+
+  //   form.dataset.categoryId = categoryId;
+
+  //   if (!form || form.dataset.bound === 'true') return;
+  //   form.dataset.bound = 'true';
+
+  //   console.log(categoryDetail.data);
+
+  const categories = categoryDetail.data;
+
+  categories.forEach((category) => {
+    console.log('category', category.id);
+    console.log('dataset', form.dataset.categoryId);
+
+    if (category.id === Number(form.dataset.categoryId)) {
+      const categoryName = category.name;
+      const categoryDescription = category.description;
+      const categoryId = category.id;
+
+      document.querySelector('#updateCategoryName').value = categoryName;
+      document.querySelector('#updateCategoryDescription').value =
+        categoryDescription;
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  bindUpdateCategoryFormListener(); // Only once
 });
 
 // function getFilters(role, shopId) {

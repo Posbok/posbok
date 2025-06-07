@@ -73,6 +73,30 @@ export async function createStaff(staffDetails) {
   }
 }
 
+export async function fetchProfileDetails() {
+  try {
+    showGlobalLoader();
+    console.log('Fetching profile details for user');
+
+    const fetchedData = await safeFetch(`${baseUrl}/api/users/profile`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
+
+    console.log('Response received...');
+    console.log(fetchedData);
+    hideGlobalLoader();
+
+    return fetchedData;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error Fetching Profile Info:', error.message);
+    throw error;
+  }
+}
+
 export async function fetchStaffDetail(staffId) {
   try {
     //  console.log('Sending POST request...');
