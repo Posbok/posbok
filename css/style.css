@@ -607,30 +607,43 @@ select {
     width: 100%; }
     .addProduct-form_input .password-container #password-length,
     .addProduct-form_input .password-container #password-mismatch,
+    .addProduct-form_input .password-container #same-password,
     .sellProduct-form_input .password-container #password-length,
     .sellProduct-form_input .password-container #password-mismatch,
+    .sellProduct-form_input .password-container #same-password,
     .adminSellProduct-form_input .password-container #password-length,
     .adminSellProduct-form_input .password-container #password-mismatch,
+    .adminSellProduct-form_input .password-container #same-password,
     .updateProduct-form_input .password-container #password-length,
     .updateProduct-form_input .password-container #password-mismatch,
+    .updateProduct-form_input .password-container #same-password,
     .depositPosCapital-form_input .password-container #password-length,
     .depositPosCapital-form_input .password-container #password-mismatch,
+    .depositPosCapital-form_input .password-container #same-password,
     .modal-form_input .password-container #password-length,
     .modal-form_input .password-container #password-mismatch,
+    .modal-form_input .password-container #same-password,
     .slider-form_input .password-container #password-length,
     .slider-form_input .password-container #password-mismatch,
+    .slider-form_input .password-container #same-password,
     .signup-form_input .password-container #password-length,
     .signup-form_input .password-container #password-mismatch,
+    .signup-form_input .password-container #same-password,
     .addUser-form_input .password-container #password-length,
     .addUser-form_input .password-container #password-mismatch,
+    .addUser-form_input .password-container #same-password,
     .addPosCharge-form_input .password-container #password-length,
     .addPosCharge-form_input .password-container #password-mismatch,
+    .addPosCharge-form_input .password-container #same-password,
     .addMachineFee-form_input .password-container #password-length,
     .addMachineFee-form_input .password-container #password-mismatch,
+    .addMachineFee-form_input .password-container #same-password,
     .inventory-form_input .password-container #password-length,
     .inventory-form_input .password-container #password-mismatch,
+    .inventory-form_input .password-container #same-password,
     .business-form_input .password-container #password-length,
-    .business-form_input .password-container #password-mismatch {
+    .business-form_input .password-container #password-mismatch,
+    .business-form_input .password-container #same-password {
       font-size: medium; }
   @media only screen and (max-width: 30.5em) {
     .addProduct-form_input,
@@ -1219,17 +1232,26 @@ button:disabled:hover {
           font-size: 1.16rem; } }
       .main-heading_left .logoutButton {
         margin-bottom: 0; }
-      .main-heading_left .cartIconDiv {
+      .main-heading_left .cartIconDiv,
+      .main-heading_left .profileIconDiv {
         position: relative;
         display: flex; }
-        .main-heading_left .cartIconDiv:hover {
+        .main-heading_left .cartIconDiv:hover,
+        .main-heading_left .profileIconDiv:hover {
           cursor: pointer; }
-        .main-heading_left .cartIconDiv .main-heading-cart {
+        .main-heading_left .cartIconDiv .main-heading-cart,
+        .main-heading_left .cartIconDiv .main-heading-profile--image,
+        .main-heading_left .profileIconDiv .main-heading-cart,
+        .main-heading_left .profileIconDiv .main-heading-profile--image {
           font-size: 3rem;
           border-radius: 100px; }
-          .main-heading_left .cartIconDiv .main-heading-cart:hover {
+          .main-heading_left .cartIconDiv .main-heading-cart:hover,
+          .main-heading_left .cartIconDiv .main-heading-profile--image:hover,
+          .main-heading_left .profileIconDiv .main-heading-cart:hover,
+          .main-heading_left .profileIconDiv .main-heading-profile--image:hover {
             transform: scale(1.03); }
-        .main-heading_left .cartIconDiv .cart-counter {
+        .main-heading_left .cartIconDiv .cart-counter,
+        .main-heading_left .profileIconDiv .cart-counter {
           position: absolute;
           top: -1.4rem;
           right: -1rem;
@@ -1238,7 +1260,7 @@ button:disabled:hover {
           color: #205329;
           border-radius: 100px; }
       .main-heading_left .main-heading-profile--image {
-        font-size: 4rem;
+        font-size: 4rem !important;
         border-radius: 100px;
         border: 3px solid #51cf66; }
         @media only screen and (max-width: 30.5em) {
@@ -1589,9 +1611,11 @@ body.authentication {
     width: 700px;
     transition: transform 0.4s ease-in-out; }
     .cart-slider-content .slider-wrapper .cart-view,
+    .cart-slider-content .slider-wrapper .updatePassword-view,
     .cart-slider-content .slider-wrapper .profile-view,
     .cart-slider-content .slider-wrapper .checkout-view,
     .profile-slider-content .slider-wrapper .cart-view,
+    .profile-slider-content .slider-wrapper .updatePassword-view,
     .profile-slider-content .slider-wrapper .profile-view,
     .profile-slider-content .slider-wrapper .checkout-view {
       width: 350px;
@@ -1605,8 +1629,10 @@ body.authentication {
       box-sizing: border-box;
       padding: 1.5rem; }
     .cart-slider-content .slider-wrapper .checkout-view,
+    .cart-slider-content .slider-wrapper .updatePassword-view,
     .cart-slider-content .slider-wrapper .profile-view,
     .profile-slider-content .slider-wrapper .checkout-view,
+    .profile-slider-content .slider-wrapper .updatePassword-view,
     .profile-slider-content .slider-wrapper .profile-view {
       display: flex;
       flex-direction: column;
@@ -1615,12 +1641,16 @@ body.authentication {
       box-sizing: border-box;
       padding: 2.5rem 1.5rem; }
       .cart-slider-content .slider-wrapper .checkout-view .hero-btn-dark,
+      .cart-slider-content .slider-wrapper .updatePassword-view .hero-btn-dark,
       .cart-slider-content .slider-wrapper .profile-view .hero-btn-dark,
       .profile-slider-content .slider-wrapper .checkout-view .hero-btn-dark,
+      .profile-slider-content .slider-wrapper .updatePassword-view .hero-btn-dark,
       .profile-slider-content .slider-wrapper .profile-view .hero-btn-dark {
         margin-top: 3rem; }
     .cart-slider-content .slider-wrapper .checkout-view button#backToCart,
-    .profile-slider-content .slider-wrapper .checkout-view button#backToCart {
+    .cart-slider-content .slider-wrapper .updatePassword-view button#backToProfile,
+    .profile-slider-content .slider-wrapper .checkout-view button#backToCart,
+    .profile-slider-content .slider-wrapper .updatePassword-view button#backToProfile {
       background: none;
       border: none;
       font-size: 1.5rem;
@@ -1737,8 +1767,8 @@ body.authentication {
         .cart-slider-content .profile-item .item-details .quantity-control button,
         .profile-slider-content .cart-item .item-details .quantity-control button,
         .profile-slider-content .profile-item .item-details .quantity-control button {
-          width: 15px;
-          height: 15px;
+          width: 17px;
+          height: 17px;
           font-size: 1rem;
           background: #ddd;
           border: none;
@@ -1747,7 +1777,8 @@ body.authentication {
         .cart-slider-content .profile-item .item-details .quantity-control span,
         .profile-slider-content .cart-item .item-details .quantity-control span,
         .profile-slider-content .profile-item .item-details .quantity-control span {
-          padding: 0 10px; }
+          padding: 0 10px;
+          font-size: 1.2rem; }
   .cart-slider-content .cart-footer,
   .cart-slider-content .profile-footer,
   .profile-slider-content .cart-footer,

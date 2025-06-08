@@ -122,7 +122,11 @@
          <div class="main-heading_left">
 
             <button class="hero-btn-dark logoutButton">LOGOUT</button>
-            <i class="fa-solid fa-circle-user main-heading-profile--image"></i>
+
+            <div class="profileIconDiv mr-2">
+
+               <i class="fa-solid fa-circle-user main-heading-profile--image"></i>
+            </div>
          </div>
       </header>
 
@@ -498,6 +502,197 @@
          <div class="close closeModal" id="">&times;</div>
       </div>
    </form>
+
+
+   <!-- profile Slider -->
+   <div class="profile-slider-overlay "></div>
+
+   <div class="profile-slider-content ">
+      <div class="slider-wrapper">
+
+         <!-- profile View -->
+         <div class="profile-view ">
+            <div class="profile-slider-header">
+               <h2 class="heading-text">Your profile</h2>
+               <div class="close closeModal close-profile-btn" id="">&times;</div>
+            </div>
+
+            <form id="profile-form">
+               <!-- First  NAME -->
+               <div class="slider-form_input">
+                  <label for="userProfileFirstName">First Name</label>
+
+                  <div class="penEdit-input-container">
+                     <input class="userProfileFirstName" id="userProfileFirstName" type="text"
+                        name="userProfileFirstName" placeholder="Enter First Name" required>
+                     <i class="fa-solid penEditIcon fa-pen-to-square"></i>
+
+                  </div>
+
+
+               </div>
+
+               <!-- Last Name -->
+               <div class="slider-form_input">
+                  <label for="userProfileLastName">Last Name</label>
+
+                  <div class="penEdit-input-container">
+                     <input class="userProfileLastName" id="userProfileLastName" type="text" name="userProfileLastName"
+                        placeholder="Enter Last Name" required>
+                     <i class="fa-solid penEditIcon fa-pen-to-square"></i>
+
+                  </div>
+
+               </div>
+
+               <!-- USer Address -->
+               <div class="slider-form_input">
+                  <label for="userProfileAddress">Address</label>
+
+                  <div class="penEdit-input-container">
+                     <input class="userProfileAddress" id="userProfileAddress" type="text" placeholder="Enter Address"
+                        name="userProfileAddress" required>
+                     <i class="fa-solid penEditIcon fa-pen-to-square"></i>
+
+                  </div>
+               </div>
+
+               <!-- PHONE NUMBER -->
+               <div class="slider-form_input">
+                  <label for="userProfilePhoneNumber">Phone Number</label>
+
+                  <div class="penEdit-input-container">
+                     <input class="userProfilePhoneNumber" id="userProfilePhoneNumber" type="number"
+                        placeholder="Enter Phone Number" name="userProfilePhoneNumber" required>
+                     <i class="fa-solid penEditIcon fa-pen-to-square"></i>
+
+                  </div>
+               </div>
+
+               <!-- USer Email -->
+               <div class="slider-form_input">
+                  <label for="userProfileEmail">Email</label>
+
+                  <input class="userProfileEmail" id="userProfileEmail" type="text" placeholder="Enter Email"
+                     name="userProfileEmail" disabled>
+               </div>
+
+               <!-- USer Date Of Birth -->
+               <div class="slider-form_input">
+                  <label for="userProfileDateOfBirth">Date Of Birth</label>
+
+                  <input class="userProfileDateOfBirth" id="userProfileDate Of Birth" type="text"
+                     placeholder="Enter DateOfBirth" name="userProfileDateOfBirth" disabled>
+               </div>
+
+               <!-- USer State Of Origin -->
+               <div class="slider-form_input">
+                  <label for="userProfileStateOfOrigin">State Of Origin</label>
+
+                  <input class="userProfileStateOfOrigin" id="userProfileStateOfOrigin" type="text"
+                     placeholder="Enter State Of Origin" name="userProfileStateOfOrigin" disabled>
+               </div>
+
+               <!-- USer lga -->
+               <div class="slider-form_input">
+                  <label for="userProfilelga">LGA</label>
+
+                  <input class="userProfilelga" id="userProfilelga" type="text" placeholder="Enter LGA"
+                     name="userProfilelga" disabled>
+               </div>
+
+               <!-- USer Account Type -->
+               <div class="slider-form_input">
+                  <label for="userProfileAccountType">Account Type</label>
+
+                  <input class="userProfileAccountType" id="userProfileAccountType" type="text"
+                     placeholder="Enter Account Type" name="userProfileAccountType" disabled>
+               </div>
+
+               <!-- USer  Service Permission -->
+               <div class="slider-form_input">
+                  <label for="userProfileServicePermission">Service Permission</label>
+
+                  <input class="userProfileServicePermission" id="userProfileServicePermission" type="text"
+                     placeholder="Enter Service Permission" name="userProfileServicePermission" disabled>
+               </div>
+
+               <!-- USer  Business Name -->
+               <div class="slider-form_input">
+                  <label for="userProfileBusinessName">Business Name</label>
+
+                  <input class="userProfileBusinessName" id="userProfileBusinessName" type="text"
+                     placeholder="Enter Business Name" name="userProfileBusinessName" disabled>
+               </div>
+
+               <!-- Update Button -->
+               <div class="center-button">
+                  <button class="hero-btn-dark mb-2 updateProfileModalBtn has-spinner" type="submit">
+                     <span class="btn-text">Update Profile</span>
+                     <span class="btn-spinner hidden"></span>
+                  </button>
+                  <!-- <button class="hero-btn-dark sellProductActionButton">Sell</button> -->
+               </div>
+
+
+            </form>
+
+            <form id="updatePassword-form">
+
+               <!-- Current Password -->
+               <div class="slider-form_input">
+                  <label for="currentPassword">Current Password</label>
+
+                  <div class="password-container">
+
+                     <input class="" id="currentPassword" type="password" placeholder="Enter Current Password"
+                        name="currentPassword" required>
+
+                     <small id="same-password" class="error-text" style="color: red; display: none;"> </small>
+
+                  </div>
+               </div>
+
+               <!-- New Password -->
+               <div class="slider-form_input">
+                  <label for="newPassword">New Password</label>
+
+                  <div class="password-container">
+
+                     <input class="" id="newPassword" type="password" placeholder="Enter New Password"
+                        name="newPassword" required>
+
+                     <small id="password-length" class="error-text" style="color: red; display: none;"> </small>
+                  </div>
+               </div>
+
+               <!-- Confirm New Password -->
+               <div class="slider-form_input">
+                  <label for="confirmNewPassword"> Confirm New Password</label>
+
+                  <div class="password-container">
+
+                     <input class="" id="confirmNewPassword" type="password" placeholder=" Confirm New Password"
+                        name="confirmNewPassword" required>
+
+                     <small id="password-mismatch" class="error-text" style="color: red; display: none;"> </small>
+
+
+                  </div>
+               </div>
+
+               <div class="center-button">
+                  <button class="hero-btn-dark mb-2 updatePasswordSubmitBtn has-spinner" type="submit">
+                     <span class="btn-text">Update Password</span>
+                     <span class="btn-spinner hidden"></span>
+                  </button>
+               </div>
+            </form>
+         </div>
+
+      </div>
+
+   </div>
 
    <div id="toast" class="toast">This is a toast message!</div>
 

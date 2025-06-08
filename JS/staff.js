@@ -435,7 +435,7 @@ export function populateShopDropdown(shopList = [], preselectedShopId = '') {
   dropdown.innerHTML = `<option value="">Select a shop</option>`;
   staffManageShopDropdown.innerHTML = `<option value="">Select a shop</option>`;
 
-  console.log(dropdown);
+  //   console.log(dropdown);
 
   shopList.forEach((shop) => {
     const option1 = document.createElement('option');

@@ -4,7 +4,11 @@ import {
   hideGlobalLoader,
   showGlobalLoader,
 } from '../../helper/helper.js';
-import { closeModal, showToast } from '../../script.js';
+import {
+  closeModal,
+  renderUserprofileDetails,
+  showToast,
+} from '../../script.js';
 import { populateStaffTable } from '../../staff.js';
 import { fetchBusinessDetails } from '../business/businessResource.js';
 import { checkAndPromptCreateShop } from '../shop/shopResource.js';
@@ -76,7 +80,7 @@ export async function createStaff(staffDetails) {
 export async function fetchProfileDetails() {
   try {
     showGlobalLoader();
-    console.log('Fetching profile details for user');
+    //  console.log('Fetching profile details for user');
 
     const fetchedData = await safeFetch(`${baseUrl}/api/users/profile`, {
       method: 'GET',
@@ -85,14 +89,77 @@ export async function fetchProfileDetails() {
       },
     });
 
-    console.log('Response received...');
-    console.log(fetchedData);
+    //  console.log('Response received...');
+    //  console.log(fetchedData);
     hideGlobalLoader();
 
     return fetchedData;
   } catch (error) {
     hideGlobalLoader();
     console.error('Error Fetching Profile Info:', error.message);
+    throw error;
+  }
+}
+
+export async function updateUserProfile(updateProfileDetails) {
+  try {
+    //  console.log('Sending POST request...');
+
+    const updateUserProfileData = await safeFetch(
+      `${baseUrl}/api/users/profile`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updateProfileDetails),
+      }
+    );
+
+    if (updateUserProfileData) {
+      // console.log('Profile info Updated successfully:', updateUserProfileData);
+      showToast('success', `✅ ${updateUserProfileData.message}`);
+      renderUserprofileDetails(); // Refresh list or update UI
+    }
+
+    return updateUserProfileData;
+  } catch (error) {
+    console.error('Error Updating Profile Info', error);
+    showToast('error', '❌ Failed to Update Profile info');
+    throw error;
+  }
+}
+
+export async function updateUserProfilePassword(updateProfileDetails) {
+  try {
+    //  console.log('Sending POST request...');
+
+    const updateUserProfilePasswordData = await safeFetch(
+      `${baseUrl}/api/users/change-password`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updateProfileDetails),
+      }
+    );
+
+    if (updateUserProfilePasswordData) {
+      // console.log(
+      //   'Password info Updated successfully:',
+      //   updateUserProfilePasswordData
+      // );
+      showToast('success', `✅ ${updateUserProfilePasswordData.message}`);
+      renderUserprofileDetails(); // Refresh list or update UI
+    }
+
+    return updateUserProfilePasswordData;
+  } catch (error) {
+    console.error('Error Updating Password Info', error);
+    showToast('error', '❌ Failed to Update Password info');
     throw error;
   }
 }

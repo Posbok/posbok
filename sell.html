@@ -685,7 +685,7 @@
 
                <!-- Update Button -->
                <div class="center-button">
-                  <button class="hero-btn-dark mb-2 checkoutSubmitBtn has-spinner" type="submit">
+                  <button class="hero-btn-dark mb-2 updateProfileModalBtn has-spinner" type="submit">
                      <span class="btn-text">Update Profile</span>
                      <span class="btn-spinner hidden"></span>
                   </button>
@@ -694,94 +694,60 @@
 
 
             </form>
-         </div>
 
-         <!-- Checkout View -->
-         <div class="checkout-view ">
-            <button id="backToCart"><i class="fa-solid fa-arrow-left"></i> Back</button>
-            <h1 class="heading-text">Checkout</h1>
-            <form id="checkout-form">
-               <!-- CUSTOMER NAME -->
-               <div class="sellProduct-form_input">
-                  <label for="customerName">Customer Name</label>
+            <form id="updatePassword-form">
 
-                  <input class="sellCustomerName" id="sellCustomerName" type="text" placeholder="Enter Customer Name"
-                     name="sellCustomerName" required>
-               </div>
+               <!-- Current Password -->
+               <div class="slider-form_input">
+                  <label for="currentPassword">Current Password</label>
 
-               <!-- CUSTOMER PHONE NUMBER -->
-               <div class="sellProduct-form_input">
-                  <label for="sellCustomerPhone">Customer Phone Number</label>
+                  <div class="password-container">
 
-                  <input class="sellCustomerPhone" id="sellCustomerPhone" type="text"
-                     placeholder="Enter Customer Phone Number" name="sellCustomerPhone" required>
-               </div>
+                     <input class="" id="currentPassword" type="password" placeholder="Enter Current Password"
+                        name="currentPassword" required>
 
-               <div class="sellProduct-form_input">
-                  <label for="amount-paid">Amount Paid</label>
+                     <small id="same-password" class="error-text" style="color: red; display: none;"> </small>
 
-                  <div class="naira-input-container">
-                     <input id="amount-paid" type="text" placeholder="Enter Amount Paid" name="amount-paid" required>
-                     <span class="naira">&#x20A6;</span>
                   </div>
                </div>
 
-               <div class="sellProduct-form_input salesPaymentType">
-                  <label for="paymentTypeOption">Select Payment Type:</label>
+               <!-- New Password -->
+               <div class="slider-form_input">
+                  <label for="newPassword">New Password</label>
 
-                  <select id="paymentTypeOption" name="paymentTypeOption">
-                     <option value="card">Card</option>
-                     <option value="transfer">Transfer</option>
-                     <option value="cash">Cash</option>
-                  </select>
-               </div>
+                  <div class="password-container">
 
-               <div class="sellProduct-form_input sellStatus">
-                  <label for="Status" class="heading-subtext">Status</label>
+                     <input class="" id="newPassword" type="password" placeholder="Enter New Password"
+                        name="newPassword" required>
 
-                  <div class="checkbox">
-                     <div class="checkbox-container">
-                        <input id="completedCheckbox" type="radio" name="completedCheckbox" value="completed" required>
-                        <label for="completedCheckbox">Completed</label>
-                     </div>
-
-                     <div class="checkbox-container">
-                        <input id="balanceCheckbox" type="radio" name="completedCheckbox" value="balance" required>
-                        <label for="balanceCheckbox">Balance</label>
-                     </div>
+                     <small id="password-length" class="error-text" style="color: red; display: none;"> </small>
                   </div>
                </div>
 
+               <!-- Confirm New Password -->
+               <div class="slider-form_input">
+                  <label for="confirmNewPassword"> Confirm New Password</label>
 
-               <div class="sellProduct-form_input balancePayment">
-                  <label for="productBalanceAmount">Balance Amount</label>
+                  <div class="password-container">
 
-                  <div class="naira-input-container">
-                     <input id="productBalancePrice" type="text" placeholder="Enter Balance Amount"
-                        name="productBalancePrice" required>
-                     <span class="naira">&#x20A6;</span>
+                     <input class="" id="confirmNewPassword" type="password" placeholder=" Confirm New Password"
+                        name="confirmNewPassword" required>
+
+                     <small id="password-mismatch" class="error-text" style="color: red; display: none;"> </small>
+
+
                   </div>
-               </div>
-
-               <div class="sellProduct-form_input">
-                  <label for="productSoldRemark">Remarks</label>
-
-                  <!-- <div class="naira-input-container"> -->
-                  <input id="soldProductRemark" type="text" placeholder="Remarks" name="soldProductRemark" required>
-                  <!-- </div> -->
                </div>
 
                <div class="center-button">
-                  <button class="hero-btn-dark mb-2 checkoutSubmitBtn has-spinner" type="submit">
-                     <span class="btn-text">Checkout</span>
+                  <button class="hero-btn-dark mb-2 updatePasswordSubmitBtn has-spinner" type="submit">
+                     <span class="btn-text">Update Password</span>
                      <span class="btn-spinner hidden"></span>
                   </button>
-                  <!-- <button class="hero-btn-dark sellProductActionButton">Sell</button> -->
                </div>
-
-
             </form>
          </div>
+
       </div>
 
    </div>

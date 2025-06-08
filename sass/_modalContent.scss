@@ -195,6 +195,7 @@
       transition: transform 0.4s ease-in-out;
 
       .cart-view,
+      .updatePassword-view,
       .profile-view,
       .checkout-view {
          width: 350px;
@@ -212,6 +213,7 @@
       }
 
       .checkout-view,
+      .updatePassword-view,
       .profile-view {
          display: flex;
          flex-direction: column;
@@ -226,7 +228,8 @@
          }
       }
 
-      .checkout-view button#backToCart {
+      .checkout-view button#backToCart,
+      .updatePassword-view button#backToProfile {
          background: none;
          border: none;
          font-size: 1.5rem;
@@ -321,8 +324,8 @@
             align-items: center;
 
             button {
-               width: 15px;
-               height: 15px;
+               width: 17px;
+               height: 17px;
                font-size: 1rem;
                background: #ddd;
                border: none;
@@ -331,6 +334,7 @@
 
             span {
                padding: 0 10px;
+               font-size: 1.2rem;
             }
          }
       }

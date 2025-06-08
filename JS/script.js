@@ -12,6 +12,8 @@ import {
   checkAndPromptCreateStaff,
   fetchProfileDetails,
   openCreateStaffModal,
+  updateUserProfile,
+  updateUserProfilePassword,
 } from './apiServices/user/userResource.js';
 import {
   clearFormInputs,
@@ -110,10 +112,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const closeProfileBtn = document.querySelector('.close-profile-btn');
 
   const sliderWrapper = document.querySelector('.slider-wrapper');
-  const proceedToCheckoutBtn = document.querySelector('.proceed-btn');
-  const backToProfileBtn = document.getElementById('backToProfile');
 
-  //   profileIcon.click();
+  //   profileIcon?.click();
 
   // OpenProfile Slider
   profileIcon?.addEventListener('click', async () => {
@@ -125,26 +125,10 @@ document.addEventListener('DOMContentLoaded', function () {
     //  hideGlobalLoader();
   });
 
-  // Closeprofile Slider
+  // Close profile Slider
   closeProfileBtn?.addEventListener('click', () => {
     profileSlider.classList.remove('open');
     profileSliderOverlay.classList.remove('visible');
-  });
-
-  // Proceed to Checkout View
-  //   proceedToCheckoutBtn?.addEventListener('click', () => {
-
-  //     if (profile.length === 0) {
-  //       showToast('fail', '❎ Profile Unavailable.');
-  //       return;
-  //     }
-
-  //     sliderWrapper.style.transform = 'translateX(-50%)';
-  //   });
-
-  // Go Back toprofile View
-  backToProfileBtn?.addEventListener('click', () => {
-    sliderWrapper.style.transform = 'translateX(0%)';
   });
 
   profileSliderOverlay.addEventListener('click', () => {
@@ -173,6 +157,21 @@ export async function renderUserprofileDetails() {
     userData?.servicePermission || 'Permission Not Available';
   const businessName = userData?.businessName || 'Business Name Not Available';
 
+  const updateProfileFormContainer = document.querySelector('#profile-form');
+  const updatePasswordFormContainer = document.querySelector(
+    '#updatePassword-form'
+  );
+
+  if (updateProfileFormContainer) {
+    // Store userId in form container for reference
+    updateProfileFormContainer.dataset.userId = userData.id;
+  }
+
+  if (updatePasswordFormContainer) {
+    // Store userId in form container for reference
+    updatePasswordFormContainer.dataset.userId = userData.id;
+  }
+
   // DOM Elements
   document.getElementById('userProfileFirstName').value = firstName;
   document.getElementById('userProfileLastName').value = lastName;
@@ -188,64 +187,93 @@ export async function renderUserprofileDetails() {
   document.getElementById('userProfileBusinessName').value = businessName;
 
   hideGlobalLoader();
+  bindUpdateProfileFormListener();
+  bindChangePasswordFormListener();
 }
 
-export function bindUpdateCategoryFormListener() {
-  const form = document.querySelector('.updateCategoryModal');
+export function bindUpdateProfileFormListener() {
+  const form = document.querySelector('#profile-form');
   if (!form) return;
 
   if (form) {
     form.addEventListener('submit', async function (e) {
       e.preventDefault();
 
-      const categoryId = form.dataset.categoryId;
+      const userId = form.dataset.userId;
 
-      if (!categoryId) {
-        showToast('fail', '❎ No Category selected for update.');
+      if (!userId) {
+        showToast('fail', '❎ No Profile selected for update.');
         return;
       }
 
-      const updateCategoryName = document.querySelector(
-        '#updateCategoryName'
+      const userProfileFirstName = document.getElementById(
+        'userProfileFirstName'
       ).value;
-      const updateCategoryDescription = document.querySelector(
-        '#updateCategoryDescription'
+      const userProfileLastName = document.getElementById(
+        'userProfileLastName'
+      ).value;
+      const userProfileAddress =
+        document.getElementById('userProfileAddress').value;
+      const userProfilePhoneNumber = document.getElementById(
+        'userProfilePhoneNumber'
       ).value;
 
-      const updateCategoryDetails = {
-        name: updateCategoryName,
-        description: updateCategoryDescription,
+      const updateProfileDetails = {
+        firstName: userProfileFirstName,
+        lastName: userProfileLastName,
+        address: userProfileAddress,
+        phoneNumber: userProfilePhoneNumber,
       };
 
-      // console.log(
-      //   'Updating Category Detail with:',
-      //   updateCategoryDetails,
-      //   categoryId
-      // );
+      console.log(
+        'Updating Profile Detail with:',
+        updateProfileDetails,
+        userId
+      );
 
-      const updateCategoryModalBtn = document.querySelector(
-        '.updateCategoryModalBtn'
+      const updateProfileModalBtn = document.querySelector(
+        '.updateProfileModalBtn'
       );
 
       try {
-        showBtnLoader(updateCategoryModalBtn);
-        const updatedCategoryData = await updateCategory(
-          categoryId,
-          updateCategoryDetails
+        showBtnLoader(updateProfileModalBtn);
+        const updatedProfileData = await updateUserProfile(
+          updateProfileDetails
         );
 
-        if (!updatedCategoryData) {
-          console.error('fail', updatedCategoryData.message);
+        //   Update LocalStorage
+        const currentUser = JSON.parse(localStorage.getItem('userData'));
+
+        const updatedUser = {
+          ...currentUser,
+          firstName: updatedProfileData.data.user.firstName,
+          lastName: updatedProfileData.data.user.lastName,
+          phoneNumber: updatedProfileData.data.user.phoneNumber,
+          address: updatedProfileData.data.user.address,
+        };
+
+        localStorage.setItem('userData', JSON.stringify(updatedUser));
+
+        // Immediately reflect name update in UI
+        const userNameDisplay = document.querySelector('.user-name');
+
+        if (userNameDisplay) {
+          if (userNameDisplay)
+            userNameDisplay.textContent = updatedUser.firstName;
+        }
+
+        if (!updatedProfileData) {
+          console.error('fail', updatedProfileData.message);
           return;
         }
 
         closeModal();
-        hideBtnLoader(updateCategoryModalBtn);
+        hideBtnLoader(updateProfileModalBtn);
         //   hideGlobalLoader();
       } catch (err) {
-        hideBtnLoader(updateCategoryModalBtn);
+        hideBtnLoader(updateProfileModalBtn);
 
-        console.error('Error Updating Category:', err);
+        console.error('Error Updating Profile:', err);
         showToast('fail', `❎ ${err.message}`);
         return;
       }
@@ -253,73 +281,137 @@ export function bindUpdateCategoryFormListener() {
   }
 }
 
-export function updateCategoryForm(categoryDetail) {
-  //   console.log('Category Detail:', CategoryDetail);
+// Change Passeord (Profile) Logic
 
-  const form = document.querySelector('.updateCategoryModal');
+export function bindChangePasswordFormListener() {
+  const form = document.querySelector('#updatePassword-form');
   if (!form) return;
 
-  //   form.dataset.categoryId = categoryId;
-
-  //   if (!form || form.dataset.bound === 'true') return;
-  //   form.dataset.bound = 'true';
-
-  //   console.log(categoryDetail.data);
-
-  const categories = categoryDetail.data;
-
-  categories.forEach((category) => {
-    console.log('category', category.id);
-    console.log('dataset', form.dataset.categoryId);
-
-    if (category.id === Number(form.dataset.categoryId)) {
-      const categoryName = category.name;
-      const categoryDescription = category.description;
-      const categoryId = category.id;
-
-      document.querySelector('#updateCategoryName').value = categoryName;
-      document.querySelector('#updateCategoryDescription').value =
-        categoryDescription;
+  document.getElementById('newPassword').addEventListener('input', () => {
+    const newPassword = document.getElementById('newPassword');
+    const lengthError = document.getElementById('password-length');
+    if (newPassword.value.length < 6) {
+      lengthError.textContent = 'Password must be at least 6 characters.';
+      lengthError.style.display = 'block';
+    } else {
+      lengthError.style.display = 'none';
     }
   });
+
+  document
+    .getElementById('confirmNewPassword')
+    .addEventListener('input', () => {
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword =
+        document.getElementById('confirmNewPassword').value;
+      const mismatchError = document.getElementById('password-mismatch');
+
+      if (confirmPassword && confirmPassword !== newPassword) {
+        mismatchError.textContent = 'Passwords do not match.';
+        mismatchError.style.display = 'block';
+      } else {
+        mismatchError.style.display = 'none';
+      }
+    });
+
+  document.getElementById('newPassword').addEventListener('input', () => {
+    const current = document.getElementById('currentPassword').value;
+    const newPass = document.getElementById('newPassword').value;
+    const samePassword = document.getElementById('same-password');
+
+    if (current && current === newPass) {
+      samePassword.textContent =
+        ' New password cannot be the same as current password.';
+      samePassword.style.display = 'block';
+    } else {
+      samePassword.style.display = 'none';
+    }
+  });
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const currentPassword = form
+        .querySelector('#currentPassword')
+        .value.trim();
+      const newPassword = form.querySelector('#newPassword').value.trim();
+      const confirmNewPassword = form
+        .querySelector('#confirmNewPassword')
+        .value.trim();
+
+      // 🔁 FINAL VALIDATIONS
+      if (!currentPassword || !newPassword || !confirmNewPassword) {
+        showToast('fail', '❎ Please fill in all password fields.');
+        return;
+      }
+
+      if (newPassword.length < 6) {
+        showToast('fail', '❎ New password must be at least 6 characters.');
+        return;
+      }
+
+      if (newPassword !== confirmNewPassword) {
+        showToast('fail', '❎ New password and confirmation do not match.');
+        return;
+      }
+
+      if (currentPassword === newPassword) {
+        showToast(
+          'fail',
+          '❎ New password must be different from current password.'
+        );
+        return;
+      }
+
+      const userId = form.dataset.userId;
+
+      if (!userId) {
+        showToast('fail', '❎ No Profile selected for update.');
+        return;
+      }
+
+      // Passed all checks — proceed
+      const changePasswordDetails = {
+        currentPassword,
+        newPassword,
+        confirmPassword: confirmNewPassword,
+      };
+
+      console.log(
+        'Changing Password Detail with:',
+        changePasswordDetails,
+        userId
+      );
+
+      const updatePasswordSubmitBtn = document.querySelector(
+        '.updatePasswordSubmitBtn'
+      );
+
+      try {
+        showBtnLoader(updatePasswordSubmitBtn);
+        const updatedProfilePasswordData = await updateUserProfilePassword(
+          changePasswordDetails
+        );
+
+        if (!updatedProfilePasswordData) {
+          console.error('fail', updatedProfilePasswordData.message);
+          return;
+        }
+
+        closeModal();
+        hideBtnLoader(updatePasswordSubmitBtn);
+        //   hideGlobalLoader();
+      } catch (err) {
+        hideBtnLoader(updatePasswordSubmitBtn);
+
+        console.error('Error Updating Profile:', err);
+        showToast('fail', `❎ ${err.message}`);
+        return;
+      }
+    });
+  }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  bindUpdateCategoryFormListener(); // Only once
-});
-
-// export function showToast(type, message) {
-//   const toast = document.getElementById('toast');
-
-//   console.log('showing toast');
-
-//   if (!toast) {
-//     console.warn('⚠️ Toast element not found in DOM.');
-//     return;
-//   }
-
-//   toast.textContent = message;
-
-//   // Reset class to clear previous toast type
-//   toast.className = 'toast';
-
-//   // Add the appropriate type (success or fail)
-//   toast.classList.add(type);
-//   toast.classList.add('show');
-
-//   // After 5s, remove classes and clear message
-//   setTimeout(() => {
-//     toast.classList.remove('show');
-
-//     // Optional: Also clear the message and type class
-//     setTimeout(() => {
-//       toast.className = 'toast';
-//       toast.textContent = '';
-//     }, 500); // Small delay after hiding
-//   }, 5000);
-// }
-
-// Function to deposit POS Capital - Added to script.js because of scope.
 
 export function openStaffBusinessDayModal() {
   const main = document.querySelector('.main');

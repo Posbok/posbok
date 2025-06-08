@@ -317,7 +317,8 @@ select {
             width: 100%;
 
             #password-length,
-            #password-mismatch {
+            #password-mismatch,
+            #same-password {
                font-size: medium;
             }
          }

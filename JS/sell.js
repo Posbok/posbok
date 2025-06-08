@@ -103,7 +103,7 @@ if (isAdmin && adminSellContainer) {
 async function fetchAllProducts(shopId) {
   let products = [];
 
-  console.log('Fetching products for shop:', shopId);
+  //   console.log('Fetching products for shop:', shopId);
 
   try {
     const productInventoryData = await getProductInventory(shopId); // Fetch products
@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 if (isAdmin && sellProductShopDropdown) {
-  sellProductShopDropdown.addEventListener('change', () => {
+  sellProductShopDropdown?.addEventListener('change', () => {
     const selectedShopId = sellProductShopDropdown.value;
 
     const adminSellProductSearchSection = document.querySelector(
@@ -252,7 +252,7 @@ async function displayAllProducts() {
 
     allProducts = await fetchAllProducts(selectedShopId); // Fetch and store all products
 
-    console.log(`Total products fetched:`, allProducts);
+    //  console.log(`Total products fetched:`, allProducts);
 
     updateAutocompleteList(allProducts); // Populate the autocomplete dropdown with all products
 
@@ -314,7 +314,7 @@ async function displayAllCategories() {
 
     allCategories = await fetchAllCategories(); // Fetch and store all Categories
 
-    console.log(`Total Categories fetched:`, allCategories);
+    //  console.log(`Total Categories fetched:`, allCategories);
 
     const allBtn = document.createElement('button');
     allBtn.classList.add('sellProductCategoryBtn');
@@ -1005,7 +1005,7 @@ function syncDropdownWithCartShop() {
 
 document
   .getElementById('sellProductShopDropdown')
-  .addEventListener('change', async function (e) {
+  ?.addEventListener('change', async function (e) {
     const selectedShopId = e.target.value;
     const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
 
