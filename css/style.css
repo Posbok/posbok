@@ -1104,7 +1104,7 @@ button:disabled:hover {
       gap: 1rem;
       text-decoration: none; }
     .sidebar-header-logo {
-      width: 4rem;
+      width: max-content;
       height: 4rem; }
     .sidebar-header span {
       font-size: 4rem;
@@ -1209,8 +1209,8 @@ button:disabled:hover {
           align-items: start;
           gap: .5rem; } }
       .main-heading_intro .main-heading_logo {
-        width: 4rem;
-        height: 4rem;
+        width: max-content;
+        height: 6rem;
         margin-right: .1rem; }
       .main-heading_intro .main-welcome {
         font-size: 2rem; }

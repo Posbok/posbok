@@ -225,11 +225,11 @@ export function bindUpdateProfileFormListener() {
         phoneNumber: userProfilePhoneNumber,
       };
 
-      console.log(
-        'Updating Profile Detail with:',
-        updateProfileDetails,
-        userId
-      );
+      // console.log(
+      //   'Updating Profile Detail with:',
+      //   updateProfileDetails,
+      //   userId
+      // );
 
       const updateProfileModalBtn = document.querySelector(
         '.updateProfileModalBtn'
@@ -378,11 +378,11 @@ export function bindChangePasswordFormListener() {
         confirmPassword: confirmNewPassword,
       };
 
-      console.log(
-        'Changing Password Detail with:',
-        changePasswordDetails,
-        userId
-      );
+      // console.log(
+      //   'Changing Password Detail with:',
+      //   changePasswordDetails,
+      //   userId
+      // );
 
       const updatePasswordSubmitBtn = document.querySelector(
         '.updatePasswordSubmitBtn'
