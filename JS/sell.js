@@ -56,6 +56,9 @@ const productBoughtPrice = document.getElementById(
 const itemSellingprice = document.getElementById(
   isAdmin ? 'adminItemSellingPrice' : 'itemSellingPrice'
 );
+const itemQuantityAvailable = document.getElementById(
+  isAdmin ? 'adminItemQuantityAvailable' : 'itemQuantityAvailable'
+);
 
 const sellProductShopDropdown = document.getElementById(
   'sellProductShopDropdown'
@@ -409,6 +412,7 @@ function updateAutocompleteList(products) {
     autocompleteList.appendChild(listItem);
   } else {
     products.forEach((product) => {
+      // console.log(product);
       const listItem = document.createElement('li');
       // listItem.textContent = product.Product.name;
       // listItem.classList.add('autocomplete-list-item');
@@ -429,6 +433,7 @@ function updateAutocompleteList(products) {
         itemSellingprice.value = formatAmountWithCommas(
           product.Product.selling_price
         );
+        itemQuantityAvailable.value = product.quantity;
         autocompleteList.style.display = 'none';
       });
       autocompleteList.appendChild(listItem);
@@ -639,6 +644,9 @@ function handleAddToCart() {
     return;
   }
 
+  const itemQuantityAvailable = document.getElementById(
+    isAdmin ? 'adminItemQuantityAvailable' : 'itemQuantityAvailable'
+  );
   let soldProductNameInput = soldProductName.value;
   let soldProductPriceInput = Number(
     getAmountForSubmission(soldProductPrice.value)
@@ -647,6 +655,20 @@ function handleAddToCart() {
   let shopId = isAdmin ? sellProductShopDropdown.value : parsedUserData.shopId;
 
   const storedData = JSON.parse(localStorage.getItem(cartKey)) || []; // This is wher throws the error
+
+  if (soldProductQuantityInput <= 0) {
+    showToast('info', 'ℹ️ Quantity must be at least one');
+
+    return;
+  }
+
+  if (soldProductPrice.value < productBoughtPrice.value) {
+    showToast(
+      'error',
+      `❎ Selling Price (${soldProductPrice.value}) lower than Purchase Price (${productBoughtPrice.value}). Please adjust.`
+    );
+    return;
+  }
 
   // Ensure shopId consistency
   if (storedData.length > 0 && storedData[0].shopId !== shopId) {
@@ -660,8 +682,20 @@ function handleAddToCart() {
     (item) => item.productId === selectedProduct.id
   );
 
+  const availableQty = Number(itemQuantityAvailable.value);
+  let totalDesiredQty = soldProductQuantityInput;
+
   if (existingIndex !== -1) {
     const existingItem = storedData[existingIndex];
+    totalDesiredQty += existingItem.soldProductQuantityInput;
+
+    if (totalDesiredQty > availableQty) {
+      showToast(
+        'info',
+        `ℹ️ Total quantity in cart (${totalDesiredQty}) exceeds available stock (${availableQty}).`
+      );
+      return;
+    }
 
     if (existingItem.soldProductPriceInput !== soldProductPriceInput) {
       const confirmUpdate = confirm(
@@ -673,14 +707,20 @@ function handleAddToCart() {
         existingItem.soldProductQuantityInput += soldProductQuantityInput;
         existingItem.soldProductPriceInput = soldProductPriceInput;
       } else {
-        // Only update quantity, keep old price
-        existingItem.soldProductQuantityInput += soldProductQuantityInput;
+        existingItem.soldProductQuantityInput = totalDesiredQty;
       }
     } else {
-      // Price is the same, just update quantity
-      existingItem.soldProductQuantityInput += soldProductQuantityInput;
+      existingItem.soldProductQuantityInput = totalDesiredQty;
     }
   } else {
+    if (soldProductQuantityInput > availableQty) {
+      showToast(
+        'info',
+        `ℹ️ Quantity exceeds available stock (${availableQty}).`
+      );
+      return;
+    }
+
     const newItem = {
       productId: selectedProduct.id,
       soldProductNameInput,
@@ -699,24 +739,16 @@ function handleAddToCart() {
     `✅ ${soldProductNameInput} added to cart successfully!`
   );
 
-  //   const cartItem = {
-  //     productId: selectedProduct.id,
-  //     soldProductNameInput,
-  //     soldProductPriceInput,
-  //     soldProductQuantityInput,
-  //     shopId,
-  //   };
+  soldProductName.value = '';
+  soldProductPrice.value = '';
+  soldProductQuantity.value = '';
+  if (searchSellProdutItem) searchSellProdutItem.value = '';
+  if (productBoughtPrice) productBoughtPrice.value = '';
+  if (itemSellingprice) itemSellingprice.value = '';
+  if (itemQuantityAvailable) itemQuantityAvailable.value = '';
 
-  //   const allCartData = [cartItem, ...storedData];
-
-  //   localStorage.setItem(cartKey, JSON.stringify(allCartData));
-  //   updateCartCounter();
-  //   updateCartTotalUI();
-  //   selectedProduct = null;
-
-  //   showToast('success', '✅ Item added to cart successfully!');
-
-  //   return cartItem;
+  if (adminSellProductName) adminSellProductName.style.display = 'none';
+  if (adminAutocompleteList) adminAutocompleteList.style.display = 'none';
 }
 
 export function addProductToCart() {
@@ -738,16 +770,6 @@ export function addProductToCart() {
       showGlobalLoader();
       e.preventDefault();
       handleAddToCart();
-
-      soldProductName.value = '';
-      soldProductPrice.value = '';
-      soldProductQuantity.value = '';
-      if (searchSellProdutItem) searchSellProdutItem.value = '';
-      if (productBoughtPrice) productBoughtPrice.value = '';
-      if (itemSellingprice) itemSellingprice.value = '';
-
-      if (adminSellProductName) adminSellProductName.style.display = 'none';
-      if (adminAutocompleteList) adminAutocompleteList.style.display = 'none';
 
       hideGlobalLoader();
     });
