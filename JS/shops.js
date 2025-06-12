@@ -17,6 +17,8 @@ export function populateShopsTable(shopData = []) {
   const tbody = document.querySelector('.shops-table tbody');
   const loadingRow = document.querySelector('.loading-row');
 
+  showGlobalLoader();
+
   // Remove static rows and loading
 
   //   console.log(shopData);
@@ -31,6 +33,8 @@ export function populateShopsTable(shopData = []) {
     if (tbody) tbody.appendChild(emptyRow);
     return;
   }
+
+  //   console.log(shopData);
 
   shopData.forEach((shop, index) => {
     const row = document.createElement('tr');

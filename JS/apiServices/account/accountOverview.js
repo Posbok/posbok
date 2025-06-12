@@ -1,4 +1,5 @@
 import config from '../../../config';
+import { formatAmountWithCommas } from '../../helper/helper';
 import { showToast } from '../../script';
 import { getPosCapital } from '../pos/posResources';
 
@@ -41,8 +42,9 @@ export function updateCapitalUI(posCapitalData) {
   const posCapital = posCapitalData?.data?.totalCapital || 0;
 
   if (posCapitalData) {
-    if (cashInMachine) cashInMachine.value = posCapital;
+    if (cashInMachine) cashInMachine.value = formatAmountWithCommas(posCapital);
     //  if (cashAtHand) cashAtHand.value = posCapitalData.cashAtHand || 0;
-    if (totalPosCapital) totalPosCapital.value = posCapital;
+    if (totalPosCapital)
+      totalPosCapital.value = formatAmountWithCommas(posCapital);
   }
 }

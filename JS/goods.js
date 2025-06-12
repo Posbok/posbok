@@ -394,21 +394,23 @@ export function createProductForm() {
         productId: Number(addProductQuantity),
       };
 
+      const shopId = Number(inventoryShopDropdown);
       // console.log('Adding Products with:', addProductDetails);
 
       const addProductModalBtn = document.querySelector('.addProductModalBtn');
 
       try {
         showBtnLoader(addProductModalBtn);
-        const productData = await createProduct(addProductDetails);
+        const productData = await createProduct(shopId, addProductDetails);
 
         //   if (!productData) {
         //     showToast('fail', productData.message);
         //     return;
         //   }
 
+        console.log(productData);
+
         const productId = productData?.data.id;
-        const shopId = Number(inventoryShopDropdown);
 
         if (!productId) {
           hideBtnLoader(addProductModalBtn);

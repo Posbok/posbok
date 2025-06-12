@@ -254,6 +254,7 @@ export async function fetchStaffDetail(staffId) {
 // The functions below are used to check if the user has a Staff and prompt them to creat one if they don't - checkAndPromptCreateStaff, openCreateStaffModal, setupCreateStaffForm, and setupModalCloseButtons
 
 export async function checkAndPromptCreateStaff() {
+  showGlobalLoader();
   function showLoadingRow() {
     const tbody = document.querySelector('.staff-table tbody');
     if (tbody)
@@ -269,6 +270,7 @@ export async function checkAndPromptCreateStaff() {
   //   console.log('enrichedShopData', enrichedShopData);
 
   try {
+    showGlobalLoader();
     const { enrichedShopData: loadedShops } = await checkAndPromptCreateShop();
     enrichedShopData = loadedShops;
 
@@ -296,17 +298,19 @@ export async function checkAndPromptCreateStaff() {
       (from === 'shop-creation' && isStaffProfilePage);
 
     if (shouldOpenModal) {
+      // showGlobalLoader();
       openCreateStaffModal();
 
       const newUrl = new URL(window.location.href);
       newUrl.searchParams.delete('from');
       window.history.replaceState({}, '', newUrl);
+      // hideGlobalLoader();
     }
 
     // Populate the table with all business staff
     //  console.log('allStaffs', allStaffs);
     //  console.log('enrichedShopData', enrichedShopData);
-
+    showGlobalLoader();
     populateStaffTable(allStaffs, enrichedShopData);
 
     if (!response.ok) {
@@ -316,7 +320,8 @@ export async function checkAndPromptCreateStaff() {
     return data;
   } catch (error) {
     console.error('Error checking Staff:', error.message);
-    throw error;
+  } finally {
+    hideGlobalLoader();
   }
 
   //   try {

@@ -11,12 +11,17 @@ import {
 import { closeModal, showToast } from './script';
 
 document.addEventListener('DOMContentLoaded', async function () {
+  await renderBusinessDetails();
+});
+
+export async function renderBusinessDetails() {
   showGlobalLoader();
   const businessData = await fetchBusinessDetails();
 
   if (!businessData) {
-    showToast('error', ' ⛔ Failed to fetch business details');
+    //  showToast('error', ' ⛔ Failed to fetch business details');
     console.error('Failed to fetch business details');
+    hideGlobalLoader();
     return;
   }
 
@@ -60,17 +65,20 @@ document.addEventListener('DOMContentLoaded', async function () {
   //   const BusinessIsActiveInput = document.getElementById('isActive');
 
   //   Set the values of the input fields
-  businessNameInput.value = businessName;
-  businessAddressInput.value = businessAddress;
-  businessPhoneNumberInput.value = businessPhoneNumber;
-  businessStateInput.value = stateofOperation;
-  businessCacRegNoInput.value = cacRegNo;
-  businessTaxIdInput.value = taxId;
-  businessNinInput.value = nin;
-  businessTypeInput.value =
-    businessType === 'BOTH' ? 'POS & SALES' : businessType;
-  businessStaffSizeInput.value = staffSize;
-  businessVersionPreferenceInput.value = versionPreference;
+  if (businessNameInput) businessNameInput.value = businessName;
+  if (businessAddressInput) businessAddressInput.value = businessAddress;
+  if (businessPhoneNumberInput)
+    businessPhoneNumberInput.value = businessPhoneNumber;
+  if (businessStateInput) businessStateInput.value = stateofOperation;
+  if (businessCacRegNoInput) businessCacRegNoInput.value = cacRegNo;
+  if (businessTaxIdInput) businessTaxIdInput.value = taxId;
+  if (businessNinInput) businessNinInput.value = nin;
+  if (businessTypeInput)
+    businessTypeInput.value =
+      businessType === 'BOTH' ? 'POS & SALES' : businessType;
+  if (businessStaffSizeInput) businessStaffSizeInput.value = staffSize;
+  if (businessVersionPreferenceInput)
+    businessVersionPreferenceInput.value = versionPreference;
 
   // Update Business Details
 
@@ -96,8 +104,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
       // openUpdateBusinessModal
     });
-  console.log(businessData);
-});
+  //   console.log(businessData);
+}
 
 export function openUpdateBusinessModal() {
   const main = document.querySelector('.main');
@@ -115,8 +123,6 @@ export function openUpdateBusinessModal() {
 export function setupUpdateBusinessForm(businessData) {
   const form = document.querySelector('.adminUpdateBusinessDataModal');
   if (!form) return;
-
-  console.log('Triggered');
 
   // Save businessData.id in the form for later use
   form.dataset.businessid = businessData.id;
@@ -162,16 +168,16 @@ export function bindUpdateBusinessFormListener() {
     ).value;
 
     const businessUpdatedDetails = {
-      firstName: updateBusinessName,
-      lastName: updateBusinessAddress,
-      address: updateBusinessPhoneNumber,
-      phoneNumber: updateBusinessStateOfOperation,
+      businessName: updateBusinessName,
+      address: updateBusinessAddress,
+      phoneNumber: updateBusinessPhoneNumber,
+      stateOfOperation: updateBusinessStateOfOperation,
     };
 
-    console.log('📦 Business Update:', {
-      businessid,
-      ...businessUpdatedDetails,
-    });
+    //  console.log('📦 Business Update:', {
+    //    businessid,
+    //    ...businessUpdatedDetails,
+    //  });
 
     const updateBusinessBtn = document.querySelector('.updateBusinessBtn');
 
@@ -181,10 +187,12 @@ export function bindUpdateBusinessFormListener() {
 
       if (data) {
         hideBtnLoader(updateBusinessBtn);
+        hideGlobalLoader();
         closeModal();
       }
     } catch (err) {
       hideBtnLoader(updateBusinessBtn);
+      hideGlobalLoader();
       showToast('fail', `❎ ${err.message}`);
     }
   });

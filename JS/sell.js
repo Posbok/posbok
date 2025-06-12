@@ -3,9 +3,10 @@ import {
   getProductCategories,
   getProductInventory,
 } from './apiServices/inventory/inventoryResources';
-import { getProducts } from './apiServices/sales/salesResources';
+import { createSale, getProducts } from './apiServices/sales/salesResources';
 import { checkAndPromptCreateShop } from './apiServices/shop/shopResource';
 import {
+  clearFormInputs,
   formatAmountWithCommas,
   getAmountForSubmission,
   hideBtnLoader,
@@ -32,6 +33,7 @@ let allProducts = [];
 let allCategories = [];
 let activeCategoryId = null; // null means "All"
 let selectedProduct = null;
+let totalCartAmount = 0;
 
 const searchSellProdutItem = document.getElementById(
   isAdmin ? 'adminSearchSellProdutItem' : 'searchSellProdutItem'
@@ -556,6 +558,7 @@ const soldProductQuantity = document.getElementById(
 //   isAdmin ? '' : 'soldProductRemark'
 // );
 
+// Sell Product Form
 export function sellProductForm() {
   const form = document.querySelector('#checkout-form');
 
@@ -574,6 +577,8 @@ export function sellProductForm() {
       const remarks = document.getElementById('soldProductRemark').value;
 
       const checkoutSubmitBtn = document.querySelector('.checkoutSubmitBtn');
+      const cartSliderOverlay = document.querySelector('.cart-slider-overlay');
+      const cartSlider = document.querySelector('.cart-slider-content');
 
       const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
 
@@ -587,7 +592,7 @@ export function sellProductForm() {
         shopId: Number(cart[0]?.shopId),
         customerName,
         customerPhone,
-        paymentMethod,
+        paymentMethod: paymentMethod.toUpperCase(),
         amountPaid: Number(getAmountForSubmission(amountPaid)),
         remarks,
         items: cart.map((item) => ({
@@ -597,21 +602,30 @@ export function sellProductForm() {
         })),
       };
 
+      if (!validateCartBeforeSale()) return;
+
       try {
         showBtnLoader(checkoutSubmitBtn);
 
-        showToast('info', 'ℹ️ Inplementation in progress. Try again Later');
         console.log('Submitting Sales Details:', sellProductDetails);
         hideBtnLoader(checkoutSubmitBtn);
 
-        //   const data = await createProductCategory(addProductCategoryDetails);
+        const soldData = await createSale(sellProductDetails);
 
-        //   if (data) {
-        //   hideBtnLoader(checkoutSubmitBtn);
-        //     closeModal();
-        //   }
+        if (soldData) {
+          hideBtnLoader(checkoutSubmitBtn);
+          showToast('success', `✅ ${soldData.message}`);
+          localStorage.removeItem(cartKey);
+          updateCartCounter();
+          updateCartTotalUI();
 
-        closeModal(); // close modal after success
+          // Close the cart slider if it's open
+          cartSlider.classList.remove('open');
+          cartSliderOverlay.classList.remove('visible');
+          clearFormInputs();
+        }
+
+        clearFormInputs(); // close modal after success
       } catch (err) {
         console.error('Error Selling Product:', err.message);
         hideBtnLoader(checkoutSubmitBtn);
@@ -619,6 +633,51 @@ export function sellProductForm() {
       }
     });
   }
+}
+
+function validateCartBeforeSale() {
+  const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+
+  for (let i = 0; i < cart.length; i++) {
+    const item = cart[i];
+
+    if (
+      !item.availableQty ||
+      item.soldProductQuantityInput > item.availableQty
+    ) {
+      showToast(
+        'error',
+        `❌ Invalid quantity for ${item.soldProductNameInput}. Maximum allowed is ${item.availableQty}.`
+      );
+      return false;
+    }
+
+    if (
+      !item.productId ||
+      !item.soldProductPriceInput ||
+      !item.soldProductNameInput
+    ) {
+      showToast(
+        'error',
+        `❌ Invalid cart item detected. Please remove and re-add it.`
+      );
+      return false;
+    }
+
+    // Optionally: price sanity check
+    if (
+      item.soldProductPriceInput <= 0 ||
+      item.soldProductPriceInput > 1_000_000
+    ) {
+      showToast(
+        'error',
+        `❌ Suspicious price for ${item.soldProductNameInput}.`
+      );
+      return false;
+    }
+  }
+
+  return true; // Cart is clean
 }
 
 sellProductForm();
@@ -638,6 +697,7 @@ function updateCartCounter() {
   }
 }
 
+// Handle adding products to the cart
 function handleAddToCart() {
   if (!selectedProduct || !selectedProduct.id) {
     showToast('error', 'Please select a product from the list first.');
@@ -662,7 +722,10 @@ function handleAddToCart() {
     return;
   }
 
-  if (soldProductPrice.value < productBoughtPrice.value) {
+  const selling = parseFloat(soldProductPrice.value.replace(/,/g, ''));
+  const purchase = parseFloat(productBoughtPrice.value.replace(/,/g, ''));
+
+  if (selling < purchase) {
     showToast(
       'error',
       `❎ Selling Price (${soldProductPrice.value}) lower than Purchase Price (${productBoughtPrice.value}). Please adjust.`
@@ -727,6 +790,7 @@ function handleAddToCart() {
       soldProductPriceInput,
       soldProductQuantityInput,
       shopId,
+      availableQty, // Store available quantity for reference
     };
     storedData.push(newItem);
   }
@@ -930,7 +994,18 @@ function attachCartListeners() {
     btn.addEventListener('click', (e) => {
       const index = e.target.dataset.index;
       const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-      cart[index].soldProductQuantityInput += 1;
+
+      const item = cart[index];
+      if (item.soldProductQuantityInput >= item.availableQty) {
+        showToast(
+          'info',
+          `ℹ️ Cannot exceed available stock (${item.availableQty}).`
+        );
+        return;
+      }
+
+      item.soldProductQuantityInput += 1;
+
       localStorage.setItem(cartKey, JSON.stringify(cart));
       renderCartItemsFromStorage(); // re-render
     });
@@ -961,13 +1036,20 @@ function calculateTotal() {
   cart.forEach((item) => {
     total += item.soldProductPriceInput * item.soldProductQuantityInput;
   });
-
+  //   updateCartTotalUI();
+  totalCartAmount = total; // Update global variable
   return total;
 }
+
+// document.addEventListener('DOMContentLoaded', () => {
+//   updateCartTotalUI(); // this will calculate and update total
+//   console.log(totalCartAmount);
+// });
 
 function updateCartTotalUI() {
   const total = calculateTotal();
   const totalFormatted = `₦${total.toLocaleString()}`;
+  totalCartAmount = total; // Update global variable with raw amount
 
   // Option 1: Inject into footer
   const totalEl = document.querySelector('.cart-total');
@@ -979,6 +1061,12 @@ function updateCartTotalUI() {
   const proceedBtn = document.querySelector('.proceed-btn');
   if (proceedBtn) {
     proceedBtn.textContent = `Proceed to Checkout (${totalFormatted})`;
+  }
+
+  // ALSO update the Amount Paid input field if it exists:
+  const amountPaidInput = document.getElementById('amount-paid');
+  if (amountPaidInput) {
+    amountPaidInput.value = formatAmountWithCommas(total); // use raw number
   }
 }
 

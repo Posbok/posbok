@@ -30,6 +30,7 @@ export function clearFormInputs() {
   const addCategoryForm = document.querySelector('.addCategoryModal');
   const updateProductForm = document.querySelector('.updateProductModal');
   const openBusinessDayForm = document.querySelector('.openBusinessDayModal');
+  const checkoutForm = document.querySelector('.checkout-form');
 
   //   Clear Search Input
   const searchProductInput = document.querySelector('.searchProductInput');
@@ -237,6 +238,19 @@ export function clearFormInputs() {
 
     delete openBusinessDayForm.dataset.staffId;
   }
+
+  // Clear Checkout Form Inputs
+  if (checkoutForm) {
+    checkoutForm.querySelectorAll('input, textarea, select').forEach((el) => {
+      if (el.type === 'checkbox' || el.type === 'radio') {
+        el.checked = false;
+      } else {
+        el.value = '';
+      }
+    });
+
+    //  delete checkoutForm.dataset.staffId;
+  }
 }
 
 // function to format amounts with commas
@@ -306,6 +320,10 @@ document.addEventListener('DOMContentLoaded', function () {
     'adminOpenPosCapitalAmount'
   );
   const adminOpenCashAmount = document.getElementById('adminOpenCashAmount');
+  const closingCashAmountInput = document.getElementById('closingCashAmount');
+  const adminClosingCashAmountInput = document.getElementById(
+    'adminClosingCashAmount'
+  );
   const adminPosCapitalAmount = document.getElementById(
     'adminPosCapitalAmount'
   );
@@ -404,6 +422,14 @@ document.addEventListener('DOMContentLoaded', function () {
   if (amountPaid)
     amountPaid.addEventListener('input', function () {
       formatAmountWithCommasOnInput(amountPaid);
+    });
+  if (adminClosingCashAmountInput)
+    adminClosingCashAmountInput.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(adminClosingCashAmountInput);
+    });
+  if (closingCashAmountInput)
+    closingCashAmountInput.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(closingCashAmountInput);
     });
 });
 

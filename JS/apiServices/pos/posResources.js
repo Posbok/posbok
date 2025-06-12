@@ -11,6 +11,7 @@ import {
   depositPosCapitalForm,
   showToast,
 } from '../../script.js';
+import { initAccountOverview } from '../account/accountOverview.js';
 import { safeFetch } from '../utility/safeFetch.js';
 // import { safeFetch } from '../utility/safeFetch.js';
 
@@ -24,7 +25,7 @@ const parsedUserData = userData ? JSON.parse(userData) : null;
 const isAdmin = parsedUserData?.accountType === 'ADMIN';
 const isStaff = parsedUserData?.accountType === 'STAFF';
 
-const shopId = parsedUserData?.shopId;
+// const shopId = parsedUserData?.shopId;
 
 // console.log(shopId);
 
@@ -127,9 +128,9 @@ export function openAddMachineFeeModal() {
 
 // API CALLS
 
-export async function getCurrentBusinessDay() {
+export async function getCurrentBusinessDay(shopId) {
   try {
-    console.log('Sending GET request...');
+    //  console.log('Sending GET request...');
 
     const currentBusinessDayData = await safeFetch(
       `${baseUrl}/api/pos/business-day?shopId=${shopId}`,
@@ -141,8 +142,15 @@ export async function getCurrentBusinessDay() {
       }
     );
 
-    console.log('Response received...');
-    console.log(currentBusinessDayData);
+    //  console.log('Response received...');
+    //  console.log('shopId sent to backend:', shopId);
+    //  console.log(
+    //    'shopId received in response:',
+    //    currentBusinessDayData?.data?.shop_id
+    //  );
+
+    //  console.log('currentBusinessDayData', currentBusinessDayData);
+
     return currentBusinessDayData;
   } catch (err) {
     const message = err.message.toLowerCase();
@@ -254,6 +262,8 @@ export async function addPosCapital(posCapitalDetails) {
       // hideGlobalLoader();
     }
 
+    initAccountOverview();
+
     return addPosCapitalData;
   } catch (error) {
     //  hideGlobalLoader();
@@ -280,8 +290,9 @@ export async function getPosCapital(shopId) {
 
     //  console.log('Response received...');
 
-    //  if (posCapital) {
-    //  }
+    if (!posCapital) {
+      return;
+    }
 
     return posCapital;
   } catch (error) {
@@ -310,7 +321,7 @@ export async function createPosTransaction(transactionDetail) {
     if (posTransactionData) {
       console.log('POS transaction added successfully:', posTransactionData);
       showToast('success', `✅ ${posTransactionData.message}`);
-      console.log(posTransactionData);
+      // console.log(posTransactionData);
     }
 
     return posTransactionData;

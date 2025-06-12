@@ -1,4 +1,5 @@
 import config from '../../../config.js';
+import { renderBusinessDetails } from '../../business.js';
 import { showToast } from '../../script.js';
 import { safeFetch } from '../utility/safeFetch.js';
 
@@ -49,7 +50,7 @@ export async function updateBusiness(businessid, businessUpdatedDetails) {
     console.log('Sending POST request...');
 
     const updateBusinessData = await safeFetch(
-      `${baseUrl}/api/businesses/${businessid}`,
+      `${baseUrl}/api/business/${businessid}`,
       {
         method: 'PUT',
         headers: {
@@ -63,7 +64,10 @@ export async function updateBusiness(businessid, businessUpdatedDetails) {
     if (updateBusinessData) {
       console.log('Business info Updated successfully:', updateBusinessData);
       showToast('success', `✅ ${updateBusinessData.message}`);
-      fetchBusinessDetails(); // Refresh list or update UI
+
+      // Refresh list or update UI
+      // fetchBusinessDetails();
+      renderBusinessDetails();
     }
 
     return updateBusinessData;

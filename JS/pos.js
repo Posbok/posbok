@@ -8,7 +8,6 @@ import {
   configurePosMachineFees,
   getPosChargeSettings,
   getPosMachineFeesettings,
-  getCurrentBusinessDay,
 } from './apiServices/pos/posResources';
 import { closeModal, setupModalCloseButtons, showToast } from './script';
 import config from '../config.js';

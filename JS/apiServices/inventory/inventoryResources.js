@@ -94,17 +94,48 @@ export async function getProductCategories() {
   }
 }
 
-export async function createProduct(productDetails) {
+// export async function createProduct(productDetails) {
+//   try {
+//     //  console.log('Sending POST request...');
+//     const fetchedData = await safeFetch(`${baseUrl}/api/inventory/products`, {
+//       method: 'POST',
+//       headers: {
+//         Authorization: `Bearer ${userToken}`,
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify(productDetails),
+//     });
+
+//     //  console.log('fetchedData received...');
+
+//     if (fetchedData) {
+//       // console.log('Product added successfully:', fetchedData);
+//       showToast('success', `✅ ${fetchedData.message}`);
+
+//       // Refresh the table list after successful configuration
+//       // getProductCategories();
+//     }
+
+//     return fetchedData;
+//   } catch (error) {
+//     console.error('Error posting product:', error);
+//   }
+// }
+
+export async function createProduct(shopId, productDetails) {
   try {
     //  console.log('Sending POST request...');
-    const fetchedData = await safeFetch(`${baseUrl}/api/inventory/products`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(productDetails),
-    });
+    const fetchedData = await safeFetch(
+      `${baseUrl}/api/inventory/shops/${shopId}/products`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(productDetails),
+      }
+    );
 
     //  console.log('fetchedData received...');
 

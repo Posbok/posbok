@@ -127,13 +127,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Close profile Slider
   closeProfileBtn?.addEventListener('click', () => {
-    profileSlider.classList.remove('open');
-    profileSliderOverlay.classList.remove('visible');
+    profileSlider?.classList.remove('open');
+    profileSliderOverlay?.classList.remove('visible');
   });
 
-  profileSliderOverlay.addEventListener('click', () => {
-    profileSlider.classList.remove('open');
-    profileSliderOverlay.classList.remove('visible');
+  profileSliderOverlay?.addEventListener('click', () => {
+    profileSlider?.classList.remove('open');
+    profileSliderOverlay?.classList.remove('visible');
   });
 });
 
@@ -470,14 +470,22 @@ if (isAdmin && adminBusinessDayContainer) {
 async function renderBusinessDayButtons() {
   const businessInitBtnDiv = document.querySelector('.businessInitBtnDiv');
 
+  //   console.log(isStaff ? shopId : '');
+
   if (isStaff) {
-    const businessDay = await getCurrentBusinessDay();
+    const businessDay = await getCurrentBusinessDay(isStaff ? shopId : '');
+
+    //  console.log('new Business Day:', businessDay.data);
 
     if (!businessInitBtnDiv) return;
 
     businessInitBtnDiv.innerHTML = ''; // Clear current buttons
 
-    if (businessDay === false) {
+    if (
+      businessDay.data === false ||
+      businessDay.data === null ||
+      businessDay.success === false
+    ) {
       const openBusinessDayBtn = document.createElement('button');
       openBusinessDayBtn.classList.add('openBusinessDayBtn', 'businessInitBtn');
       openBusinessDayBtn.id = 'openBusinessDayBtn';
@@ -770,12 +778,17 @@ export function bindCloseBusinessDayFormListener() {
     form.addEventListener('submit', async function (e) {
       e.preventDefault();
 
+      const closingCashAmount = document.getElementById(
+        isAdmin ? 'adminClosingCashAmount' : 'closingCashAmount'
+      );
+
       const closeBusinessDayShopDropdown = document.getElementById(
         'closeBusinessDayShopDropdown'
       ).value;
 
       const closeBusinessDayDetails = {
         shopId: isAdmin ? closeBusinessDayShopDropdown : shopId,
+        closingCash: Number(getAmountForSubmission(closingCashAmount)),
       };
 
       // console.log('Closing Business Day with:', closeBusinessDayDetails);
@@ -803,7 +816,7 @@ export function bindCloseBusinessDayFormListener() {
       } catch (err) {
         hideBtnLoader(closeBusinessDayBtn);
         hideGlobalLoader();
-        console.error('Error adding POS Capital:', err.message);
+        console.error('Error Closing Business Day:', err.message);
         showToast('fail', `❎ ${err.message}`);
       }
     });
