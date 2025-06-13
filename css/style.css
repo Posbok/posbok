@@ -1215,7 +1215,7 @@ button:disabled:hover {
           align-items: start;
           gap: .5rem; } }
       .main-heading_intro .main-heading_logo {
-        width: max-content;
+        width: 5.1rem;
         height: 6rem;
         margin-right: .1rem; }
       .main-heading_intro .main-welcome {
