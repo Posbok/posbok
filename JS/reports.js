@@ -1083,14 +1083,21 @@ const dummyHourlyData = Array.from({ length: 24 }, (_, hour) => ({
 const dailyOptions = {
   chart: {
     type: 'line',
-    height: 550,
-    toolbar: { show: false },
-  },
-  plotOptions: {
-    bar: {
-      borderRadius: 4,
-      borderRadiusApplication: 'end',
-      horizontal: true,
+    height: 350,
+    toolbar: {
+      show: true,
+      tools: {
+        download: false,
+        selection: false,
+        zoom: false,
+        zoomin: false,
+        zoomout: false,
+        pan: false,
+        reset: true, // ✅ Only this will show
+      },
+    },
+    zoom: {
+      enabled: true, // Must be true for reset to work
     },
   },
   series: [
@@ -1181,8 +1188,22 @@ const dummyMonthlyData = Array.from({ length: 31 }, (_, i) => ({
 const options = {
   chart: {
     type: 'line',
-    height: 550,
-    toolbar: { show: false },
+    height: 350,
+    toolbar: {
+      show: true,
+      tools: {
+        download: false,
+        selection: false,
+        zoom: false,
+        zoomin: false,
+        zoomout: false,
+        pan: false,
+        reset: true, // ✅ Only this will show
+      },
+    },
+    zoom: {
+      enabled: true, // Must be true for reset to work
+    },
   },
   series: [
     {
