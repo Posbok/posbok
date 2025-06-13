@@ -1081,8 +1081,29 @@ const dummyHourlyData = Array.from({ length: 24 }, (_, hour) => ({
 }));
 
 const dailyOptions = {
+  //   chart: {
+  //     type: 'line',
+  //     height: 350,
+  //     toolbar: {
+  //       show: true,
+  //       tools: {
+  //         download: false,
+  //         selection: false,
+  //         zoom: false,
+  //         zoomin: false,
+  //         zoomout: false,
+  //         pan: false,
+  //         reset: true, // ✅ Only this will show
+  //       },
+  //     },
+  //     zoom: {
+  //       enabled: true, // Must be true for reset to work
+  //     },
+  //   },
+
   chart: {
-    type: 'line',
+    type: 'area',
+    stacked: false,
     height: 350,
     toolbar: {
       show: true,
@@ -1098,6 +1119,32 @@ const dailyOptions = {
     },
     zoom: {
       enabled: true, // Must be true for reset to work
+    },
+  },
+  dataLabels: {
+    enabled: false,
+  },
+  markers: {
+    size: 0,
+  },
+  title: {
+    text: 'Daily Summary of Sales',
+    align: 'left',
+    style: {
+      fontSize: '16px',
+      fontWeight: 'bold',
+      color: '#205329',
+    },
+  },
+  //   gradientToColors: ['#ec1a23'],
+  //   colors: ['#205329', '#ec1a23'],
+  fill: {
+    type: 'gradient',
+    gradient: {
+      shadeIntensity: 1,
+      opacityFrom: 0.5,
+      opacityTo: 0,
+      stops: [0, 90, 100],
     },
   },
   series: [
@@ -1122,6 +1169,20 @@ const dailyOptions = {
       formatter: (val) => `₦${val.toLocaleString()}`,
     },
   },
+  //   fill: {
+  //     type: 'gradient',
+  //     gradient: {
+  //       shade: 'dark',
+  //       type: 'horizontal',
+  //       shadeIntensity: 0.5,
+  //       gradientToColors: undefined, // optional, if not defined - uses the shades of same color in series
+  //       inverseColors: true,
+  //       opacityFrom: 1,
+  //       opacityTo: 1,
+  //       stops: [0, 50, 100],
+  //       colorStops: [],
+  //     },
+  //   },
   responsive: [
     {
       breakpoint: 768,
@@ -1186,8 +1247,28 @@ const dummyMonthlyData = Array.from({ length: 31 }, (_, i) => ({
 }));
 
 const options = {
+  //   chart: {
+  //     type: 'line',
+  //     height: 350,
+  //     toolbar: {
+  //       show: true,
+  //       tools: {
+  //         download: false,
+  //         selection: false,
+  //         zoom: false,
+  //         zoomin: false,
+  //         zoomout: false,
+  //         pan: false,
+  //         reset: true, // ✅ Only this will show
+  //       },
+  //     },
+  //     zoom: {
+  //       enabled: true, // Must be true for reset to work
+  //     },
+  //   },
   chart: {
-    type: 'line',
+    type: 'area',
+    stacked: false,
     height: 350,
     toolbar: {
       show: true,
@@ -1203,6 +1284,32 @@ const options = {
     },
     zoom: {
       enabled: true, // Must be true for reset to work
+    },
+  },
+  dataLabels: {
+    enabled: false,
+  },
+  markers: {
+    size: 0,
+  },
+  title: {
+    text: 'Daily Summary of Sales',
+    align: 'left',
+    style: {
+      fontSize: '16px',
+      fontWeight: 'bold',
+      color: '#205329',
+    },
+  },
+  //   gradientToColors: ['#ec1a23'],
+  //   colors: ['#205329', '#ec1a23'],
+  fill: {
+    type: 'gradient',
+    gradient: {
+      shadeIntensity: 1,
+      opacityFrom: 0.5,
+      opacityTo: 0,
+      stops: [0, 90, 100],
     },
   },
   series: [
