@@ -217,11 +217,6 @@
    display: none;
 }
 
-
-
-
-
-
 .loading-row td {
    padding: 1.5rem 1rem;
    text-align: center;
@@ -308,6 +303,79 @@
    flex-direction: column;
    font-size: 1.5rem;
 }
+
+.productSales-summary,
+.sales-summary {
+   display: flex;
+   gap: 1rem;
+   margin: 1rem 0;
+   flex-wrap: wrap;
+
+   .summary-card {
+      flex: 1 1 200px;
+      background: #f8f9fa;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      text-align: center;
+
+      h4 {
+         margin: 0 0 0.5rem;
+         font-size: 1rem;
+         // color: #555;
+      }
+
+      .amount {
+         font-size: 1.4rem;
+         font-weight: 600;
+         color: #1b5e20;
+      }
+   }
+}
+
+.report-tabs {
+   margin-top: 30px;
+   font-family: inherit;
+
+   .tab-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      justify-content: center;
+
+      .tab-btn {
+         padding: 1rem 2rem;
+         background: $color-grey-light-2;
+         color: $color-secondary-dark;
+         border: none;
+         cursor: pointer;
+         font-weight: 600;
+
+         &.active {
+            background: $color-secondary-dark;
+            color: $color-grey-light-1;
+         }
+      }
+   }
+
+   .tab-content {
+      display: none;
+
+      &.active {
+         display: block;
+      }
+
+      &.summary {
+         margin: 15px 0;
+         // font-size: 14px;
+      }
+   }
+}
+
+
+
+
 
 // .filter-section input[type="date"],
 // .filter-section select {

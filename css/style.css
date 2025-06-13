@@ -1017,6 +1017,12 @@ button:disabled:hover {
 .mt-1 {
   margin-top: 1rem; }
 
+.mt-2 {
+  margin-top: 2rem; }
+
+.mt-4 {
+  margin-top: 4rem; }
+
 .mb-0 {
   margin-bottom: 0rem; }
 
@@ -1026,8 +1032,8 @@ button:disabled:hover {
 .mb-2 {
   margin-bottom: 2rem; }
 
-.mt-2 {
-  margin-top: 2rem; }
+.mb-4 {
+  margin-bottom: 4rem; }
 
 .mr-1 {
   margin-right: 1rem; }
@@ -3092,3 +3098,53 @@ body.authentication {
   display: flex;
   flex-direction: column;
   font-size: 1.5rem; }
+
+.productSales-summary,
+.sales-summary {
+  display: flex;
+  gap: 1rem;
+  margin: 1rem 0;
+  flex-wrap: wrap; }
+  .productSales-summary .summary-card,
+  .sales-summary .summary-card {
+    flex: 1 1 200px;
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    text-align: center; }
+    .productSales-summary .summary-card h4,
+    .sales-summary .summary-card h4 {
+      margin: 0 0 0.5rem;
+      font-size: 1rem; }
+    .productSales-summary .summary-card .amount,
+    .sales-summary .summary-card .amount {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #1b5e20; }
+
+.report-tabs {
+  margin-top: 30px;
+  font-family: inherit; }
+  .report-tabs .tab-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    justify-content: center; }
+    .report-tabs .tab-buttons .tab-btn {
+      padding: 1rem 2rem;
+      background: #eef1f6;
+      color: #205329;
+      border: none;
+      cursor: pointer;
+      font-weight: 600; }
+      .report-tabs .tab-buttons .tab-btn.active {
+        background: #205329;
+        color: #fff; }
+  .report-tabs .tab-content {
+    display: none; }
+    .report-tabs .tab-content.active {
+      display: block; }
+    .report-tabs .tab-content.summary {
+      margin: 15px 0; }

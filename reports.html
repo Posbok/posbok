@@ -22,6 +22,13 @@
 
    <script defer src="https://unpkg.com/smoothscroll-polyfill@0.4.4/dist/smoothscroll.min.js"></script>
 
+   <!-- Chart.js -->
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+   <!-- ApexCharts CDN -->
+   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+
    <!-- <script defer type="module" src="JS/script.js"></script>
    <script defer type="module" src="JS/reports.js"></script> -->
    <!-- <script defer type="module" src="JS/goods.js"></script> -->
@@ -128,7 +135,7 @@
          </div>
       </header>
 
-      <!-- POS TABLE - ADMIN -->
+      <!-- REPORTS - ADMIN -->
       <div class="adminAccordionContainer admin-view ">
 
          <!-- Header and Reports Section here... -->
@@ -140,8 +147,10 @@
 
       </div>
 
-      <!-- POS TABLE - STAFF -->
+      <!-- REPORTS - STAFF -->
       <div class="staffContainer staff-view">
+
+         <!-- POS TABLE - STAFF -->
          <div class="reports card mb-1">
             <div class="reports-method">
                <h2 class="heading-text mb-2">
@@ -159,7 +168,7 @@
                   </div>
 
                   <div class="pos-method-form_input">
-                     <label for="endDateFilter_staff">Start Date:</label>
+                     <label for="endDateFilter_staff">End Date:</label>
 
                      <input type="date" id="endDateFilter_staff">
                   </div>
@@ -287,7 +296,7 @@
 
                </div>
 
-               <div class="double-input">
+               <!-- <div class="double-input">
                   <div class="amount-summary">
                      <label for="AmountinMachine_staff">AMOUNT IN MACHINE</label>
 
@@ -307,16 +316,52 @@
                         <span class="naira">&#x20A6;</span>
                      </div>
                   </div>
-               </div>
+               </div> -->
             </div>
          </div>
 
-         <!-- Sold Items -->
-         <div class="reports card">
+         <!-- SOLD TABLE - STAFF -->
+         <div class="reports card mt-4 mb-4">
             <div class="reports-method">
                <h2 class="heading-text mb-2">
                   Sales Reports
                </h2>
+
+               <h2 class="filter-heading heading-subtext mb-2">Filter Reports</h2>
+
+               <div class="filter-section mb-2">
+
+                  <div class="pos-method-form_input">
+                     <label for="salesStartDateFilter_staff">Start Date:</label>
+
+                     <input type="date" id="salesStartDateFilter_staff">
+                  </div>
+
+                  <div class="pos-method-form_input">
+                     <label for="salesEndDateFilter_staff">End Date:</label>
+
+                     <input type="date" id="salesEndDateFilter_staff">
+                  </div>
+
+                  <div class="pos-method-form_input">
+
+                     <label for="typeFilter_staff">Payment Status:</label>
+
+                     <select id="typeFilter_staff" name="typeFilter_staff">
+                        <option value="">All</option>
+                        <option value="COMPLETED_FULL_PAYMENT">Competed</option>
+                        <option value="PARTIAL_PAYMENT">Partial</option>
+                     </select>
+                  </div>
+
+                  <div class="filter-buttons">
+                     <button id="applyFiltersBtn_staff" class="hero-btn-dark">Apply Filters</button>
+
+                     <!-- <button id="generateReportBtn_staff" class="hero-btn-dark">Generate Report</button> -->
+
+                     <button id="resetFiltersBtn_staff" class="hero-btn-outline">Reset</button>
+                  </div>
+               </div>
 
                <div class="table-header">
                   <!-- <h2 class="heading-subtext"> SALES </h2> -->
@@ -328,47 +373,47 @@
                      <thead>
                         <tr class="table-header-row">
                            <th class="py-1">S/N</th>
-                           <th class="py-1">Item Name</th>
-                           <th class="py-1">Amount Sold</th>
-                           <th class="py-1">Status</th>
+                           <th class="py-1">Receipt #</th>
+                           <th class="py-1">Customer</th>
+                           <th class="py-1">Staff</th>
+                           <th class="py-1">Amount</th>
+                           <th class="py-1">Paid</th>
                            <th class="py-1">Balance</th>
-                           <th class="py-1">Machine Fee</th>
-                           <th class="py-1">Remarks</th>
+                           <th class="py-1">Date</th>
+                           <th class="py-1">Status</th>
+                           <th class="py-1">▼</th>
                         </tr>
                      </thead>
 
                      <tbody>
-                        <!-- <tr class="table-body-row">
-                        <td class="py-1">1.</td>
-                        <td class="py-1 soldItemNameReport">Infinix Charger</td>
-                        <td class="py-1 soldItemPriceReport">&#x20A6;2,000</td>
-                        <td class="py-1 soldItemStatusReport">Completed</td>
-                        <td class="py-1 soldItemBalanceReport">-</td>
-                        <td class="py-1 soldItemRemarkReport ">Cash</td>
-                     </tr> -->
+                        <tr class="table-body-row">
+                           <td class="py-1">1.</td>
+                           <td class="py-1 soldItemReceiptReport">76-96-1749763485969</td>
+                           <td class="py-1 soldItemCustomerNameReport">John Customer</td>
+                           <td class="py-1 soldItemCustomerNameReport">Favour Amaka</td>
+                           <td class="py-1 soldItemTotalAmountReport">&#x20A6;8,000</td>
+                           <td class="py-1 soldItemPaidAmountReport">&#x20A6;8,000</td>
+                           <td class="py-1 soldItemBalanceAmountReport">&#x20A6;0</td>
+                           <td class="py-1 soldItemDateReport">2025-06-10</td>
+                           <td class="py-1 soldItemStatusReport">Full Payment</td>
+                           <td class="py-1 soldItemDetailReport ">[Expand]</td>
+                        </tr>
                      </tbody>
 
-                     <!-- <tbody>
-                     <tr class="table-body-row" id="item-list">
-                        <td class="py-1">x.</td>
-                        <td class="py-1">Oraimo Watch</td>
-                        <td class="py-1">&#x20A6;00,000</td>
-                        <td class="py-1">Completed</td>
-                        <td class="py-1">-</td>
-                        <td class="py-1">Good</td>
-                     </tr>
-                  </tbody>
-
-                  <tbody>
-                     <tr class="table-body-row">
-                        <td class="py-1">xx.</td>
-                        <td class="py-1">JBL Speaker</td>
-                        <td class="py-1">&#x20A6;00,000</td>
-                        <td class="py-1">Pending</td>
-                        <td class="py-1">-</td>
-                        <td class="py-1">Good</td>
-                     </tr>
-                  </tbody> -->
+                     <tbody>
+                        <tr class="table-body-row">
+                           <td class="py-1">1.</td>
+                           <td class="py-1 soldItemReceiptReport">76-96-1749763485969</td>
+                           <td class="py-1 soldItemCustomerNameReport">Wilson Customer</td>
+                           <td class="py-1 soldItemCustomerNameReport">Favour Amaka</td>
+                           <td class="py-1 soldItemTotalAmountReport">&#x20A6;12,000</td>
+                           <td class="py-1 soldItemPaidAmountReport">&#x20A6;10,000</td>
+                           <td class="py-1 soldItemBalanceAmountReport">&#x20A6;2,000</td>
+                           <td class="py-1 soldItemDateReport">2025-06-10</td>
+                           <td class="py-1 soldItemStatusReport">Partial Payment</td>
+                           <td class="py-1 soldItemDetailReport ">[Expand]</td>
+                        </tr>
+                     </tbody>
 
                      <tfoot>
                         <tr class="table-foot-row px-2">
@@ -379,13 +424,119 @@
                         </tr>
                      </tfoot>
                   </table>
+               </div>
 
-                  <!-- 
-               <div class="pagination-container">
-                  <button class="pagination-button">Previous</button>
-                  <p>Page 1 of 10</p>
-                  <button class="pagination-button">Next</button>
-               </div> -->
+
+               <div class="report-tabs mt-4 mb-4">
+
+                  <h2 class="heading-text mb-2">
+                     Performance Overview
+                  </h2>
+
+                  <div class="tab-buttons">
+                     <button class="tab-btn " data-tab="daily">Daily Summary</button>
+                     <button class="tab-btn" data-tab="monthly">Monthly Summary</button>
+                     <button class="tab-btn active" data-tab="product">Sales by Product</button>
+                  </div>
+
+                  <div class="tab-content " id="daily">
+                     <div id="dailyChart"></div>
+                  </div>
+
+                  <div class="tab-content" id="monthly">
+                     <div id="monthlyChart"></div>
+                  </div>
+
+                  <!-- <div class="tab-content" id="monthly" style="overflow-x: auto;">
+                     <canvas id="monthlyChart" style="min-width: 800px; height: max-content;"></canvas>
+                  </div> -->
+
+                  <div class="tab-content active" id="product">
+
+                     <div class="pos-method-form_input mb-2">
+
+                        <label for="productSelect">Select Product</label>
+
+                        <select id="productSelect">
+                           <option value="Smartphone">Smartphone</option>
+                           <option value="Tablet">Tablet</option>
+                           <option value="Laptop">Laptop</option>
+                        </select>
+                     </div>
+
+                     <div class="productSales-summary">
+                        <!-- Total Quantity -->
+                        <div class="summary-card">
+                           <h3>Total Quantity</h3>
+                           <p class="amount" id="totalQty">₦0</p>
+                        </div>
+
+                        <!-- Total Revenue -->
+                        <div class="summary-card">
+                           <h3>Total Revenue</h3>
+                           <p class="amount" id="totalRev">₦0</p>
+                        </div>
+
+                        <!-- Total Cost -->
+                        <div class="summary-card">
+                           <h3>Total Cost</h3>
+                           <p class="amount" id="totalCost">₦0</p>
+                        </div>
+
+                        <!-- Total Profit -->
+                        <div class="summary-card">
+                           <h3>Total Profit</h3>
+                           <p class="amount" id="totalProfit">₦0</p>
+                        </div>
+                     </div>
+
+                     <div class="reports-table-container">
+
+                        <table id="productSalesTable" class="reports-table">
+                           <thead>
+                              <tr class="table-header-row">
+                                 <th class="py-1">Customer</th>
+                                 <th class="py-1">Qty</th>
+                                 <th class="py-1">Unit Price</th>
+                                 <th class="py-1">Total</th>
+                                 <th class="py-1">Date</th>
+                              </tr>
+                           </thead>
+                           <tbody></tbody>
+                        </table>
+                     </div>
+
+                  </div>
+               </div>
+
+
+               <div class="report-tabs mt-4 mb-4">
+
+                  <h2 class="heading-text mb-2">
+                     Staff Overview
+                  </h2>
+
+
+
+                  <div class="sales-summary">
+                     <div class="summary-card">
+                        <h3>Total Sales</h3>
+                        <p class="amount" id="staffTotal-sales">₦0</p>
+                     </div>
+                     <div class="summary-card">
+                        <h3>Total Amount</h3>
+                        <p class="amount" id="staffTotal-Amount">₦0</p>
+                     </div>
+                     <div class="summary-card">
+                        <h3>Total Paid</h3>
+                        <p class="amount" id="staffTotal-paid">₦0</p>
+                     </div>
+                     <div class="summary-card">
+                        <h3>Balance</h3>
+                        <p class="amount" id="staffTotal-balance">₦0</p>
+                     </div>
+                  </div>
+
                </div>
             </div>
          </div>

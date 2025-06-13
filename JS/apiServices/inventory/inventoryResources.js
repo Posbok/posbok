@@ -411,27 +411,44 @@ export async function updateProductInventory(
   }
 }
 
-// export async function getProducts(page = 1, pageSize = 25) {
-//   try {
-//     const response = await safeFetch(
-//       `${baseUrl}/api/inventory/products?page=1&limit=10`,
-//       {
-//         method: 'GET',
-//         headers: {
-//           Authorization: `Bearer ${userToken}`,
-//           'Content-Type': 'application/json',
-//         },
-//       }
-//     );
+export async function getAllSales({
+  shopId,
+  page = 1,
+  limit = 10,
+  filters = {},
+}) {
+  try {
+    const queryParams = new URLSearchParams({
+      shopId,
+      page,
+      limit,
+    });
 
-//     if (!response.ok) {
-//       throw new Error(`HTTP error! status: ${response.status}`);
-//     }
+    if (filters.startDate) queryParams.append('startDate', filters.startDate);
+    if (filters.endDate) queryParams.append('endDate', filters.endDate);
+    if (filters.type) queryParams.append('type', filters.type);
+    if (filters.status) queryParams.append('status', filters.status);
 
-//     const data = await response.json();
-//     return data; // Returns both product data and pagination meta
-//   } catch (error) {
-//     console.error('Error fetching products:', error);
-//     return { data: [], meta: { pagination: { pageCount: 1 } } };
-//   }
-// }
+    showGlobalLoader();
+    const posTransactionsData = await safeFetch(
+      `${baseUrl}/api/sales?${queryParams.toString()}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    if (posTransactionsData) {
+      // showToast('success', `✅ ${posTransactionsData.message}`);
+      hideGlobalLoader();
+    }
+
+    return posTransactionsData;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error receiving POS Transaction:', error);
+    throw error;
+  }
+}

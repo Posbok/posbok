@@ -232,29 +232,6 @@ if (isAdmin) {
 
                         </div>
 
-                        <div class="double-input">
-                           <div class="amount-summary">
-                              <label for="AmountinMachine_admin_${shop.id}">AMOUNT IN MACHINE</label>
-
-                              <div class="naira-input-container">
-                                 <input id="AmountinMachine_admin_${shop.id}" type="text" name="AmountinMachine_admin_${shop.id}"
-                                    oninput="this.value=this.value.replace(/[^0-9]/g,'')" value="Unavailable" disabled>
-                                 <span class="naira">&#x20A6;</span>
-                              </div>
-                           </div>
-
-                           <div class="amount-summary">
-                              <label for="cashAvailable_admin_${shop.id}">CASH AVAILABLE</label>
-
-                              <div class="naira-input-container">
-                                 <input id="cashAvailable_admin_${shop.id}" type="text" name="cashAvailable_admin_${shop.id}"
-                                    oninput="this.value=this.value.replace(/[^0-9]/g,'')" value="Unavailable" disabled>
-                                 <span class="naira">&#x20A6;</span>
-                              </div>
-                           </div>
-                        </div>
-
-
       </div>
     </div>`;
 
@@ -1012,35 +989,341 @@ function updateTotalSoldAmounts(data) {
   }
 }
 
-renderGoodsTable();
+// renderGoodsTable();
 
-//  Delete POS Transactiion Data
+// JS for Tabs and Charts
+const tabs = document.querySelectorAll('.tab-btn');
+const contents = document.querySelectorAll('.tab-content');
 
-// document
-//   .getElementById('deleteAllButton')
-//   .addEventListener('click', async () => {
-//     const confirmDelete = confirm(
-//       'Are you sure you want to delete all transactions for the day? This action cannot be undone.'
-//     );
+tabs.forEach((btn) => {
+  btn.addEventListener('click', () => {
+    tabs.forEach((b) => b.classList.remove('active'));
+    contents.forEach((c) => c.classList.remove('active'));
 
-//     if (confirmDelete) {
-//       try {
-//         const response = await deleteAllTransactions();
-//         if (response.success) {
-//           alert('All transactions have been successfully deleted.');
-//           // Clear the table and update totals
-//           allPosTransactions = [];
-//           renderPosTable(); // Clear table display
-//           updateTotalPosAmounts([]); // Reset totals to zero
-//         } else {
-//           alert('Failed to delete transactions. Please try again.');
-//         }
-//       } catch (error) {
-//         console.error('Error deleting transactions:', error);
-//         alert('An error occurred while trying to delete transactions.');
-//       }
-//     }
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+// Dummy chart data For Daily and Monthly Sales
+const dailyCtx = document.getElementById('dailyChart');
+const monthlyCtx = document.getElementById('monthlyChart');
+
+// new Chart(dailyCtx, {
+//   type: 'bar',
+//   data: {
+//     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+//     datasets: [
+//       {
+//         label: 'Daily Sales (₦)',
+//         data: [1200, 1500, 1800, 900, 2000, 1700],
+//         backgroundColor: 'rgba(75, 192, 192, 0.6)',
+//       },
+//     ],
+//   },
+// });
+
+// new Chart(monthlyCtx, {
+//   type: 'line',
+//   data: {
+//     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+//     datasets: [
+//       {
+//         label: 'Monthly Revenue (₦)',
+//         data: [10000, 12000, 9000, 14000, 16000],
+//         borderColor: 'rgba(153, 102, 255, 1)',
+//         fill: false,
+//       },
+//     ],
+//   },
+// });
+
+// Chartjs Approach - Daily
+// const dummyHourlyData = Array.from({ length: 24 }, (_, hour) => ({
+//   hour,
+//   count: Math.floor(Math.random() * 5),
+//   amount: Math.floor(Math.random() * 2000),
+// }));
+
+// function renderDailyChart(hourlyData) {
+//   const labels = hourlyData.map((entry) => `${entry.hour}:00`);
+//   const amounts = hourlyData.map((entry) => entry.amount);
+
+//   new Chart(dailyCtx, {
+//     type: 'bar',
+//     data: {
+//       labels: labels,
+//       datasets: [
+//         {
+//           label: 'Hourly Sales (₦)',
+//           data: amounts,
+//           backgroundColor: 'rgba(75, 192, 192, 0.6)',
+//         },
+//       ],
+//     },
+//     options: {
+//       responsive: true,
+//       scales: {
+//         y: {
+//           beginAtZero: true,
+//         },
+//       },
+//     },
 //   });
+// }
+
+// renderDailyChart(dummyHourlyData);
+
+const dummyHourlyData = Array.from({ length: 24 }, (_, hour) => ({
+  hour,
+  count: Math.floor(Math.random() * 5),
+  amount: Math.floor(Math.random() * 1000),
+}));
+
+const dailyOptions = {
+  chart: {
+    type: 'line',
+    height: 550,
+    toolbar: { show: false },
+  },
+  plotOptions: {
+    bar: {
+      borderRadius: 4,
+      borderRadiusApplication: 'end',
+      horizontal: true,
+    },
+  },
+  series: [
+    {
+      name: 'Hourly Revenue (₦)',
+      data: dummyHourlyData.map((h) => h.amount),
+    },
+  ],
+  xaxis: {
+    categories: dummyHourlyData.map((h) => `${h.hour}:00`),
+    title: { text: 'Hour of Day' },
+    labels: {
+      rotate: -45,
+      style: { fontSize: '11px' },
+    },
+  },
+  yaxis: {
+    title: { text: 'Amount (₦)' },
+  },
+  tooltip: {
+    y: {
+      formatter: (val) => `₦${val.toLocaleString()}`,
+    },
+  },
+  responsive: [
+    {
+      breakpoint: 768,
+      options: {
+        chart: { height: 300 },
+        xaxis: {
+          labels: { rotate: -90 },
+        },
+      },
+    },
+  ],
+};
+
+const dailyChart = new ApexCharts(
+  document.querySelector('#dailyChart'),
+  dailyOptions
+);
+dailyChart.render();
+
+// Chartjs Approach - Monthly
+
+// const dummyMonthlyData = Array.from({ length: 31 }, (_, i) => ({
+//   day: i + 1,
+//   count: Math.floor(Math.random() * 10),
+//   amount: Math.floor(Math.random() * 10000),
+// }));
+
+// function renderMonthlyChart(dailyData) {
+//   const labels = dailyData.map((entry) => `Day ${entry.day}`);
+//   const amounts = dailyData.map((entry) => entry.amount);
+
+//   new Chart(monthlyCtx, {
+//     type: 'line',
+//     data: {
+//       labels: labels,
+//       datasets: [
+//         {
+//           label: 'Daily Revenue (₦)',
+//           data: amounts,
+//           borderColor: 'rgba(153, 102, 255, 1)',
+//           fill: false,
+//         },
+//       ],
+//     },
+//     options: {
+//       responsive: true,
+//       scales: {
+//         y: {
+//           beginAtZero: true,
+//         },
+//       },
+//     },
+//   });
+// }
+
+// renderMonthlyChart(dummyMonthlyData);
+
+const dummyMonthlyData = Array.from({ length: 31 }, (_, i) => ({
+  day: i + 1,
+  count: Math.floor(Math.random() * 10),
+  amount: Math.floor(Math.random() * 10000),
+}));
+
+const options = {
+  chart: {
+    type: 'line',
+    height: 550,
+    toolbar: { show: false },
+  },
+  series: [
+    {
+      name: 'Daily Revenue (₦)',
+      data: dummyMonthlyData.map((d) => d.amount),
+    },
+  ],
+  xaxis: {
+    categories: dummyMonthlyData.map((d) => `Day ${d.day}`),
+    labels: {
+      rotate: -45,
+      style: { fontSize: '12px' },
+    },
+  },
+  yaxis: {
+    title: { text: 'Amount (₦)' },
+  },
+  tooltip: {
+    y: {
+      formatter: (val) => `₦${val.toLocaleString()}`,
+    },
+  },
+  responsive: [
+    {
+      breakpoint: 768,
+      options: {
+        chart: { height: 300 },
+        xaxis: {
+          labels: { rotate: -90 },
+        },
+      },
+    },
+  ],
+};
+
+const chart = new ApexCharts(document.querySelector('#monthlyChart'), options);
+chart.render();
+
+// Dummy product sales data
+const productData = {
+  Smartphone: {
+    summary: { quantity: 6, revenue: 270000, cost: 240000, profit: 30000 },
+    sales: [
+      {
+        customer: 'John Doe',
+        qty: 2,
+        unit: 45000,
+        total: 90000,
+        date: '2025-05-21',
+      },
+      {
+        customer: 'Jane Roe',
+        qty: 2,
+        unit: 45000,
+        total: 90000,
+        date: '2025-05-22',
+      },
+      {
+        customer: 'Mark Smith',
+        qty: 2,
+        unit: 45000,
+        total: 90000,
+        date: '2025-05-23',
+      },
+    ],
+  },
+  Tablet: {
+    summary: { quantity: 4, revenue: 140000, cost: 120000, profit: 20000 },
+    sales: [
+      {
+        customer: 'Ayo James',
+        qty: 2,
+        unit: 35000,
+        total: 70000,
+        date: '2025-05-20',
+      },
+      {
+        customer: 'Linda Blue',
+        qty: 2,
+        unit: 35000,
+        total: 70000,
+        date: '2025-05-21',
+      },
+    ],
+  },
+  Laptop: {
+    summary: { quantity: 3, revenue: 240000, cost: 210000, profit: 30000 },
+    sales: [
+      {
+        customer: 'Tunde Green',
+        qty: 1,
+        unit: 80000,
+        total: 80000,
+        date: '2025-05-19',
+      },
+      {
+        customer: 'Blessing B.',
+        qty: 2,
+        unit: 80000,
+        total: 160000,
+        date: '2025-05-20',
+      },
+    ],
+  },
+};
+
+const productSelect = document.getElementById('productSelect');
+const totalQty = document.getElementById('totalQty');
+const totalRev = document.getElementById('totalRev');
+const totalCost = document.getElementById('totalCost');
+const totalProfit = document.getElementById('totalProfit');
+const tableBody = document.querySelector('#productSalesTable tbody');
+
+function updateProductData(product) {
+  const data = productData[product];
+  totalQty.textContent = data.summary.quantity;
+  totalRev.textContent = `₦${formatAmountWithCommas(data.summary.revenue)}`;
+  totalCost.textContent = `₦${formatAmountWithCommas(data.summary.cost)}`;
+  totalProfit.textContent = `₦${formatAmountWithCommas(data.summary.profit)}`;
+
+  tableBody.innerHTML = data.sales
+    .map(
+      (row) => `
+      <tr  class="table-body-row">
+        <td  class="py-1">${row.customer}</td>
+        <td  class="py-1">${row.qty}</td>
+        <td class="py-1">₦${formatAmountWithCommas(row.unit)}</td>
+        <td class="py-1">₦${formatAmountWithCommas(row.total)}</td>
+        <td class="py-1">${row.date}</td>
+      </tr>
+    `
+    )
+    .join('');
+}
+
+productSelect.addEventListener('change', (e) => {
+  updateProductData(e.target.value);
+});
+
+// Initialize with first product
+updateProductData('Smartphone');
 
 // JS for modal
 const main = document.querySelector('.main');
