@@ -840,6 +840,84 @@ export function addProductToCart() {
   }
 }
 
+const sellNowBtn = document.querySelector(
+  isAdmin ? '.adminSellNowBtn' : '.sellNowBtn'
+); // Your new button
+
+const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+const quickSellMsg = document.querySelector('.quick-sell-msg');
+
+if (cart.length > 1) {
+  sellNowBtn.disabled = true;
+  sellNowBtn.style.cursor = 'not-allowed';
+
+  sellNowBtn.addEventListener('click', function (e) {
+    e.preventDefault(); // Prevent any action just in case
+
+    quickSellMsg.textContent = '⚠️ Quick Sell is only available for 1 item.';
+    quickSellMsg.style.display = 'block';
+
+    // Clear any existing timeout
+    clearTimeout(sellNowBtn.timeoutId);
+
+    // Hide after 3 seconds
+    sellNowBtn.timeoutId = setTimeout(() => {
+      quickSellMsg.style.display = 'none';
+    }, 3000);
+  });
+} else {
+  sellNowBtn.disabled = false;
+  sellNowBtn.style.cursor = 'pointer';
+  quickSellMsg.style.display = 'none';
+}
+
+// if (cart.length > 1) {
+//   sellNowBtn.setAttribute('aria-disabled', 'true');
+//   sellNowBtn.style.pointerEvents = 'none';
+//   sellNowBtn.disabled = true;
+//   sellNowBtn.style.cursor = 'not-allowed';
+// }
+
+sellNowBtn?.addEventListener('click', () => {
+  // Add to cart first
+  handleAddToCart(); // ensure this respects validations
+  `
+  // Wait briefly to let localStorage/cart update`;
+  setTimeout(() => {
+    const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+    const cartSliderOverlay = document.querySelector('.cart-slider-overlay');
+    const cartSlider = document.querySelector('.cart-slider-content');
+    const sliderWrapper = document.querySelector('.slider-wrapper');
+
+    let soldProductQuantityInput = Number(soldProductQuantity.value);
+    let soldProductPriceInput = Number(soldProductPrice.value);
+
+    //  if (soldProductQuantityInput <= 0 || soldProductQuantityInput === '') {
+    //    showToast('info', 'ℹ️ Qeeeeeeeeeuantity must be at least one');
+
+    //    return;
+    //  }
+
+    //  soldProductName;
+    //  soldProductPrice;
+    //  soldProductQuantity;
+
+    if (cart.length > 0 && cart.length < 2) {
+      // Open slider
+      cartSlider.classList.add('open');
+      cartSliderOverlay.classList.add('visible');
+
+      // Jump to checkout view
+      sliderWrapper.style.transform = 'translateX(-50%)';
+
+      renderCartItemsFromStorage(); // optional: if you want to show cart summary in checkout
+    }
+    //  else {
+    //    sellNowBtn.disabled = true; // Disable button to prevent multiple clicks
+    //  }
+  }, 100); // Adjust timing if needed
+});
+
 document.addEventListener('DOMContentLoaded', () => {
   addProductToCart();
 });
