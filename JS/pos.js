@@ -32,6 +32,7 @@ const dummyShopId = config.dummyShopId;
 
 const parsedUserData = userData ? JSON.parse(userData) : null;
 const isAdmin = parsedUserData?.accountType === 'ADMIN';
+const staffShopId = parsedUserData?.shopId;
 
 if (isAdmin) {
   document.addEventListener('DOMContentLoaded', () => {
@@ -108,19 +109,30 @@ export async function handlePosFormSubmit() {
       e.preventDefault();
 
       const posShopDropdown = document.getElementById('posShopDropdown')?.value;
-      const amount = document.getElementById('posTransactionAmount').value;
-      const customerName = document.getElementById('posCustomerName').value;
-      const customerPhone = document.getElementById('posCustomerPhone').value;
-      const posFeePaymentType =
-        document.getElementById('posFeePaymentType').value;
-      const transactionType = document.getElementById('transactionType').value;
-      const paymentMethod = document.getElementById('paymentMethod').value;
-      const posTransactionRemark = document.getElementById(
-        'posTransactionRemark'
+      const amount = document.getElementById(
+        isAdmin ? 'adminPosTransactionAmount' : 'posTransactionAmount'
       ).value;
-      const posRemarksDiv = document.querySelector('.posRemarksDiv').value;
-      const paymentMethodTypeDiv =
-        document.querySelector('.paymentMethodType').value;
+      const customerName = document.getElementById(
+        isAdmin ? 'adminPosCustomerName' : 'posCustomerName'
+      ).value;
+      const customerPhone = document.getElementById(
+        isAdmin ? 'adminPosCustomerPhone' : 'posCustomerPhone'
+      ).value;
+      const posFeePaymentType = document.getElementById(
+        isAdmin ? 'adminPosFeePaymentType' : 'posFeePaymentType'
+      ).value;
+      const transactionType = document.getElementById(
+        isAdmin ? 'adminTransactionType' : 'transactionType'
+      ).value;
+      const paymentMethod = document.getElementById(
+        isAdmin ? 'adminPaymentMethod' : 'paymentMethod'
+      ).value;
+      const posTransactionRemark = document.getElementById(
+        isAdmin ? 'adminPosTransactionRemark' : 'posTransactionRemark'
+      ).value;
+      // const posRemarksDiv = document.querySelector('.posRemarksDiv').value;
+      // const paymentMethodTypeDiv =
+      //   document.querySelector('.paymentMethodType').value;
 
       // const fee = document.getElementById('posTransactionFee').value;
       // const machineFeeContainer = document.querySelector('.machine-fee').value;
@@ -142,9 +154,7 @@ export async function handlePosFormSubmit() {
       // Create the form data with documentIds
 
       // "transactionType" must be one of [WITHDRAWAL, DEPOSIT, WITHDRAWAL_TRANSFER, BILL_PAYMENT]
-      const shopId = isAdmin
-        ? Number(posShopDropdown)
-        : Number(parsedUserData?.shopId);
+      const shopId = isAdmin ? Number(posShopDropdown) : Number(staffShopId);
 
       const posFormData = {
         shopId,
@@ -179,7 +189,7 @@ export async function handlePosFormSubmit() {
         //     'POS transaction sent successfully:',
         //     posTransactionCreated
         //   );
-
+        resetFormInputs();
         showToast('success', `✅ ${posTransactionCreated?.message}`);
         hideBtnLoader(posSubmitButton);
       } catch (err) {
@@ -191,11 +201,28 @@ export async function handlePosFormSubmit() {
       }
 
       function resetFormInputs() {
-        document.getElementById('transactionType').value = 'withdrawal';
-        document.getElementById('paymentMethod').value = 'card';
-        document.getElementById('posFeePaymentType').value = 'card';
-        document.getElementById('posTransactionAmount').value = '';
-        document.getElementById('posTransactionRemark').value = '';
+        console.log('Reset fORM');
+        document.getElementById(
+          isAdmin ? 'adminTransactionType' : 'transactionType'
+        ).value = 'withdrawal';
+        document.getElementById(
+          isAdmin ? 'adminPaymentMethod' : 'paymentMethod'
+        ).value = 'card';
+        document.getElementById(
+          isAdmin ? 'adminPosFeePaymentType' : 'posFeePaymentType'
+        ).value = 'card';
+        document.getElementById(
+          isAdmin ? 'adminPosTransactionAmount' : 'posTransactionAmount'
+        ).value = '';
+        document.getElementById(
+          isAdmin ? 'adminPosCustomerName' : 'posCustomerName'
+        ).value = '';
+        document.getElementById(
+          isAdmin ? 'adminPosCustomerPhone' : 'posCustomerPhone'
+        ).value = '';
+        document.getElementById(
+          isAdmin ? 'adminPosTransactionRemark' : 'posTransactionRemark'
+        ).value = '';
         document.querySelector('.paymentMethodType').style.display = 'block';
         document.querySelector('.posRemarksDiv').style.display = 'block';
 

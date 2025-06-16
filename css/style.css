@@ -493,7 +493,9 @@ select {
   cursor: pointer; }
 
 .modal-form .modal .heading-text,
-.slider-form .slider .heading-text {
+.slider-form .slider .heading-text,
+.modal-form .modal .heading-minitext,
+.slider-form .slider .heading-minitext {
   color: #15464C; }
 
 .addProduct .checkbox,
@@ -1678,6 +1680,11 @@ body.authentication {
     .profile-slider-content .profile-slider-header .heading-text {
       margin: 0;
       color: inherit; }
+    .cart-slider-content .cart-slider-header.heading-minitext,
+    .cart-slider-content .profile-slider-header.heading-minitext,
+    .profile-slider-content .cart-slider-header.heading-minitext,
+    .profile-slider-content .profile-slider-header.heading-minitext {
+      color: #205329; }
     .cart-slider-content .cart-slider-header .close-cart-btn,
     .cart-slider-content .cart-slider-header .close-profile-btn,
     .cart-slider-content .profile-slider-header .close-cart-btn,

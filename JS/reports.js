@@ -6,6 +6,7 @@ import {
 import { checkAndPromptCreateShop } from './apiServices/shop/shopResource';
 import { formatAmountWithCommas, formatTransactionType } from './helper/helper';
 import { hideGlobalLoader, showGlobalLoader } from '../JS/helper/helper';
+import { getAllSales } from './apiServices/sales/salesResources';
 
 const userData = config.userData;
 const dummyShopId = config.dummyShopId; // Dummy user data for testing
@@ -37,6 +38,7 @@ if (isAdmin) {
 
 // JS to Render saved POS from Database to help with Load More features of the transactions.
 let allPosTransactions = [];
+let allSalesReport = [];
 
 // Pagination control for load more
 let currentPage;
@@ -66,6 +68,28 @@ function resetFilters(role, shopId) {
   document.getElementById(`endDateFilter_${suffix}`).value = '';
   document.getElementById(`typeFilter_${suffix}`).value = '';
   document.getElementById(`statusFilter_${suffix}`).value = '';
+}
+
+function getSalesFilters(role, shopId) {
+  const suffix = role === 'admin' ? `${role}_${shopId}` : role;
+
+  return {
+    startDate:
+      document.getElementById(`salesStartDateFilter_${suffix}`)?.value || '',
+    endDate:
+      document.getElementById(`salesEndDateFilter_${suffix}`)?.value || '',
+    type: document.getElementById(`salesPaymentMethod_${suffix}`)?.value || '',
+    status: document.getElementById(`salesStatusFilter_${suffix}`)?.value || '',
+  };
+}
+
+function resetSalesFilters(role, shopId) {
+  const suffix = role === 'admin' ? `${role}_${shopId}` : role;
+
+  document.getElementById(`salesStartDateFilter_${suffix}`).value = '';
+  document.getElementById(`salesEndDateFilter_${suffix}`).value = '';
+  document.getElementById(`salesPaymentMethod_${suffix}`).value = '';
+  document.getElementById(`salesStatusFilter_${suffix}`).value = '';
 }
 
 if (isAdmin) {
@@ -582,12 +606,12 @@ if (isAdmin) {
 }
 
 if (isStaff) {
-  const shopId = parsedUserData?.shopId || dummyShopId;
+  const shopId = parsedUserData?.shopId;
 
   document
     .getElementById('applyFiltersBtn_staff')
     ?.addEventListener('click', () => {
-      const filters = getFilters('staff');
+      const filters = getSalesFilters('staff');
       renderPosTable(1, pageSize, filters, 'staff');
     });
 
@@ -601,6 +625,42 @@ if (isStaff) {
       renderPosTable(1, pageSize, filters, 'staff');
     });
 
+  //Sales Filter
+  document
+    .getElementById('applySalesFiltersBtn_staff')
+    ?.addEventListener('click', () => {
+      const filters = getFilters('staff');
+      renderSalesTable(1, pageSize, filters, 'staff');
+    });
+
+  document
+    .getElementById('resetSalesFiltersBtn_staff')
+    ?.addEventListener('click', () => {
+      const role = 'staff';
+      resetSalesFilters(role);
+      const filters = getFilters(role);
+      const tableSelector = '.posTableDisplay_staff tbody';
+      renderSalesTable(1, pageSize, filters, 'staff');
+    });
+
+  // Sales
+  const loadMoreSalesButton = document.getElementById(
+    'loadMoreSalesButtonDiv_staff'
+  );
+
+  loadMoreSalesButton.style.display = 'none';
+
+  loadMoreSalesButton.addEventListener('click', () => {
+    const role = 'staff';
+    currentPage += 1;
+    const filters = getSalesFilters(role);
+
+    //  const tableBodyId = '.posTableDisplay_staff tbody';
+
+    renderSalesTable(currentPage, pageSize, filters, role);
+  });
+
+  // POS
   const loadMoreButton = document.getElementById('loadMoreButton_staff');
 
   loadMoreButton.style.display = 'none';
@@ -805,6 +865,181 @@ if (isStaff) {
     }
   }
 
+  async function renderSalesTable(
+    page = 1,
+    pageSize,
+    filters = {},
+    role = 'staff'
+  ) {
+    const salesTableBody = document.querySelector(
+      `.soldTableDisplay_${role} tbody`
+    );
+
+    if (!salesTableBody) {
+      console.error('Error: Table body not found');
+      return;
+    }
+
+    try {
+      let loadingRow = document.querySelector('.loading-row');
+      if (!loadingRow) {
+        loadingRow = document.createElement('tr');
+        loadingRow.className = 'loading-row';
+        loadingRow.innerHTML = `<td colspan="11" class="table-loading-text">Loading transactions...</td>`;
+        salesTableBody.appendChild(loadingRow);
+      }
+
+      loadMoreButton.style.display = 'none';
+
+      // Build query with filters
+      const queryParams = new URLSearchParams({
+        shopId: shopId,
+        page,
+        limit: pageSize,
+      });
+
+      if (filters.startDate) queryParams.append('startDate', filters.startDate);
+      if (filters.endDate) queryParams.append('endDate', filters.endDate);
+      if (filters.type) queryParams.append('type', filters.type);
+      if (filters.status) queryParams.append('status', filters.status);
+
+      const result = await getAllSales({
+        shopId,
+        page,
+        limit: pageSize,
+        filters,
+      });
+
+      console.log(result);
+
+      if (!result) throw new Error(result.message || 'Failed to fetch');
+
+      const salesReports = result.data.sales;
+      totalPages = result.data.totalPages;
+      totalItems = result.data.totalItems;
+      currentPage = result.data.currentPage;
+
+      // Only reset array if starting from page 1
+      if (page === 1) {
+        let allSalesReport = [];
+      }
+
+      if (salesReports.length === 0 && currentPage === 1) {
+        salesTableBody.innerHTML =
+          '<tr class="loading-row"><td colspan="11" class="table-error-text ">No Sales Report Available.</td></tr>';
+        return;
+      }
+
+      salesReports.forEach((sale) => {
+        if (!allSalesReport.some((s) => s.id === sale.id)) {
+          allSalesReport.push(sale);
+        }
+      });
+
+      // Clear the table body and render all accumulated sales
+      salesTableBody.innerHTML = '';
+
+      const groupedByDate = {};
+
+      console.log(allSalesReport);
+
+      allSalesReport.forEach((sl) => {
+        const dateObj = new Date(sl.business_day);
+
+        const dateKey = dateObj.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }); // "May 11, 2025"
+
+        if (!groupedByDate[dateKey]) groupedByDate[dateKey] = [];
+        groupedByDate[dateKey].push(sl);
+      });
+
+      //  console.log(groupedByDate);
+
+      let serialNumber = 1;
+
+      Object.entries(groupedByDate).forEach(([date, sales]) => {
+        // Insert group row (header for the date)
+        const groupRow = document.createElement('tr');
+        groupRow.className = 'date-group-row table-body-row ';
+
+        groupRow.innerHTML = `
+      <td colspan="11" class="date-header py-1 mt-1 mb-1">
+        <strong>${date}</strong>     </td>
+
+     `;
+        salesTableBody.appendChild(groupRow);
+
+        //       groupRow.innerHTML = `
+        //     <td colspan="11" class="date-header py-1 mt-1 mb-1">
+        //       <strong>${date}</strong> — Total: ₦${formatAmountWithCommas(dailyTotal)}
+        //     </td>
+        //   `;
+
+        sales.forEach((salesTransaction) => {
+          const {
+            id,
+            receipt_number,
+            amount_paid,
+            total_amount,
+            balance,
+            customer_name,
+            customer_phone,
+            payment_method,
+            business_day,
+            status,
+          } = salesTransaction;
+
+          const { first_name, last_name } = salesTransaction.Account;
+
+          const row = document.createElement('tr');
+          row.classList.add('table-body-row');
+          row.innerHTML = `
+                <td class="py-1">${serialNumber++}.</td>
+               <td class="py-1 soldItemReceiptReport">${receipt_number}</td>
+               <td class="py-1 soldItemCustomerNameReport">${customer_name}</td>
+                <td class="py-1 soldItemCustomerNameReport">${first_name} ${last_name}</td>
+                 <td class="py-1 soldItemTotalAmountReport">&#x20A6;${total_amount}</td>
+                 <td class="py-1 soldItemPaidAmountReport">&#x20A6;${amount_paid}</td>
+                  <td class="py-1 soldItemBalanceAmountReport">&#x20A6;${balance}</td>
+                  <td class="py-1 soldItemDateReport">${business_day}</td>
+                   <td class="py-1 soldItemStatusReport">${status}</td>
+                    <td class="py-1 soldItemDetailReport" data-sale-id="${id}"><i class="fa fa-eye"></i></td>
+     `;
+          salesTableBody.appendChild(row);
+        });
+
+        // Insert total row (Footer for Daily Totals))
+        const totalRow = document.createElement('tr');
+        totalRow.className = 'total-row table-body-row ';
+
+        // const dailyTotal = transactions.reduce(
+        //   (sum, t) => sum + Number(t.amount),
+        //   0
+        // );
+
+        // Update total amounts for each day startinf wth partial totals and ending the day with final Total.
+        //   updateTotalPosAmounts(transactions, totalRow, date);
+
+        salesTableBody.appendChild(totalRow);
+      });
+
+      // Handle Load More button visibility
+      if (currentPage >= totalPages) {
+        loadMoreButton.style.display = 'none';
+      } else {
+        loadMoreButton.style.display = 'block';
+      }
+    } catch (error) {
+      console.error('Error rendering transactions:', error);
+      salesTableBody.innerHTML =
+        '<tr><td colspan="6" class="table-error-text">Error loading transactions.</td></tr>';
+    }
+  }
+
+  renderSalesTable();
   renderPosTable();
 }
 
@@ -938,7 +1173,52 @@ function updateTotalPosAmounts(transactions, totalRow, date) {
    `;
 }
 
-// JS to Render Sold goods from LocalStorage
+// JS to Render Sold goods
+
+document.querySelectorAll('.soldItemDetailReport').forEach((cell) => {
+  cell.addEventListener('click', (e) => {
+    const row = e.target.closest('tr');
+    if (!row) return;
+
+    // Extract data from row
+    const receipt =
+      row.querySelector('.soldItemReceiptReport')?.textContent || '';
+    const customer =
+      row.querySelector('.soldItemCustomerNameReport')?.textContent || '';
+    const staff = row.children[3]?.textContent || ''; // Assuming 4th td is staff
+    const amount =
+      row.querySelector('.soldItemTotalAmountReport')?.textContent || '';
+    const paid =
+      row.querySelector('.soldItemPaidAmountReport')?.textContent || '';
+    const balance =
+      row.querySelector('.soldItemBalanceAmountReport')?.textContent || '';
+    const date = row.querySelector('.soldItemDateReport')?.textContent || '';
+
+    // Inject into modal
+    document.getElementById('modalReceiptNumber').textContent = receipt;
+    document.getElementById('modalCustomerName').textContent = customer;
+    document.getElementById('modalStaffName').textContent = staff;
+    document.getElementById('modalTotalAmount').textContent = amount;
+    document.getElementById('modalPaidAmount').textContent = paid;
+    document.getElementById('modalBalanceAmount').textContent = balance;
+    document.getElementById('modalDate').textContent = date;
+
+    // For demo: Static items sold (replace with actual fetch later)
+    document.getElementById('modalItemsList').innerHTML = `
+      <tr><td>Biscuit</td><td>2</td><td>₦500</td><td>₦1000</td></tr>
+      <tr><td>Water</td><td>1</td><td>₦200</td><td>₦200</td></tr>
+    `;
+
+    document.getElementById('soldDetailModal').classList.remove('hidden');
+  });
+});
+
+document
+  .getElementById('closeSoldDetailModal')
+  ?.addEventListener('click', () => {
+    document.getElementById('soldDetailModal').classList.add('hidden');
+  });
+
 const storedSoldGoods =
   JSON.parse(localStorage.getItem('soldProductFormData')) || [];
 

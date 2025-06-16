@@ -519,25 +519,25 @@ document.addEventListener('DOMContentLoaded', function () {
   const balancePaymentInput = document.getElementById('productBalancePrice');
   const radios = document.querySelectorAll('input[name="completedCheckbox"]');
 
-  function updateUIBasedOnStatus() {
-    if (completedRadio.checked) {
-      balancePaymentSection.style.display = 'none';
-      balancePaymentInput.value = '';
-      balancePaymentInput.disabled = true;
-    } else if (balanceRadio.checked) {
-      balancePaymentSection.style.display = 'block';
-      balancePaymentInput.disabled = false;
-    }
-  }
+  //   function updateUIBasedOnStatus() {
+  //     if (completedRadio.checked) {
+  //       balancePaymentSection.style.display = 'none';
+  //       balancePaymentInput.value = '';
+  //       balancePaymentInput.disabled = true;
+  //     } else if (balanceRadio.checked) {
+  //       balancePaymentSection.style.display = 'block';
+  //       balancePaymentInput.disabled = false;
+  //     }
+  //   }
 
   // Default to "Completed" on load
-  completedRadio.checked = true;
-  updateUIBasedOnStatus();
+  //   completedRadio.checked = true;
+  //   updateUIBasedOnStatus();
 
   // Listen to radio change
-  radios.forEach((radio) => {
-    radio.addEventListener('change', updateUIBasedOnStatus);
-  });
+  //   radios.forEach((radio) => {
+  //     radio.addEventListener('change', updateUIBasedOnStatus);
+  //   });
 });
 
 // JS for Selling Products and adding to localStorage
@@ -605,10 +605,11 @@ export function sellProductForm() {
       if (!validateCartBeforeSale()) return;
 
       try {
+        showGlobalLoader();
         showBtnLoader(checkoutSubmitBtn);
 
         console.log('Submitting Sales Details:', sellProductDetails);
-        hideBtnLoader(checkoutSubmitBtn);
+        //   hideBtnLoader(checkoutSubmitBtn);
 
         const soldData = await createSale(sellProductDetails);
 
@@ -618,17 +619,21 @@ export function sellProductForm() {
           localStorage.removeItem(cartKey);
           updateCartCounter();
           updateCartTotalUI();
+          renderQuickSellButton();
 
           // Close the cart slider if it's open
           cartSlider.classList.remove('open');
           cartSliderOverlay.classList.remove('visible');
           clearFormInputs();
+          selectedProduct = null;
+          hideGlobalLoader();
         }
 
         clearFormInputs(); // close modal after success
       } catch (err) {
         console.error('Error Selling Product:', err.message);
         hideBtnLoader(checkoutSubmitBtn);
+        hideGlobalLoader();
         showToast('fail', `❎ ${err.message}`);
       }
     });
@@ -714,7 +719,16 @@ function handleAddToCart() {
   let soldProductQuantityInput = Number(soldProductQuantity.value);
   let shopId = isAdmin ? sellProductShopDropdown.value : parsedUserData.shopId;
 
-  const storedData = JSON.parse(localStorage.getItem(cartKey)) || []; // This is wher throws the error
+  //   const storedData = JSON.parse(localStorage.getItem(cartKey)) || []; // This is where throws the error
+
+  let storedData = [];
+
+  try {
+    storedData = JSON.parse(localStorage.getItem(cartKey)) || [];
+  } catch (e) {
+    console.error('Failed to parse cart:', e);
+    localStorage.removeItem(cartKey);
+  }
 
   if (soldProductQuantityInput <= 0) {
     showToast('info', 'ℹ️ Quantity must be at least one');
@@ -798,6 +812,7 @@ function handleAddToCart() {
   localStorage.setItem(cartKey, JSON.stringify(storedData));
   updateCartCounter();
   updateCartTotalUI();
+  renderQuickSellButton();
   showToast(
     'success',
     `✅ ${soldProductNameInput} added to cart successfully!`
@@ -840,6 +855,7 @@ export function addProductToCart() {
   }
 }
 
+// Quick sell Logic
 const sellNowBtn = document.querySelector(
   isAdmin ? '.adminSellNowBtn' : '.sellNowBtn'
 ); // Your new button
@@ -847,29 +863,37 @@ const sellNowBtn = document.querySelector(
 const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
 const quickSellMsg = document.querySelector('.quick-sell-msg');
 
-if (cart.length > 1) {
-  sellNowBtn.disabled = true;
-  sellNowBtn.style.cursor = 'not-allowed';
+function renderQuickSellButton() {
+  const updatedCart = JSON.parse(localStorage.getItem(cartKey)) || [];
 
-  sellNowBtn.addEventListener('click', function (e) {
-    e.preventDefault(); // Prevent any action just in case
+  if (updatedCart.length > 1) {
+    sellNowBtn.disabled = true;
+    sellNowBtn.style.cursor = 'not-allowed';
 
-    quickSellMsg.textContent = '⚠️ Quick Sell is only available for 1 item.';
-    quickSellMsg.style.display = 'block';
+    sellNowBtn.addEventListener('click', function (e) {
+      e.preventDefault(); // Prevent any action just in case
 
-    // Clear any existing timeout
-    clearTimeout(sellNowBtn.timeoutId);
+      quickSellMsg.textContent = '⚠️ Quick Sell is only available for 1 item.';
+      quickSellMsg.style.display = 'block';
 
-    // Hide after 3 seconds
-    sellNowBtn.timeoutId = setTimeout(() => {
-      quickSellMsg.style.display = 'none';
-    }, 3000);
-  });
-} else {
-  sellNowBtn.disabled = false;
-  sellNowBtn.style.cursor = 'pointer';
-  quickSellMsg.style.display = 'none';
+      // Clear any existing timeout
+      clearTimeout(sellNowBtn.timeoutId);
+
+      // Hide after 3 seconds
+      sellNowBtn.timeoutId = f(() => {
+        quickSellMsg.style.display = 'none';
+      }, 3000);
+    });
+  } else {
+    sellNowBtn.disabled = false;
+    sellNowBtn.style.cursor = 'pointer';
+    quickSellMsg.style.display = 'none';
+
+    sellNowBtn.onclick = null;
+  }
 }
+
+renderQuickSellButton(); // Initial render
 
 // if (cart.length > 1) {
 //   sellNowBtn.setAttribute('aria-disabled', 'true');
@@ -881,7 +905,18 @@ if (cart.length > 1) {
 sellNowBtn?.addEventListener('click', () => {
   // Add to cart first
   handleAddToCart(); // ensure this respects validations
-  `
+
+  const updatedCart = JSON.parse(localStorage.getItem(cartKey)) || [];
+  if (!selectedProduct || !selectedProduct.id) {
+    showToast('error', '❗Please select a product first.');
+    document.querySelector('button[data-category-id="all"]').click();
+    return;
+  }
+
+  if (updatedCart.length !== 1) {
+    showToast('error', '❗Quick sell requires exactly 1 item.');
+    return;
+  }
   // Wait briefly to let localStorage/cart update`;
   setTimeout(() => {
     const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
@@ -1019,6 +1054,7 @@ function renderCartItemsFromStorage() {
   const container = document.querySelector('.cart-items-container');
   updateCartCounter();
   updateCartTotalUI();
+  renderQuickSellButton();
 
   // Clear existing items
   container.innerHTML = '';

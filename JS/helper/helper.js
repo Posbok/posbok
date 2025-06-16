@@ -293,6 +293,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const posTransactionAmountInput = document.getElementById(
     'posTransactionAmount'
   );
+  const adminPosTransactionAmountInput = document.getElementById(
+    'adminPosTransactionAmount'
+  );
   const addPosChargeMinAmountInput = document.getElementById(
     'addPosChargeMinAmount'
   );
@@ -342,6 +345,11 @@ document.addEventListener('DOMContentLoaded', function () {
   if (posTransactionAmountInput)
     posTransactionAmountInput.addEventListener('input', function () {
       formatAmountWithCommasOnInput(posTransactionAmountInput);
+    });
+
+  if (adminPosTransactionAmountInput)
+    adminPosTransactionAmountInput.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(adminPosTransactionAmountInput);
     });
 
   if (addPosChargeMinAmountInput)

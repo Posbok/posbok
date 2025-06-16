@@ -343,23 +343,37 @@
                      <input type="date" id="salesEndDateFilter_staff">
                   </div>
 
+
                   <div class="pos-method-form_input">
 
-                     <label for="typeFilter_staff">Payment Status:</label>
+                     <label for="salesStatusFilter_staff">Payment Status:</label>
 
-                     <select id="typeFilter_staff" name="typeFilter_staff">
+                     <select id="salesStatusFilter_staff" name="salesStatusFilter_staff">
                         <option value="">All</option>
-                        <option value="COMPLETED_FULL_PAYMENT">Competed</option>
-                        <option value="PARTIAL_PAYMENT">Partial</option>
+                        <option value="COMPLETED_FULL_PAYMENT">Completed</option>
+                        <option value="PARTIAL_PAYMENT">Partial Payment</option>
                      </select>
                   </div>
 
+                  <div class="pos-method-form_input">
+
+                     <label for="salesPaymentMethod_staff">Payment Method:</label>
+
+                     <select id="salesPaymentMethod_staff" name="salesPaymentMethod_staff">
+                        <option value="">All</option>
+                        <option value="CASH">Cash</option>
+                        <option value="CARD">Card</option>
+                        <option value="TRANSFER">Transfer</option>
+                     </select>
+                  </div>
+
+
                   <div class="filter-buttons">
-                     <button id="applyFiltersBtn_staff" class="hero-btn-dark">Apply Filters</button>
+                     <button id="applySalesFiltersBtn_staff" class="hero-btn-dark">Apply Filters</button>
 
                      <!-- <button id="generateReportBtn_staff" class="hero-btn-dark">Generate Report</button> -->
 
-                     <button id="resetFiltersBtn_staff" class="hero-btn-outline">Reset</button>
+                     <button id="resetSalesFiltersBtn_staff" class="hero-btn-outline">Reset</button>
                   </div>
                </div>
 
@@ -369,7 +383,7 @@
 
                <div class="reports-table-container">
 
-                  <table class="reports-table soldTableDisplay">
+                  <table class="reports-table soldTableDisplay_staff">
                      <thead>
                         <tr class="table-header-row">
                            <th class="py-1">S/N</th>
@@ -386,6 +400,11 @@
                      </thead>
 
                      <tbody>
+                        <tr class="table-body-row">
+                        </tr>
+                     </tbody>
+
+                     <!-- <tbody>
                         <tr class="table-body-row">
                            <td class="py-1">1.</td>
                            <td class="py-1 soldItemReceiptReport">76-96-1749763485969</td>
@@ -413,7 +432,7 @@
                            <td class="py-1 soldItemStatusReport">Partial Payment</td>
                            <td class="py-1 soldItemDetailReport ">[Expand]</td>
                         </tr>
-                     </tbody>
+                     </tbody>  -->
 
                      <tfoot>
                         <tr class="table-foot-row px-2">
@@ -424,6 +443,13 @@
                         </tr>
                      </tfoot>
                   </table>
+
+                  <div id="loadMoreSalesButtonDiv_staff" class=" center-button mt-2">
+
+                     <button id="loadMoreSalesButton_staff" class=" hero-btn-dark load-more-button">Load More
+                        Sales</button>
+                     <!-- <button id="loadMoreButton" class="">Load More</button> -->
+                  </div>
                </div>
 
 
@@ -541,16 +567,79 @@
             </div>
          </div>
       </div>
-
-
-
-
    </main>
 
    <div id="toast" class="toast">This is a toast message!</div>
    <div id="global-loader" class="loader-overlay hidden">
       <div class="spinner"></div>
    </div>
+
+   <!-- Sold Items Report Modals -->
+   <form class="modal-form soldDetailModalModal soldDetailModalContainer" name="modal">
+      <div class="card openSoldDetailModal modal">
+
+         <div class="reports mt-4 mb-4">
+            <div class="reports-method">
+               <div>
+                  <h1 class="heading-text">Sold Items Details</h1>
+               </div>
+
+               <!-- <div class="modalBody"> -->
+               <h2 class="heading-minitext mb-1 "><strong>Receipt:</strong> <span id="soldDetailReceiptNumber"></span>
+               </h2>
+               <h2 class="heading-minitext mb-1"><strong>Customer:</strong> <span id="soldDetailCustomerName"></span>
+               </h2>
+               <h2 class="heading-minitext mb-1"><strong>Staff:</strong> <span id="soldDetailStaffName"></span></h2>
+               <h2 class="heading-minitext mb-1"><strong>Date:</strong> <span id="soldDetailDate"></span></h2>
+
+               <div class="reports-table-container mt-2">
+                  <table class="itemsTable reports-table">
+                     <thead>
+                        <tr class="table-header-row">
+                           <th class="py-1">Item</th>
+                           <th class="py-1">Qty</th>
+                           <th class="py-1">Price</th>
+                           <th class="py-1">Total</th>
+                        </tr>
+                     </thead>
+
+                     <tbody>
+                        <!-- JS injects rows here -->
+                        <tr class="table-body-row ">
+                           <td class="py-1">Iphone Charger</td>
+                           <td class="py-1">2</td>
+                           <td class="py-1">₦500</td>
+                           <td class="py-1">₦1000</td>
+                        </tr>
+
+                        <tr class="table-body-row ">
+                           <td class="py-1">Oriamo Powerbank</td>
+                           <td class="py-1">1</td>
+                           <td class="py-1">₦200</td>
+                           <td class="py-1">₦200</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+
+               <h2 class="heading-minitext mb-1 mt-1 "><strong>Total:</strong> <span id="modalTotalAmount"></span></h2>
+               <h2 class="heading-minitext mb-1 "><strong>Paid:</strong> <span id="modalPaidAmount"></span></h2>
+               <h2 class="heading-minitext mb-1 "><strong>Balance:</strong> <span id="modalBalanceAmount"></span></h2>
+               <!-- </div> -->
+
+               <div class="center-button">
+                  <button class="hero-btn-dark printReceiptBtn  mt-2 mb-1  has-spinner" type="submit">
+                     <span class="btn-text">Generate Receipt </span>
+                     <span class="btn-spinner hidden"></span>
+                  </button>
+
+               </div>
+            </div>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
 
 
    <form class="add-user-form" name="add-user" netlify>

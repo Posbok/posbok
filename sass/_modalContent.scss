@@ -252,6 +252,11 @@
          color: inherit;
       }
 
+      &.heading-minitext {
+
+         color: $color-secondary-dark;
+      }
+
       .close-cart-btn,
       .close-profile-btn {
          position: relative;

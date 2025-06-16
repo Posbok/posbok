@@ -817,6 +817,7 @@ export function bindCloseBusinessDayFormListener() {
 
         if (closeBusinessDayData) {
           //  initAccountOverview();
+          showToast('success', `✅ ${closeBusinessDayData.message}`);
           closeModal();
           hideBtnLoader(closeBusinessDayBtn);
           hideGlobalLoader();

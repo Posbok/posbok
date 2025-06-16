@@ -260,7 +260,9 @@ select {
 }
 
 .modal-form .modal .heading-text,
-.slider-form .slider .heading-text {
+.slider-form .slider .heading-text,
+.modal-form .modal .heading-minitext,
+.slider-form .slider .heading-minitext {
    color: $color-grey-dark-2;
 }
 
@@ -700,6 +702,7 @@ button:disabled:hover {
 .heading-minitext {
    text-align: left;
    font-size: 1.5rem;
+
 }
 
 .hidden {
