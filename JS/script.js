@@ -1064,24 +1064,54 @@ if (!token) {
 const logoutButton = document.querySelector('.logoutButton');
 
 if (logoutButton) {
-  logoutButton.addEventListener('click', function () {
-    logoutUser()
-      .then((data) => {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('userData');
-
-        showToast('success', '✅ Logging Out...!');
-        setTimeout(() => {
-          window.location.href = 'login.html'; // Redirect to login page
-          //  console.log('Logout Button');
-        }, 1000);
-      })
-      .catch((data) => {
-        showToast('fail', `❎ ${data.message}`);
-        console.error('❎ Failed to logout:', data.message);
-      });
+  logoutButton.addEventListener('click', async () => {
+    await handleLogout(); // manual logout
   });
 }
+
+export async function handleLogout(auto = false) {
+  try {
+    await logoutUser(); // logs out via API
+
+    // Clear tokens and user data
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('userData');
+
+    // Optional feedback
+    if (auto) {
+      showToast('info', '⚠️ Your session has expired.');
+    } else {
+      showToast('success', '✅ Logging Out...');
+    }
+
+    // Redirect to login
+    setTimeout(() => {
+      window.location.href = 'login.html';
+    }, 1000);
+  } catch (error) {
+    showToast('fail', `❎ ${error.message}`);
+    console.error('Logout failed:', error.message);
+  }
+}
+// if (logoutButton) {
+//   logoutButton.addEventListener('click', function () {
+//     logoutUser()
+//       .then((data) => {
+//         localStorage.removeItem('accessToken');
+//         localStorage.removeItem('userData');
+
+//         showToast('success', '✅ Logging Out...!');
+//         setTimeout(() => {
+//           window.location.href = 'login.html'; // Redirect to login page
+//           //  console.log('Logout Button');
+//         }, 1000);
+//       })
+//       .catch((data) => {
+//         showToast('fail', `❎ ${data.message}`);
+//         console.error('❎ Failed to logout:', data.message);
+//       });
+//   });
+// }
 
 function checkIfTokenExpiredDaily() {
   const savedDate = localStorage.getItem('loginDate');

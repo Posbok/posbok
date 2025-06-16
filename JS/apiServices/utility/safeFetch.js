@@ -1,5 +1,5 @@
 import { hideBtnLoader, hideGlobalLoader } from '../../helper/helper';
-import { showToast } from '../../script';
+import { handleLogout, showToast } from '../../script';
 
 export async function safeFetch(url, options) {
   try {
@@ -14,6 +14,14 @@ export async function safeFetch(url, options) {
     return await response.json();
   } catch (error) {
     console.error('Error during fetch:', error);
+
+    if (
+      error.message.includes(
+        'You are not allowed to access the system at this time'
+      )
+    ) {
+      await handleLogout(true); // auto-triggered logout
+    }
 
     // Check for ECONNREFUSED specifically
     if (error.message.includes('ECONNREFUSED')) {

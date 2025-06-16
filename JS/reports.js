@@ -609,6 +609,83 @@ if (isAdmin) {
   });
 }
 
+// Deposit POS Capital Modal FOrm
+export function openSaleDetailsModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const saleDetailsContainer = document.querySelector('.saleDetails');
+
+  if (saleDetailsContainer) saleDetailsContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  saleDetailModalForm();
+}
+
+export function saleDetailModalForm() {
+  const form = document.querySelector('.soldDetailModal');
+  //   isAdmin
+  //     ? document.querySelector('.adminSoldDetailModal')
+  //  : document.querySelector('.soldDetailModal');
+
+  if (!form) return;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  bindSaleDetailModalFormListener(); // Only once
+});
+
+export function bindSaleDetailModalFormListener() {
+  const form = document.querySelector('.soldDetailModal');
+  //   isAdmin
+  //     ? document.querySelector('.adminSoldDetailModal')
+  //  : document.querySelector('.soldDetailModal');
+
+  if (!form) return;
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const adminDepositposCapitalShopDropdown = document.querySelector(
+        '#adminDepositposCapitalShopDropdown'
+      ).value;
+
+      const posDepositAmount = isAdmin
+        ? document.querySelector('#adminPosCapitalAmount')
+        : document.querySelector('#posCapitalAmount');
+
+      const posCapitalDetails = {
+        shopId: isAdmin ? adminDepositposCapitalShopDropdown : shopId,
+        amount: Number(getAmountForSubmission(posDepositAmount)),
+      };
+
+      // console.log('Sending POS Capital with:', posCapitalDetails);
+      const submitPosCapital = document.querySelector('.submitPosCapital');
+
+      try {
+        showBtnLoader(submitPosCapital);
+        showGlobalLoader();
+        const addPosCapitalData = await addPosCapital(posCapitalDetails);
+
+        if (addPosCapitalData) {
+          //  initAccountOverview();
+          showToast('success', `✅ ${addPosCapitalData.message}`);
+          closeModal();
+        }
+
+        // closeModal(); // close modal after success
+      } catch (err) {
+        console.error('Error adding POS Capital:', err.message);
+        showToast('fail', `❎ ${err.message}`);
+      } finally {
+        hideBtnLoader(submitPosCapital);
+        hideGlobalLoader();
+      }
+    });
+  }
+}
+
 if (isStaff) {
   const shopId = parsedUserData?.shopId;
 
@@ -1000,6 +1077,7 @@ if (isStaff) {
 
           const row = document.createElement('tr');
           row.classList.add('table-body-row');
+          row.dataset.saleId = id; // Store sale ID for detail view
           row.innerHTML = `
                 <td class="py-1">${serialNumber++}.</td>
                <td class="py-1 soldItemReceiptReport">${receipt_number}</td>
@@ -1014,12 +1092,22 @@ if (isStaff) {
                   <td class="py-1 soldItemBalanceAmountReport">&#x20A6;${formatAmountWithCommas(
                     balance
                   )}</td>
+                  <td class="py-1 soldItemDateReport">${payment_method}</td>
                   <td class="py-1 soldItemDateReport">${business_day}</td>
                    <td class="py-1 soldItemStatusReport">${formatSaleStatus(
                      status
                    )}</td>
                     <td class="py-1 soldItemDetailReport" data-sale-id="${id}"><i class="fa fa-eye"></i></td>
      `;
+
+          row.addEventListener('click', (e) => {
+            e.preventDefault();
+            const saleId = row.dataset.saleId;
+            // Open sale details modal or navigate to details page
+            console.log(`Open details for Sale ID: ${saleId}`);
+            openSaleDetailsModal();
+            // Implement  logic to show sale details here
+          });
           salesTableBody.appendChild(row);
         });
 
