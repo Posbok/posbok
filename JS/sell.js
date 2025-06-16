@@ -635,6 +635,9 @@ export function sellProductForm() {
         hideBtnLoader(checkoutSubmitBtn);
         hideGlobalLoader();
         showToast('fail', `❎ ${err.message}`);
+      } finally {
+        hideBtnLoader(checkoutSubmitBtn);
+        hideGlobalLoader();
       }
     });
   }
@@ -860,10 +863,12 @@ const sellNowBtn = document.querySelector(
   isAdmin ? '.adminSellNowBtn' : '.sellNowBtn'
 ); // Your new button
 
-const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-const quickSellMsg = document.querySelector('.quick-sell-msg');
+console.log(sellNowBtn);
 
-function renderQuickSellButton() {
+const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+// const quickSellMsg = document.querySelector('.quick-sell-msg');
+
+export function renderQuickSellButton() {
   const updatedCart = JSON.parse(localStorage.getItem(cartKey)) || [];
 
   if (updatedCart.length > 1) {
@@ -873,27 +878,31 @@ function renderQuickSellButton() {
     sellNowBtn.addEventListener('click', function (e) {
       e.preventDefault(); // Prevent any action just in case
 
-      quickSellMsg.textContent = '⚠️ Quick Sell is only available for 1 item.';
-      quickSellMsg.style.display = 'block';
+      // quickSellMsg.textContent = '⚠️ Quick Sell is only available for 1 item.';
+      // quickSellMsg.style.display = 'block';
 
       // Clear any existing timeout
       clearTimeout(sellNowBtn.timeoutId);
 
       // Hide after 3 seconds
-      sellNowBtn.timeoutId = f(() => {
+      sellNowBtn.timeoutId = setTimeout(() => {
         quickSellMsg.style.display = 'none';
       }, 3000);
     });
   } else {
     sellNowBtn.disabled = false;
     sellNowBtn.style.cursor = 'pointer';
-    quickSellMsg.style.display = 'none';
+    //  quickSellMsg.style.display = 'none';
 
     sellNowBtn.onclick = null;
   }
 }
 
-renderQuickSellButton(); // Initial render
+document.addEventListener('DOMContentLoaded', () => {
+  renderQuickSellButton();
+});
+
+// renderQuickSellButton(); // Initial render
 
 // if (cart.length > 1) {
 //   sellNowBtn.setAttribute('aria-disabled', 'true');
@@ -902,56 +911,117 @@ renderQuickSellButton(); // Initial render
 //   sellNowBtn.style.cursor = 'not-allowed';
 // }
 
+// sellNowBtn?.addEventListener('click', () => {
+//   const cartSliderOverlay = document.querySelector('.cart-slider-overlay');
+//   const cartSlider = document.querySelector('.cart-slider-content');
+//   const sliderWrapper = document.querySelector('.slider-wrapper');
+//   // Add to cart first
+//   handleAddToCart(); // ensure this respects validations
+
+//   const updatedCart = JSON.parse(localStorage.getItem(cartKey)) || [];
+//   if (!selectedProduct || !selectedProduct.id) {
+//     showToast('error', '❗Please select a product first.');
+//     document.querySelector('button[data-category-id="all"]')?.click();
+//     return;
+//   }
+
+//   if (updatedCart.length !== 1) {
+//     showToast('error', '❗Quick sell requires exactly 1 item.');
+//     return;
+//   }
+
+//   if (updatedCart.length > 0 && updatedCart.length < 2) {
+//     // Open slider
+//     cartSlider.classList.add('open');
+//     cartSliderOverlay.classList.add('visible');
+
+//     // Jump to checkout view
+//     sliderWrapper.style.transform = 'translateX(-50%)';
+
+//     renderCartItemsFromStorage(); // optional: if you want to show cart summary in checkout
+//   }
+//   // Wait briefly to let localStorage/cart update`;
+//   setTimeout(() => {
+//     const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+//     const cartSliderOverlay = document.querySelector('.cart-slider-overlay');
+//     const cartSlider = document.querySelector('.cart-slider-content');
+//     const sliderWrapper = document.querySelector('.slider-wrapper');
+
+//     let soldProductQuantityInput = Number(soldProductQuantity.value);
+//     let soldProductPriceInput = Number(soldProductPrice.value);
+
+//     //  if (soldProductQuantityInput <= 0 || soldProductQuantityInput === '') {
+//     //    showToast('info', 'ℹ️ Qeeeeeeeeeuantity must be at least one');
+
+//     //    return;
+//     //  }
+
+//     //  soldProductName;
+//     //  soldProductPrice;
+//     //  soldProductQuantity;
+
+//     if (cart.length > 0 && cart.length < 2) {
+//       // Open slider
+//       cartSlider.classList.add('open');
+//       cartSliderOverlay.classList.add('visible');
+
+//       // Jump to checkout view
+//       sliderWrapper.style.transform = 'translateX(-50%)';
+
+//       renderCartItemsFromStorage(); // optional: if you want to show cart summary in checkout
+//     }
+//     //  else {
+//     //    sellNowBtn.disabled = true; // Disable button to prevent multiple clicks
+//     //  }
+//   }, 100); // Adjust timing if needed
+// });
+
 sellNowBtn?.addEventListener('click', () => {
-  // Add to cart first
-  handleAddToCart(); // ensure this respects validations
+  const cartSliderOverlay = document.querySelector('.cart-slider-overlay');
+  const cartSlider = document.querySelector('.cart-slider-content');
+  const sliderWrapper = document.querySelector('.slider-wrapper');
 
-  const updatedCart = JSON.parse(localStorage.getItem(cartKey)) || [];
-  if (!selectedProduct || !selectedProduct.id) {
-    showToast('error', '❗Please select a product first.');
-    document.querySelector('button[data-category-id="all"]').click();
+  const existingCart = JSON.parse(localStorage.getItem(cartKey)) || [];
+
+  // ✅ If already 1 item in cart, skip add and just open checkout
+  if (existingCart.length === 1) {
+    openCheckout();
     return;
   }
 
-  if (updatedCart.length !== 1) {
-    showToast('error', '❗Quick sell requires exactly 1 item.');
-    return;
-  }
-  // Wait briefly to let localStorage/cart update`;
+  // ✅ Try to add item to cart (might fail due to validations inside)
+  handleAddToCart();
+
+  // Wait briefly for cart update before checking again
   setTimeout(() => {
-    const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-    const cartSliderOverlay = document.querySelector('.cart-slider-overlay');
-    const cartSlider = document.querySelector('.cart-slider-content');
-    const sliderWrapper = document.querySelector('.slider-wrapper');
+    const updatedCart = JSON.parse(localStorage.getItem(cartKey)) || [];
 
-    let soldProductQuantityInput = Number(soldProductQuantity.value);
-    let soldProductPriceInput = Number(soldProductPrice.value);
-
-    //  if (soldProductQuantityInput <= 0 || soldProductQuantityInput === '') {
-    //    showToast('info', 'ℹ️ Qeeeeeeeeeuantity must be at least one');
-
-    //    return;
-    //  }
-
-    //  soldProductName;
-    //  soldProductPrice;
-    //  soldProductQuantity;
-
-    if (cart.length > 0 && cart.length < 2) {
-      // Open slider
-      cartSlider.classList.add('open');
-      cartSliderOverlay.classList.add('visible');
-
-      // Jump to checkout view
-      sliderWrapper.style.transform = 'translateX(-50%)';
-
-      renderCartItemsFromStorage(); // optional: if you want to show cart summary in checkout
+    if (!selectedProduct || !selectedProduct.id) {
+      showToast('error', '❗Please select a product first.');
+      document.querySelector('button[data-category-id="all"]')?.click();
+      return;
     }
-    //  else {
-    //    sellNowBtn.disabled = true; // Disable button to prevent multiple clicks
-    //  }
-  }, 100); // Adjust timing if needed
+
+    if (updatedCart.length !== 1) {
+      showToast('error', '❗Quick sell requires exactly 1 item.');
+      return;
+    }
+
+    // ✅ If everything passed
+    openCheckout();
+  }, 100);
 });
+
+function openCheckout() {
+  const cartSliderOverlay = document.querySelector('.cart-slider-overlay');
+  const cartSlider = document.querySelector('.cart-slider-content');
+  const sliderWrapper = document.querySelector('.slider-wrapper');
+
+  cartSlider.classList.add('open');
+  cartSliderOverlay.classList.add('visible');
+  sliderWrapper.style.transform = 'translateX(-50%)';
+  renderCartItemsFromStorage();
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   addProductToCart();

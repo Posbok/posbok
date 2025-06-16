@@ -288,6 +288,18 @@ export function formatTransactionType(value) {
   }
 }
 
+// Format Sale Status
+export function formatSaleStatus(value) {
+  switch (value.toLowerCase()) {
+    case 'completed_full_payment':
+      return 'Completed Payment';
+    case 'partial_payment':
+      return 'Partial Payment';
+    default:
+      return value;
+  }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
   const posCapitalAmountInput = document.getElementById('posCapitalAmount');
   const posTransactionAmountInput = document.getElementById(

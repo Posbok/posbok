@@ -4,7 +4,11 @@ import {
   getPosTransactions,
 } from './apiServices/pos/posResources';
 import { checkAndPromptCreateShop } from './apiServices/shop/shopResource';
-import { formatAmountWithCommas, formatTransactionType } from './helper/helper';
+import {
+  formatAmountWithCommas,
+  formatSaleStatus,
+  formatTransactionType,
+} from './helper/helper';
 import { hideGlobalLoader, showGlobalLoader } from '../JS/helper/helper';
 import { getAllSales } from './apiServices/sales/salesResources';
 
@@ -645,7 +649,7 @@ if (isStaff) {
 
   // Sales
   const loadMoreSalesButton = document.getElementById(
-    'loadMoreSalesButtonDiv_staff'
+    'loadMoreSalesButton_staff'
   );
 
   loadMoreSalesButton.style.display = 'none';
@@ -1001,11 +1005,19 @@ if (isStaff) {
                <td class="py-1 soldItemReceiptReport">${receipt_number}</td>
                <td class="py-1 soldItemCustomerNameReport">${customer_name}</td>
                 <td class="py-1 soldItemCustomerNameReport">${first_name} ${last_name}</td>
-                 <td class="py-1 soldItemTotalAmountReport">&#x20A6;${total_amount}</td>
-                 <td class="py-1 soldItemPaidAmountReport">&#x20A6;${amount_paid}</td>
-                  <td class="py-1 soldItemBalanceAmountReport">&#x20A6;${balance}</td>
+                 <td class="py-1 soldItemTotalAmountReport">&#x20A6;${formatAmountWithCommas(
+                   total_amount
+                 )}</td>
+                 <td class="py-1 soldItemPaidAmountReport">&#x20A6;${formatAmountWithCommas(
+                   amount_paid
+                 )}</td>
+                  <td class="py-1 soldItemBalanceAmountReport">&#x20A6;${formatAmountWithCommas(
+                    balance
+                  )}</td>
                   <td class="py-1 soldItemDateReport">${business_day}</td>
-                   <td class="py-1 soldItemStatusReport">${status}</td>
+                   <td class="py-1 soldItemStatusReport">${formatSaleStatus(
+                     status
+                   )}</td>
                     <td class="py-1 soldItemDetailReport" data-sale-id="${id}"><i class="fa fa-eye"></i></td>
      `;
           salesTableBody.appendChild(row);
@@ -1028,10 +1040,12 @@ if (isStaff) {
 
       // Handle Load More button visibility
       if (currentPage >= totalPages) {
-        loadMoreButton.style.display = 'none';
+        loadMoreSalesButton.style.display = 'none';
       } else {
-        loadMoreButton.style.display = 'block';
+        loadMoreSalesButton.style.display = 'block';
       }
+
+      console.log(loadMoreSalesButton);
     } catch (error) {
       console.error('Error rendering transactions:', error);
       salesTableBody.innerHTML =
