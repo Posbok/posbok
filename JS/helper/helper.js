@@ -533,13 +533,32 @@ export function populateBusinessShopDropdown(
   });
 }
 
-export async function ensureBusinessDayOpen(shopId) {
-  console.log(shopId);
+// export async function ensureBusinessDayOpen(shopId) {
+//   const day = await getCurrentBusinessDay(shopId);
+//   console.log(shopId, day);
+//   if (!day || !day.is_open) {
+//     showToast('warning', '⛔ Please open a business day to continue.');
+//     return false;
+//   }
+//   return true;
+// }
 
-  const day = await getCurrentBusinessDay(shopId);
-  if (!day || !day.is_open) {
+export async function ensureBusinessDayOpen(shopId) {
+  const response = await getCurrentBusinessDay(shopId);
+  console.log(shopId, response);
+
+  // Make sure response and response.data exist
+  //   if (!response?.success || !response.data) {
+  //     showToast('warning', '⛔ Could not verify business day. Try again.');
+  //     return false;
+  //   }
+
+  const day = response.data;
+
+  if (day === null) {
     showToast('warning', '⛔ Please open a business day to continue.');
     return false;
   }
+
   return true;
 }

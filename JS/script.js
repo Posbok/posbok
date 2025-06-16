@@ -37,7 +37,11 @@ import {
   openCloseBusinessDayModal,
   openDepositPosCapitalModal,
 } from './apiServices/pos/posResources.js';
-import { initAccountOverview } from './apiServices/account/accountOverview.js';
+import {
+  initAccountOverview,
+  updateCapitalUI,
+  updateCashInMachineUI,
+} from './apiServices/account/accountOverview.js';
 import { setupCreateStaffForm } from './staff.js';
 import {
   getProductCategories,
@@ -526,6 +530,10 @@ async function renderBusinessDayButtons() {
     // `;
 
     //   }
+
+    // Update Opening Cash Input - Cash in Machine
+    const openingCash = businessDay?.data?.opening_cash || 0;
+    updateCashInMachineUI(openingCash);
   }
 
   if (isAdmin) {
@@ -675,6 +683,8 @@ export function bindOpenBusinessDayFormListener() {
       } finally {
         hideBtnLoader(submitPosCapital);
         hideGlobalLoader();
+        //   initAccountOverview();
+        renderBusinessDayButtons();
       }
     });
   }

@@ -1,5 +1,9 @@
 import config from '../../../config';
-import { formatAmountWithCommas } from '../../helper/helper';
+import {
+  formatAmountWithCommas,
+  hideGlobalLoader,
+  showGlobalLoader,
+} from '../../helper/helper';
 import { showToast } from '../../script';
 import { getPosCapital } from '../pos/posResources';
 
@@ -13,38 +17,45 @@ const shopId = parsedUserData?.shopId;
 const isStaff = parsedUserData?.accountType === 'STAFF';
 
 export async function initAccountOverview() {
+  showGlobalLoader();
   if (!isStaff) return;
   try {
-    const [posCapital, charges, goodsData] = await Promise.all([
-      getPosCapital(shopId),
-      //  getCharges(shopId),
-      //  getGoodsStats(shopId)
-    ]);
+    //  const [posCapitalData, charges, goodsData] = await Promise.all([
+    //    getPosCapital(shopId),
+    //    //  getCharges(shopId),
+    //    //  getGoodsStats(shopId)
+    //  ]);
 
-    updateCapitalUI(posCapital);
-    //  updateChargesUI(charges);
-    //  updateGoodsUI(goodsData);
+    const posCapitalData = await getPosCapital(shopId);
+
+    updatePosCapitalUI(posCapitalData);
   } catch (error) {
     console.error('Error loading account overview:', error);
     //  showToast('error', '❌ Failed to load account overview data.');
   }
+  hideGlobalLoader();
 }
 
 // Updates just the POS capital section
-export function updateCapitalUI(posCapitalData) {
+export function updatePosCapitalUI(posCapitalData) {
   if (!isStaff) return;
-  const cashInMachine = document.getElementById('cashInMachine');
-  const cashAtHand = document.getElementById('cashAtHand');
-  const totalPosCapital = document.getElementById('totalPosCapital');
 
-  //   console.log(posCapitalData);
+  const totalPosCapital = document.getElementById('totalPosCapital');
 
   const posCapital = posCapitalData?.data?.totalCapital || 0;
 
   if (posCapitalData) {
-    if (cashInMachine) cashInMachine.value = formatAmountWithCommas(posCapital);
-    //  if (cashAtHand) cashAtHand.value = posCapitalData.cashAtHand || 0;
     if (totalPosCapital)
       totalPosCapital.value = formatAmountWithCommas(posCapital);
   }
 }
+
+export function updateCashInMachineUI(openingCash) {
+  const cashInMachine = document.getElementById('cashInMachine');
+  if (cashInMachine)
+    cashInMachine.value = formatAmountWithCommas(openingCash || 0);
+}
+
+// Later:
+export function updateGoodsSummaryUI(goodsData) {}
+export function updateChargesUI(chargesData) {}
