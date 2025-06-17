@@ -64,9 +64,9 @@ export async function getAllSales({
       hideGlobalLoader();
     }
 
-    console.log('salesData received...');
+    //  console.log('salesData received...');
 
-    console.log('salesData:', salesData);
+    //  console.log('salesData:', salesData);
 
     return salesData;
   } catch (error) {
@@ -76,6 +76,7 @@ export async function getAllSales({
 
 export async function getSaleById(saleId) {
   try {
+    showGlobalLoader();
     const selectedSaleData = await safeFetch(`${baseUrl}/api/sales/${saleId}`, {
       method: 'GET',
       headers: {
@@ -83,12 +84,13 @@ export async function getSaleById(saleId) {
       },
     });
 
-    console.log('selectedSaleData received...');
+    //  console.log('selectedSaleData received...');
 
     console.log('selectedSaleData:', selectedSaleData);
-
+    hideGlobalLoader();
     return selectedSaleData;
   } catch (error) {
+    hideGlobalLoader();
     console.error('Error fetching sales:', error.message);
   }
 }

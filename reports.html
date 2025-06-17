@@ -586,6 +586,8 @@
                </div>
 
                <!-- <div class="modalBody"> -->
+               <h2 class="heading-minitext mb-1 "><strong>Shop Name:</strong> <span id="soldDetailShop"></span>
+               </h2>
                <h2 class="heading-minitext mb-1 "><strong>Receipt:</strong> <span id="soldDetailReceiptNumber"></span>
                </h2>
                <h2 class="heading-minitext mb-1"><strong>Customer:</strong> <span id="soldDetailCustomerName"></span>
@@ -606,7 +608,7 @@
 
                      <tbody>
                         <!-- JS injects rows here -->
-                        <tr class="table-body-row ">
+                        <!-- <tr class="table-body-row ">
                            <td class="py-1">Iphone Charger</td>
                            <td class="py-1">2</td>
                            <td class="py-1">₦500</td>
@@ -618,23 +620,33 @@
                            <td class="py-1">1</td>
                            <td class="py-1">₦200</td>
                            <td class="py-1">₦200</td>
-                        </tr>
+                        </tr> -->
                      </tbody>
                   </table>
                </div>
 
-               <h2 class="heading-minitext mb-1 mt-1 "><strong>Total:</strong> <span id="modalTotalAmount"></span></h2>
-               <h2 class="heading-minitext mb-1 "><strong>Paid:</strong> <span id="modalPaidAmount"></span></h2>
-               <h2 class="heading-minitext mb-1 "><strong>Balance:</strong> <span id="modalBalanceAmount"></span></h2>
-               <!-- </div> -->
+               <h2 class="heading-minitext mb-1 mt-1 "><strong>Total:</strong> <span id="soldDetailTotalAmount"></span>
+               </h2>
+               <h2 class="heading-minitext mb-1 "><strong>Paid:</strong> <span id="soldDetailPaidAmount"></span></h2>
+               <h2 class="heading-minitext mb-1 "><strong>Payment Method:</strong> <span
+                     id="soldDetailPaymentMethod"></span></h2>
+               <h2 class="heading-minitext mb-1 "><strong>Balance:</strong> <span id="soldDetailBalanceAmount"></span>
+                  <h2 class="heading-minitext mb-1 "><strong>Status:</strong> <span id="soldDetailStatus"></span>
+                  </h2>
+                  <!-- </div> -->
 
-               <div class="center-button">
-                  <button class="hero-btn-dark printReceiptBtn  mt-2 mb-1  has-spinner" type="submit">
-                     <span class="btn-text">Generate Receipt </span>
-                     <span class="btn-spinner hidden"></span>
-                  </button>
+                  <div class="center-button">
+                     <button class="hero-btn-dark printReceiptBtn  mt-2 mb-1  has-spinner" type="submit">
+                        <span class="btn-text">Generate Receipt </span>
+                        <span class="btn-spinner hidden"></span>
+                     </button>
 
-               </div>
+                     <button class="hero-btn-dark generatePdfBtn  mt-2 mb-1  has-spinner" type="submit">
+                        <span class="btn-text">Generate PDF </span>
+                        <span class="btn-spinner hidden"></span>
+                     </button>
+
+                  </div>
             </div>
          </div>
 

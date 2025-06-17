@@ -821,6 +821,7 @@ export function bindCloseBusinessDayFormListener() {
           closeModal();
           hideBtnLoader(closeBusinessDayBtn);
           hideGlobalLoader();
+          await renderBusinessDayButtons();
         }
 
         closeModal(); // close modal after success
@@ -884,6 +885,7 @@ export function closeModal() {
     '.adminUpdateBusinessData'
   );
   const updateCategory = document.querySelector('.updateCategory');
+  const saleDetails = document.querySelector('.saleDetails');
 
   if (depositPosCapitalContainer) {
     depositPosCapitalContainer.classList.remove('active');
@@ -967,6 +969,10 @@ export function closeModal() {
 
   if (updateCategory) {
     updateCategory.classList.remove('active');
+  }
+
+  if (saleDetails) {
+    saleDetails.classList.remove('active');
   }
 
   clearFormInputs();

@@ -10,7 +10,8 @@ import {
   formatTransactionType,
 } from './helper/helper';
 import { hideGlobalLoader, showGlobalLoader } from '../JS/helper/helper';
-import { getAllSales } from './apiServices/sales/salesResources';
+import { getAllSales, getSaleById } from './apiServices/sales/salesResources';
+import { showToast } from './script';
 
 const userData = config.userData;
 const dummyShopId = config.dummyShopId; // Dummy user data for testing
@@ -632,10 +633,10 @@ export function saleDetailModalForm() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  bindSaleDetailModalFormListener(); // Only once
+  renderSaleDetailById(); // Only once
 });
 
-export function bindSaleDetailModalFormListener() {
+export function renderSaleDetailById() {
   const form = document.querySelector('.soldDetailModal');
   //   isAdmin
   //     ? document.querySelector('.adminSoldDetailModal')
@@ -991,7 +992,7 @@ if (isStaff) {
         filters,
       });
 
-      console.log(result);
+      // console.log(result);
 
       if (!result) throw new Error(result.message || 'Failed to fetch');
 
@@ -1022,7 +1023,7 @@ if (isStaff) {
 
       const groupedByDate = {};
 
-      console.log(allSalesReport);
+      // console.log(allSalesReport);
 
       allSalesReport.forEach((sl) => {
         const dateObj = new Date(sl.business_day);
@@ -1077,6 +1078,7 @@ if (isStaff) {
 
           const row = document.createElement('tr');
           row.classList.add('table-body-row');
+
           row.dataset.saleId = id; // Store sale ID for detail view
           row.innerHTML = `
                 <td class="py-1">${serialNumber++}.</td>
@@ -1100,14 +1102,103 @@ if (isStaff) {
                     <td class="py-1 soldItemDetailReport" data-sale-id="${id}"><i class="fa fa-eye"></i></td>
      `;
 
-          row.addEventListener('click', (e) => {
+          row.addEventListener('click', async (e) => {
             e.preventDefault();
-            const saleId = row.dataset.saleId;
-            // Open sale details modal or navigate to details page
-            console.log(`Open details for Sale ID: ${saleId}`);
+            // Finally open the modal
             openSaleDetailsModal();
-            // Implement  logic to show sale details here
+            const saleId = row.dataset.saleId;
+            console.log(`Open details for Sale ID: ${saleId}`);
+
+            try {
+              const saleDetails = await getSaleById(saleId);
+              if (!saleDetails || !saleDetails.data) {
+                console.log('No Sale');
+                closeModal();
+                return;
+              }
+
+              const {
+                Account,
+                SaleItems,
+                Shop,
+                receipt_number,
+                customer_name,
+                customer_phone,
+                payment_method,
+
+                total_amount,
+                amount_paid,
+                balance,
+                status,
+                business_day,
+                sale_time,
+              } = saleDetails.data;
+
+              // Populate sale summary
+
+              // Top Part Below
+              document.getElementById('soldDetailShop').textContent =
+                Shop?.shop_name || 'N/A';
+
+              document.getElementById('soldDetailReceiptNumber').textContent =
+                receipt_number;
+              document.getElementById('soldDetailCustomerName').textContent =
+                `${customer_name} - ${customer_phone}` || 'N/A';
+              document.getElementById('soldDetailStaffName').textContent =
+                `${Account?.first_name} ${Account?.last_name}` || 'N/A';
+              document.getElementById('soldDetailDate').textContent = new Date(
+                sale_time
+              ).toLocaleString();
+
+              // Bottom Part Below
+
+              document.getElementById('soldDetailPaymentMethod').textContent =
+                payment_method || 'N/A';
+
+              document.getElementById(
+                'soldDetailTotalAmount'
+              ).textContent = `₦${formatAmountWithCommas(total_amount)}`;
+              document.getElementById(
+                'soldDetailPaidAmount'
+              ).textContent = `₦${formatAmountWithCommas(amount_paid)}`;
+              document.getElementById(
+                'soldDetailBalanceAmount'
+              ).textContent = `₦${formatAmountWithCommas(balance)}`;
+
+              document.getElementById('soldDetailStatus').textContent =
+                formatSaleStatus(status);
+
+              // Sales Items - Middle Part Below
+              const itemsTableBody =
+                document.querySelector('.itemsTable tbody');
+              itemsTableBody.innerHTML = ''; // clear previous rows
+
+              SaleItems.forEach((item, index) => {
+                const itemRow = document.createElement('tr');
+                itemRow.classList.add('table-body-row');
+                itemRow.innerHTML = `
+             <td class="py-1">${item.Product.name}</td>
+                           <td class="py-1">${item.quantity}</td>
+                           <td class="py-1">₦${formatAmountWithCommas(
+                             item.unit_price
+                           )}</td>
+                           <td class="py-1">${formatAmountWithCommas(
+                             item.selling_price
+                           )}</td>
+             
+                     `;
+                itemsTableBody.appendChild(itemRow);
+              });
+
+              // Finally open the modal
+              openSaleDetailsModal();
+            } catch (err) {
+              console.error('Error fetching sale details:', err.message);
+              showToast('fail', `❎ Failed to load sale details`);
+              closeModal();
+            }
           });
+
           salesTableBody.appendChild(row);
         });
 
@@ -1132,8 +1223,6 @@ if (isStaff) {
       } else {
         loadMoreSalesButton.style.display = 'block';
       }
-
-      console.log(loadMoreSalesButton);
     } catch (error) {
       console.error('Error rendering transactions:', error);
       salesTableBody.innerHTML =
