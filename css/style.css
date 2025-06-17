@@ -141,6 +141,20 @@ body {
   opacity: 1;
   top: 3rem; }
 
+.printableReceipt {
+  font-family: monospace;
+  font-size: 10px;
+  width: 58mm;
+  line-height: 1.3;
+  text-align: center; }
+
+.printableReceipt table {
+  width: 100%;
+  border-collapse: collapse; }
+
+.printableReceipt td {
+  padding: 2px 0; }
+
 body.home {
   background-image: linear-gradient(to right top, rgba(111, 193, 204, 0.9), rgba(21, 70, 76, 0.83)), url(/img/home.jpeg);
   background-size: cover;
@@ -1006,6 +1020,9 @@ button:disabled:hover {
   display: flex;
   justify-content: center; }
 
+.center-text {
+  text-align: center !important; }
+
 .left-button {
   display: flex;
   justify-content: end; }
@@ -1804,6 +1821,10 @@ body.authentication {
     .profile-slider-content .cart-footer .cart-total,
     .profile-slider-content .profile-footer .cart-total {
       margin-bottom: 1rem; }
+  .cart-slider-content .center-text,
+  .profile-slider-content .center-text {
+    text-align: center !important;
+    color: #15464C; }
 
 .hidden {
   display: none; }
@@ -1816,7 +1837,7 @@ body.authentication {
 .machineFee,
 .inventory {
   height: min-content;
-  color: #205329; }
+  color: #15464C; }
   .reports-method,
   .goods-method,
   .shops-method,
@@ -2413,7 +2434,7 @@ body.authentication {
       .inventory-method .machineFee-table-container .table-header-row,
       .inventory-method .category-table-container .table-header-row,
       .inventory-method .inventory-table-container .table-header-row {
-        color: #0F7A89;
+        color: #15464C;
         font-size: 1.6rem;
         text-align: left;
         border-bottom: 1px solid #6FC1CC;
@@ -2530,7 +2551,7 @@ body.authentication {
       .inventory-method .category-table-container .table-foot-row,
       .inventory-method .inventory-table-container .table-body-row,
       .inventory-method .inventory-table-container .table-foot-row {
-        color: #0F7A89;
+        color: #15464C;
         font-weight: 500;
         font-size: 1.5rem;
         cursor: pointer;

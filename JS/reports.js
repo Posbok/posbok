@@ -3,7 +3,10 @@ import {
   deleteAllTransactions,
   getPosTransactions,
 } from './apiServices/pos/posResources';
-import { checkAndPromptCreateShop } from './apiServices/shop/shopResource';
+import {
+  checkAndPromptCreateShop,
+  fetchShopDetail,
+} from './apiServices/shop/shopResource';
 import {
   formatAmountWithCommas,
   formatSaleStatus,
@@ -11,10 +14,10 @@ import {
 } from './helper/helper';
 import { hideGlobalLoader, showGlobalLoader } from '../JS/helper/helper';
 import { getAllSales, getSaleById } from './apiServices/sales/salesResources';
-import { showToast } from './script';
+import { closeModal, showToast } from './script';
+import html2pdf from 'html2pdf.js/dist/html2pdf.min.js';
 
 const userData = config.userData;
-const dummyShopId = config.dummyShopId; // Dummy user data for testing
 
 const parsedUserData = userData ? JSON.parse(userData) : null;
 
@@ -22,6 +25,9 @@ const parsedUserData = userData ? JSON.parse(userData) : null;
 
 const isAdmin = parsedUserData?.accountType === 'ADMIN';
 const isStaff = parsedUserData?.accountType === 'STAFF';
+const staffShopId = parsedUserData?.shopId;
+const staffUserId = parsedUserData?.id;
+const shopKey = `shop_${staffUserId}`;
 
 function toTitleCase(value) {
   return value.charAt(0).toUpperCase() + value.slice(1);
@@ -1104,15 +1110,31 @@ if (isStaff) {
 
           row.addEventListener('click', async (e) => {
             e.preventDefault();
+            showGlobalLoader();
             // Finally open the modal
             openSaleDetailsModal();
             const saleId = row.dataset.saleId;
             console.log(`Open details for Sale ID: ${saleId}`);
 
             try {
+              showGlobalLoader();
               const saleDetails = await getSaleById(saleId);
+              const shopDetails =
+                JSON.parse(localStorage.getItem(shopKey)) || [];
+
+              console.log('shopDetails', shopDetails);
+              console.log('saleDetails', saleDetails);
+
+              if (!shopDetails) {
+                console.log('No shopDetails');
+                showToast('error', '❎ Cannot get Shop Details');
+                closeModal();
+                return;
+              }
+
               if (!saleDetails || !saleDetails.data) {
-                console.log('No Sale');
+                console.log('No saleDetails');
+                showToast('error', '❎  Cannot get Sale Details');
                 closeModal();
                 return;
               }
@@ -1139,6 +1161,8 @@ if (isStaff) {
               // Top Part Below
               document.getElementById('soldDetailShop').textContent =
                 Shop?.shop_name || 'N/A';
+              document.getElementById('soldDetailShopAddress').textContent =
+                shopDetails?.location || 'N/A';
 
               document.getElementById('soldDetailReceiptNumber').textContent =
                 receipt_number;
@@ -1190,9 +1214,73 @@ if (isStaff) {
                 itemsTableBody.appendChild(itemRow);
               });
 
-              // Finally open the modal
-              openSaleDetailsModal();
+              // Print & Download
+
+              //   Print
+              document
+                .querySelector('.printReceiptBtn')
+                ?.addEventListener('click', () => {
+                  const receiptContent =
+                    document.querySelector('.pdfHere').innerHTML;
+
+                  const printWindow = window.open(
+                    '',
+                    '',
+                    'width=300,height=500'
+                  );
+                  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Print Receipt</title>
+        <style>
+          body { font-family: monospace; width: 58mm; font-size: 8px; padding: 5px; }
+          .center { text-align: center; }
+          .bold { font-weight: bold; }
+          .line { border-top: 1px dashed #000; margin: 4px 0; }
+          table { width: 100%; font-size: 12px; border-collapse: collapse; }
+          td { padding: 2px 5px; }
+          .footer { text-align: center; margin-top: 10px; }
+        </style>
+      </head>
+      <body>${receiptContent}</body>
+    </html>
+  `);
+                  printWindow.document.close();
+                  printWindow.focus();
+                  printWindow.print();
+                  // printWindow.print();
+                });
+
+              //   Download;
+              document
+                .querySelector('.generatePdfBtn')
+                ?.addEventListener('click', () => {
+                  const receiptElement = document.querySelector('.pdfHere');
+                  if (!receiptElement) {
+                    showToast('fail', '❎ Receipt content not found.');
+                    return;
+                  }
+
+                  const opt = {
+                    margin: 10,
+                    filename: `receipt-${Date.now()}.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: {
+                      unit: 'mm',
+                      format: 'a4', // adjust height based on content
+                      orientation: 'portrait',
+                    },
+                  };
+
+                  // console.log(opt);
+                  html2pdf().set(opt).from(receiptElement).save();
+                });
+
+              hideGlobalLoader();
+              //   openSaleDetailsModal();
             } catch (err) {
+              hideGlobalLoader();
               console.error('Error fetching sale details:', err.message);
               showToast('fail', `❎ Failed to load sale details`);
               closeModal();
@@ -1936,16 +2024,6 @@ closeModalButton.forEach((closeButton) => {
     closeModal();
   });
 });
-
-function closeModal() {
-  const addUserContainer = document.querySelector('.addUser');
-
-  addUserContainer.classList.remove('active');
-
-  main.classList.remove('blur');
-  sidebar.classList.remove('blur');
-  main.classList.remove('no-scroll');
-}
 
 // JS for Modal
 document.addEventListener('DOMContentLoaded', function () {

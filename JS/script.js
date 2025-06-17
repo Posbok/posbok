@@ -58,6 +58,9 @@ parsedUserData = userData ? JSON.parse(userData) : null;
 const isAdmin = parsedUserData?.accountType === 'ADMIN';
 const isStaff = parsedUserData?.accountType === 'STAFF';
 const shopId = parsedUserData?.shopId;
+const staffUserId = parsedUserData?.id;
+
+const shopKey = `shop_${staffUserId}`;
 
 // Normalize current page name from pathname
 const currentPage = window.location.pathname.toLowerCase();
@@ -1082,6 +1085,7 @@ export async function handleLogout(auto = false) {
     // Clear tokens and user data
     localStorage.removeItem('accessToken');
     localStorage.removeItem('userData');
+    localStorage.removeItem(shopKey);
 
     // Optional feedback
     if (auto) {

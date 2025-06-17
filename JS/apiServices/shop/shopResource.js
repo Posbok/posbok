@@ -17,6 +17,12 @@ const userData = config.userData;
 
 const parsedUserData = userData ? JSON.parse(userData) : null;
 
+const isAdmin = parsedUserData?.accountType === 'ADMIN';
+const isStaff = parsedUserData?.accountType === 'STAFF';
+const userId = parsedUserData?.id;
+
+const shopKey = `shop_${userId}`;
+
 // const parsedUserData = userData ? JSON.parse(userData) : null;
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -92,6 +98,8 @@ export async function fetchShopDetail(shopId) {
       // showToast('success', `✅ ${receivedShopDetail.message}`);
       return;
     }
+
+    localStorage.setItem(shopKey, JSON.stringify(receivedShopDetail));
 
     return receivedShopDetail;
   } catch (error) {

@@ -6,7 +6,7 @@
 .machineFee,
 .inventory {
    height: min-content;
-   color: $color-secondary-dark;
+   color: $color-grey-dark-2;
 
    &-method {
       margin: 0 auto;
@@ -64,7 +64,7 @@
          }
 
          .table-header-row {
-            color: $color-grey-dark-1 ;
+            color: $color-grey-dark-2 ;
             font-size: 1.6rem;
             text-align: left;
             border-bottom: 1px solid $color-grey-dark-3;
@@ -73,7 +73,7 @@
 
          .table-body-row,
          .table-foot-row {
-            color: $color-grey-dark-1 ;
+            color: $color-grey-dark-2 ;
             font-weight: 500;
             font-size: 1.5rem;
             cursor: pointer;

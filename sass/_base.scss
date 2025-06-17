@@ -246,3 +246,20 @@ body {
 //       opacity: 0;
 //    }
 // }
+
+.printableReceipt {
+   font-family: monospace;
+   font-size: 10px;
+   width: 58mm;
+   line-height: 1.3;
+   text-align: center;
+}
+
+.printableReceipt table {
+   width: 100%;
+   border-collapse: collapse;
+}
+
+.printableReceipt td {
+   padding: 2px 0;
+}

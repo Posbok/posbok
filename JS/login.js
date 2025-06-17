@@ -1,8 +1,11 @@
+import config from '../config';
 import { loginUser } from './apiServices/login';
+import { safeFetch } from './apiServices/utility/safeFetch';
 import { hideBtnLoader, showBtnLoader } from './helper/helper';
 import { redirectWithDelay, showToast } from './script';
 
 const loginForm = document.getElementById('loginForm');
+const baseUrl = config.baseUrl;
 
 if (loginForm) {
   loginForm.addEventListener('submit', function (e) {
@@ -22,7 +25,7 @@ if (loginForm) {
 
     showBtnLoader(loginSubmitBtn);
     loginUser(userDetails)
-      .then((data) => {
+      .then(async (data) => {
         const user = data.data.user;
         const token = data.data.accessToken;
 
@@ -32,6 +35,34 @@ if (loginForm) {
 
         const today = new Date().toISOString().split('T')[0]; // e.g., "2025-05-04"
         localStorage.setItem('loginDate', today);
+
+        // If staff, fetch and store their shop data
+        console.log('🚨 Logged in user:', user);
+        if (user.accountType === 'STAFF') {
+          console.log('code got here');
+          const shopKey = `shop_${user.id}`;
+          const staffShopId = user.shopId;
+          try {
+            const shopResponse = await safeFetch(
+              `${baseUrl}/api/shop/${staffShopId}`,
+              {
+                method: 'GET',
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+
+            if (!shopResponse) {
+              throw new Error(shopResponse.message || 'Failed to get shop');
+            }
+
+            localStorage.setItem(shopKey, JSON.stringify(shopResponse.data));
+            console.log(`✅ Shop data stored under key: ${shopKey}`);
+          } catch (err) {
+            console.warn(`⚠️ Could not fetch staff shop: ${err.message}`);
+          }
+        }
 
         //   redirectWithDelay('Homepage', 'index.html', 500);
         window.location.href = 'index.html';

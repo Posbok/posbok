@@ -28,6 +28,11 @@
    <!-- ApexCharts CDN -->
    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
+   <!-- html2pdf -->
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+
+
 
    <!-- <script defer type="module" src="JS/script.js"></script>
    <script defer type="module" src="JS/reports.js"></script> -->
@@ -579,15 +584,17 @@
    <form class="modal-form soldDetailModal soldDetailModalContainer" name="modal">
       <div class="card saleDetails modal">
 
-         <div class="reports mt-4 mb-4">
-            <div class="reports-method">
+         <div class="reports  mt-4 mb-4">
+            <div class="reports-method pdfHere">
                <div>
-                  <h1 class="heading-text">Sold Items Details</h1>
+                  <!-- <h1 class="heading-text">Sold Items Details</h1> -->
+                  <h1 class="heading-text center mb-0" id="soldDetailShop"></h1>
+                  <h3 class="heading-minitext center mb-2 center-text" id="soldDetailShopAddress"></h3>
                </div>
 
                <!-- <div class="modalBody"> -->
-               <h2 class="heading-minitext mb-1 "><strong>Shop Name:</strong> <span id="soldDetailShop"></span>
-               </h2>
+               <!-- <h2 class="heading-minitext mb-1 "><strong>Shop Name:</strong> <span id="soldDetailShop"></span>
+               </h2> -->
                <h2 class="heading-minitext mb-1 "><strong>Receipt:</strong> <span id="soldDetailReceiptNumber"></span>
                </h2>
                <h2 class="heading-minitext mb-1"><strong>Customer:</strong> <span id="soldDetailCustomerName"></span>
@@ -635,18 +642,21 @@
                   </h2>
                   <!-- </div> -->
 
-                  <div class="center-button">
-                     <button class="hero-btn-dark printReceiptBtn  mt-2 mb-1  has-spinner" type="submit">
-                        <span class="btn-text">Generate Receipt </span>
-                        <span class="btn-spinner hidden"></span>
-                     </button>
+                  <h1 class="heading-subtext center-text mt-2">THANK YOU FOR SHOPPING WITH US</h1>
 
-                     <button class="hero-btn-dark generatePdfBtn  mt-2 mb-1  has-spinner" type="submit">
-                        <span class="btn-text">Generate PDF </span>
-                        <span class="btn-spinner hidden"></span>
-                     </button>
+            </div>
 
-                  </div>
+            <div class="center-button">
+               <button class="hero-btn-dark printReceiptBtn  mt-2 mb-1  has-spinner" type="button">
+                  <span class="btn-text">Generate Receipt </span>
+                  <span class="btn-spinner hidden"></span>
+               </button>
+
+               <button class="hero-btn-dark generatePdfBtn  mt-2 mb-1  has-spinner" type="button">
+                  <span class="btn-text">Generate PDF </span>
+                  <span class="btn-spinner hidden"></span>
+               </button>
+
             </div>
          </div>
 
