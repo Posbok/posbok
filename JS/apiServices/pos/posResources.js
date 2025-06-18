@@ -149,7 +149,7 @@ export async function getCurrentBusinessDay(shopId) {
     //    currentBusinessDayData?.data?.shop_id
     //  );
 
-    console.log('currentBusinessDayData', currentBusinessDayData);
+    //  console.log('currentBusinessDayData', currentBusinessDayData);
 
     return currentBusinessDayData;
   } catch (err) {

@@ -11,6 +11,8 @@ import {
   formatAmountWithCommas,
   formatSaleStatus,
   formatTransactionType,
+  hideBtnLoader,
+  showBtnLoader,
 } from './helper/helper';
 import { hideGlobalLoader, showGlobalLoader } from '../JS/helper/helper';
 import { getAllSales, getSaleById } from './apiServices/sales/salesResources';
@@ -89,7 +91,8 @@ function getSalesFilters(role, shopId) {
       document.getElementById(`salesStartDateFilter_${suffix}`)?.value || '',
     endDate:
       document.getElementById(`salesEndDateFilter_${suffix}`)?.value || '',
-    type: document.getElementById(`salesPaymentMethod_${suffix}`)?.value || '',
+    paymentMethod:
+      document.getElementById(`salesPaymentMethod_${suffix}`)?.value || '',
     status: document.getElementById(`salesStatusFilter_${suffix}`)?.value || '',
   };
 }
@@ -616,7 +619,7 @@ if (isAdmin) {
   });
 }
 
-// Deposit POS Capital Modal FOrm
+// Open Sale Detail Modal
 export function openSaleDetailsModal() {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
@@ -630,11 +633,10 @@ export function openSaleDetailsModal() {
 }
 
 export function saleDetailModalForm() {
-  const form = document.querySelector('.soldDetailModal');
-  //   isAdmin
-  //     ? document.querySelector('.adminSoldDetailModal')
-  //  : document.querySelector('.soldDetailModal');
-
+  //   const form = document.querySelector('.soldDetailModal');
+  const form = isAdmin
+    ? document.querySelector('.adminSoldDetailModal')
+    : document.querySelector('.soldDetailModal');
   if (!form) return;
 }
 
@@ -643,10 +645,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 export function renderSaleDetailById() {
-  const form = document.querySelector('.soldDetailModal');
-  //   isAdmin
-  //     ? document.querySelector('.adminSoldDetailModal')
-  //  : document.querySelector('.soldDetailModal');
+  //   const form = document.querySelector('.soldDetailModal');
+  const form = isAdmin
+    ? document.querySelector('.adminSoldDetailModal')
+    : document.querySelector('.soldDetailModal');
 
   if (!form) return;
 
@@ -699,7 +701,7 @@ if (isStaff) {
   document
     .getElementById('applyFiltersBtn_staff')
     ?.addEventListener('click', () => {
-      const filters = getSalesFilters('staff');
+      const filters = getFilters('staff');
       renderPosTable(1, pageSize, filters, 'staff');
     });
 
@@ -717,8 +719,9 @@ if (isStaff) {
   document
     .getElementById('applySalesFiltersBtn_staff')
     ?.addEventListener('click', () => {
-      const filters = getFilters('staff');
+      const filters = getSalesFilters('staff');
       renderSalesTable(1, pageSize, filters, 'staff');
+      console.log('filters:', filters);
     });
 
   document
@@ -726,7 +729,7 @@ if (isStaff) {
     ?.addEventListener('click', () => {
       const role = 'staff';
       resetSalesFilters(role);
-      const filters = getFilters(role);
+      const filters = getSalesFilters(role);
       const tableSelector = '.posTableDisplay_staff tbody';
       renderSalesTable(1, pageSize, filters, 'staff');
     });
@@ -959,6 +962,8 @@ if (isStaff) {
     filters = {},
     role = 'staff'
   ) {
+    //  console.log('🧪 Applied Filters:', filters);
+
     const salesTableBody = document.querySelector(
       `.soldTableDisplay_${role} tbody`
     );
@@ -980,16 +985,17 @@ if (isStaff) {
       loadMoreButton.style.display = 'none';
 
       // Build query with filters
-      const queryParams = new URLSearchParams({
-        shopId: shopId,
-        page,
-        limit: pageSize,
-      });
+      // const queryParams = new URLSearchParams({
+      //   shopId: shopId,
+      //   page,
+      //   limit: pageSize,
+      // });
 
-      if (filters.startDate) queryParams.append('startDate', filters.startDate);
-      if (filters.endDate) queryParams.append('endDate', filters.endDate);
-      if (filters.type) queryParams.append('type', filters.type);
-      if (filters.status) queryParams.append('status', filters.status);
+      // if (filters.startDate) queryParams.append('startDate', filters.startDate);
+      // if (filters.endDate) queryParams.append('endDate', filters.endDate);
+      // if (filters.paymentMethod)
+      //   queryParams.append('paymentMethod', filters.paymentMethod);
+      // if (filters.status) queryParams.append('status', filters.status);
 
       const result = await getAllSales({
         shopId,
@@ -1009,7 +1015,7 @@ if (isStaff) {
 
       // Only reset array if starting from page 1
       if (page === 1) {
-        let allSalesReport = [];
+        allSalesReport = [];
       }
 
       if (salesReports.length === 0 && currentPage === 1) {
@@ -1116,6 +1122,7 @@ if (isStaff) {
             const saleId = row.dataset.saleId;
             console.log(`Open details for Sale ID: ${saleId}`);
 
+            // Get Sales by ID
             try {
               showGlobalLoader();
               const saleDetails = await getSaleById(saleId);
@@ -1217,65 +1224,115 @@ if (isStaff) {
               // Print & Download
 
               //   Print
-              document
-                .querySelector('.printReceiptBtn')
-                ?.addEventListener('click', () => {
-                  const receiptContent =
-                    document.querySelector('.pdfHere').innerHTML;
+              //   const printReceiptBtn =
+              //     document.querySelector('.printReceiptBtn');
 
-                  const printWindow = window.open(
-                    '',
-                    '',
-                    'width=300,height=500'
-                  );
-                  printWindow.document.write(`
-    <html>
-      <head>
-        <title>Print Receipt</title>
-        <style>
-          body { font-family: monospace; width: 58mm; font-size: 8px; padding: 5px; }
-          .center { text-align: center; }
-          .bold { font-weight: bold; }
-          .line { border-top: 1px dashed #000; margin: 4px 0; }
-          table { width: 100%; font-size: 12px; border-collapse: collapse; }
-          td { padding: 2px 5px; }
-          .footer { text-align: center; margin-top: 10px; }
-        </style>
-      </head>
-      <body>${receiptContent}</body>
-    </html>
-  `);
-                  printWindow.document.close();
-                  printWindow.focus();
-                  printWindow.print();
-                  // printWindow.print();
-                });
+              //Keep this earlier Print Logic
+
+              //            printReceiptBtn.addEventListener('click', () => {
+              //              showBtnLoader(printReceiptBtn);
+              //              const receiptContent =
+              //                document.querySelector('.pdfHere').innerHTML;
+
+              //              const printWindow = window.open('', '', 'width=300,height=500');
+              //              printWindow.document.write(`
+              //  <html>
+              //    <head>
+              //      <title>Print Receipt</title>
+              //      <style>
+              //        body { font-family: monospace; width: 58mm; font-size: 8px; padding: 5px; }
+              //        .center { text-align: center; }
+              //        .bold { font-weight: bold; }
+              //        .line { border-top: 1px dashed #000; margin: 4px 0; }
+              //        table { width: 100%; font-size: 12px; border-collapse: collapse; }
+              //        td { padding: 2px 5px; }
+              //        .footer { text-align: center; margin-top: 10px; }
+              //      </style>
+              //    </head>
+              //    <body>${receiptContent}</body>
+              //  </html>`);
+              //              printWindow.document.close();
+              //              printWindow.focus();
+              //              printWindow.print();
+              //              // printWindow.close();
+              //              hideBtnLoader(printReceiptBtn);
+              //            });
+
+              const printReceiptBtn =
+                document.querySelector('.printReceiptBtn');
+
+              printReceiptBtn.addEventListener('click', () => {
+                showBtnLoader(printReceiptBtn);
+                printReceiptBtn.disabled = true; // Disable the button
+
+                const receiptContent =
+                  document.querySelector('.pdfHere').innerHTML;
+
+                const printWindow = window.open('', '', 'width=300,height=500');
+                printWindow.document.write(`
+                   <html>
+                       <head>
+                           <title>Print Receipt</title>
+                           <style>
+                               body { font-family: monospace; width: 58mm; font-size: 8px; padding: 5px; }
+                               .center { text-align: center; }
+                               .bold { font-weight: bold; }
+                               .line { border-top: 1px dashed #000; margin: 4px 0; }
+                               table { width: 100%; font-size: 12px; border-collapse: collapse; }
+                               td { padding: 2px 5px; }
+                               .footer { text-align: center; margin-top: 10px; }
+                           </style>
+                       </head>
+                       <body onload="window.print()">
+                           ${receiptContent}
+                           <script>
+                               window.onafterprint = () => {
+                                   window.close();
+                               };
+                           </script>
+                       </body>
+                   </html>
+               `);
+
+                printWindow.document.close();
+                printWindow.focus();
+
+                const checkClosedInterval = setInterval(() => {
+                  if (printWindow.closed) {
+                    clearInterval(checkClosedInterval);
+                    hideBtnLoader(printReceiptBtn);
+                    printReceiptBtn.disabled = false; // Re-enable the button
+                  }
+                }, 500);
+              });
 
               //   Download;
-              document
-                .querySelector('.generatePdfBtn')
-                ?.addEventListener('click', () => {
-                  const receiptElement = document.querySelector('.pdfHere');
-                  if (!receiptElement) {
-                    showToast('fail', '❎ Receipt content not found.');
-                    return;
-                  }
 
-                  const opt = {
-                    margin: 10,
-                    filename: `receipt-${Date.now()}.pdf`,
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2 },
-                    jsPDF: {
-                      unit: 'mm',
-                      format: 'a4', // adjust height based on content
-                      orientation: 'portrait',
-                    },
-                  };
+              const generatePdfBtn = document.querySelector('.generatePdfBtn');
+              generatePdfBtn?.addEventListener('click', () => {
+                showBtnLoader(generatePdfBtn);
+                const receiptElement = document.querySelector('.pdfHere');
+                if (!receiptElement) {
+                  showToast('fail', '❎ Receipt content not found.');
+                  return;
+                }
 
-                  // console.log(opt);
-                  html2pdf().set(opt).from(receiptElement).save();
-                });
+                const opt = {
+                  margin: 10,
+                  filename: `receipt-${Date.now()}.pdf`,
+                  image: { type: 'jpeg', quality: 0.98 },
+                  html2canvas: { scale: 2 },
+                  jsPDF: {
+                    unit: 'mm',
+                    format: 'a4', // adjust height based on content
+                    orientation: 'portrait',
+                  },
+                };
+
+                // console.log(opt);
+                html2pdf().set(opt).from(receiptElement).save();
+                hideBtnLoader(generatePdfBtn);
+              });
 
               hideGlobalLoader();
               //   openSaleDetailsModal();
@@ -1291,8 +1348,8 @@ if (isStaff) {
         });
 
         // Insert total row (Footer for Daily Totals))
-        const totalRow = document.createElement('tr');
-        totalRow.className = 'total-row table-body-row ';
+        const totalSalesRow = document.createElement('tr');
+        totalSalesRow.className = 'totalSales-row table-body-row ';
 
         // const dailyTotal = transactions.reduce(
         //   (sum, t) => sum + Number(t.amount),
@@ -1300,9 +1357,9 @@ if (isStaff) {
         // );
 
         // Update total amounts for each day startinf wth partial totals and ending the day with final Total.
-        //   updateTotalPosAmounts(transactions, totalRow, date);
+        updateTotalSalesAmounts(sales, totalSalesRow, date);
 
-        salesTableBody.appendChild(totalRow);
+        salesTableBody.appendChild(totalSalesRow);
       });
 
       // Handle Load More button visibility
@@ -1452,100 +1509,46 @@ function updateTotalPosAmounts(transactions, totalRow, date) {
    `;
 }
 
-// JS to Render Sold goods
-
-document.querySelectorAll('.soldItemDetailReport').forEach((cell) => {
-  cell.addEventListener('click', (e) => {
-    const row = e.target.closest('tr');
-    if (!row) return;
-
-    // Extract data from row
-    const receipt =
-      row.querySelector('.soldItemReceiptReport')?.textContent || '';
-    const customer =
-      row.querySelector('.soldItemCustomerNameReport')?.textContent || '';
-    const staff = row.children[3]?.textContent || ''; // Assuming 4th td is staff
-    const amount =
-      row.querySelector('.soldItemTotalAmountReport')?.textContent || '';
-    const paid =
-      row.querySelector('.soldItemPaidAmountReport')?.textContent || '';
-    const balance =
-      row.querySelector('.soldItemBalanceAmountReport')?.textContent || '';
-    const date = row.querySelector('.soldItemDateReport')?.textContent || '';
-
-    // Inject into modal
-    document.getElementById('modalReceiptNumber').textContent = receipt;
-    document.getElementById('modalCustomerName').textContent = customer;
-    document.getElementById('modalStaffName').textContent = staff;
-    document.getElementById('modalTotalAmount').textContent = amount;
-    document.getElementById('modalPaidAmount').textContent = paid;
-    document.getElementById('modalBalanceAmount').textContent = balance;
-    document.getElementById('modalDate').textContent = date;
-
-    // For demo: Static items sold (replace with actual fetch later)
-    document.getElementById('modalItemsList').innerHTML = `
-      <tr><td>Biscuit</td><td>2</td><td>₦500</td><td>₦1000</td></tr>
-      <tr><td>Water</td><td>1</td><td>₦200</td><td>₦200</td></tr>
-    `;
-
-    document.getElementById('soldDetailModal').classList.remove('hidden');
-  });
-});
-
-document
-  .getElementById('closeSoldDetailModal')
-  ?.addEventListener('click', () => {
-    document.getElementById('soldDetailModal').classList.add('hidden');
-  });
-
-const storedSoldGoods =
-  JSON.parse(localStorage.getItem('soldProductFormData')) || [];
-
-function renderGoodsTable() {
-  const goodsTableBody = document.querySelector('.soldTableDisplay tbody');
-
-  if (goodsTableBody) {
-    goodsTableBody.innerHTML = '';
-
-    storedSoldGoods.forEach((data, index) => {
-      const row = document.createElement('tr');
-      row.classList.add('table-body-row');
-
-      row.innerHTML = `
-    <td class="py-1">${index + 1}.</td>
-    <td class="py-1 soldItemNameReport">${data.soldProductNameInput}</td>
-    <td class="py-1 soldItemPriceReport">${`&#x20A6; ${formatAmountWithCommas(
-      data.soldProductPriceInput
-    )}`}</td>
-    <td class="py-1 soldItemStatusReport">${data.checkboxStatus}</td>
-    <td class="py-1 soldItemBalanceReport">${
-      data.productBalancePriceInput === '-'
-        ? '-'
-        : `&#x20A6; ${formatAmountWithCommas(data.productBalancePriceInput)}`
-    }</td>
-    <td class="py-1 soldItemRemarkReport ">${data.soldProductRemarkInput}</td>
-      `;
-      goodsTableBody.appendChild(row);
-    });
-  }
-
-  updateTotalSoldAmounts(storedSoldGoods);
-}
-
 // JS to give total Sold Amount
-function updateTotalSoldAmounts(data) {
-  const totalSoldAmount = document.getElementById('totalSoldAmount');
-
-  const totalAmount = data.reduce(
-    (sum, item) => sum + item.soldProductPriceInput,
+function updateTotalSalesAmounts(sales, totalSalesRow, date) {
+  const totalSalesAmount = sales.reduce(
+    (sum, item) => sum + Number(item.total_amount),
     0
   );
 
-  if (totalSoldAmount) {
-    totalSoldAmount.innerHTML = `<strong>Total Amount = &nbsp;&#x20A6;${formatAmountWithCommas(
-      totalAmount
-    )}</strong>`;
-  }
+  const totalPaidAmount = sales.reduce(
+    (sum, item) => sum + Number(item.amount_paid),
+    0
+  );
+
+  const totalBalanceAmount = sales.reduce(
+    (sum, item) => sum + Number(item.balance),
+    0
+  );
+
+  totalSalesRow.innerHTML = `
+     <td colspan="4" class="date-header py-1 px-2 mt-1 mb-1">
+       <strong>${date} SUMMARY:</strong>
+     </td>
+     <td colspan="2" class="date-header py-1 px-2 mt-1 mb-1">
+       <strong>Total Sales Amount</strong> = ₦${formatAmountWithCommas(
+         totalSalesAmount
+       )}
+     </td>
+     <td colspan="2" class="date-header py-1 px-2 mt-1 mb-1">
+       <strong>Total Paid Amount</strong> = ₦${formatAmountWithCommas(
+         totalPaidAmount
+       )}
+     </td>
+     <td colspan="2" class="date-header py-1 px-2 mt-1 mb-1">
+       <strong>Total Balance Amount</strong> = ₦${formatAmountWithCommas(
+         totalBalanceAmount
+       )}
+     </td>
+        <td colspan="1" class="empty-header py-1 px-2 mt-1 mb-1">
+       <strong></strong>
+     </td>
+     `;
 }
 
 // renderGoodsTable();

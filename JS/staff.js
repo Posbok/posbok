@@ -31,35 +31,37 @@ let userShops = [];
 let enrichedShopData = [];
 let businessId = null;
 
-window.addEventListener('DOMContentLoaded', async () => {
-  try {
-    const data = await checkAndPromptCreateShop();
+if (userData) {
+  window.addEventListener('DOMContentLoaded', async () => {
+    try {
+      const data = await checkAndPromptCreateShop();
 
-    // Assign to outer variables
-    userShops = data.userShops;
-    enrichedShopData = data.enrichedShopData;
-    businessId = data.businessId;
+      // Assign to outer variables
+      userShops = data?.userShops;
+      enrichedShopData = data?.enrichedShopData;
+      businessId = data?.businessId;
 
-    if (!userShops) {
-      console.warn('⚠️ No businessId found — skipping fetchBusinessDetails.');
-      return;
+      if (!userShops) {
+        console.warn('⚠️ No businessId found — skipping fetchBusinessDetails.');
+        return;
+      }
+
+      //  console.log('Shops loaded:', userShops);
+      //  console.log('enrichedShopData loaded:', enrichedShopData);
+
+      // ✅ Now that data is available, call populateStaffTable here
+      //  populateStaffTable();
+
+      // Now you can safely call functions below that depend on them
+    } catch (err) {
+      if (!userShops) {
+        console.warn('⚠️ No businessId found — skipping fetchBusinessDetails.');
+        return;
+      }
+      console.warn('Failed to load shop data:', err.message);
     }
-
-    //  console.log('Shops loaded:', userShops);
-    //  console.log('enrichedShopData loaded:', enrichedShopData);
-
-    // ✅ Now that data is available, call populateStaffTable here
-    //  populateStaffTable();
-
-    // Now you can safely call functions below that depend on them
-  } catch (err) {
-    if (!userShops) {
-      console.warn('⚠️ No businessId found — skipping fetchBusinessDetails.');
-      return;
-    }
-    console.warn('Failed to load shop data:', err.message);
-  }
-});
+  });
+}
 
 export function setupCreateStaffForm() {
   const form = document.querySelector('.createStaffModal');

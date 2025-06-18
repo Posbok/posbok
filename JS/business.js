@@ -1,3 +1,4 @@
+import config from '../config';
 import {
   fetchBusinessDetails,
   updateBusiness,
@@ -10,8 +11,16 @@ import {
 } from './helper/helper';
 import { closeModal, showToast } from './script';
 
+const userData = config.userData;
+let parsedUserData = null;
+parsedUserData = userData ? JSON.parse(userData) : null;
+
+const isAdmin = parsedUserData?.accountType === 'ADMIN';
+
 document.addEventListener('DOMContentLoaded', async function () {
-  await renderBusinessDetails();
+  if (isAdmin) {
+    await renderBusinessDetails();
+  }
 });
 
 export async function renderBusinessDetails() {

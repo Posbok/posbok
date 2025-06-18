@@ -46,7 +46,8 @@ export async function getAllSales({
 
     if (filters.startDate) queryParams.append('startDate', filters.startDate);
     if (filters.endDate) queryParams.append('endDate', filters.endDate);
-    if (filters.type) queryParams.append('type', filters.type);
+    if (filters.paymentMethod)
+      queryParams.append('paymentMethod', filters.paymentMethod);
     if (filters.status) queryParams.append('status', filters.status);
 
     showGlobalLoader();
@@ -59,6 +60,9 @@ export async function getAllSales({
         },
       }
     );
+
+    //  console.log(`/api/sales?${queryParams.toString()}`);
+    //  console.log('🧾 FILTERING:', filters);
 
     if (salesData) {
       hideGlobalLoader();
@@ -86,11 +90,60 @@ export async function getSaleById(saleId) {
 
     //  console.log('selectedSaleData received...');
 
-    console.log('selectedSaleData:', selectedSaleData);
+    //  console.log('selectedSaleData:', selectedSaleData);
     hideGlobalLoader();
     return selectedSaleData;
   } catch (error) {
     hideGlobalLoader();
     console.error('Error fetching sales:', error.message);
+  }
+}
+
+export async function getSalesByStaff(staffId) {
+  try {
+    showGlobalLoader();
+    const selectedStaffData = await safeFetch(
+      `${baseUrl}/api/sales/staff/${staffId}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    console.log('selectedStaffData received...');
+
+    console.log('selectedStaffData:', selectedStaffData);
+    hideGlobalLoader();
+    return selectedStaffData;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error fetching Staffs:', error.message);
+  }
+}
+
+export async function getSalesByProduct(ProductId) {
+  try {
+    console.log('objeddddctddd');
+    showGlobalLoader();
+    const selectedProductData = await safeFetch(
+      `${baseUrl}/api/sales/products/${ProductId}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    console.log('selectedProductData received...');
+
+    console.log('selectedProductData:', selectedProductData);
+    hideGlobalLoader();
+    return selectedProductData;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error fetching Products:', error.message);
   }
 }

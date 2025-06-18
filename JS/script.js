@@ -577,7 +577,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // isUserLoggedIN() is a conditional functions used for functions that needs to run automatically - it basically checks if the user is logged in before it fetchs. It is present in the helper.js file
 
   if (!isUserLoggedIn()) {
-    console.log('User not logged in. Skipping business day check.');
+    //  console.log('User not logged in. Skipping business day check.');
     return;
   }
 

@@ -3085,12 +3085,14 @@ body.authentication {
   padding: 10px;
   color: #0F7A89; }
 
-.total-row {
+.total-row,
+.totalSales-row {
   background-color: #15464C;
   font-weight: bold;
   padding: 10px;
   color: #eef1f6 !important; }
-  .total-row:hover {
+  .total-row:hover,
+  .totalSales-row:hover {
     background-color: #15464C !important;
     color: #fff !important; }
 
