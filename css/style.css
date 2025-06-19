@@ -3055,7 +3055,7 @@ body.authentication {
         transition: transform 0.3s ease;
         color: #ebfbee; }
     .accordion-container .accordion-section.active .accordion-content {
-      max-height: 100rem;
+      max-height: max-content;
       /* enough to show full content */ }
   .accordion-container .action-buttons {
     display: flex;

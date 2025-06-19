@@ -38,13 +38,19 @@ function toTitleCase(value) {
 const adminAccordionContainer = document.querySelector(
   '.adminAccordionContainer'
 );
+const pendingReportContainer = document.querySelector(
+  '.pendingReportContainer'
+);
+
 const staffContainer = document.querySelector('.staffContainer');
 
 if (isAdmin) {
   adminAccordionContainer.style.display = 'block';
+  pendingReportContainer.style.display = 'block';
   staffContainer.style.display = 'none';
 } else {
   adminAccordionContainer.style.display = 'none';
+  pendingReportContainer.style.display = 'none';
   staffContainer.style.display = 'block';
 }
 
@@ -55,7 +61,6 @@ let allSalesReport = [];
 // Pagination control for load more
 let currentPage;
 let shopPageTracker = {};
-// let shopPageTracker = {};
 let totalItems;
 let totalPages;
 let pageSize = 10;
@@ -114,7 +119,7 @@ if (isAdmin) {
   const currentSalesFiltersByShop = {};
 
   const container = document.getElementById('accordionShops');
-  //   console.log('report', container);
+  console.log('report', container);
   const { enrichedShopData: loadedShops } = await checkAndPromptCreateShop();
   hideGlobalLoader();
   enrichedShopData = loadedShops;
@@ -273,281 +278,6 @@ if (isAdmin) {
 
       </div>
     </div>
-
-          <div  id="shopSales-report-${shop.id}"  class=" reports card data-loaded="false" mt-4 mb-4 ">
-           <div class="reports">
-         <div class="reports-method">
-            <h2 class="heading-text mb-2">
-               Sales Reports
-            </h2>
-
-            <h2 class="filter-heading heading-subtext mb-2">Filter Reports</h2>
-
-            <div class="filter-section mb-2">
-
-               <div class="pos-method-form_input">
-                  <label for="salesStartDateFilter_admin">Start Date:</label>
-
-                  <input type="date" id="salesStartDateFilter_admin">
-               </div>
-
-               <div class="pos-method-form_input">
-                  <label for="salesEndDateFilter_admin">End Date:</label>
-
-                  <input type="date" id="salesEndDateFilter_admin">
-               </div>
-
-
-               <div class="pos-method-form_input">
-
-                  <label for="salesStatusFilter_admin">Payment Status:</label>
-
-                  <select id="salesStatusFilter_admin" name="salesStatusFilter_admin">
-                     <option value="">All</option>
-                     <option value="COMPLETED_FULL_PAYMENT">Completed</option>
-                     <option value="PARTIAL_PAYMENT">Partial Payment</option>
-                  </select>
-               </div>
-
-               <div class="pos-method-form_input">
-
-                  <label for="salesPaymentMethod_admin">Payment Method:</label>
-
-                  <select id="salesPaymentMethod_admin" name="salesPaymentMethod_admin">
-                     <option value="">All</option>
-                     <option value="CASH">Cash</option>
-                     <option value="CARD">Card</option>
-                     <option value="TRANSFER">Transfer</option>
-                  </select>
-               </div>
-
-
-               <div class="filter-buttons">
-                  <button id="applySalesFiltersBtn_admin" class="hero-btn-dark">Apply Filters</button>
-
-                  <!-- <button id="generateReportBtn_admin" class="hero-btn-dark">Generate Report</button> -->
-
-                  <button id="resetSalesFiltersBtn_admin" class="hero-btn-outline">Reset</button>
-               </div>
-            </div>
-
-            <div class="table-header">
-               <!-- <h2 class="heading-subtext"> SALES </h2> -->
-            </div>
-
-            <div class="reports-table-container">
-
-               <table class="reports-table soldTableDisplay_admin">
-                  <thead>
-                     <tr class="table-header-row">
-                        <th class="py-1">S/N</th>
-                        <th class="py-1">Receipt #</th>
-                        <th class="py-1">Customer</th>
-                        <th class="py-1">Staff</th>
-                        <th class="py-1">Amount</th>
-                        <th class="py-1">Paid</th>
-                        <th class="py-1">Balance</th>
-                        <th class="py-1">Payment Method</th>
-                        <th class="py-1">Date</th>
-                        <th class="py-1">Status</th>
-                        <th class="py-1">▼</th>
-                     </tr>
-                  </thead>
-
-                  <!-- <tbody id="sale-tbody-${shop.id}"> -->
-                  <tbody id="sale-tbody-${shop.id}">
-                     <tr class="table-body-row">
-                     </tr>
-                  </tbody>
-
-                  <!-- <tbody>
-                        <tr class="table-body-row">
-                           <td class="py-1">1.</td>
-                           <td class="py-1 soldItemReceiptReport">76-96-1749763485969</td>
-                           <td class="py-1 soldItemCustomerNameReport">John Customer</td>
-                           <td class="py-1 soldItemCustomerNameReport">Favour Amaka</td>
-                           <td class="py-1 soldItemTotalAmountReport">&#x20A6;8,000</td>
-                           <td class="py-1 soldItemPaidAmountReport">&#x20A6;8,000</td>
-                           <td class="py-1 soldItemBalanceAmountReport">&#x20A6;0</td>
-                           <td class="py-1 soldItemDateReport">2025-06-10</td>
-                           <td class="py-1 soldItemStatusReport">Full Payment</td>
-                           <td class="py-1 soldItemDetailReport ">[Expand]</td>
-                        </tr>
-                     </tbody>
-
-                     <tbody>
-                        <tr class="table-body-row">
-                           <td class="py-1">1.</td>
-                           <td class="py-1 soldItemReceiptReport">76-96-1749763485969</td>
-                           <td class="py-1 soldItemCustomerNameReport">Wilson Customer</td>
-                           <td class="py-1 soldItemCustomerNameReport">Favour Amaka</td>
-                           <td class="py-1 soldItemTotalAmountReport">&#x20A6;12,000</td>
-                           <td class="py-1 soldItemPaidAmountReport">&#x20A6;10,000</td>
-                           <td class="py-1 soldItemBalanceAmountReport">&#x20A6;2,000</td>
-                           <td class="py-1 soldItemDateReport">2025-06-10</td>
-                           <td class="py-1 soldItemStatusReport">Partial Payment</td>
-                           <td class="py-1 soldItemDetailReport ">[Expand]</td>
-                        </tr>
-                     </tbody>  -->
-
-                  <tfoot>
-                     <tr class="table-foot-row px-2">
-                        <td colspan="4"></td>
-                        <td id="totalSalesXXXPosAmount_admin" class="py-1 px-2">
-                           <strong></strong>
-                        </td>
-
-                        <td id="totalSalesXXXPosFee_admin" class="py-1 px-2">
-                           <strong></strong>
-                        </td>
-
-                        <td id="totalSalesXXXMachineFee_admin" class="py-1 px-2">
-                           <strong></strong>
-                        </td>
-
-                        <td id="totalSalesXXXDepositAmount_admin" class="py-1 px-2">
-                           <strong></strong>
-                        </td>
-
-                        <td id="totalSalesXXXWithdrawalAmount_admin" class="py-1 px-2">
-                           <strong></strong>
-                        </td>
-
-                        <td id="totalSalesXXXWithdrawalTransferAmount_admin" class="py-1 px-2">
-                           <strong></strong>
-                        </td>
-
-                        <td id="totalSalesXXXBillPaymentAmount_admin" class="py-1 px-2">
-                           <strong></strong>
-                        </td>
-                        <!-- <td></td> -->
-                     </tr>
-                  </tfoot>
-               </table>
-
-               <div id="loadMoreSalesButtonDiv_admin" class=" center-button mt-2">
-
-                  <button id="loadMoreSaleButton_admin_${shop.id}" class=" hero-btn-dark load-more-button">Load More
-                     Sales</button>
-                  <!-- <button id="loadMoreButton" class="">Load More</button> -->
-               </div>
-            </div>
-            </div>
-
-
-            <div class="report-tabs mt-4 mb-4">
-
-               <h2 class="heading-text mb-2">
-                  Performance Overview
-               </h2>
-
-               <div class="tab-buttons">
-                  <button class="tab-btn active" data-tab="daily">Daily Summary</button>
-                  <button class="tab-btn" data-tab="monthly">Monthly Summary</button>
-                  <button class="tab-btn " data-tab="product">Sales by Product</button>
-               </div>
-
-               <div class="tab-content active" id="daily">
-                  <div id="dailyChart"></div>
-               </div>
-
-               <div class="tab-content" id="monthly">
-                  <div id="monthlyChart"></div>
-               </div>
-
-               <!-- <div class="tab-content" id="monthly" style="overflow-x: auto;">
-                     <canvas id="monthlyChart" style="min-width: 800px; height: max-content;"></canvas>
-                  </div> -->
-
-               <div class="tab-content " id="product">
-
-                  <div class="pos-method-form_input mb-2">
-
-                     <label for="productSelect">Select Product</label>
-
-                     <select id="productSelect">
-                        <option value="Smartphone">Smartphone</option>
-                        <option value="Tablet">Tablet</option>
-                        <option value="Laptop">Laptop</option>
-                     </select>
-                  </div>
-
-                  <div class="productSales-summary">
-                     <!-- Total Quantity -->
-                     <div class="summary-card">
-                        <h3>Total Quantity</h3>
-                        <p class="amount" id="totalQty">₦0</p>
-                     </div>
-
-                     <!-- Total Revenue -->
-                     <div class="summary-card">
-                        <h3>Total Revenue</h3>
-                        <p class="amount" id="totalRev">₦0</p>
-                     </div>
-
-                     <!-- Total Cost -->
-                     <div class="summary-card">
-                        <h3>Total Cost</h3>
-                        <p class="amount" id="totalCost">₦0</p>
-                     </div>
-
-                     <!-- Total Profit -->
-                     <div class="summary-card">
-                        <h3>Total Profit</h3>
-                        <p class="amount" id="totalProfit">₦0</p>
-                     </div>
-                  </div>
-
-                  <div class="reports-table-container">
-
-                     <table id="productSalesTable" class="reports-table">
-                        <thead>
-                           <tr class="table-header-row">
-                              <th class="py-1">Customer</th>
-                              <th class="py-1">Qty</th>
-                              <th class="py-1">Unit Price</th>
-                              <th class="py-1">Total</th>
-                              <th class="py-1">Date</th>
-                           </tr>
-                        </thead>
-                        <tbody></tbody>
-                     </table>
-                  </div>
-
-               </div>
-            </div>
-
-
-            <div class="report-tabs mt-4 mb-4">
-
-               <h2 class="heading-text mb-2">
-                  Staff Overview
-               </h2>
-
-
-
-               <div class="sales-summary">
-                  <div class="summary-card">
-                     <h3>Total Sales</h3>
-                     <p class="amount" id="staffTotal-sales">₦0</p>
-                  </div>
-                  <div class="summary-card">
-                     <h3>Total Amount</h3>
-                     <p class="amount" id="staffTotal-Amount">₦0</p>
-                  </div>
-                  <div class="summary-card">
-                     <h3>Total Paid</h3>
-                     <p class="amount" id="staffTotal-paid">₦0</p>
-                  </div>
-                  <div class="summary-card">
-                     <h3>Balance</h3>
-                     <p class="amount" id="staffTotal-balance">₦0</p>
-                  </div>
-               </div>
-
-            </div>
-         </div>
-      </div>
     
     `;
 
@@ -637,29 +367,29 @@ if (isAdmin) {
 
     // Admin Sales
     const loadMoreSalesButton = document.getElementById(
-      `loadMoreSaleButton_admin_${shop.id}`
+      `loadMoreSalesButton_admin_${shop.id}`
     );
 
-    loadMoreSalesButton.style.display = 'none';
+    //  loadMoreSalesButton.style.display = 'none';
 
-    loadMoreSalesButton.addEventListener('click', () => {
-      const role = 'admin';
-      const nextPage = ++shopPageTracker[shop.id];
-      const filters = currentSalesFiltersByShop[shop.id] || {};
+    //  loadMoreSalesButton.addEventListener('click', () => {
+    //    const role = 'admin';
+    //    currentPage += 1;
+    //    const filters = getSalesFilters(role);
 
-      //  const tableBodyId = '.posTableDisplay_staff tbody';
+    //    //  const tableBodyId = '.posTableDisplay_staff tbody';
 
-      renderSalesTable({
-        page: nextPage,
-        limit,
-        filters,
-        shopId,
-        tableBodyId: `#sale-tbody-${shop.id}`,
-        loadMoreButton: document.getElementById(
-          `loadMoreSaleButton_admin_${shop.id}`
-        ),
-      });
-    });
+    //    renderSalesTable({
+    //      page: nextPage,
+    //      limit,
+    //      filters,
+    //      shopId,
+    //      tableBodyId: `#sale-tbody-${shop.id}`,
+    //      loadMoreButton: document.getElementById(
+    //        `loadMoreSaleButton_admin_${shop.id}`
+    //      ),
+    //    });
+    //  });
 
     //  Admin POS
     const loadMoreButton = document.getElementById(
@@ -688,10 +418,18 @@ if (isAdmin) {
     });
 
     const filters = getFilters('admin', shop.id);
-    const salesFilters = getSalesFilters('admin', shop.id);
-
     currentFiltersByShop[shop.id] = filters;
-    currentSalesFiltersByShop[shop.id] = salesFilters;
+
+    renderSalesTable({
+      page: currentPage,
+      limit,
+      filters,
+      shopId,
+      tableBodyId: `#sale-tbody-${shop.id}`,
+      loadMoreButton: document.getElementById(
+        `loadMoreSaleButton_admin_${shop.id}`
+      ),
+    });
 
     //  renderPosTable({
     //    page: currentPage,
@@ -720,7 +458,6 @@ if (isAdmin) {
 
     try {
       let loadingRow = document.querySelector('.loading-row');
-      console.log('loading', loadingRow);
       if (!loadingRow) {
         loadingRow = document.createElement('tr');
         loadingRow.className = 'loading-row';
@@ -900,7 +637,7 @@ if (isAdmin) {
   }
 
   async function renderSalesTable({
-    page = 1,
+    page: currentPage,
     limit,
     filters,
     shopId,
@@ -909,7 +646,7 @@ if (isAdmin) {
   }) {
     console.log('🧪 Applied Filters:', filters);
 
-    const salesTableBody = document.querySelector(tableBodyId);
+    const salesTableBody = tableBodyId;
     console.log(salesTableBody);
 
     if (!salesTableBody) {
@@ -922,7 +659,7 @@ if (isAdmin) {
       console.log(loadingRow);
       if (!loadingRow) {
         loadingRow = document.createElement('tr');
-        loadingRow.className = 'leoading-row';
+        loadingRow.className = 'loading-row';
         loadingRow.innerHTML = `<td colspan="11" class="table-loading-text">Loading transactions...</td>`;
         salesTableBody.appendChild(loadingRow);
       }
@@ -930,17 +667,17 @@ if (isAdmin) {
       loadMoreButton.style.display = 'none';
 
       // Build query with filters
-      const queryParams = new URLSearchParams({
-        shopId: shopId,
-        page,
-        limit: pageSize,
-      });
+      // const queryParams = new URLSearchParams({
+      //   shopId: shopId,
+      //   page,
+      //   limit: pageSize,
+      // });
 
-      if (filters.startDate) queryParams.append('startDate', filters.startDate);
-      if (filters.endDate) queryParams.append('endDate', filters.endDate);
-      if (filters.paymentMethod)
-        queryParams.append('paymentMethod', filters.paymentMethod);
-      if (filters.status) queryParams.append('status', filters.status);
+      // if (filters.startDate) queryParams.append('startDate', filters.startDate);
+      // if (filters.endDate) queryParams.append('endDate', filters.endDate);
+      // if (filters.paymentMethod)
+      //   queryParams.append('paymentMethod', filters.paymentMethod);
+      // if (filters.status) queryParams.append('status', filters.status);
 
       const result = await getAllSales({
         shopId,
@@ -1309,9 +1046,9 @@ if (isAdmin) {
 
       // Handle Load More button visibility
       if (currentPage >= totalPages) {
-        loadMoreButton.style.display = 'none';
+        loadMoreSalesButton.style.display = 'none';
       } else {
-        loadMoreButton.style.display = 'block';
+        loadMoreSalesButton.style.display = 'block';
       }
     } catch (error) {
       console.error('Error rendering transactions:', error);
@@ -1354,9 +1091,6 @@ if (isAdmin) {
     const shopPosTransactiionSection = document.getElementById(
       `shop-report-${shopId}`
     );
-    const shopSalesTransactiionSection = document.getElementById(
-      `shopSales-report-${shopId}`
-    );
     if (
       shopPosTransactiionSection &&
       shopPosTransactiionSection.dataset.loaded !== 'true'
@@ -1372,23 +1106,6 @@ if (isAdmin) {
         ),
       });
       shopPosTransactiionSection.dataset.loaded = 'true';
-    }
-
-    if (
-      shopSalesTransactiionSection &&
-      shopSalesTransactiionSection.dataset.loaded !== 'true'
-    ) {
-      await renderSalesTable({
-        page: shopPageTracker[shopId],
-        limit,
-        filters,
-        shopId,
-        tableBodyId: `#sale-tbody-${shopId}`,
-        loadMoreButton: document.getElementById(
-          `loadMoreSaleButton_admin_${shopId}`
-        ),
-      });
-      shopSalesTransactiionSection.dataset.loaded = 'true';
     }
 
     //  await renderPosTable({

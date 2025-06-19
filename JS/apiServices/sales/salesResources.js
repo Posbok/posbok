@@ -125,7 +125,6 @@ export async function getSalesByStaff(staffId) {
 
 export async function getSalesByProduct(ProductId) {
   try {
-    console.log('objeddddctddd');
     showGlobalLoader();
     const selectedProductData = await safeFetch(
       `${baseUrl}/api/sales/products/${ProductId}`,
