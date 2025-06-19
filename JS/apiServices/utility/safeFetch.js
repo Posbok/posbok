@@ -7,13 +7,14 @@ export async function safeFetch(url, options) {
 
     if (!response.ok) {
       const data = await response.json();
-      hideGlobalLoader();
+      // hideGlobalLoader();
       throw new Error(data.message || `HTTP error! status: ${response.status}`);
     }
 
     return await response.json();
   } catch (error) {
     console.error('Error during fetch:', error);
+    //  hideGlobalLoader();
 
     if (
       error.message.includes(
@@ -29,9 +30,9 @@ export async function safeFetch(url, options) {
         'warning',
         'Server is down or unreachable. Please try again later.'
       );
-      hideGlobalLoader();
+      // hideGlobalLoader();
     } else {
-      hideGlobalLoader();
+      // hideGlobalLoader();
       showToast('error', `❌ ${error.message}`);
     }
 

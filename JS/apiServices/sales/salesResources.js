@@ -62,7 +62,7 @@ export async function getAllSales({
     );
 
     //  console.log(`/api/sales?${queryParams.toString()}`);
-    //  console.log('🧾 FILTERING:', filters);
+    console.log('🧾 Sales FILTERING:', filters);
 
     if (salesData) {
       hideGlobalLoader();

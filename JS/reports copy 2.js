@@ -286,23 +286,23 @@ if (isAdmin) {
             <div class="filter-section mb-2">
 
                <div class="pos-method-form_input">
-                  <label for="salesStartDateFilter_admin_${shop.id}">Start Date:</label>
+                  <label for="salesStartDateFilter_admin">Start Date:</label>
 
-                  <input type="date" id="salesStartDateFilter_admin_${shop.id}">
+                  <input type="date" id="salesStartDateFilter_admin">
                </div>
 
                <div class="pos-method-form_input">
-                  <label for="salesEndDateFilter_admin_${shop.id}">End Date:</label>
+                  <label for="salesEndDateFilter_admin">End Date:</label>
 
-                  <input type="date" id="salesEndDateFilter_admin_${shop.id}">
+                  <input type="date" id="salesEndDateFilter_admin">
                </div>
 
 
                <div class="pos-method-form_input">
 
-                  <label for="salesStatusFilter_admin_${shop.id}">Payment Status:</label>
+                  <label for="salesStatusFilter_admin">Payment Status:</label>
 
-                  <select id="salesStatusFilter_admin_${shop.id}" name="salesStatusFilter_admin_${shop.id}">
+                  <select id="salesStatusFilter_admin" name="salesStatusFilter_admin">
                      <option value="">All</option>
                      <option value="COMPLETED_FULL_PAYMENT">Completed</option>
                      <option value="PARTIAL_PAYMENT">Partial Payment</option>
@@ -311,9 +311,9 @@ if (isAdmin) {
 
                <div class="pos-method-form_input">
 
-                  <label for="salesPaymentMethod_admin_${shop.id}">Payment Method:</label>
+                  <label for="salesPaymentMethod_admin">Payment Method:</label>
 
-                  <select id="salesPaymentMethod_admin_${shop.id}" name="salesPaymentMethod_admin_${shop.id}">
+                  <select id="salesPaymentMethod_admin" name="salesPaymentMethod_admin">
                      <option value="">All</option>
                      <option value="CASH">Cash</option>
                      <option value="CARD">Card</option>
@@ -323,11 +323,11 @@ if (isAdmin) {
 
 
                <div class="filter-buttons">
-                  <button id="applySalesFiltersBtn_admin_${shop.id}" class="hero-btn-dark">Apply Filters</button>
+                  <button id="applySalesFiltersBtn_admin" class="hero-btn-dark">Apply Filters</button>
 
                   <!-- <button id="generateReportBtn_admin" class="hero-btn-dark">Generate Report</button> -->
 
-                  <button id="resetSalesFiltersBtn_${shop.id}" class="hero-btn-outline">Reset</button>
+                  <button id="resetSalesFiltersBtn_admin" class="hero-btn-outline">Reset</button>
                </div>
             </div>
 

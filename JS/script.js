@@ -645,7 +645,7 @@ export function bindOpenBusinessDayFormListener() {
 
         if (!openBusinessDayData) {
           showToast('fail', openBusinessDayData.message);
-
+          //  hideGlobalLoader();
           return;
         }
 
@@ -661,6 +661,7 @@ export function bindOpenBusinessDayFormListener() {
             await getCurrentBusinessDay(shopId);
             await renderBusinessDayButtons();
             initAccountOverview();
+            // hideGlobalLoader();
           }
         } catch (posCapitalDepositDataErr) {
           showToast(
@@ -674,16 +675,19 @@ export function bindOpenBusinessDayFormListener() {
             'Error During posCapitalDeposit Adding:',
             posCapitalDepositDataErr.message
           );
+          //  hideGlobalLoader();
         }
         showToast('success', `✅ ${openBusinessDayData.message}`);
         hideBtnLoader(submitPosCapital);
-        hideGlobalLoader();
+        //   hideGlobalLoader();
       } catch (err) {
-        hideBtnLoader(submitPosCapital);
-
         console.error('Error Creating product:', err);
         showToast('fail', `❎ ${err.message}`);
+        hideGlobalLoader();
+        hideBtnLoader(submitPosCapital);
+        return;
       } finally {
+        // closeModal()
         hideBtnLoader(submitPosCapital);
         hideGlobalLoader();
         //   initAccountOverview();

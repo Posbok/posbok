@@ -174,7 +174,7 @@ export async function getCurrentBusinessDay(shopId) {
 export async function openBusinessDay(openBusinessDayDetails) {
   console.log(openBusinessDayDetails);
   try {
-    showGlobalLoader();
+    //  showGlobalLoader();
     console.log('Sending POST request...');
 
     const openBusinessDayData = await safeFetch(
@@ -194,8 +194,9 @@ export async function openBusinessDay(openBusinessDayDetails) {
     if (openBusinessDayData) {
       console.log('Business Opened successfully:', openBusinessDayData);
       // showToast('success', `✅ ${openBusinessDayData.message}`);
-      hideGlobalLoader();
+      // hideGlobalLoader();
     }
+    //  hideGlobalLoader();
 
     return openBusinessDayData;
   } catch (error) {
@@ -233,7 +234,7 @@ export async function closeBusinessDay(closeBusinessDayDetails) {
 
     return closeBusinessDayData;
   } catch (error) {
-    //  hideGlobalLoader();
+    hideGlobalLoader();
     console.error('Error Closing Business:', error);
     throw error;
   }

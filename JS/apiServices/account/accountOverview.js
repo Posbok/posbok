@@ -17,7 +17,9 @@ const shopId = parsedUserData?.shopId;
 const isStaff = parsedUserData?.accountType === 'STAFF';
 
 export async function initAccountOverview() {
-  showGlobalLoader();
+  if (isStaff) {
+    showGlobalLoader();
+  }
   if (!isStaff) return;
   try {
     //  const [posCapitalData, charges, goodsData] = await Promise.all([
