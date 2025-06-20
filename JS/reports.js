@@ -12,6 +12,7 @@ import {
   formatSaleStatus,
   formatTransactionType,
   hideBtnLoader,
+  populateBusinessStaffDropdown,
   showBtnLoader,
 } from './helper/helper';
 import { hideGlobalLoader, showGlobalLoader } from '../JS/helper/helper';
@@ -19,6 +20,7 @@ import {
   getAllSales,
   getSaleById,
   getSalesByProduct,
+  getSalesByStaff,
 } from './apiServices/sales/salesResources';
 import { closeModal, showToast } from './script';
 import html2pdf from 'html2pdf.js/dist/html2pdf.min.js';
@@ -27,6 +29,7 @@ import {
   getProductInventory,
 } from './apiServices/inventory/inventoryResources';
 import { getPosAndSalesReportAccordion } from './posAndSalesReportAccordion';
+import { checkAndPromptCreateStaff } from './apiServices/user/userResource';
 
 const userData = config.userData;
 
@@ -659,233 +662,7 @@ if (isAdmin) {
      `;
 
           row.addEventListener('click', async (e) => {
-            e.preventDefault();
-            showGlobalLoader();
-            // Finally open the modal
-            openSaleDetailsModal();
-            const saleId = row.dataset.saleId;
-            console.log(`Open details for Sale ID: ${saleId}`);
-
-            // Get Sales by ID
-            try {
-              showGlobalLoader();
-              const saleDetails = await getSaleById(saleId);
-              const shopDetails =
-                JSON.parse(localStorage.getItem(shopKey)) || [];
-
-              console.log('shopDetails', shopDetails);
-              console.log('saleDetails', saleDetails);
-
-              if (!shopDetails) {
-                console.log('No shopDetails');
-                showToast('error', '❎ Cannot get Shop Details');
-                closeModal();
-                return;
-              }
-
-              if (!saleDetails || !saleDetails.data) {
-                console.log('No saleDetails');
-                showToast('error', '❎  Cannot get Sale Details');
-                closeModal();
-                return;
-              }
-
-              const {
-                Account,
-                SaleItems,
-                Shop,
-                receipt_number,
-                customer_name,
-                customer_phone,
-                payment_method,
-
-                total_amount,
-                amount_paid,
-                balance,
-                status,
-                business_day,
-                sale_time,
-              } = saleDetails.data;
-
-              // Populate sale summary
-
-              // Top Part Below
-              document.getElementById('soldDetailShop').textContent =
-                Shop?.shop_name || 'N/A';
-              document.getElementById('soldDetailShopAddress').textContent =
-                shopDetails?.location || 'N/A';
-
-              document.getElementById('soldDetailReceiptNumber').textContent =
-                receipt_number;
-              document.getElementById('soldDetailCustomerName').textContent =
-                `${customer_name} - ${customer_phone}` || 'N/A';
-              document.getElementById('soldDetailStaffName').textContent =
-                `${Account?.first_name} ${Account?.last_name}` || 'N/A';
-              document.getElementById('soldDetailDate').textContent = new Date(
-                sale_time
-              ).toLocaleString();
-
-              // Bottom Part Below
-
-              document.getElementById('soldDetailPaymentMethod').textContent =
-                payment_method || 'N/A';
-
-              document.getElementById(
-                'soldDetailTotalAmount'
-              ).textContent = `₦${formatAmountWithCommas(total_amount)}`;
-              document.getElementById(
-                'soldDetailPaidAmount'
-              ).textContent = `₦${formatAmountWithCommas(amount_paid)}`;
-              document.getElementById(
-                'soldDetailBalanceAmount'
-              ).textContent = `₦${formatAmountWithCommas(balance)}`;
-
-              document.getElementById('soldDetailStatus').textContent =
-                formatSaleStatus(status);
-
-              // Sales Items - Middle Part Below
-              const itemsTableBody =
-                document.querySelector('.itemsTable tbody');
-              itemsTableBody.innerHTML = ''; // clear previous rows
-
-              SaleItems.forEach((item, index) => {
-                const itemRow = document.createElement('tr');
-                itemRow.classList.add('table-body-row');
-                itemRow.innerHTML = `
-             <td class="py-1">${item.Product.name}</td>
-                           <td class="py-1">${item.quantity}</td>
-                           <td class="py-1">₦${formatAmountWithCommas(
-                             item.unit_price
-                           )}</td>
-                           <td class="py-1">${formatAmountWithCommas(
-                             item.selling_price
-                           )}</td>
-             
-                     `;
-                itemsTableBody.appendChild(itemRow);
-              });
-
-              // Print & Download
-
-              //   Print
-              //   const printReceiptBtn =
-              //     document.querySelector('.printReceiptBtn');
-
-              //Keep this earlier Print Logic
-
-              //            printReceiptBtn.addEventListener('click', () => {
-              //              showBtnLoader(printReceiptBtn);
-              //              const receiptContent =
-              //                document.querySelector('.pdfHere').innerHTML;
-
-              //              const printWindow = window.open('', '', 'width=300,height=500');
-              //              printWindow.document.write(`
-              //  <html>
-              //    <head>
-              //      <title>Print Receipt</title>
-              //      <style>
-              //        body { font-family: monospace; width: 58mm; font-size: 8px; padding: 5px; }
-              //        .center { text-align: center; }
-              //        .bold { font-weight: bold; }
-              //        .line { border-top: 1px dashed #000; margin: 4px 0; }
-              //        table { width: 100%; font-size: 12px; border-collapse: collapse; }
-              //        td { padding: 2px 5px; }
-              //        .footer { text-align: center; margin-top: 10px; }
-              //      </style>
-              //    </head>
-              //    <body>${receiptContent}</body>
-              //  </html>`);
-              //              printWindow.document.close();
-              //              printWindow.focus();
-              //              printWindow.print();
-              //              // printWindow.close();
-              //              hideBtnLoader(printReceiptBtn);
-              //            });
-
-              const printReceiptBtn =
-                document.querySelector('.printReceiptBtn');
-
-              printReceiptBtn.addEventListener('click', () => {
-                showBtnLoader(printReceiptBtn);
-                printReceiptBtn.disabled = true; // Disable the button
-
-                const receiptContent =
-                  document.querySelector('.pdfHere').innerHTML;
-
-                const printWindow = window.open('', '', 'width=300,height=500');
-                printWindow.document.write(`
-                   <html>
-                       <head>
-                           <title>Print Receipt</title>
-                           <style>
-                               body { font-family: monospace; width: 58mm; font-size: 8px; padding: 5px; }
-                               .center { text-align: center; }
-                               .bold { font-weight: bold; }
-                               .line { border-top: 1px dashed #000; margin: 4px 0; }
-                               table { width: 100%; font-size: 12px; border-collapse: collapse; }
-                               td { padding: 2px 5px; }
-                               .footer { text-align: center; margin-top: 10px; }
-                           </style>
-                       </head>
-                       <body onload="window.print()">
-                           ${receiptContent}
-                           <script>
-                               window.onafterprint = () => {
-                                   window.close();
-                               };
-                           </script>
-                       </body>
-                   </html>
-               `);
-
-                printWindow.document.close();
-                printWindow.focus();
-
-                const checkClosedInterval = setInterval(() => {
-                  if (printWindow.closed) {
-                    clearInterval(checkClosedInterval);
-                    hideBtnLoader(printReceiptBtn);
-                    printReceiptBtn.disabled = false; // Re-enable the button
-                  }
-                }, 500);
-              });
-
-              //   Download;
-
-              const generatePdfBtn = document.querySelector('.generatePdfBtn');
-              generatePdfBtn?.addEventListener('click', () => {
-                showBtnLoader(generatePdfBtn);
-                const receiptElement = document.querySelector('.pdfHere');
-                if (!receiptElement) {
-                  showToast('fail', '❎ Receipt content not found.');
-                  return;
-                }
-
-                const opt = {
-                  margin: 10,
-                  filename: `receipt-${Date.now()}.pdf`,
-                  image: { type: 'jpeg', quality: 0.98 },
-                  html2canvas: { scale: 2 },
-                  jsPDF: {
-                    unit: 'mm',
-                    format: 'a4', // adjust height based on content
-                    orientation: 'portrait',
-                  },
-                };
-
-                // console.log(opt);
-                html2pdf().set(opt).from(receiptElement).save();
-                hideBtnLoader(generatePdfBtn);
-              });
-
-              hideGlobalLoader();
-              //   openSaleDetailsModal();
-            } catch (err) {
-              hideGlobalLoader();
-              console.error('Error fetching sale details:', err.message);
-              showToast('fail', `❎ Failed to load sale details`);
-              closeModal();
-            }
+            updateSalesReceipt(e, row);
           });
 
           salesTableBody.appendChild(row);
@@ -1015,7 +792,7 @@ if (isAdmin) {
       isAdmin ? '.adminSellProductName' : '.sellProductName'
     );
     const productInput = document.getElementById(
-      isAdmin ? 'adminProductInput' : 'productInput'
+      isAdmin ? `adminProductInput_${shopId}` : 'productInput'
     );
     const autocompleteList = document.getElementById(
       isAdmin ? 'adminAutocompleteList' : 'autocompleteList'
@@ -1283,7 +1060,7 @@ if (isAdmin) {
           listItem.addEventListener('click', async function () {
             selectedProduct = product.Product; // Store selected product to later get the product ID
 
-            console.log(selectedProduct);
+            // console.log(selectedProduct);
 
             productInput.value = product.Product.name;
 
@@ -1302,6 +1079,7 @@ if (isAdmin) {
                   'Error Getting Sales By Product'
                 }`
               );
+              return;
             }
 
             const productSalesData = productSalesResponse.data;
@@ -1576,154 +1354,47 @@ if (isAdmin) {
     );
     chart.render();
 
-    // Dummy product sales data
-    const productData = {
-      Smartphone: {
-        summary: { quantity: 6, revenue: 270000, cost: 240000, profit: 30000 },
-        sales: [
-          {
-            customer: 'John Doe',
-            qty: 2,
-            unit: 45000,
-            total: 90000,
-            date: '2025-05-21',
-          },
-          {
-            customer: 'Jane Roe',
-            qty: 2,
-            unit: 45000,
-            total: 90000,
-            date: '2025-05-22',
-          },
-          {
-            customer: 'Mark Smith',
-            qty: 2,
-            unit: 45000,
-            total: 90000,
-            date: '2025-05-23',
-          },
-        ],
-      },
-      Tablet: {
-        summary: { quantity: 4, revenue: 140000, cost: 120000, profit: 20000 },
-        sales: [
-          {
-            customer: 'Ayo James',
-            qty: 2,
-            unit: 35000,
-            total: 70000,
-            date: '2025-05-20',
-          },
-          {
-            customer: 'Linda Blue',
-            qty: 2,
-            unit: 35000,
-            total: 70000,
-            date: '2025-05-21',
-          },
-        ],
-      },
-      Laptop: {
-        summary: { quantity: 3, revenue: 240000, cost: 210000, profit: 30000 },
-        sales: [
-          {
-            customer: 'Tunde Green',
-            qty: 1,
-            unit: 80000,
-            total: 80000,
-            date: '2025-05-19',
-          },
-          {
-            customer: 'Blessing B.',
-            qty: 2,
-            unit: 80000,
-            total: 160000,
-            date: '2025-05-20',
-          },
-        ],
-      },
-    };
+    //  Staff Overview / Staff Performance
 
-    const productSelect = document.getElementById('productSelect');
-    const totalQty = document.getElementById('totalQty');
-    const totalRev = document.getElementById('totalRev');
-    const totalCostContainer = document.getElementById('totalCost');
-    const totalProfitContainer = document.getElementById('totalProfit');
-    const tableBody = document.querySelector('#productSalesTable tbody');
-
-    function updateProductData(productSalesList, productSalesSummary) {
-      if (!productSalesSummary) {
-        console.error('productSalesSummary is undefined:', productSalesSummary);
-        return;
+    async function loadStaffDropdown() {
+      try {
+        showGlobalLoader();
+        const staffData = await checkAndPromptCreateStaff();
+        console.log('Staff Data', staffData);
+        const staffDataList = staffData?.data.users;
+        populateBusinessStaffDropdown(staffDataList, 'reportStaffDropdown');
+        hideGlobalLoader();
+      } catch (err) {
+        hideGlobalLoader();
+        console.error('Failed to load dropdown:', err.message);
       }
-
-      console.log(productSalesList);
-      console.log(productSalesSummary);
-      const {
-        productName,
-        totalQuantitySold,
-        totalRevenue,
-        totalCost,
-        totalProfit,
-      } = productSalesSummary;
-
-      totalQty.textContent = totalQuantitySold;
-      totalRev.textContent = `₦${formatAmountWithCommas(totalRevenue)}`;
-      totalCostContainer.textContent = `₦${formatAmountWithCommas(totalCost)}`;
-      totalProfitContainer.textContent = `₦${formatAmountWithCommas(
-        totalProfit
-      )}`;
-
-      if (tableBody) tableBody.innerHTML = '';
-
-      console.log(!productSalesList.length);
-      console.log(productSalesList.length);
-
-      if (!productSalesList.length) {
-        const emptyRow = document.createElement('tr');
-        emptyRow.innerHTML = `
-        <td colspan="11" class="table-error-text">No Sales on this Product.</td>
-      `;
-        if (tableBody) tableBody.appendChild(emptyRow);
-        return;
-      }
-
-      productSalesList.forEach((sale, index) => {
-        const row = document.createElement('tr');
-        row.classList.add('table-body-row');
-
-        console.log('sale', sale);
-
-        const { quantity, unit_price, selling_price, business_day } = sale;
-
-        const staffName = `${sale.Sale.Account.first_name} - ${sale.Sale.Account._name} `;
-        const shopName = sale.Sale.Shop.shop_name;
-        const customerName = sale.Sale.customer_name;
-        const customerPhone = sale.Sale.customer_phone;
-        const totalAmount = sale.Sale.total_amount;
-        const amountPaid = sale.Sale.amount_paid;
-        const balance = sale.Sale.balance;
-
-        if (row)
-          row.innerHTML = `
-      <tr  class="table-body-row">
-        <td  class="py-1">${index + 1}</td>
-        <td  class="py-1">${business_day}</td>
-        <td  class="py-1">${shopName}</td>
-        <td  class="py-1">${staffName}</td>
-        <td  class="py-1">${customerName}</td>
-        <td  class="py-1">${quantity}</td>
-        <td class="py-1">₦${formatAmountWithCommas(unit_price)}</td>
-        <td class="py-1">₦${formatAmountWithCommas(selling_price)}</td>
-        <td class="py-1">₦${formatAmountWithCommas(totalAmount)}</td>
-        <td class="py-1">₦${formatAmountWithCommas(amountPaid)}</td>
-        <td class="py-1">₦${formatAmountWithCommas(balance)}</td>
-      </tr>
-    `;
-
-        if (tableBody) tableBody.appendChild(row);
-      });
     }
+
+    loadStaffDropdown();
+
+    const reportStaffDropdown = document.getElementById('reportStaffDropdown');
+    reportStaffDropdown.addEventListener('change', async () => {
+      console.log(reportStaffDropdown.value);
+
+      const staffId = reportStaffDropdown.value;
+
+      const staffSalesResponse = await getSalesByStaff(staffId);
+
+      if (!staffSalesResponse) {
+        hideGlobalLoader();
+        console.error('Error receiveing Staff Sales Data');
+        showToast('fail', `❎ ${staffSalesResponse.message}`);
+        return;
+      }
+
+      const staffSalesDetails = staffSalesResponse.data;
+      const staffSalesList = staffSalesDetails.sales;
+      const staffSalesSummary = staffSalesDetails.summary;
+
+      console.log(staffSalesDetails);
+
+      updateStaffSalesData(staffSalesList, staffSalesSummary);
+    });
 
     //  await renderPosTable({
     //    page: shopPageTracker[shopId],
@@ -1819,6 +1490,402 @@ export function renderSaleDetailById() {
         hideGlobalLoader();
       }
     });
+  }
+}
+// Update Product Sales Report
+function updateProductData(productSalesList, productSalesSummary) {
+  const totalQty = document.getElementById('totalQty');
+  const totalRev = document.getElementById('totalRev');
+  const totalCostContainer = document.getElementById('totalCost');
+  const totalProfitContainer = document.getElementById('totalProfit');
+  const tableBody = document.querySelector('#productSalesTable tbody');
+
+  if (!productSalesSummary) {
+    console.error('productSalesSummary is undefined:', productSalesSummary);
+    return;
+  }
+
+  // console.log(productSalesList);
+  // console.log(productSalesSummary);
+  const {
+    productName,
+    totalQuantitySold,
+    totalRevenue,
+    totalCost,
+    totalProfit,
+  } = productSalesSummary;
+
+  totalQty.textContent = totalQuantitySold;
+  totalRev.textContent = `₦${formatAmountWithCommas(totalRevenue)}`;
+  totalCostContainer.textContent = `₦${formatAmountWithCommas(totalCost)}`;
+  totalProfitContainer.textContent = `₦${formatAmountWithCommas(totalProfit)}`;
+
+  if (tableBody) tableBody.innerHTML = '';
+
+  console.log(!productSalesList.length);
+  console.log(productSalesList.length);
+
+  if (!productSalesList.length) {
+    const emptyRow = document.createElement('tr');
+    emptyRow.innerHTML = `
+        <td colspan="11" class="table-error-text">No Sales on this Product.</td>
+      `;
+    if (tableBody) tableBody.appendChild(emptyRow);
+    return;
+  }
+
+  productSalesList.forEach((sale, index) => {
+    const row = document.createElement('tr');
+    row.classList.add('table-body-row');
+
+    console.log('sale', sale);
+
+    const { id, quantity, unit_price, selling_price, business_day } = sale;
+
+    const staffName = `${sale.Sale.Account.first_name} - ${sale.Sale.Account._name} `;
+    const shopName = sale.Sale.Shop.shop_name;
+    const customerName = sale.Sale.customer_name;
+    const customerPhone = sale.Sale.customer_phone;
+    const totalAmount = sale.Sale.total_amount;
+    const amountPaid = sale.Sale.amount_paid;
+    const balance = sale.Sale.balance;
+
+    row.dataset.saleId = id;
+    if (row)
+      row.innerHTML = `
+      <tr  class="table-body-row">
+        <td  class="py-1">${index + 1}</td>
+        <td  class="py-1">${business_day}</td>
+        <td  class="py-1">${shopName}</td>
+        <td  class="py-1">${staffName}</td>
+        <td  class="py-1">${customerName}</td>
+        <td  class="py-1">${quantity}</td>
+        <td class="py-1">₦${formatAmountWithCommas(unit_price)}</td>
+        <td class="py-1">₦${formatAmountWithCommas(selling_price)}</td>
+        <td class="py-1">₦${formatAmountWithCommas(totalAmount)}</td>
+        <td class="py-1">₦${formatAmountWithCommas(amountPaid)}</td>
+        <td class="py-1">₦${formatAmountWithCommas(balance)}</td>
+               <td class="py-1 soldItemDetailReport" data-sale-id="${id}"><i class="fa fa-eye"></i></td>
+      </tr>
+    `;
+
+    row.addEventListener('click', async (e) => {
+      updateSalesReceipt(e, row);
+      console.log('Row Clicked');
+    });
+
+    if (tableBody) tableBody.appendChild(row);
+  });
+}
+
+// Update Staff Sales Report
+function updateStaffSalesData(staffSalesList, staffSalesSummary) {
+  const staffTotalSale = document.getElementById('staffTotal-sales');
+  const staffTotalAmount = document.getElementById('staffTotal-amount');
+  const staffTotalPaid = document.getElementById('staffTotal-paid');
+  const staffTotalBalance = document.getElementById('staffTotal-balance');
+
+  const tableBody = document.querySelector('#staffSalesTable tbody');
+
+  console.log(staffSalesList);
+  console.log(staffSalesSummary);
+
+  if (!staffSalesSummary || !staffSalesList) {
+    console.error('staffSalesSummary/staffSalesList is undefined:');
+    return;
+  }
+
+  const { totalSales, totalAmount, totalPaid, totalBalance } =
+    staffSalesSummary;
+
+  staffTotalSale.textContent = totalSales;
+  staffTotalAmount.textContent = `₦${formatAmountWithCommas(totalAmount)}`;
+  staffTotalPaid.textContent = `₦${formatAmountWithCommas(totalPaid)}`;
+  staffTotalBalance.textContent = `₦${formatAmountWithCommas(totalBalance)}`;
+
+  if (tableBody) tableBody.innerHTML = '';
+
+  console.log(!staffSalesList.length);
+  console.log(staffSalesList.length);
+
+  if (!staffSalesList.length) {
+    const emptyRow = document.createElement('tr');
+    emptyRow.innerHTML = `
+        <td colspan="11" class="table-error-text">No Sales for this Staff.</td>
+      `;
+    if (tableBody) tableBody.appendChild(emptyRow);
+    return;
+  }
+
+  staffSalesList.forEach((sale, index) => {
+    const row = document.createElement('tr');
+    row.classList.add('table-body-row');
+    row.dataset.saleId = sale.id;
+
+    console.log('sale', sale);
+
+    const {
+      id,
+      business_day,
+      customer_name,
+      total_amount,
+      amount_paid,
+      balance,
+      status,
+    } = sale;
+
+    const shopName = sale.Shop.shop_name;
+    const salesItems = sale.SalesItems;
+
+    if (row)
+      row.innerHTML = `
+      <tr  class="table-body-row">
+        <td  class="py-1">${index + 1}</td>
+        <td  class="py-1">${business_day}</td>
+        <td  class="py-1">${shopName}</td>
+        <td  class="py-1">${customer_name}</td>
+        <td class="py-1">₦${formatAmountWithCommas(total_amount)}</td>
+        <td class="py-1">₦${formatAmountWithCommas(amount_paid)}</td>
+        <td class="py-1">₦${formatAmountWithCommas(balance)}</td>
+        <td class="py-1">${formatSaleStatus(status)}</td>
+        <td class="py-1 soldItemDetailReport" data-sale-id="${id}"><i class="fa fa-eye"></i></td>
+      </tr>
+    `;
+
+    row.addEventListener('click', async (e) => {
+      updateSalesReceipt(e, row);
+      console.log('Row Clicked');
+    });
+
+    if (tableBody) tableBody.appendChild(row);
+  });
+}
+
+// Display individual Sales Report
+
+async function updateSalesReceipt(e, row) {
+  e.preventDefault();
+  showGlobalLoader();
+  // Finally open the modal
+  openSaleDetailsModal();
+  const saleId = row.dataset.saleId;
+  console.log(`Open details for Sale ID: ${saleId}`);
+
+  // Get Sales by ID
+  try {
+    showGlobalLoader();
+    const saleDetails = await getSaleById(saleId);
+    const shopDetails = JSON.parse(localStorage.getItem(shopKey)) || [];
+
+    console.log('shopDetails', shopDetails);
+    console.log('saleDetails', saleDetails);
+
+    if (!shopDetails) {
+      console.log('No shopDetails');
+      showToast('error', '❎ Cannot get Shop Details');
+      closeModal();
+      return;
+    }
+
+    if (!saleDetails || !saleDetails.data) {
+      console.log('No saleDetails');
+      showToast('error', '❎  Cannot get Sale Details');
+      closeModal();
+      return;
+    }
+
+    const {
+      Account,
+      SaleItems,
+      Shop,
+      receipt_number,
+      customer_name,
+      customer_phone,
+      payment_method,
+
+      total_amount,
+      amount_paid,
+      balance,
+      status,
+      business_day,
+      sale_time,
+    } = saleDetails.data;
+
+    // Populate sale summary
+
+    // Top Part Below
+    document.getElementById('soldDetailShop').textContent =
+      Shop?.shop_name || 'N/A';
+    document.getElementById('soldDetailShopAddress').textContent =
+      shopDetails?.location || 'N/A';
+
+    document.getElementById('soldDetailReceiptNumber').textContent =
+      receipt_number;
+    document.getElementById('soldDetailCustomerName').textContent =
+      `${customer_name} - ${customer_phone}` || 'N/A';
+    document.getElementById('soldDetailStaffName').textContent =
+      `${Account?.first_name} ${Account?.last_name}` || 'N/A';
+    document.getElementById('soldDetailDate').textContent = new Date(
+      sale_time
+    ).toLocaleString();
+
+    // Bottom Part Below
+
+    document.getElementById('soldDetailPaymentMethod').textContent =
+      payment_method || 'N/A';
+
+    document.getElementById(
+      'soldDetailTotalAmount'
+    ).textContent = `₦${formatAmountWithCommas(total_amount)}`;
+    document.getElementById(
+      'soldDetailPaidAmount'
+    ).textContent = `₦${formatAmountWithCommas(amount_paid)}`;
+    document.getElementById(
+      'soldDetailBalanceAmount'
+    ).textContent = `₦${formatAmountWithCommas(balance)}`;
+
+    document.getElementById('soldDetailStatus').textContent =
+      formatSaleStatus(status);
+
+    // Sales Items - Middle Part Below
+    const itemsTableBody = document.querySelector('.itemsTable tbody');
+    itemsTableBody.innerHTML = ''; // clear previous rows
+
+    SaleItems.forEach((item, index) => {
+      const itemRow = document.createElement('tr');
+      itemRow.classList.add('table-body-row');
+      itemRow.innerHTML = `
+             <td class="py-1">${item.Product.name}</td>
+                           <td class="py-1">${item.quantity}</td>
+                           <td class="py-1">₦${formatAmountWithCommas(
+                             item.unit_price
+                           )}</td>
+                           <td class="py-1">${formatAmountWithCommas(
+                             item.selling_price
+                           )}</td>
+             
+                     `;
+      itemsTableBody.appendChild(itemRow);
+    });
+
+    // Print & Download
+
+    //   Print
+    //   const printReceiptBtn =
+    //     document.querySelector('.printReceiptBtn');
+
+    //Keep this earlier Print Logic
+
+    //            printReceiptBtn.addEventListener('click', () => {
+    //              showBtnLoader(printReceiptBtn);
+    //              const receiptContent =
+    //                document.querySelector('.pdfHere').innerHTML;
+
+    //              const printWindow = window.open('', '', 'width=300,height=500');
+    //              printWindow.document.write(`
+    //  <html>
+    //    <head>
+    //      <title>Print Receipt</title>
+    //      <style>
+    //        body { font-family: monospace; width: 58mm; font-size: 8px; padding: 5px; }
+    //        .center { text-align: center; }
+    //        .bold { font-weight: bold; }
+    //        .line { border-top: 1px dashed #000; margin: 4px 0; }
+    //        table { width: 100%; font-size: 12px; border-collapse: collapse; }
+    //        td { padding: 2px 5px; }
+    //        .footer { text-align: center; margin-top: 10px; }
+    //      </style>
+    //    </head>
+    //    <body>${receiptContent}</body>
+    //  </html>`);
+    //              printWindow.document.close();
+    //              printWindow.focus();
+    //              printWindow.print();
+    //              // printWindow.close();
+    //              hideBtnLoader(printReceiptBtn);
+    //            });
+
+    const printReceiptBtn = document.querySelector('.printReceiptBtn');
+
+    printReceiptBtn.addEventListener('click', () => {
+      showBtnLoader(printReceiptBtn);
+      printReceiptBtn.disabled = true; // Disable the button
+
+      const receiptContent = document.querySelector('.pdfHere').innerHTML;
+
+      const printWindow = window.open('', '', 'width=300,height=500');
+      printWindow?.document.write(`
+                   <html>
+                       <head>
+                           <title>Print Receipt</title>
+                           <style>
+                               body { font-family: monospace; width: 58mm; font-size: 8px; padding: 5px; }
+                               .center { text-align: center; }
+                               .bold { font-weight: bold; }
+                               .line { border-top: 1px dashed #000; margin: 4px 0; }
+                               table { width: 100%; font-size: 12px; border-collapse: collapse; }
+                               td { padding: 2px 5px; }
+                               .footer { text-align: center; margin-top: 10px; }
+                           </style>
+                       </head>
+                       <body onload="window.print()">
+                           ${receiptContent}
+                           <script>
+                               window.onafterprint = () => {
+                                   window.close();
+                               };
+                           </script>
+                       </body>
+                   </html>
+               `);
+
+      printWindow?.document.close();
+      printWindow?.focus();
+
+      const checkClosedInterval = setInterval(() => {
+        if (printWindow?.closed) {
+          clearInterval(checkClosedInterval);
+          hideBtnLoader(printReceiptBtn);
+          printReceiptBtn.disabled = false; // Re-enable the button
+        }
+      }, 500);
+    });
+
+    //   Download;
+
+    const generatePdfBtn = document.querySelector('.generatePdfBtn');
+    generatePdfBtn?.addEventListener('click', () => {
+      showBtnLoader(generatePdfBtn);
+      const receiptElement = document.querySelector('.pdfHere');
+      if (!receiptElement) {
+        showToast('fail', '❎ Receipt content not found.');
+        return;
+      }
+
+      const opt = {
+        margin: 10,
+        filename: `receipt-${Date.now()}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: {
+          unit: 'mm',
+          format: 'a4', // adjust height based on content
+          orientation: 'portrait',
+        },
+      };
+
+      // console.log(opt);
+      html2pdf().set(opt).from(receiptElement).save();
+      hideBtnLoader(generatePdfBtn);
+    });
+
+    hideGlobalLoader();
+    //   openSaleDetailsModal();
+  } catch (err) {
+    hideGlobalLoader();
+    console.error('Error fetching sale details:', err.message);
+    showToast('fail', `❎ Failed to load sale details`);
+    closeModal();
   }
 }
 
@@ -2705,282 +2772,3 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 });
-
-// BACKUP POS FORM DATA, I DONT WANT TO DELETE IT>
-
-// async function renderPosTable() {
-//   const posTableBody = document.querySelector('.posTableDisplay tbody');
-//   const loadingRow = document.querySelector('.loading-row');
-//   const loadMoreButton = document.querySelector('#loadMoreButton');
-
-//   if (!posTableBody || !loadingRow) {
-//     console.error('Table or loading row not found');
-//     return;
-//   }
-
-//   try {
-//     loadingRow.style.display = 'table-row';
-
-//     const posTransactionData = await getPosTransactions(currentPage, pageSize);
-//     const posTransactions = posTransactionData.data;
-
-//     const pagination = posTransactionData.meta.pagination;
-
-//     loadingRow.style.display = 'none';
-
-//     if (posTransactions.length === 0 && currentPage === 1) {
-//       posTableBody.innerHTML =
-//         '<tr class="loading-row"><td colspan="11" class="table-error-text ">No Transactions Available.</td></tr>';
-//       return;
-//     }
-
-//     posTransactions.forEach((posTransaction, index) => {
-//       const {
-//         fee_payment_type,
-//         transaction_amount,
-//         transaction_fee,
-//         transaction_remark,
-//         transaction_type,
-//         withdrawal_type,
-//       } = posTransaction;
-
-//       function toTitleCase(value) {
-//         return value.charAt(0).toUpperCase() + value.slice(1);
-//       }
-
-//       function formatTransactionType(value) {
-//         switch (value.toLowerCase()) {
-//           case 'withdraw':
-//             return 'Withdraw';
-//           case 'withdrawal/transfer':
-//             return 'Withdrawal & Transfer';
-//           case 'bill-payment':
-//             return 'Bill Payment';
-//           case 'deposit':
-//             return 'Deposit';
-//           default:
-//             return value;
-//         }
-//       }
-
-//       const feePaymentType = toTitleCase(fee_payment_type || 'N/A');
-//       const transactionType = transaction_type?.type || 'N/A';
-//       const withdrawalType = toTitleCase(withdrawal_type?.type || 'N/A');
-
-//       const row = document.createElement('tr');
-//       row.classList.add('table-body-row');
-
-//       row.innerHTML = `
-//        <td class="py-1">${index + 1 + (currentPage - 1) * pageSize}.</td>
-//        <td class="py-1 posTransTypeReport">${formatTransactionType(
-//          transactionType
-//        )}</td>
-//        <td class="py-1 posAmountReport">&#x20A6;${formatAmountWithCommas(
-//          transaction_amount
-//        )}</td>
-//        <td class="py-1 posFeeReport">&#x20A6;${formatAmountWithCommas(
-//          transaction_fee
-//        )}</td>
-//        <td class="py-1 posFeePaymentMethodReport">${feePaymentType}</td>
-//        <td class="py-1 posPaymentMethodReport">${withdrawalType}</td>
-//        <td class="py-1 posPaymentMethodRemark">${transaction_remark}</td>
-//      `;
-
-//       posTableBody.appendChild(row);
-//     });
-
-//     updateTotalPosAmounts(posTransactions);
-
-//     // Show or hide the "Load More" button based on whether there are more pages
-//     if (currentPage < pagination.pageCount) {
-//       loadMoreButton.style.display = 'block';
-//     } else {
-//       loadMoreButton.style.display = 'none';
-//     }
-//   } catch (error) {
-//     console.error('Error rendering POS transactions:', error);
-//     posTableBody.innerHTML =
-//       '<tr class="loading-row"><td colspan="7" class="table-error-text ">Error Loading Transactions.</td></tr>';
-//   }
-
-//   //   try {
-//   //     loadingRow.style.display = 'table-row';
-
-//   //     const posTransactionData = await getPosTransactions(currentPage, pageSize);
-//   //     const posTransactions = posTransactionData.data;
-//   //     const pagination = posTransactionData.meta.pagination;
-
-//   //     posTableBody.innerHTML = '';
-
-//   //     if (posTransactions.length === 0) {
-//   //       posTableBody.innerHTML =
-//   //         '<tr class="loading-row"><td colspan="6" class="table-error-text ">No Products Available.</td></tr>';
-//   //     } else {
-//   //       posTransactions.forEach((posTransaction, index) => {
-//   //         const {
-//   //           fee_payment_type,
-//   //           transaction_amount,
-//   //           transaction_fee,
-//   //           transaction_remark,
-//   //           transaction_type,
-//   //           withdrawal_type,
-//   //         } = posTransaction;
-
-//   //         function toTitleCase(value) {
-//   //           return value.charAt(0).toUpperCase() + value.slice(1);
-//   //         }
-
-//   //         function formatTransactionType(value) {
-//   //           switch (value.toLowerCase()) {
-//   //             case 'withdraw':
-//   //               return 'Withdraw';
-//   //             case 'withdrawal/transfer':
-//   //               return 'Withdrawal & Transfer';
-//   //             case 'bill-payment':
-//   //               return 'Bill Payment';
-//   //             case 'deposit':
-//   //               return 'Deposit';
-//   //             default:
-//   //               return value;
-//   //           }
-//   //         }
-
-//   //         const feePaymentType = toTitleCase(fee_payment_type || 'N/A');
-//   //         const transactionType = transaction_type?.type || 'N/A';
-//   //         const withdrawalType = toTitleCase(withdrawal_type?.type || 'N/A');
-
-//   //         const row = document.createElement('tr');
-//   //         row.classList.add('table-body-row');
-
-//   //         row.innerHTML = `
-//   //          <td class="py-1">${index + 1}.</td>
-//   //          <td class="py-1 posTransTypeReport">${formatTransactionType(
-//   //            transactionType
-//   //          )}</td>
-//   //          <td class="py-1 posAmountReport">&#x20A6;${formatAmountWithCommas(
-//   //            transaction_amount
-//   //          )}</td>
-//   //            <td class="py-1 posFeeReport">&#x20A6;${formatAmountWithCommas(
-//   //              transaction_fee
-//   //            )}</td>
-//   //            <td class="py-1 posFeePaymentMethodReport">${feePaymentType}</td>
-//   //            <td class="py-1 posPaymentMethodReport">${withdrawalType}</td>
-//   //            <td class="py-1 posPaymentMethodRemark">${transaction_remark}</td>
-//   //               `;
-
-//   //         posTableBody.appendChild(row);
-//   //       });
-//   //     }
-
-//   //     updateTotalPosAmounts(posTransactions);
-//   //   } catch (error) {
-//   //     console.error('Error rendering products:', error);
-//   //     goodsTableBody.innerHTML =
-//   //       '<tr class="loading-row"><td colspan="6" class="table-error-text ">No Products Available.</td></tr>';
-//   //   } finally {
-//   //     loadingRow.style.display = 'none';
-//   //   }
-// }
-
-// JavaScript to Load More
-
-//  Disabled Sim Registration and Charging features
-// // JS to Render saved Charged form data
-// const storedChargedData =
-//   JSON.parse(localStorage.getItem('chargeFormData')) || [];
-
-// function renderChargingTable() {
-//   const chargingTableBody = document.querySelector(
-//     '.chargingTableDisplay tbody'
-//   );
-
-//   if (chargingTableBody) {
-//     chargingTableBody.innerHTML = '';
-
-//     storedChargedData.forEach((data, index) => {
-//       const row = document.createElement('tr');
-//       row.classList.add('table-body-row');
-
-//       row.innerHTML = `
-//     <td class="py-1">${index + 1}.</td>
-//     <td class="py-1 chargedItemNameReport">${data.selectedDeviceType}</td>
-//     <td class="py-1 chargedItemPriceReport">&#x20A6; ${
-//       data.deviceChargeFeeInput
-//     }</td>
-//     <td class="py-1 chargedItemOwnerReport ">${data.deviceOwnerNameInput}</td>
-//     <td class="py-1 chargedItemIdReport ">${data.deviceIdInput}</td>
-//     <td class="py-1 chargedItemAltNumberReport ">${
-//       data.alternativeNumberInput
-//     }</td>
-//     <td class="py-1 chargedItemStatusReport ">${data.selectedDeviceStatus}</td>
-//       `;
-
-//       chargingTableBody.appendChild(row);
-//     });
-//   }
-
-//   updateTotalChargedAmounts(storedChargedData);
-// }
-
-// // JS to give total Charged Amount
-// function updateTotalChargedAmounts(data) {
-//   const totalChargedAmount = document.getElementById('totalChargedAmount');
-
-//   const totalAmount = data.reduce(
-//     (sum, item) => sum + item.deviceChargeFeeInput,
-//     0
-//   );
-
-//   if (totalChargedAmount) {
-//     totalChargedAmount.innerHTML = `<strong>Total Amount = &nbsp;&#x20A6;${formatAmountWithCommas(
-//       totalAmount
-//     )}</strong>`;
-//   }
-// }
-// renderChargingTable();
-
-// // JS to Render saved Sim Registration form data
-// const storedSimRegData =
-//   JSON.parse(localStorage.getItem('simRegFormData')) || [];
-
-// function renderSimRegTable() {
-//   const SimRegTableBody = document.querySelector('.simRegTableDisplay tbody');
-//   if (SimRegTableBody) {
-//     SimRegTableBody.innerHTML = '';
-
-//     storedSimRegData.forEach((data, index) => {
-//       const row = document.createElement('tr');
-//       row.classList.add('table-body-row');
-
-//       row.innerHTML = `
-//     <td class="py-1">${index + 1}.</td>
-//     <td class="py-1 simNameReport">${data.selectedSimName}</td>
-//     <td class="py-1 simPriceReport">&#x20A6; ${data.simRegAmountInput}</td>
-//     <td class="py-1 PhoneNumberReport">${data.phoneNumberInput}</td>
-//     <td class="py-1 simStatusReport ">${data.checkboxStatus}</td>
-//       `;
-
-//       SimRegTableBody.appendChild(row);
-//     });
-//   }
-
-//   updateTotalSimRegAmounts(storedSimRegData);
-// }
-
-// // JS to give total SIM Reg Amount
-// function updateTotalSimRegAmounts(data) {
-//   const totalSimRegAmount = document.getElementById('totalSimRegAmount');
-
-//   const totalAmount = data.reduce(
-//     (sum, item) => sum + item.simRegAmountInput,
-//     0
-//   );
-
-//   if (totalSimRegAmount) {
-//     totalSimRegAmount.innerHTML = `<strong>Total Amount = &nbsp;&#x20A6;${formatAmountWithCommas(
-//       totalAmount
-//     )}</strong>`;
-//   }
-// }
-
-// renderSimRegTable();

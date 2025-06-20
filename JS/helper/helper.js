@@ -543,12 +543,33 @@ export function populateBusinessShopDropdown(
   const dropdown = document.getElementById(dropdownId);
   if (!dropdown) return;
 
+  console.log('code arrived here too');
+
   dropdown.innerHTML = `<option value="">Select a shop</option>`;
 
   shopList.forEach((shop) => {
     const option = document.createElement('option');
     option.value = shop.id;
     option.textContent = `${shop.shop_name} - ${shop.location}`;
+    dropdown.appendChild(option);
+  });
+}
+
+export function populateBusinessStaffDropdown(
+  staffList = [],
+  dropdownId = 'staffDropdown'
+) {
+  const dropdown = document.getElementById(dropdownId);
+  if (!dropdown) return;
+
+  console.log(staffList);
+
+  dropdown.innerHTML = `<option value="">Select a Staff</option>`;
+
+  staffList.forEach((staff) => {
+    const option = document.createElement('option');
+    option.value = staff.id;
+    option.textContent = `${staff.firstName} ${staff.lastName}`;
     dropdown.appendChild(option);
   });
 }

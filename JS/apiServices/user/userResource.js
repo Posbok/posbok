@@ -2,6 +2,7 @@ import config from '../../../config.js';
 import {
   clearFormInputs,
   hideGlobalLoader,
+  populateBusinessStaffDropdown,
   showGlobalLoader,
 } from '../../helper/helper.js';
 import {
@@ -312,6 +313,7 @@ export async function checkAndPromptCreateStaff() {
     //  console.log('enrichedShopData', enrichedShopData);
     showGlobalLoader();
     populateStaffTable(allStaffs, enrichedShopData);
+    populateBusinessStaffDropdown(allStaffs);
 
     if (!response.ok) {
       throw new Error(data.message || 'Something went wrong');
