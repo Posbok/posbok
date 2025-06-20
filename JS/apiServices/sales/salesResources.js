@@ -127,7 +127,7 @@ export async function getSalesByProduct(ProductId) {
   try {
     showGlobalLoader();
     const selectedProductData = await safeFetch(
-      `${baseUrl}/api/sales/products/${ProductId}`,
+      `${baseUrl}/api/sales/product/${ProductId}`,
       {
         method: 'GET',
         headers: {

@@ -79,33 +79,35 @@
       }
    }
 
-   .sellProductCategory-section,
-   .adminSellProductCategory-section {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      overflow-x: auto;
-      padding-top: .5rem;
+}
 
-      white-space: nowrap;
-      padding-bottom: 0.3rem;
 
-      // Optional: make the scrollbar small and styled
-      scrollbar-width: thin;
-      /* For Firefox */
-      scrollbar-color: #ccc transparent;
+.sellProductCategory-section,
+.adminSellProductCategory-section {
+   display: flex;
+   align-items: center;
+   gap: 1rem;
+   overflow-x: auto;
+   padding-top: .5rem;
 
-      &::-webkit-scrollbar {
-         height: 6px;
-      }
+   white-space: nowrap;
+   padding-bottom: 0.3rem;
 
-      &::-webkit-scrollbar-track {
-         background: transparent;
-      }
+   // Optional: make the scrollbar small and styled
+   scrollbar-width: thin;
+   /* For Firefox */
+   scrollbar-color: #ccc transparent;
 
-      &::-webkit-scrollbar-thumb {
-         background-color: #aaa;
-         border-radius: 4px;
-      }
+   &::-webkit-scrollbar {
+      height: 6px;
+   }
+
+   &::-webkit-scrollbar-track {
+      background: transparent;
+   }
+
+   &::-webkit-scrollbar-thumb {
+      background-color: #aaa;
+      border-radius: 4px;
    }
 }

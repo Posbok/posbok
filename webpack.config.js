@@ -13,7 +13,7 @@ module.exports = {
     business: './JS/business.js',
     signup: './JS/signup.js',
     shops: './JS/shops.js',
-    user: './JS/user.js',
+    posAndSalesReportAccordion: './JS/posAndSalesReportAccordion.js',
     main: './JS/script.js', // Common JS for the main page if needed
   },
 

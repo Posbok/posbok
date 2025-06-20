@@ -120,7 +120,7 @@ async function fetchAllProducts(shopId) {
       if (adminSellProductSearchSection)
         adminSellProductSearchSection.style.display = 'block';
       if (adminSellProductCategorySection)
-        adminSellProductCategorySection.style.display = 'block';
+        adminSellProductCategorySection.style.display = 'flex';
     }
 
     //  console.log('Products', products);
@@ -207,7 +207,7 @@ if (isAdmin && sellProductShopDropdown) {
     if (adminSellProductSearchSection)
       adminSellProductSearchSection.style.display = 'block';
     if (adminSellProductCategorySection)
-      adminSellProductCategorySection.style.display = 'block';
+      adminSellProductCategorySection.style.display = 'flex';
     //  if (adminSellProductName) adminSellProductName.style.display = 'block';
     //  if (adminAutocompleteList) adminAutocompleteList.style.display = 'block';
 
