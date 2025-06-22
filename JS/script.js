@@ -482,7 +482,7 @@ async function renderBusinessDayButtons() {
   if (isStaff) {
     const businessDay = await getCurrentBusinessDay(isStaff ? shopId : '');
 
-    //  console.log('new Business Day:', businessDay.data);
+    console.log('new Business Day:', businessDay.data);
 
     if (!businessInitBtnDiv) return;
 
@@ -615,13 +615,17 @@ export function bindOpenBusinessDayFormListener() {
         : document.querySelector('#openPosCapitalAmount');
 
       const openBusinessDayDetails = {
-        shopId: isAdmin ? businessDayShopDropdown.value : shopId,
+        shopId: isAdmin
+          ? Number(businessDayShopDropdown.value)
+          : Number(shopId),
         openingCash: Number(getAmountForSubmission(openingCashAmount)),
         notes: openingNotes,
       };
 
       const posCapitalDetails = {
-        shopId: isAdmin ? businessDayShopDropdown.value : shopId,
+        shopId: isAdmin
+          ? Number(businessDayShopDropdown.value)
+          : Number(shopId),
         amount: Number(getAmountForSubmission(openPosCapitalAmount)),
       };
 

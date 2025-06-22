@@ -247,19 +247,24 @@ body {
 //    }
 // }
 
-.printableReceipt {
-   font-family: monospace;
-   font-size: 10px;
-   width: 58mm;
-   line-height: 1.3;
-   text-align: center;
-}
 
-.printableReceipt table {
-   width: 100%;
-   border-collapse: collapse;
-}
 
-.printableReceipt td {
-   padding: 2px 0;
+@media print {
+   body * {
+      visibility: hidden;
+   }
+
+   #printReceiptContainer,
+   #printReceiptContainer * {
+      visibility: visible;
+   }
+
+   #printReceiptContainer {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 58mm;
+      padding: 1mm;
+      page-break-inside: avoid;
+   }
 }

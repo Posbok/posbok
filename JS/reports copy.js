@@ -1795,45 +1795,35 @@ async function updateSalesReceipt(e, row) {
 
     const printReceiptBtn = document.querySelector('.printReceiptBtn');
 
-    printReceiptBtn.onclick = () => {
-      const container = document.getElementById('receiptPrintPDF');
+    const receiptHeight = document.querySelector('.pdfHere').scrollHeight;
+    const heightInMM = receiptHeight * 0.264583; // px to mm
 
-      container.innerHTML = renderReceiptPrintHTML(
-        saleDetails.data,
-        shopData?.data
-      );
+    console.log(heightInMM);
 
-      container.style.display = 'block'; // temporarily show
-
-      // const receiptHeightPx = container.scrollHeight;
-      const receiptHeightPx = container.getBoundingClientRect().height;
-      const heightInMM = receiptHeightPx * 0.264583;
-      // const adjustedHeight = Math.floor(heightInMM) - 4;
-
-      console.log(heightInMM);
-      // console.log(adjustedHeight);
+    printReceiptBtn?.addEventListener('click', () => {
+      showBtnLoader(printReceiptBtn);
+      const receiptElement = document.querySelector('.pdfHere');
+      if (!receiptElement) {
+        showToast('fail', '❎ Receipt content not found.');
+        return;
+      }
 
       const opt = {
         margin: 0,
         filename: `receipt-${Date.now()}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2 },
-        pagebreak: { avoid: 'tr', mode: ['css', 'legacy'] },
         jsPDF: {
           unit: 'mm',
-          format: [58, heightInMM], // height can be adjusted dynamically if needed
+          format: [58, 200], // adjust height based on content
           orientation: 'portrait',
         },
       };
 
-      html2pdf()
-        .set(opt)
-        .from(container)
-        .save()
-        .then(() => {
-          container.style.display = 'none';
-        });
-    };
+      // console.log(opt);
+      html2pdf().set(opt).from(receiptElement).save();
+      hideBtnLoader(printReceiptBtn);
+    });
 
     //  printReceiptBtn.addEventListener('click', () => {
     //    showBtnLoader(printReceiptBtn);
@@ -1882,8 +1872,7 @@ async function updateSalesReceipt(e, row) {
     //   Download;
 
     const generatePdfBtn = document.querySelector('.generatePdfBtn');
-
-    generatePdfBtn.onclick = () => {
+    generatePdfBtn?.addEventListener('click', () => {
       showBtnLoader(generatePdfBtn);
       const receiptElement = document.querySelector('.pdfHere');
       if (!receiptElement) {
@@ -1906,7 +1895,7 @@ async function updateSalesReceipt(e, row) {
       console.log(opt);
       html2pdf().set(opt).from(receiptElement).save();
       hideBtnLoader(generatePdfBtn);
-    };
+    });
 
     hideGlobalLoader();
     //   openSaleDetailsModal();
@@ -1915,88 +1904,9 @@ async function updateSalesReceipt(e, row) {
     console.error('Error fetching sale details:', err.message);
     showToast('fail', `❎ Failed to load sale details`);
     closeModal();
-    clearReceiptDiv();
   } finally {
     hideGlobalLoader();
   }
-}
-
-function renderReceiptPrintHTML(saleDetails, shopDetails) {
-  return `
-    <div style="font-family: monospace; font-size: 10px; width: 58mm; padding: 5px;">
-      <h3 style="text-align: center;">${shopDetails?.shop_name || ''}</h3>
-      <p style="text-align: center;" class="mb-1">${
-        shopDetails?.location || ''
-      }</p>
-      <hr class="mb-1" />
-      <p>Receipt: ${saleDetails.receipt_number}</p>
-      <p>Customer: ${saleDetails.customer_name} - ${
-    saleDetails.customer_phone
-  }</p>
-      <p>Staff: ${saleDetails.Account?.first_name} ${
-    saleDetails.Account?.last_name
-  }</p>
-      <p  class="mb-1" >Date: ${new Date(
-        saleDetails.sale_time
-      ).toLocaleString()}</p>
-      <hr />
-<table class="mb-1" style="width: 100%; table-layout: fixed; word-wrap: break-word; font-size: 10px;">
-  <thead  class="text-align: left>
-    <tr class="text-align: left">
-      <th style="width: 40%; text-align: left;">Item</th>
-      <th style="width: 10%; text-align: left;">Qty</th>
-      <th style="width: 25%; text-align: left;">Price</th>
-      <th style="width: 30%; text-align: left;">Total</th>
-    </tr>
-  </thead>
-  <tbody>
-    ${saleDetails.SaleItems.map(
-      (item) => `
-        <tr>
-          <td style="word-break: break-word;">${item.Product.name}</td>
-          <td>${item.quantity}</td>
-          <td>₦${formatAmountWithCommas(item.unit_price)}</td>
-          <td>₦${formatAmountWithCommas(item.selling_price)}</td>
-        </tr>
-      `
-    ).join('')}
-  </tbody>
-</table>
-
-      <hr />
-      <p>Total: ₦${formatAmountWithCommas(saleDetails.total_amount)}</p>
-      <p>Paid: ₦${formatAmountWithCommas(saleDetails.amount_paid)}</p>
-      <p>Balance: ₦${formatAmountWithCommas(saleDetails.balance)}</p>
-      <p>Status: ${formatSaleStatus(saleDetails.status)}</p>
-      <hr />
-      <p  class="mb-1" style="text-align: center;">THANK YOU FOR SHOPPING</p>
-    </div>
-  `;
-}
-
-function clearReceiptDiv() {
-  // Top Part Below
-  document.getElementById('soldDetailShop').textContent = '';
-  document.getElementById('soldDetailShopAddress').textContent = '';
-
-  document.getElementById('soldDetailReceiptNumber').textContent = '';
-  document.getElementById('soldDetailCustomerName').textContent = '';
-  document.getElementById('soldDetailStaffName').textContent = '';
-  document.getElementById('soldDetailDate').textContent = '';
-
-  // Bottom Part Below
-
-  document.getElementById('soldDetailPaymentMethod').textContent = '';
-
-  document.getElementById('soldDetailTotalAmount').textContent = '';
-  document.getElementById('soldDetailPaidAmount').textContent = '';
-  document.getElementById('soldDetailBalanceAmount').textContent = '';
-
-  document.getElementById('soldDetailStatus').textContent = '';
-
-  // Sales Items - Middle Part Below
-  const itemsTableBody = document.querySelector('.itemsTable tbody');
-  itemsTableBody.innerHTML = ''; // clear previous rows
 }
 
 if (isStaff) {
@@ -2447,7 +2357,6 @@ if (isStaff) {
                 console.log('No saleDetails');
                 showToast('error', '❎  Cannot get Sale Details');
                 closeModal();
-                clearReceiptDiv();
                 return;
               }
 
@@ -2566,46 +2475,50 @@ if (isStaff) {
               const printReceiptBtn =
                 document.querySelector('.printReceiptBtn');
 
-              printReceiptBtn.onclick = () => {
-                const container = document.getElementById('receiptPrintPDF');
+              printReceiptBtn.addEventListener('click', () => {
+                showBtnLoader(printReceiptBtn);
+                printReceiptBtn.disabled = true; // Disable the button
 
-                container.innerHTML = renderReceiptPrintHTML(
-                  saleDetails.data,
-                  shopData?.data
-                );
+                const receiptContent =
+                  document.querySelector('.pdfHere').innerHTML;
 
-                container.style.display = 'block'; // temporarily show
+                const printWindow = window.open('', '', 'width=300,height=500');
+                printWindow.document.write(`
+                   <html>
+                       <head>
+                           <title>Print Receipt</title>
+                           <style>
+                               body { font-family: monospace; width: 58mm; font-size: 8px; padding: 5px; }
+                               .center { text-align: center; }
+                               .bold { font-weight: bold; }
+                               .line { border-top: 1px dashed #000; margin: 4px 0; }
+                               table { width: 100%; font-size: 12px; border-collapse: collapse; }
+                               td { padding: 2px 5px; }
+                               .footer { text-align: center; margin-top: 10px; }
+                           </style>
+                       </head>
+                       <body onload="window.print()">
+                           ${receiptContent}
+                           <script>
+                               window.onafterprint = () => {
+                                   window.close();
+                               };
+                           </script>
+                       </body>
+                   </html>
+               `);
 
-                // const receiptHeightPx = container.scrollHeight;
-                const receiptHeightPx =
-                  container.getBoundingClientRect().height;
-                const heightInMM = receiptHeightPx * 0.264583;
-                // const adjustedHeight = Math.floor(heightInMM) - 4;
+                printWindow.document.close();
+                printWindow.focus();
 
-                console.log(heightInMM);
-                // console.log(adjustedHeight);
-
-                const opt = {
-                  margin: 0,
-                  filename: `receipt-${Date.now()}.pdf`,
-                  image: { type: 'jpeg', quality: 0.98 },
-                  html2canvas: { scale: 2 },
-                  pagebreak: { avoid: 'tr', mode: ['css', 'legacy'] },
-                  jsPDF: {
-                    unit: 'mm',
-                    format: [58, heightInMM], // height can be adjusted dynamically if needed
-                    orientation: 'portrait',
-                  },
-                };
-
-                html2pdf()
-                  .set(opt)
-                  .from(container)
-                  .save()
-                  .then(() => {
-                    container.style.display = 'none';
-                  });
-              };
+                const checkClosedInterval = setInterval(() => {
+                  if (printWindow.closed) {
+                    clearInterval(checkClosedInterval);
+                    hideBtnLoader(printReceiptBtn);
+                    printReceiptBtn.disabled = false; // Re-enable the button
+                  }
+                }, 500);
+              });
 
               //   Download;
 
@@ -2642,7 +2555,6 @@ if (isStaff) {
               console.error('Error fetching sale details:', err.message);
               showToast('fail', `❎ Failed to load sale details`);
               closeModal();
-              clearReceiptDiv();
             }
           });
 
@@ -2863,7 +2775,6 @@ const closeImageModalBtn = document.querySelectorAll('.closeImageModal');
 closeModalButton.forEach((closeButton) => {
   closeButton.addEventListener('click', function () {
     closeModal();
-    clearReceiptDiv();
   });
 });
 
