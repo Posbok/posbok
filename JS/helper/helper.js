@@ -543,8 +543,6 @@ export function populateBusinessShopDropdown(
   const dropdown = document.getElementById(dropdownId);
   if (!dropdown) return;
 
-  console.log('code arrived here too');
-
   dropdown.innerHTML = `<option value="">Select a shop</option>`;
 
   shopList.forEach((shop) => {
@@ -562,7 +560,7 @@ export function populateBusinessStaffDropdown(
   const dropdown = document.getElementById(dropdownId);
   if (!dropdown) return;
 
-  console.log(staffList);
+  //   console.log(staffList);
 
   dropdown.innerHTML = `<option value="">Select a Staff</option>`;
 

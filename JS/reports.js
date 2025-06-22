@@ -18,6 +18,8 @@ import {
 import { hideGlobalLoader, showGlobalLoader } from '../JS/helper/helper';
 import {
   getAllSales,
+  getDailySalesSummary,
+  getMonthlySalesSummary,
   getSaleById,
   getSalesByProduct,
   getSalesByStaff,
@@ -213,7 +215,7 @@ if (isAdmin) {
             `loadMoreSaleButton_admin_${shop.id}`
           ),
         });
-        console.log('filters:', filters);
+        //   console.log('filters:', filters);
       });
 
     document
@@ -322,7 +324,7 @@ if (isAdmin) {
 
     try {
       let loadingRow = document.querySelector('.loading-row');
-      console.log('loading', loadingRow);
+      // console.log('loading', loadingRow);
       if (!loadingRow) {
         loadingRow = document.createElement('tr');
         loadingRow.className = 'loading-row';
@@ -509,10 +511,9 @@ if (isAdmin) {
     tableBodyId,
     loadMoreButton,
   }) {
-    console.log('🧪 Applied Filters:', filters);
+    //  console.log('🧪 Applied Filters:', filters);
 
     const salesTableBody = document.querySelector(tableBodyId);
-    console.log(salesTableBody);
 
     if (!salesTableBody) {
       console.error('Error: Table body not found');
@@ -521,7 +522,7 @@ if (isAdmin) {
 
     try {
       let loadingRow = document.querySelector('.loading-row');
-      console.log(loadingRow);
+
       if (!loadingRow) {
         loadingRow = document.createElement('tr');
         loadingRow.className = 'leoading-row';
@@ -550,8 +551,6 @@ if (isAdmin) {
         limit: pageSize,
         filters,
       });
-
-      console.log(result);
 
       if (!result) throw new Error(result.message || 'Failed to fetch');
 
@@ -734,10 +733,6 @@ if (isAdmin) {
       `shopSales-report-${shopId}`
     );
 
-    console.log('shopPosTransactiionSection', shopPosTransactiionSection);
-
-    console.log('shopSalesTransactiionSection', shopSalesTransactiionSection);
-
     if (
       shopPosTransactiionSection &&
       shopPosTransactiionSection.dataset.loaded !== 'true'
@@ -785,8 +780,6 @@ if (isAdmin) {
     const sellProductCategorySection = document.querySelector(
       '.adminSellProductCategory-section'
     );
-
-    console.log(sellProductCategorySection);
 
     const sellProductName = document.querySelector(
       isAdmin ? '.adminSellProductName' : '.sellProductName'
@@ -836,8 +829,8 @@ if (isAdmin) {
     await fetchAllProducts(shopId);
 
     // JS for Tabs and Charts
-    const tabs = document.querySelectorAll('.tab-btn');
-    const contents = document.querySelectorAll('.tab-content');
+    const tabs = document.querySelectorAll(`.tab-btn_${shopId}`);
+    const contents = document.querySelectorAll(`.tab-content_${shopId}`);
 
     tabs.forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -845,13 +838,22 @@ if (isAdmin) {
         contents.forEach((c) => c.classList.remove('active'));
 
         btn.classList.add('active');
-        document.getElementById(btn.dataset.tab).classList.add('active');
+        //   document.getElementById(btn.dataset.tab).classList.add('active');
+
+        const targetId = btn.dataset.tab;
+        const targetContent = document.getElementById(targetId);
+
+        if (targetContent) {
+          targetContent.classList.add('active');
+        } else {
+          console.warn(`Tab content with ID "${targetId}" not found.`);
+        }
       });
     });
 
     // Dummy chart data For Daily and Monthly Sales
-    const dailyCtx = document.getElementById('dailyChart');
-    const monthlyCtx = document.getElementById('monthlyChart');
+    const dailyCtx = document.getElementById(`dailyChart_${shopId}`);
+    const monthlyCtx = document.getElementById(`monthlyChart_${shopId}`);
 
     const dummyHourlyData = Array.from({ length: 24 }, (_, hour) => ({
       hour,
@@ -956,9 +958,10 @@ if (isAdmin) {
     };
 
     const dailyChart = new ApexCharts(
-      document.querySelector('#dailyChart'),
+      document.querySelector(`#dailyChart_${shopId}`),
       dailyOptions
     );
+
     dailyChart.render();
     const dummyMonthlyData = Array.from({ length: 31 }, (_, i) => ({
       day: i + 1,
@@ -1047,11 +1050,11 @@ if (isAdmin) {
       ],
     };
 
-    const chart = new ApexCharts(
-      document.querySelector('#monthlyChart'),
+    const monthlyChart = new ApexCharts(
+      document.querySelector(`#monthlyChart_${shopId}`),
       options
     );
-    chart.render();
+    monthlyChart.render();
 
     const reportStaffDropdown = document.getElementById('reportStaffDropdown');
 
@@ -1074,8 +1077,6 @@ if (isAdmin) {
     loadStaffDropdown();
 
     reportStaffDropdown.addEventListener('change', async () => {
-      console.log(reportStaffDropdown.value);
-
       const staffId = reportStaffDropdown.value;
 
       const staffSalesResponse = await getSalesByStaff(staffId);
@@ -1090,8 +1091,6 @@ if (isAdmin) {
       const staffSalesDetails = staffSalesResponse.data;
       const staffSalesList = staffSalesDetails.sales;
       const staffSalesSummary = staffSalesDetails.summary;
-
-      console.log(staffSalesDetails);
 
       //  Staff Overview / Staff Performance
 
@@ -1119,7 +1118,6 @@ async function fetchAllProducts(shopId) {
     throw error;
   }
 
-  console.log(products);
   return products;
 }
 
@@ -1140,7 +1138,6 @@ async function fetchAllCategories(shopId) {
     throw error;
   }
 
-  console.log(categories);
   return categories;
 }
 
@@ -1429,9 +1426,6 @@ function updateProductData(productSalesList, productSalesSummary) {
 
   if (tableBody) tableBody.innerHTML = '';
 
-  console.log(!productSalesList.length);
-  console.log(productSalesList.length);
-
   if (!productSalesList.length) {
     const emptyRow = document.createElement('tr');
     emptyRow.innerHTML = `
@@ -1444,8 +1438,6 @@ function updateProductData(productSalesList, productSalesSummary) {
   productSalesList.forEach((sale, index) => {
     const row = document.createElement('tr');
     row.classList.add('table-body-row');
-
-    console.log('sale', sale);
 
     const { id, quantity, unit_price, selling_price, business_day } = sale;
 
@@ -1478,7 +1470,6 @@ function updateProductData(productSalesList, productSalesSummary) {
 
     row.addEventListener('click', async (e) => {
       updateSalesReceipt(e, row);
-      console.log('Row Clicked');
     });
 
     if (tableBody) tableBody.appendChild(row);
@@ -1554,7 +1545,6 @@ function updateAutocompleteList(products, shopId) {
         const productSalesSummary = productSalesData.summary;
 
         updateProductData(productSalesList, productSalesSummary);
-        console.log(productSalesData);
       });
       autocompleteList.appendChild(listItem);
     });
@@ -1568,9 +1558,6 @@ function updateStaffSalesData(staffSalesList, staffSalesSummary) {
   const staffTotalBalance = document.getElementById('staffTotal-balance');
 
   const tableBody = document.querySelector('#staffSalesTable tbody');
-
-  console.log(staffSalesList);
-  console.log(staffSalesSummary);
 
   if (!staffSalesSummary || !staffSalesList) {
     console.error('staffSalesSummary/staffSalesList is undefined:');
@@ -1587,9 +1574,6 @@ function updateStaffSalesData(staffSalesList, staffSalesSummary) {
 
   if (tableBody) tableBody.innerHTML = '';
 
-  console.log(!staffSalesList.length);
-  console.log(staffSalesList.length);
-
   if (!staffSalesList.length) {
     const emptyRow = document.createElement('tr');
     emptyRow.innerHTML = `
@@ -1603,8 +1587,6 @@ function updateStaffSalesData(staffSalesList, staffSalesSummary) {
     const row = document.createElement('tr');
     row.classList.add('table-body-row');
     row.dataset.saleId = sale.id;
-
-    console.log('sale', sale);
 
     const {
       id,
@@ -1636,7 +1618,6 @@ function updateStaffSalesData(staffSalesList, staffSalesSummary) {
 
     row.addEventListener('click', async (e) => {
       updateSalesReceipt(e, row);
-      console.log('Row Clicked');
     });
 
     if (tableBody) tableBody.appendChild(row);
@@ -1651,16 +1632,13 @@ async function updateSalesReceipt(e, row) {
   // Finally open the modal
   openSaleDetailsModal();
   const saleId = row.dataset.saleId;
-  console.log(`Open details for Sale ID: ${saleId}`);
 
   // Get Sales by ID
   try {
     showGlobalLoader();
     const saleDetails = await getSaleById(saleId);
     const shopDetails = JSON.parse(localStorage.getItem(shopKey)) || [];
-
-    console.log('shopDetails', shopDetails);
-    console.log('saleDetails', saleDetails);
+    console.log('saleDetails when Row', saleDetails);
 
     if (!shopDetails) {
       console.log('No shopDetails');
@@ -1696,8 +1674,6 @@ async function updateSalesReceipt(e, row) {
     showGlobalLoader();
     const shopData = await fetchShopDetail(Shop.id);
     //  hideGlobalLoader
-
-    console.log('shopData', shopData);
 
     // Populate sale summary
 
@@ -1740,6 +1716,7 @@ async function updateSalesReceipt(e, row) {
     itemsTableBody.innerHTML = ''; // clear previous rows
 
     SaleItems.forEach((item, index) => {
+      console.log('item', item);
       const itemRow = document.createElement('tr');
       itemRow.classList.add('table-body-row');
       itemRow.innerHTML = `
@@ -1810,7 +1787,6 @@ async function updateSalesReceipt(e, row) {
       const heightInMM = receiptHeightPx * 0.264583;
       // const adjustedHeight = Math.floor(heightInMM) - 4;
 
-      console.log(heightInMM);
       // console.log(adjustedHeight);
 
       const opt = {
@@ -1903,7 +1879,6 @@ async function updateSalesReceipt(e, row) {
         },
       };
 
-      console.log(opt);
       html2pdf().set(opt).from(receiptElement).save();
       hideBtnLoader(generatePdfBtn);
     };
@@ -1922,6 +1897,8 @@ async function updateSalesReceipt(e, row) {
 }
 
 function renderReceiptPrintHTML(saleDetails, shopDetails) {
+  console.log('shopDetails', shopDetails);
+
   return `
     <div style="font-family: monospace; font-size: 10px; width: 58mm; padding: 5px;">
       <h3 style="text-align: center;">${shopDetails?.shop_name || ''}</h3>
@@ -1955,18 +1932,20 @@ function renderReceiptPrintHTML(saleDetails, shopDetails) {
         <tr>
           <td style="word-break: break-word;">${item.Product.name}</td>
           <td>${item.quantity}</td>
-          <td>₦${formatAmountWithCommas(item.unit_price)}</td>
-          <td>₦${formatAmountWithCommas(item.selling_price)}</td>
+          <td>&#8358;${formatAmountWithCommas(item.selling_price)}</td>
+          <td>&#8358;${formatAmountWithCommas(
+            item.quantity * item.selling_price
+          )}</td>
         </tr>
       `
     ).join('')}
   </tbody>
 </table>
-
       <hr />
-      <p>Total: ₦${formatAmountWithCommas(saleDetails.total_amount)}</p>
-      <p>Paid: ₦${formatAmountWithCommas(saleDetails.amount_paid)}</p>
-      <p>Balance: ₦${formatAmountWithCommas(saleDetails.balance)}</p>
+      <p>Total: &#x20A6;${formatAmountWithCommas(saleDetails.total_amount)}</p>
+      <p>Paid: &#x20A6;${formatAmountWithCommas(saleDetails.amount_paid)}</p>
+      <p>Balance: &#x20A6;${formatAmountWithCommas(saleDetails.balance)}</p>
+      <p>Payment Method:${saleDetails.payment_method}</p>
       <p>Status: ${formatSaleStatus(saleDetails.status)}</p>
       <hr />
       <p  class="mb-1" style="text-align: center;">THANK YOU FOR SHOPPING</p>
@@ -1999,6 +1978,9 @@ function clearReceiptDiv() {
   itemsTableBody.innerHTML = ''; // clear previous rows
 }
 
+// getDailySalesSummary(88, '2025-06-17');
+// getMonthlySalesSummary(2025, 6);
+
 if (isStaff) {
   const shopId = parsedUserData?.shopId;
 
@@ -2025,7 +2007,7 @@ if (isStaff) {
     ?.addEventListener('click', () => {
       const filters = getSalesFilters('staff');
       renderSalesTable(1, pageSize, filters, 'staff');
-      console.log('filters:', filters);
+      // console.log('filters:', filters);
     });
 
   document
@@ -2516,17 +2498,17 @@ if (isStaff) {
              <td class="py-1">${item.Product.name}</td>
                            <td class="py-1">${item.quantity}</td>
                            <td class="py-1">₦${formatAmountWithCommas(
-                             item.unit_price
+                             item.selling_price
                            )}</td>
                            <td class="py-1">${formatAmountWithCommas(
-                             item.selling_price
+                             item.quantity * item.selling_price
                            )}</td>
              
                      `;
                 itemsTableBody.appendChild(itemRow);
               });
 
-              // Print & Download
+              // Print & Download - Staff
 
               //   Print
               //   const printReceiptBtn =
@@ -2567,11 +2549,12 @@ if (isStaff) {
                 document.querySelector('.printReceiptBtn');
 
               printReceiptBtn.onclick = () => {
+                console.log('object');
                 const container = document.getElementById('receiptPrintPDF');
 
                 container.innerHTML = renderReceiptPrintHTML(
                   saleDetails.data,
-                  shopData?.data
+                  shopDetails
                 );
 
                 container.style.display = 'block'; // temporarily show
@@ -2582,7 +2565,6 @@ if (isStaff) {
                 const heightInMM = receiptHeightPx * 0.264583;
                 // const adjustedHeight = Math.floor(heightInMM) - 4;
 
-                console.log(heightInMM);
                 // console.log(adjustedHeight);
 
                 const opt = {
@@ -2630,7 +2612,6 @@ if (isStaff) {
                   },
                 };
 
-                // console.log(opt);
                 html2pdf().set(opt).from(receiptElement).save();
                 hideBtnLoader(generatePdfBtn);
               });

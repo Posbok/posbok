@@ -797,32 +797,4 @@
 
 </body>
 
-
-<script>
-   // Sample prefixes for Nigerian numbers
-   const prefixes = ['079', '089', '089', '099', '093'];
-
-   // Generate random number
-   function generateRandomPhoneNumber() {
-      const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-      const randomDigits = Math.floor(10000000 + Math.random() * 90000000); // 8 digits
-      return prefix + randomDigits;
-   }
-
-   // Set it as default value
-   document.querySelector('.sellCustomerPhone').value = generateRandomPhoneNumber();
-   // document.querySelector('.posTransactionConfirmation').value = generateRandomPhoneNumber();
-
-   function generateRandomName() {
-      const names = ['Divine', 'Desmond', 'Susan', 'Gift', 'Precious', 'Onyeka', 'Brilliant'];
-
-      const name = names[Math.floor(Math.random() * names.length)];
-
-      return `${name}`;
-   }
-
-   document.querySelector('.sellCustomerName').value = generateRandomName();
-
-</script>
-
 </html>

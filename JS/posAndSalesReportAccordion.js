@@ -313,24 +313,24 @@ export function getPosAndSalesReportAccordion(shop) {
                </h2>
 
                <div class="tab-buttons">
-                  <button class="tab-btn active" data-tab="daily">Daily Summary</button>
-                  <button class="tab-btn" data-tab="monthly">Monthly Summary</button>
-                  <button class="tab-btn " data-tab="product">Sales by Product</button>
+                  <button class="tab-btn tab-btn_${shop.id} active" data-tab="daily_${shop.id}">Daily Summary</button>
+                  <button class="tab-btn tab-btn_${shop.id}" data-tab="monthly_${shop.id}">Monthly Summary</button>
+                  <button class="tab-btn tab-btn_${shop.id} " data-tab="product_${shop.id}">Sales by Product</button>
                </div>
 
-               <div class="tab-content active" id="daily">
-                  <div id="dailyChart"></div>
+               <div class="tab-content tab-content_${shop.id} active" id="daily_${shop.id}">
+                  <div id="dailyChart_${shop.id}"></div>
                </div>
 
-               <div class="tab-content" id="monthly">
-                  <div id="monthlyChart"></div>
+               <div class="tab-content tab-content_${shop.id}" id="monthly_${shop.id}">
+                  <div id="monthlyChart_${shop.id}"></div>
                </div>
 
-               <!-- <div class="tab-content" id="monthly" style="overflow-x: auto;">
+               <!-- <div class="tab-content tab-content_${shop.id}" id="monthly_${shop.id}" style="overflow-x: auto;">
                      <canvas id="monthlyChart" style="min-width: 800px; height: max-content;"></canvas>
                   </div> -->
 
-               <div class="tab-content " id="product">
+               <div class="tab-content tab-content_${shop.id} " id="product_${shop.id}">
 
                
 

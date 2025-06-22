@@ -247,6 +247,7 @@ if (isAdmin && sellProductShopDropdown) {
 // }
 
 async function displayAllProducts() {
+  console.log('products; After Sale entry');
   try {
     showGlobalLoader();
 
@@ -310,6 +311,7 @@ async function displayAllProducts() {
 }
 
 async function displayAllCategories() {
+  console.log('Category: After Sale entry');
   try {
     showGlobalLoader();
 
@@ -616,6 +618,9 @@ export function sellProductForm() {
         if (soldData) {
           hideBtnLoader(checkoutSubmitBtn);
           showToast('success', `✅ ${soldData.message}`);
+          //  await fetchAllProducts(Number(cart[0]?.shopId));
+          //  await fetchAllCategories(Number(cart[0]?.shopId));
+
           localStorage.removeItem(cartKey);
           updateCartCounter();
           updateCartTotalUI();
@@ -625,6 +630,8 @@ export function sellProductForm() {
           cartSlider.classList.remove('open');
           cartSliderOverlay.classList.remove('visible');
           clearFormInputs();
+          displayAllProducts();
+          displayAllCategories();
           selectedProduct = null;
           hideGlobalLoader();
         }

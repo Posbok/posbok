@@ -62,7 +62,7 @@ export async function getAllSales({
     );
 
     //  console.log(`/api/sales?${queryParams.toString()}`);
-    console.log('🧾 Sales FILTERING:', filters);
+    //  console.log('🧾 Sales FILTERING:', filters);
 
     if (salesData) {
       hideGlobalLoader();
@@ -136,11 +136,59 @@ export async function getSalesByProduct(ProductId) {
       }
     );
 
-    console.log('selectedProductData received...');
+    //  console.log('selectedProductData received...');
 
-    console.log('selectedProductData:', selectedProductData);
+    //  console.log('selectedProductData:', selectedProductData);
     hideGlobalLoader();
     return selectedProductData;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error fetching Products:', error.message);
+  }
+}
+
+export async function getDailySalesSummary(shopId, date) {
+  try {
+    showGlobalLoader();
+    const dailySalesSummaryData = await safeFetch(
+      `${baseUrl}/api/sales/summary/daily?date=${date}&shopId=${shopId}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    //  console.log('dailySalesSummaryData received...');
+
+    console.log('dailySalesSummaryData:', dailySalesSummaryData);
+    hideGlobalLoader();
+    return dailySalesSummaryData;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error fetching Products:', error.message);
+  }
+}
+
+export async function getMonthlySalesSummary(year, month) {
+  try {
+    showGlobalLoader();
+    const monthlySalesSummaryData = await safeFetch(
+      `${baseUrl}/api/sales/summary/monthly?year=${year}&month=${month}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    //  console.log('monthlySalesSummaryData received...');
+
+    console.log('monthlySalesSummaryData:', monthlySalesSummaryData);
+    hideGlobalLoader();
+    return monthlySalesSummaryData;
   } catch (error) {
     hideGlobalLoader();
     console.error('Error fetching Products:', error.message);
