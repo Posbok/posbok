@@ -1691,7 +1691,15 @@ async function updateSalesReceipt(e, row) {
       `${Account?.first_name} ${Account?.last_name}` || 'N/A';
     document.getElementById('soldDetailDate').textContent = new Date(
       sale_time
-    ).toLocaleString();
+    ).toLocaleString('en-US', {
+      hour12: true,
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      second: '2-digit',
+    });
 
     // Bottom Part Below
 
