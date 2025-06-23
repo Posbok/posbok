@@ -1921,9 +1921,18 @@ function renderReceiptPrintHTML(saleDetails, shopDetails) {
       <p>Staff: ${saleDetails.Account?.first_name} ${
     saleDetails.Account?.last_name
   }</p>
-      <p  class="mb-1" >Date: ${new Date(
-        saleDetails.sale_time
-      ).toLocaleString()}</p>
+      <p  class="mb-1" >Date: ${new Date(saleDetails.sale_time).toLocaleString(
+        'en-US',
+        {
+          hour12: true,
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit',
+          second: '2-digit',
+        }
+      )}</p>
       <hr />
 <table class="mb-1" style="width: 100%; table-layout: fixed; word-wrap: break-word; font-size: 10px;">
   <thead  class="text-align: left>
