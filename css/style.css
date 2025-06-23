@@ -3239,3 +3239,9 @@ body.authentication {
       display: block; }
     .report-tabs .tab-content.summary {
       margin: 15px 0; }
+
+.chart-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px; }

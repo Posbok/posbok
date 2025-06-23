@@ -1,13 +1,18 @@
+import html2pdf from 'html2pdf.js/dist/html2pdf.min.js';
 import config from '../config';
 import {
   getProductCategories,
   getProductInventory,
 } from './apiServices/inventory/inventoryResources';
 import { createSale, getProducts } from './apiServices/sales/salesResources';
-import { checkAndPromptCreateShop } from './apiServices/shop/shopResource';
+import {
+  checkAndPromptCreateShop,
+  fetchShopDetail,
+} from './apiServices/shop/shopResource';
 import {
   clearFormInputs,
   formatAmountWithCommas,
+  formatSaleStatus,
   getAmountForSubmission,
   hideBtnLoader,
   hideGlobalLoader,
@@ -247,7 +252,7 @@ if (isAdmin && sellProductShopDropdown) {
 // }
 
 async function displayAllProducts() {
-  console.log('products; After Sale entry');
+  //   console.log('products; After Sale entry');
   try {
     showGlobalLoader();
 
@@ -311,7 +316,6 @@ async function displayAllProducts() {
 }
 
 async function displayAllCategories() {
-  console.log('Category: After Sale entry');
   try {
     showGlobalLoader();
 
@@ -610,7 +614,7 @@ export function sellProductForm() {
         showGlobalLoader();
         showBtnLoader(checkoutSubmitBtn);
 
-        console.log('Submitting Sales Details:', sellProductDetails);
+        //   console.log('Submitting Sales Details:', sellProductDetails);
         //   hideBtnLoader(checkoutSubmitBtn);
 
         const soldData = await createSale(sellProductDetails);
@@ -634,6 +638,7 @@ export function sellProductForm() {
           displayAllCategories();
           selectedProduct = null;
           hideGlobalLoader();
+          updateSalesReceipt(soldData);
         }
 
         clearFormInputs(); // close modal after success
@@ -870,8 +875,6 @@ const sellNowBtn = document.querySelector(
   isAdmin ? '.adminSellNowBtn' : '.sellNowBtn'
 ); // Your new button
 
-console.log(sellNowBtn);
-
 const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
 // const quickSellMsg = document.querySelector('.quick-sell-msg');
 
@@ -1034,27 +1037,6 @@ document.addEventListener('DOMContentLoaded', () => {
   addProductToCart();
 });
 
-// document.addEventListener('DOMContentLoaded', function () {
-//   const cartIcon = document.querySelector('.cartIconDiv');
-//   const cartSlider = document.querySelector('.cart-slider-content');
-//   const closeCartBtn = document.querySelector('.close-cart-btn');
-
-//   // Debug check
-//   console.log('Loaded:', { cartIcon, cartSlider, closeCartBtn });
-
-//   // Open Cart
-//   cartIcon?.addEventListener('click', () => {
-//     console.log('Cart icon clicked');
-//     cartSlider.style.display = 'block';
-//   });
-
-//   // Close Cart
-//   closeCartBtn?.addEventListener('click', () => {
-//     console.log('Close button clicked');
-//     cartSlider.style.display = 'none';
-//   });
-// });
-
 document.addEventListener('DOMContentLoaded', function () {
   const cartIcon = document.querySelector('.cartIconDiv');
   const cartSliderOverlay = document.querySelector('.cart-slider-overlay');
@@ -1103,28 +1085,6 @@ document.addEventListener('DOMContentLoaded', function () {
     cartSliderOverlay.classList.remove('visible');
   });
 });
-
-// document.addEventListener('DOMContentLoaded', function () {
-//   const sliderWrapper = document.querySelector('.slider-wrapper');
-//   const proceedToCheckoutBtn = document.querySelector('.proceed-btn');
-//   const backToCartBtn = document.getElementById('backToCart');
-
-//   proceedToCheckoutBtn?.addEventListener('click', function (e) {
-//     e.preventDefault();
-//     const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-
-//     if (cart.length === 0) {
-//       showToast('fail', '❎ Your cart is empty. Please add items to sell.');
-//       return;
-//     } else {
-//       sliderWrapper.style.transform = 'translateX(-50%)';
-//     }
-//   });
-
-//   backToCartBtn?.addEventListener('click', function () {
-//     sliderWrapper.style.transform = 'translateX(0%)';
-//   });
-// });
 
 function renderCartItemsFromStorage() {
   const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
@@ -1232,11 +1192,6 @@ function calculateTotal() {
   return total;
 }
 
-// document.addEventListener('DOMContentLoaded', () => {
-//   updateCartTotalUI(); // this will calculate and update total
-//   console.log(totalCartAmount);
-// });
-
 function updateCartTotalUI() {
   const total = calculateTotal();
   const totalFormatted = `₦${total.toLocaleString()}`;
@@ -1262,22 +1217,6 @@ function updateCartTotalUI() {
 }
 
 let currentSelectedShopId = ''; // Track previously selected shop
-
-//  Sync dropdown on load
-// function syncDropdownWithCartShop() {
-//   const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-//   const dropdown = document.getElementById('sellProductShopDropdown');
-
-//   if (cart.length > 0 && cart[0].shopId) {
-//     dropdown.value = cart[0].shopId;
-//     currentSelectedShopId = cart[0].shopId;
-
-//     // Fetch products for the already selected shop
-//     fetchAllProducts(currentSelectedShopId).then((products) => {
-//       allProducts = products;
-//     });
-//   }
-// }
 
 function syncDropdownWithCartShop() {
   const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
@@ -1346,31 +1285,393 @@ document
     }
   });
 
-// // JS to dispaly Item to be sold
-// const sellButtons = document.querySelectorAll('.sellButton');
-// const modalProductName = document.querySelector('.SellingItemName');
-// const soldItemBoughtPrice = document.getElementById('soldItemBoughtPrice');
+// Open Sale Detail Modal
+export function openSaleDetailsModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const saleDetailsContainer = document.querySelector('.saleDetails');
 
-// sellButtons.forEach((button, index) => {
-//   button.addEventListener('click', function (e) {
-//     sellProductContainer.classList.add('active');
-//     main.classList.add('blur');
-//     sidebar.classList.add('blur');
-//     main.classList.add('no-scroll');
+  if (saleDetailsContainer) saleDetailsContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
 
-//     const tableRow = e.target.closest('.table-body-row');
-//     const selectedIndex = index;
+  saleDetailModalForm();
+}
 
-//     const selectedItem = storedGoodsData[selectedIndex];
+export function saleDetailModalForm() {
+  //   const form = document.querySelector('.soldDetailModal');
+  const form = isAdmin
+    ? document.querySelector('.adminSoldDetailModal')
+    : document.querySelector('.soldDetailModal');
+  if (!form) return;
+}
 
-//     if (selectedItem) {
-//       const productName = selectedItem.addProductNameInput;
-//       const amountBought = formatAmountWithCommas(
-//         selectedItem.addProductBoughtPriceInput
-//       );
+// Display individual Sales Report
 
-//       modalProductName.textContent = productName;
-//       soldItemBoughtPrice.value = amountBought;
-//     }
-//   });
-// });
+async function updateSalesReceipt(soldData) {
+  //   console.log(soldData);
+
+  showGlobalLoader();
+  // Finally open the modal
+  openSaleDetailsModal();
+  //   const saleId = row.dataset.saleId;
+
+  //   Get Sales by ID
+  try {
+    showGlobalLoader();
+    // const saleDetails = await getSaleById(saleId);
+    const saleDetails = soldData;
+    //  const shopDetails = JSON.parse(localStorage.getItem(shopKey)) || [];
+    //  console.log('saleDetails when Row', saleDetails);
+
+    //  if (!shopDetails) {
+    //    console.log('No shopDetails');
+    //    showToast('error', '❎ Cannot get Shop Details');
+    //    closeModal();
+    //    return;
+    //  }
+
+    if (!saleDetails || !saleDetails.data) {
+      // console.log('No saleDetails');
+      showToast('error', '❎  Cannot get Sale Details');
+      closeModal();
+      return;
+    }
+
+    const {
+      Account,
+      SaleItems,
+      Shop,
+      receipt_number,
+      customer_name,
+      customer_phone,
+      payment_method,
+
+      total_amount,
+      amount_paid,
+      balance,
+      status,
+      business_day,
+      sale_time,
+    } = saleDetails.data;
+
+    showGlobalLoader();
+    const shopData = await fetchShopDetail(Shop.id);
+    //  hideGlobalLoader
+
+    // Populate sale summary
+
+    // Top Part Below
+    document.getElementById('soldDetailShop').textContent =
+      Shop?.shop_name || 'N/A';
+    document.getElementById('soldDetailShopAddress').textContent =
+      shopData?.data?.location || 'N/A';
+
+    document.getElementById('soldDetailReceiptNumber').textContent =
+      receipt_number;
+    document.getElementById('soldDetailCustomerName').textContent =
+      `${customer_name} - ${customer_phone}` || 'N/A';
+    document.getElementById('soldDetailStaffName').textContent =
+      `${Account?.first_name} ${Account?.last_name}` || 'N/A';
+    document.getElementById('soldDetailDate').textContent = new Date(
+      sale_time
+    ).toLocaleString('en-US', {
+      hour12: true,
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+
+    // Bottom Part Below
+
+    document.getElementById('soldDetailPaymentMethod').textContent =
+      payment_method || 'N/A';
+
+    document.getElementById(
+      'soldDetailTotalAmount'
+    ).textContent = `₦${formatAmountWithCommas(total_amount)}`;
+    document.getElementById(
+      'soldDetailPaidAmount'
+    ).textContent = `₦${formatAmountWithCommas(amount_paid)}`;
+    document.getElementById(
+      'soldDetailBalanceAmount'
+    ).textContent = `₦${formatAmountWithCommas(balance)}`;
+
+    document.getElementById('soldDetailStatus').textContent =
+      formatSaleStatus(status);
+
+    // Sales Items - Middle Part Below
+    const itemsTableBody = document.querySelector('.itemsTable tbody');
+    itemsTableBody.innerHTML = ''; // clear previous rows
+
+    SaleItems.forEach((item, index) => {
+      const itemRow = document.createElement('tr');
+      itemRow.classList.add('table-body-row');
+      itemRow.innerHTML = `
+               <td class="py-1">${item.Product.name}</td>
+                             <td class="py-1">${item.quantity}</td>
+                             <td class="py-1">₦${formatAmountWithCommas(
+                               item.selling_price
+                             )}</td>
+                             <td class="py-1">${formatAmountWithCommas(
+                               item.quantity * item.selling_price
+                             )}</td>
+
+                       `;
+      itemsTableBody.appendChild(itemRow);
+    });
+
+    // Print & Download
+
+    //   Print
+    //   const printReceiptBtn =
+    //     document.querySelector('.printReceiptBtn');
+
+    //Keep this earlier Print Logic
+
+    //            printReceiptBtn.addEventListener('click', () => {
+    //              showBtnLoader(printReceiptBtn);
+    //              const receiptContent =
+    //                document.querySelector('.pdfHere').innerHTML;
+
+    //              const printWindow = window.open('', '', 'width=300,height=500');
+    //              printWindow.document.write(`
+    //  <html>
+    //    <head>
+    //      <title>Print Receipt</title>
+    //      <style>
+    //        body { font-family: monospace; width: 58mm; font-size: 8px; padding: 5px; }
+    //        .center { text-align: center; }
+    //        .bold { font-weight: bold; }
+    //        .line { border-top: 1px dashed #000; margin: 4px 0; }
+    //        table { width: 100%; font-size: 12px; border-collapse: collapse; }
+    //        td { padding: 2px 5px; }
+    //        .footer { text-align: center; margin-top: 10px; }
+    //      </style>
+    //    </head>
+    //    <body>${receiptContent}</body>
+    //  </html>`);
+    //              printWindow.document.close();
+    //              printWindow.focus();
+    //              printWindow.print();
+    //              // printWindow.close();
+    //              hideBtnLoader(printReceiptBtn);
+    //            });
+
+    const printReceiptBtn = document.querySelector('.printReceiptBtn');
+
+    printReceiptBtn.onclick = () => {
+      const container = document.getElementById('receiptPrintPDF');
+
+      container.innerHTML = renderReceiptPrintHTML(
+        saleDetails.data,
+        shopData?.data
+      );
+
+      container.style.display = 'block'; // temporarily show
+
+      // const receiptHeightPx = container.scrollHeight;
+      const receiptHeightPx = container.getBoundingClientRect().height;
+      const heightInMM = receiptHeightPx * 0.264583;
+      // const adjustedHeight = Math.floor(heightInMM) - 4;
+
+      const opt = {
+        margin: 0,
+        filename: `receipt-${Date.now()}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        pagebreak: { avoid: 'tr', mode: ['css', 'legacy'] },
+        jsPDF: {
+          unit: 'mm',
+          format: [58, heightInMM], // height can be adjusted dynamically if needed
+          orientation: 'portrait',
+        },
+      };
+
+      html2pdf()
+        .set(opt)
+        .from(container)
+        .save()
+        .then(() => {
+          container.style.display = 'none';
+        });
+    };
+
+    //  printReceiptBtn.addEventListener('click', () => {
+    //    showBtnLoader(printReceiptBtn);
+    //    printReceiptBtn.disabled = true; // Disable the button
+
+    //    const receiptContent = document.querySelector('.pdfHere').innerHTML;
+
+    //    const printWindow = window.open('', '', 'width=300,height=500');
+    //    printWindow?.document.write(`
+    //                 <html>
+    //                     <head>
+    //                         <title>Print Receipt</title>
+    //                         <style>
+    //                             body { font-family: monospace; width: 58mm; font-size: 8px; padding: 5px; }
+    //                             .center { text-align: center; }
+    //                             .bold { font-weight: bold; }
+    //                             .line { border-top: 1px dashed #000; margin: 4px 0; }
+    //                             table { width: 100%; font-size: 12px; border-collapse: collapse; }
+    //                             td { padding: 2px 5px; }
+    //                             .footer { text-align: center; margin-top: 10px; }
+    //                         </style>
+    //                     </head>
+    //                     <body onload="window.print()">
+    //                         ${receiptContent}
+    //                         <script>
+    //                             window.onafterprint = () => {
+    //                                 window.close();
+    //                             };
+    //                         </script>
+    //                     </body>
+    //                 </html>
+    //             `);
+
+    //    printWindow?.document.close();
+    //    printWindow?.focus();
+
+    //    const checkClosedInterval = setInterval(() => {
+    //      if (printWindow?.closed) {
+    //        clearInterval(checkClosedInterval);
+    //        hideBtnLoader(printReceiptBtn);
+    //        printReceiptBtn.disabled = false; // Re-enable the button
+    //      }
+    //    }, 500);
+    //  });
+
+    //   Download;
+
+    const generatePdfBtn = document.querySelector('.generatePdfBtn');
+
+    generatePdfBtn.onclick = () => {
+      showBtnLoader(generatePdfBtn);
+      const receiptElement = document.querySelector('.pdfHere');
+      if (!receiptElement) {
+        showToast('fail', '❎ Receipt content not found.');
+        return;
+      }
+
+      const opt = {
+        margin: 10,
+        filename: `receipt-${Date.now()}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: {
+          unit: 'mm',
+          format: 'a4', // adjust height based on content
+          orientation: 'portrait',
+        },
+      };
+
+      html2pdf().set(opt).from(receiptElement).save();
+      hideBtnLoader(generatePdfBtn);
+    };
+
+    hideGlobalLoader();
+    //   openSaleDetailsModal();
+  } catch (err) {
+    hideGlobalLoader();
+    console.error('Error fetching sale details:', err.message);
+    showToast('fail', `❎ Failed to load sale details`);
+    closeModal();
+    clearReceiptDiv();
+  } finally {
+    hideGlobalLoader();
+  }
+}
+
+function clearReceiptDiv() {
+  // Top Part Below
+  document.getElementById('soldDetailShop').textContent = '';
+  document.getElementById('soldDetailShopAddress').textContent = '';
+
+  document.getElementById('soldDetailReceiptNumber').textContent = '';
+  document.getElementById('soldDetailCustomerName').textContent = '';
+  document.getElementById('soldDetailStaffName').textContent = '';
+  document.getElementById('soldDetailDate').textContent = '';
+
+  // Bottom Part Below
+
+  document.getElementById('soldDetailPaymentMethod').textContent = '';
+
+  document.getElementById('soldDetailTotalAmount').textContent = '';
+  document.getElementById('soldDetailPaidAmount').textContent = '';
+  document.getElementById('soldDetailBalanceAmount').textContent = '';
+
+  document.getElementById('soldDetailStatus').textContent = '';
+
+  // Sales Items - Middle Part Below
+  const itemsTableBody = document.querySelector('.itemsTable tbody');
+  itemsTableBody.innerHTML = ''; // clear previous rows
+}
+
+function renderReceiptPrintHTML(saleDetails, shopDetails) {
+  //   console.log('shopDetails', shopDetails);
+
+  return `
+    <div style="font-family: monospace; font-size: 10px; width: 58mm; padding: 5px;">
+      <h3 style="text-align: center;">${shopDetails?.shop_name || ''}</h3>
+      <p style="text-align: center;" class="mb-1">${
+        shopDetails?.location || ''
+      }</p>
+      <hr class="mb-1" />
+      <p>Receipt: ${saleDetails.receipt_number}</p>
+      <p>Customer: ${saleDetails.customer_name} - ${
+    saleDetails.customer_phone
+  }</p>
+      <p>Staff: ${saleDetails.Account?.first_name} ${
+    saleDetails.Account?.last_name
+  }</p>
+      <p  class="mb-1" >Date: ${new Date(saleDetails.sale_time).toLocaleString(
+        'en-US',
+        {
+          hour12: true,
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit',
+          second: '2-digit',
+        }
+      )}</p>
+      <hr />
+<table class="mb-1" style="width: 100%; table-layout: fixed; word-wrap: break-word; font-size: 10px;">
+  <thead  class="text-align: left>
+    <tr class="text-align: left">
+      <th style="width: 40%; text-align: left;">Item</th>
+      <th style="width: 10%; text-align: left;">Qty</th>
+      <th style="width: 25%; text-align: left;">Price</th>
+      <th style="width: 30%; text-align: left;">Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${saleDetails.SaleItems.map(
+      (item) => `
+        <tr>
+          <td style="word-break: break-word;">${item.Product.name}</td>
+          <td>${item.quantity}</td>
+          <td>&#8358;${formatAmountWithCommas(item.selling_price)}</td>
+          <td>&#8358;${formatAmountWithCommas(
+            item.quantity * item.selling_price
+          )}</td>
+        </tr>
+      `
+    ).join('')}
+  </tbody>
+</table>
+      <hr />
+      <p>Total: &#x20A6;${formatAmountWithCommas(saleDetails.total_amount)}</p>
+      <p>Paid: &#x20A6;${formatAmountWithCommas(saleDetails.amount_paid)}</p>
+      <p>Balance: &#x20A6;${formatAmountWithCommas(saleDetails.balance)}</p>
+      <p>Payment Method:${saleDetails.payment_method}</p>
+      <p>Status: ${formatSaleStatus(saleDetails.status)}</p>
+      <hr />
+      <p  class="mb-1" style="text-align: center;">THANK YOU FOR SHOPPING</p>
+    </div>
+  `;
+}

@@ -7,7 +7,7 @@ const userToken = config.token;
 
 export async function createSale(saleDetails) {
   try {
-    console.log('Sending POST request...');
+    //  console.log('Sending POST request...');
     const soldData = await safeFetch(`${baseUrl}/api/sales`, {
       method: 'POST',
       headers: {
@@ -17,14 +17,14 @@ export async function createSale(saleDetails) {
       body: JSON.stringify(saleDetails),
     });
 
-    console.log('soldData received...');
+    //  console.log('soldData received...');
 
     //  if (soldData) {
     //    // console.log('Sale added successfully:', soldData);
     //    showToast('success', `✅ ${soldData.message}`);
     //  }
 
-    console.log('soldData:', soldData);
+    //  console.log('soldData:', soldData);
     return soldData;
   } catch (error) {
     console.error('Error Creating Sale:', error.message);
@@ -112,9 +112,9 @@ export async function getSalesByStaff(staffId) {
       }
     );
 
-    console.log('selectedStaffData received...');
+    //  console.log('selectedStaffData received...');
 
-    console.log('selectedStaffData:', selectedStaffData);
+    //  console.log('selectedStaffData:', selectedStaffData);
     hideGlobalLoader();
     return selectedStaffData;
   } catch (error) {
@@ -160,9 +160,12 @@ export async function getDailySalesSummary(shopId, date) {
       }
     );
 
+    console.log(
+      `${baseUrl}/api/sales/summary/daily?date=${date}&shopId=${shopId}`
+    );
     //  console.log('dailySalesSummaryData received...');
 
-    console.log('dailySalesSummaryData:', dailySalesSummaryData);
+    //  console.log('dailySalesSummaryData:', dailySalesSummaryData);
     hideGlobalLoader();
     return dailySalesSummaryData;
   } catch (error) {
@@ -186,7 +189,7 @@ export async function getMonthlySalesSummary(year, month) {
 
     //  console.log('monthlySalesSummaryData received...');
 
-    console.log('monthlySalesSummaryData:', monthlySalesSummaryData);
+    //  console.log('monthlySalesSummaryData:', monthlySalesSummaryData);
     hideGlobalLoader();
     return monthlySalesSummaryData;
   } catch (error) {

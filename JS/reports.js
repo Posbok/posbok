@@ -88,6 +88,25 @@ function getFilters(role, shopId) {
   };
 }
 
+function getDailySummaryFilters(role, shopId) {
+  const suffix = role === 'admin' ? `${role}_${shopId}` : role;
+
+  const today = new Date();
+  const formattedDate = today.toISOString().split('T')[0]; // "YYYY-MM-DD"
+
+  return {
+    dailySummaryDate:
+      document.getElementById(`dailySummaryDateFilter_${suffix}`)?.value ||
+      formattedDate,
+  };
+}
+
+function resetDailySummaryFilters(role, shopId) {
+  const suffix = role === 'admin' ? `${role}_${shopId}` : role;
+
+  document.getElementById(`dailySummaryDateFilter_${suffix}`).value = '';
+}
+
 function resetFilters(role, shopId) {
   const suffix = role === 'admin' ? `${role}_${shopId}` : role;
 
@@ -132,9 +151,10 @@ if (isAdmin) {
   let enrichedShopData = [];
   const currentFiltersByShop = {};
   const currentSalesFiltersByShop = {};
+  const currentDalilySalesFiltersByShop = {};
+  const currentMonthlySalesFiltersByShop = {};
 
   const container = document.getElementById('accordionShops');
-  //   console.log('report', container);
   const { enrichedShopData: loadedShops } = await checkAndPromptCreateShop();
   hideGlobalLoader();
   enrichedShopData = loadedShops;
@@ -237,6 +257,34 @@ if (isAdmin) {
             `loadMoreSaleButton_admin_${shop.id}`
           ),
         });
+      });
+
+    // Admin Daily Sales Simmary
+
+    document
+      .getElementById(`applyDailySummaryDateFiltersBtn_admin_${shop.id}`)
+      ?.addEventListener('click', () => {
+        const dailyFilters = getDailySummaryFilters('admin', shop.id);
+        currentDalilySalesFiltersByShop[shop.id] = dailyFilters;
+
+        const { dailySummaryDate } = dailyFilters;
+
+        renderDailySummary(shopId, dailySummaryDate);
+      });
+
+    document
+      .getElementById(`resetFiltersBtn_admin_${shop.id}`)
+      ?.addEventListener('click', () => {
+        const role = 'admin';
+
+        resetDailySummaryFilters(role, shop.id);
+
+        const dailyFilters = getDailySummaryFilters(role, shop.id);
+        currentDalilySalesFiltersByShop[shop.id] = dailyFilters;
+
+        const { dailySummaryDate } = dailyFilters;
+
+        renderDailySummary(shopId, dailySummaryDate);
       });
 
     // Admin Sales
@@ -695,6 +743,186 @@ if (isAdmin) {
     }
   }
 
+  async function renderDailySummary(shopId, dailySummaryDate) {
+    console.log(dailySummaryDate);
+
+    const response = await getDailySalesSummary(shopId, dailySummaryDate);
+
+    if (!response?.data?.hourlyData) {
+      console.warn('No hourly data available');
+      return;
+    }
+
+    const hourlyData = response.data.hourlyData;
+    const paymentMethods = response.data.paymentMethods;
+    const dailySalesData = response.data;
+
+    console.log(paymentMethods);
+
+    const methodLabels = Object.keys(paymentMethods);
+    const methodValues = Object.values(paymentMethods);
+
+    const options = {
+      chart: {
+        type: 'area',
+        stacked: false,
+        height: 350,
+        toolbar: {
+          show: true,
+          tools: {
+            download: false,
+            selection: false,
+            zoom: false,
+            zoomin: false,
+            zoomout: false,
+            pan: false,
+            reset: true,
+          },
+        },
+        zoom: {
+          enabled: true,
+        },
+      },
+      dataLabels: { enabled: false },
+      markers: { size: 0 },
+      title: {
+        text: `Daily Summary of Sales - ${response.data.date}`,
+        align: 'left',
+        style: {
+          fontSize: '16px',
+          fontWeight: 'bold',
+          color: '#205329',
+        },
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.5,
+          opacityTo: 0,
+          stops: [0, 90, 100],
+        },
+      },
+      series: [
+        {
+          name: 'Hourly Revenue (₦)',
+          data: hourlyData.map((h) => h.amount),
+        },
+      ],
+      xaxis: {
+        categories: hourlyData.map((h) => `${h.hour}:00`),
+        title: { text: 'Hour of Day' },
+        labels: {
+          rotate: -45,
+          style: { fontSize: '11px' },
+        },
+      },
+      yaxis: {
+        title: { text: 'Amount (₦)' },
+      },
+      tooltip: {
+        y: {
+          formatter: (val) => `₦${val.toLocaleString()}`,
+        },
+      },
+      responsive: [
+        {
+          breakpoint: 768,
+          options: {
+            chart: { height: 300 },
+            xaxis: {
+              labels: { rotate: -90 },
+            },
+          },
+        },
+      ],
+    };
+
+    const chartContainer = document.querySelector(`#dailyChart_${shopId}`);
+    chartContainer.innerHTML = ''; // Clear old chart if necessary
+
+    if (window[`dailyChartInstance_${shopId}`]) {
+      window[`dailyChartInstance_${shopId}`].destroy();
+    }
+
+    const dailyChart = new ApexCharts(chartContainer, options);
+    dailyChart.render();
+
+    window[`dailyChartInstance_${shopId}`] = dailyChart;
+
+    // Daily Transaction Summary
+    updateDailySalesData(dailySalesData, shopId);
+
+    // Daily Payment Method Summary
+
+    const paymentMethodOptions = {
+      series: methodValues,
+      chart: {
+        width: 380,
+        type: 'donut',
+      },
+      labels: methodLabels,
+      plotOptions: {
+        pie: {
+          startAngle: -90,
+          endAngle: 270,
+        },
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: function (val, opts) {
+          return `${val.toFixed(1)}%`;
+        },
+      },
+      // fill: {
+      //   type: 'gradient',
+      // },
+      legend: {
+        position: 'bottom',
+        formatter: function (val, opts) {
+          const amount = methodValues[opts.seriesIndex].toLocaleString();
+          return `${val}: ₦${amount}`;
+        },
+      },
+      title: {
+        text: 'Sales by Payment Method',
+        align: 'left',
+        style: {
+          fontSize: '16px',
+          fontWeight: 'bold',
+          color: '#205329',
+        },
+      },
+      tooltip: {
+        y: {
+          formatter: (val) => `₦${val.toLocaleString()}`,
+        },
+      },
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 260,
+            },
+            legend: {
+              position: 'bottom',
+            },
+          },
+        },
+      ],
+    };
+
+    const chartEl = document.querySelector(`#paymentMethodChart_${shopId}`);
+    if (window[`paymentMethodChartInstance_${shopId}`]) {
+      window[`paymentMethodChartInstance_${shopId}`].destroy();
+    }
+
+    const paymentChart = new ApexCharts(chartEl, paymentMethodOptions);
+    paymentChart.render();
+    window[`paymentMethodChartInstance_${shopId}`] = paymentChart;
+  }
+
   container.addEventListener('click', async function (e) {
     const toggleBtn = e.target.closest('.accordion-toggle');
     if (!toggleBtn) return;
@@ -724,6 +952,7 @@ if (isAdmin) {
 
     const filters = getFilters('admin', shopId);
     currentFiltersByShop[shopId] = filters;
+
     shopPageTracker[shopId] = 1;
 
     const shopPosTransactiionSection = document.getElementById(
@@ -767,9 +996,17 @@ if (isAdmin) {
       shopSalesTransactiionSection.dataset.loaded = 'true';
     }
 
-    const searchSellProdutItem = document.getElementById(
-      isAdmin ? 'adminSearchSellProdutItem' : 'searchSellProdutItem'
-    );
+    // Render Daily sales Summary
+    const dailyFilters = getDailySummaryFilters('admin', shopId);
+    currentDalilySalesFiltersByShop[shopId] = dailyFilters;
+
+    const { dailySummaryDate } = dailyFilters;
+
+    await renderDailySummary(shopId, dailySummaryDate);
+
+    //  const searchSellProdutItem = document.getElementById(
+    //    isAdmin ? `adminSearchSellProdutItem_${shopId}` : 'searchSellProdutItem'
+    //  );
 
     //  const sellProductCategorySection = document.querySelector(
     //    isAdmin
@@ -855,114 +1092,7 @@ if (isAdmin) {
     const dailyCtx = document.getElementById(`dailyChart_${shopId}`);
     const monthlyCtx = document.getElementById(`monthlyChart_${shopId}`);
 
-    const dummyHourlyData = Array.from({ length: 24 }, (_, hour) => ({
-      hour,
-      count: Math.floor(Math.random() * 5),
-      amount: Math.floor(Math.random() * 1000),
-    }));
-
-    const dailyOptions = {
-      chart: {
-        type: 'area',
-        stacked: false,
-        height: 350,
-        toolbar: {
-          show: true,
-          tools: {
-            download: false,
-            selection: false,
-            zoom: false,
-            zoomin: false,
-            zoomout: false,
-            pan: false,
-            reset: true, // ✅ Only this will show
-          },
-        },
-        zoom: {
-          enabled: true, // Must be true for reset to work
-        },
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      markers: {
-        size: 0,
-      },
-      title: {
-        text: 'Daily Summary of Sales',
-        align: 'left',
-        style: {
-          fontSize: '16px',
-          fontWeight: 'bold',
-          color: '#205329',
-        },
-      },
-      //   gradientToColors: ['#ec1a23'],
-      //   colors: ['#205329', '#ec1a23'],
-      fill: {
-        type: 'gradient',
-        gradient: {
-          shadeIntensity: 1,
-          opacityFrom: 0.5,
-          opacityTo: 0,
-          stops: [0, 90, 100],
-        },
-      },
-      series: [
-        {
-          name: 'Hourly Revenue (₦)',
-          data: dummyHourlyData.map((h) => h.amount),
-        },
-      ],
-      xaxis: {
-        categories: dummyHourlyData.map((h) => `${h.hour}:00`),
-        title: { text: 'Hour of Day' },
-        labels: {
-          rotate: -45,
-          style: { fontSize: '11px' },
-        },
-      },
-      yaxis: {
-        title: { text: 'Amount (₦)' },
-      },
-      tooltip: {
-        y: {
-          formatter: (val) => `₦${val.toLocaleString()}`,
-        },
-      },
-      //   fill: {
-      //     type: 'gradient',
-      //     gradient: {
-      //       shade: 'dark',
-      //       type: 'horizontal',
-      //       shadeIntensity: 0.5,
-      //       gradientToColors: undefined, // optional, if not defined - uses the shades of same color in series
-      //       inverseColors: true,
-      //       opacityFrom: 1,
-      //       opacityTo: 1,
-      //       stops: [0, 50, 100],
-      //       colorStops: [],
-      //     },
-      //   },
-      responsive: [
-        {
-          breakpoint: 768,
-          options: {
-            chart: { height: 300 },
-            xaxis: {
-              labels: { rotate: -90 },
-            },
-          },
-        },
-      ],
-    };
-
-    const dailyChart = new ApexCharts(
-      document.querySelector(`#dailyChart_${shopId}`),
-      dailyOptions
-    );
-
-    dailyChart.render();
+    // Monthly Chart
     const dummyMonthlyData = Array.from({ length: 31 }, (_, i) => ({
       day: i + 1,
       count: Math.floor(Math.random() * 10),
@@ -1099,6 +1229,32 @@ if (isAdmin) {
   });
 }
 
+// Update Product Sales Report
+function updateDailySalesData(dailySalesData, shopId) {
+  console.log(dailySalesData);
+  const totalDailySales = document.getElementById(`totalDailySales_${shopId}`);
+  const totalDailyAmount = document.getElementById(
+    `totalDailyAmount_${shopId}`
+  );
+  const totalDailyPaid = document.getElementById(`totalDailyPaid_${shopId}`);
+  const totalDailyBalance = document.getElementById(
+    `totalDailyBalance_${shopId}`
+  );
+
+  if (!dailySalesData) {
+    console.error('dailySalesData is undefined:', dailySalesData);
+    return;
+  }
+
+  const { date, totalAmount, totalBalance, totalPaid, totalSales } =
+    dailySalesData;
+
+  totalDailySales.textContent = totalSales;
+  totalDailyAmount.textContent = `₦${formatAmountWithCommas(totalAmount)}`;
+  totalDailyPaid.textContent = `₦${formatAmountWithCommas(totalPaid)}`;
+  totalDailyBalance.textContent = `₦${formatAmountWithCommas(totalBalance)}`;
+}
+
 async function fetchAllProducts(shopId) {
   let products = [];
 
@@ -1142,6 +1298,13 @@ async function fetchAllCategories(shopId) {
 }
 
 async function displayAllProducts(shopId) {
+  const searchSellProdutItem = document.getElementById(
+    isAdmin ? `adminSearchSellProdutItem_${shopId}` : 'searchSellProdutItem'
+  );
+  const sellProductName = document.querySelector(
+    isAdmin ? '.adminSellProductName' : '.sellProductName'
+  );
+
   try {
     showGlobalLoader();
 
@@ -1198,12 +1361,6 @@ async function displayAllProducts(shopId) {
     hideGlobalLoader();
   }
 }
-const searchSellProdutItem = document.getElementById(
-  isAdmin ? 'adminSearchSellProdutItem' : 'searchSellProdutItem'
-);
-const sellProductName = document.querySelector(
-  isAdmin ? '.adminSellProductName' : '.sellProductName'
-);
 
 //  const autocompleteList = document.getElementById(
 //    isAdmin ? 'adminAutocompleteList' : 'autocompleteList'
@@ -1221,7 +1378,14 @@ const sellProductName = document.querySelector(
 
 async function displayAllCategories(shopId) {
   const sellProductCategorySection = document.querySelector(
-    '.adminSellProductCategory-section'
+    `.adminSellProductCategory-section_${shopId}`
+  );
+
+  const searchSellProdutItem = document.getElementById(
+    isAdmin ? `adminSearchSellProdutItem_${shopId}` : 'searchSellProdutItem'
+  );
+  const sellProductName = document.querySelector(
+    isAdmin ? '.adminSellProductName' : '.sellProductName'
   );
 
   try {
@@ -1357,52 +1521,19 @@ export function renderSaleDetailById() {
   if (form) {
     form.addEventListener('submit', async function (e) {
       e.preventDefault();
-
-      const adminDepositposCapitalShopDropdown = document.querySelector(
-        '#adminDepositposCapitalShopDropdown'
-      ).value;
-
-      const posDepositAmount = isAdmin
-        ? document.querySelector('#adminPosCapitalAmount')
-        : document.querySelector('#posCapitalAmount');
-
-      const posCapitalDetails = {
-        shopId: isAdmin ? adminDepositposCapitalShopDropdown : shopId,
-        amount: Number(getAmountForSubmission(posDepositAmount)),
-      };
-
-      // console.log('Sending POS Capital with:', posCapitalDetails);
-      const submitPosCapital = document.querySelector('.submitPosCapital');
-
-      try {
-        showBtnLoader(submitPosCapital);
-        showGlobalLoader();
-        const addPosCapitalData = await addPosCapital(posCapitalDetails);
-
-        if (addPosCapitalData) {
-          //  initAccountOverview();
-          showToast('success', `✅ ${addPosCapitalData.message}`);
-          closeModal();
-        }
-
-        // closeModal(); // close modal after success
-      } catch (err) {
-        console.error('Error adding POS Capital:', err.message);
-        showToast('fail', `❎ ${err.message}`);
-      } finally {
-        hideBtnLoader(submitPosCapital);
-        hideGlobalLoader();
-      }
     });
   }
 }
+
 // Update Product Sales Report
-function updateProductData(productSalesList, productSalesSummary) {
-  const totalQty = document.getElementById('totalQty');
-  const totalRev = document.getElementById('totalRev');
-  const totalCostContainer = document.getElementById('totalCost');
-  const totalProfitContainer = document.getElementById('totalProfit');
-  const tableBody = document.querySelector('#productSalesTable tbody');
+function updateProductData(productSalesList, productSalesSummary, shopId) {
+  const totalQty = document.getElementById(`totalQty_${shopId}`);
+  const totalRev = document.getElementById(`totalRev_${shopId}`);
+  const totalCostContainer = document.getElementById(`totalCost_${shopId}`);
+  const totalProfitContainer = document.getElementById(`totalProfit_${shopId}`);
+  const tableBody = document.querySelector(
+    `#productSalesTable_${shopId} tbody`
+  );
 
   if (!productSalesSummary) {
     console.error('productSalesSummary is undefined:', productSalesSummary);
@@ -1544,7 +1675,7 @@ function updateAutocompleteList(products, shopId) {
         const productSalesList = productSalesData.sales;
         const productSalesSummary = productSalesData.summary;
 
-        updateProductData(productSalesList, productSalesSummary);
+        updateProductData(productSalesList, productSalesSummary, shopId);
       });
       autocompleteList.appendChild(listItem);
     });
@@ -1638,7 +1769,7 @@ async function updateSalesReceipt(e, row) {
     showGlobalLoader();
     const saleDetails = await getSaleById(saleId);
     const shopDetails = JSON.parse(localStorage.getItem(shopKey)) || [];
-    console.log('saleDetails when Row', saleDetails);
+    //  console.log('saleDetails when Row', saleDetails);
 
     if (!shopDetails) {
       console.log('No shopDetails');
@@ -1724,17 +1855,16 @@ async function updateSalesReceipt(e, row) {
     itemsTableBody.innerHTML = ''; // clear previous rows
 
     SaleItems.forEach((item, index) => {
-      console.log('item', item);
       const itemRow = document.createElement('tr');
       itemRow.classList.add('table-body-row');
       itemRow.innerHTML = `
              <td class="py-1">${item.Product.name}</td>
                            <td class="py-1">${item.quantity}</td>
                            <td class="py-1">₦${formatAmountWithCommas(
-                             item.unit_price
+                             item.selling_price
                            )}</td>
                            <td class="py-1">${formatAmountWithCommas(
-                             item.selling_price
+                             item.quantity * item.selling_price
                            )}</td>
              
                      `;
@@ -1905,7 +2035,7 @@ async function updateSalesReceipt(e, row) {
 }
 
 function renderReceiptPrintHTML(saleDetails, shopDetails) {
-  console.log('shopDetails', shopDetails);
+  //   console.log('shopDetails', shopDetails);
 
   return `
     <div style="font-family: monospace; font-size: 10px; width: 58mm; padding: 5px;">
@@ -1994,9 +2124,6 @@ function clearReceiptDiv() {
   const itemsTableBody = document.querySelector('.itemsTable tbody');
   itemsTableBody.innerHTML = ''; // clear previous rows
 }
-
-// getDailySalesSummary(88, '2025-06-17');
-// getMonthlySalesSummary(2025, 6);
 
 if (isStaff) {
   const shopId = parsedUserData?.shopId;
@@ -2423,7 +2550,7 @@ if (isStaff) {
             // Finally open the modal
             openSaleDetailsModal();
             const saleId = row.dataset.saleId;
-            console.log(`Open details for Sale ID: ${saleId}`);
+            // console.log(`Open details for Sale ID: ${saleId}`);
 
             // Get Sales by ID
             try {
@@ -2432,8 +2559,8 @@ if (isStaff) {
               const shopDetails =
                 JSON.parse(localStorage.getItem(shopKey)) || [];
 
-              console.log('shopDetails', shopDetails);
-              console.log('saleDetails', saleDetails);
+              //   console.log('shopDetails', shopDetails);
+              //   console.log('saleDetails', saleDetails);
 
               if (!shopDetails) {
                 console.log('No shopDetails');
@@ -2566,7 +2693,6 @@ if (isStaff) {
                 document.querySelector('.printReceiptBtn');
 
               printReceiptBtn.onclick = () => {
-                console.log('object');
                 const container = document.getElementById('receiptPrintPDF');
 
                 container.innerHTML = renderReceiptPrintHTML(

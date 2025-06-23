@@ -319,7 +319,59 @@ export function getPosAndSalesReportAccordion(shop) {
                </div>
 
                <div class="tab-content tab-content_${shop.id} active" id="daily_${shop.id}">
+               
+               <h2 class="filter-heading heading-subtext mb-2">Filter Transactions</h2>
+
+               <div class="filter-section mb-2">
+
+                  <div class="pos-method-form_input">
+                     <label for="dailySummaryDateFilter_admin_${shop.id}">Start Date:</label>
+
+                     <input type="date" id="dailySummaryDateFilter_admin_${shop.id}">
+                  </div>
+
+
+                  <div class="filter-buttons">
+                     <button id="applyDailySummaryDateFiltersBtn_admin_${shop.id}" class="hero-btn-dark">Apply Filters</button>
+
+                     <button id="resetFiltersBtn_admin_${shop.id}" class="hero-btn-outline">Reset</button>
+                  </div>
+                  
+               </div>
+
+                            <div class="productSales-summary mb-1">
+                     <!-- Total Sales -->
+                     <div class="summary-card">
+                        <h3>Total Sales</h3>
+                        <p class="amount" id="totalDailySales_${shop.id}">₦0</p>
+                     </div>
+
+                     <!-- Total Amount -->
+                     <div class="summary-card">
+                        <h3>Total Amount</h3>
+                        <p class="amount" id="totalDailyAmount_${shop.id}">₦0</p>
+                     </div>
+
+                     <!-- Total Paid -->
+                     <div class="summary-card">
+                        <h3>Total Paid</h3>
+                        <p class="amount" id="totalDailyPaid_${shop.id}">₦0</p>
+                     </div>
+
+                     <!-- Total Balance -->
+                     <div class="summary-card">
+                        <h3>Total Balance</h3>
+                        <p class="amount" id="totalDailyBalance_${shop.id}">₦0</p>
+                     </div>
+                  </div>
+
+
                   <div id="dailyChart_${shop.id}"></div>
+
+                  <div class="chart-center">
+                     <div id="paymentMethodChart_${shop.id}"></div>
+                  </div>
+
                </div>
 
                <div class="tab-content tab-content_${shop.id}" id="monthly_${shop.id}">
@@ -338,7 +390,7 @@ export function getPosAndSalesReportAccordion(shop) {
 
                <div class="adminSellProduct-method-form_input ">
                   <div class="search-input-container">
-                     <input type="search" id="adminSearchSellProdutItem" class="adminSearchSellProdutItem"
+                     <input type="search" id="adminSearchSellProdutItem_${shop.id}" class="adminSearchSellProdutItem"
                         placeholder="Search Product Name or Description ">
                      <span class="searchIcon"><i class="fa-solid fa-magnifying-glass mr-2"></i></span>
                   </div>
@@ -346,7 +398,7 @@ export function getPosAndSalesReportAccordion(shop) {
             </div>
 
             <!-- Category -->
-            <div class="adminSellProductCategory-section mb-1">
+            <div class="adminSellProductCategory-section adminSellProductCategory-section_${shop.id} mb-1">
                <!-- <button class="adminSellProductCategoryBtn active" type="button">
                   All
                </button> -->
@@ -369,31 +421,31 @@ export function getPosAndSalesReportAccordion(shop) {
                      <!-- Total Quantity -->
                      <div class="summary-card">
                         <h3>Total Quantity</h3>
-                        <p class="amount" id="totalQty">₦0</p>
+                        <p class="amount" id="totalQty_${shop.id}">₦0</p>
                      </div>
 
                      <!-- Total Revenue -->
                      <div class="summary-card">
                         <h3>Total Revenue</h3>
-                        <p class="amount" id="totalRev">₦0</p>
+                        <p class="amount" id="totalRev_${shop.id}">₦0</p>
                      </div>
 
                      <!-- Total Cost -->
                      <div class="summary-card">
                         <h3>Total Cost</h3>
-                        <p class="amount" id="totalCost">₦0</p>
+                        <p class="amount" id="totalCost_${shop.id}">₦0</p>
                      </div>
 
                      <!-- Total Profit -->
                      <div class="summary-card">
                         <h3>Total Profit</h3>
-                        <p class="amount" id="totalProfit">₦0</p>
+                        <p class="amount" id="totalProfit_${shop.id}">₦0</p>
                      </div>
                   </div>
 
                   <div class="reports-table-container">
 
-                     <table id="productSalesTable" class="reports-table">
+                     <table id="productSalesTable_${shop.id}" class="reports-table">
                         <thead>
                            <tr class="table-header-row">
                               <th class="py-1">S/N</th>
