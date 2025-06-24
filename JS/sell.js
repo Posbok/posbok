@@ -1611,7 +1611,7 @@ function clearReceiptDiv() {
 }
 
 function renderReceiptPrintHTML(saleDetails, shopDetails) {
-  //   console.log('shopDetails', shopDetails);
+  console.log('shopDetails', shopDetails);
 
   return `
     <div style="font-family: monospace; font-size: 10px; width: 58mm; padding: 5px;">
@@ -1655,8 +1655,10 @@ function renderReceiptPrintHTML(saleDetails, shopDetails) {
         <tr>
           <td style="word-break: break-word;">${item.Product.name}</td>
           <td>${item.quantity}</td>
-          <td>&#8358;${formatAmountWithCommas(item.selling_price)}</td>
-          <td>&#8358;${formatAmountWithCommas(
+          <td><span style="text-decoration:line-through;">N</span>${formatAmountWithCommas(
+            item.selling_price
+          )}</td>
+          <td><span style="text-decoration:line-through;">N</span>${formatAmountWithCommas(
             item.quantity * item.selling_price
           )}</td>
         </tr>
@@ -1665,9 +1667,15 @@ function renderReceiptPrintHTML(saleDetails, shopDetails) {
   </tbody>
 </table>
       <hr />
-      <p>Total: &#x20A6;${formatAmountWithCommas(saleDetails.total_amount)}</p>
-      <p>Paid: &#x20A6;${formatAmountWithCommas(saleDetails.amount_paid)}</p>
-      <p>Balance: &#x20A6;${formatAmountWithCommas(saleDetails.balance)}</p>
+      <p>Total:<span style="text-decoration:line-through;">N</span>${formatAmountWithCommas(
+        saleDetails.total_amount
+      )}</p>
+      <p>Paid:<span style="text-decoration:line-through;">N</span>${formatAmountWithCommas(
+        saleDetails.amount_paid
+      )}</p>
+      <p>Balance:<span style="text-decoration:line-through;">N</span>${formatAmountWithCommas(
+        saleDetails.balance
+      )}</p>
       <p>Payment Method:${saleDetails.payment_method}</p>
       <p>Status: ${formatSaleStatus(saleDetails.status)}</p>
       <hr />

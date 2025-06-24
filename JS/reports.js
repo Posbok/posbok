@@ -477,7 +477,7 @@ if (isAdmin) {
         //   `;
 
         transactions.forEach((posTransaction) => {
-          console.log(posTransaction);
+          //  console.log(posTransaction);
           const {
             transaction_type,
             amount,
@@ -2041,7 +2041,8 @@ async function updateSalesReceipt(e, row) {
 }
 
 function renderReceiptPrintHTML(saleDetails, shopDetails) {
-  //   console.log('shopDetails', shopDetails);
+  console.log('shopDetails', shopDetails);
+  console.log('saleDetails', saleDetails);
 
   return `
     <div style="font-family: monospace; font-size: 10px; width: 58mm; padding: 5px;">
@@ -2616,7 +2617,7 @@ if (isStaff) {
               document.getElementById('soldDetailShop').textContent =
                 Shop?.shop_name || 'N/A';
               document.getElementById('soldDetailShopAddress').textContent =
-                shopDetails?.location || 'N/A';
+                shopDetails?.data?.location || 'N/A';
 
               document.getElementById('soldDetailReceiptNumber').textContent =
                 receipt_number;
@@ -2713,7 +2714,7 @@ if (isStaff) {
 
                 container.innerHTML = renderReceiptPrintHTML(
                   saleDetails.data,
-                  shopDetails
+                  shopDetails.data
                 );
 
                 container.style.display = 'block'; // temporarily show
