@@ -2716,7 +2716,7 @@ function updateTotalPosAmounts(transactions, totalRow, date) {
      </td>
  
      <td  class="date-header py-1 px-2 mt-1 mb-1">
-       <strong>Total Bill Paymen</strong> = ₦${formatAmountWithCommas(
+       <strong>Total Bill Payment</strong> = ₦${formatAmountWithCommas(
          billPaymentAmount
        )}
      </td>

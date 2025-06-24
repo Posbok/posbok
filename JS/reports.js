@@ -477,6 +477,7 @@ if (isAdmin) {
         //   `;
 
         transactions.forEach((posTransaction) => {
+          console.log(posTransaction);
           const {
             transaction_type,
             amount,
@@ -505,7 +506,9 @@ if (isAdmin) {
      <td class="py-1 posTransTypeReport">${formatTransactionType(
        transaction_type
      )}</td>
-     <td class="py-1 posCustomerInfo">${`${customer_name} - ${customer_phone}`}</td>
+     <td class="py-1 posCustomerInfo">${`${
+       customer_phone === '' ? '-' : customer_phone
+     }`}</td>
      <td class="py-1 posAmountReport">&#x20A6;${formatAmountWithCommas(
        amount
      )}</td>
@@ -689,7 +692,9 @@ if (isAdmin) {
           row.innerHTML = `
                 <td class="py-1">${serialNumber++}.</td>
                <td class="py-1 soldItemReceiptReport">${receipt_number}</td>
-               <td class="py-1 soldItemCustomerNameReport">${customer_name}</td>
+               <td class="py-1 soldItemCustomerNameReport">${
+                 customer_name === '' ? '-' : customer_name
+               }</td>
                 <td class="py-1 soldItemCustomerNameReport">${first_name} ${last_name}</td>
                  <td class="py-1 soldItemTotalAmountReport">&#x20A6;${formatAmountWithCommas(
                    total_amount
@@ -1400,12 +1405,13 @@ async function displayAllCategories(shopId) {
     //  console.log(`Total Categories fetched:`, allCategories);
 
     const allBtn = document.createElement('button');
-    allBtn.classList.add('adminSellProductCategoryBtn');
+    allBtn.classList.add(`adminSellProductCategoryBtn`);
     allBtn.type = 'button';
     allBtn.textContent = 'All';
     allBtn.dataset.categoryId = 'all';
 
     allBtn.addEventListener('click', function () {
+      console.log('Click reflected here');
       document
         .querySelectorAll('.adminSellProductCategoryBtn')
         .forEach((btn) => {
@@ -2079,8 +2085,10 @@ function renderReceiptPrintHTML(saleDetails, shopDetails) {
         <tr>
           <td style="word-break: break-word;">${item.Product.name}</td>
           <td>${item.quantity}</td>
-          <td>&#8358;${formatAmountWithCommas(item.selling_price)}</td>
-          <td>&#8358;${formatAmountWithCommas(
+          <td><span style="text-decoration:line-through;">N</span>${formatAmountWithCommas(
+            item.selling_price
+          )}</td>
+          <td><span style="text-decoration:line-through;">N</span>${formatAmountWithCommas(
             item.quantity * item.selling_price
           )}</td>
         </tr>
@@ -2089,9 +2097,15 @@ function renderReceiptPrintHTML(saleDetails, shopDetails) {
   </tbody>
 </table>
       <hr />
-      <p>Total: &#x20A6;${formatAmountWithCommas(saleDetails.total_amount)}</p>
-      <p>Paid: &#x20A6;${formatAmountWithCommas(saleDetails.amount_paid)}</p>
-      <p>Balance: &#x20A6;${formatAmountWithCommas(saleDetails.balance)}</p>
+      <p>Total:<span style="text-decoration:line-through;">N</span>${formatAmountWithCommas(
+        saleDetails.total_amount
+      )}</p>
+      <p>Paid: <span style="text-decoration:line-through;">N</span>${formatAmountWithCommas(
+        saleDetails.amount_paid
+      )}</p>
+      <p>Balance:<span style="text-decoration:line-through;">N</span>${formatAmountWithCommas(
+        saleDetails.balance
+      )}</p>
       <p>Payment Method:${saleDetails.payment_method}</p>
       <p>Status: ${formatSaleStatus(saleDetails.status)}</p>
       <hr />
@@ -2340,7 +2354,9 @@ if (isStaff) {
        <td class="py-1 posTransTypeReport">${formatTransactionType(
          transaction_type
        )}</td>
-       <td class="py-1 posCustomerInfo">${`${customer_name} - ${customer_phone}`}</td>
+       <td class="py-1 posCustomerInfo">${`${
+         customer_phone === '' ? '-' : customer_phone
+       }`}</td>
        <td class="py-1 posAmountReport">&#x20A6;${formatAmountWithCommas(
          amount
        )}</td>
@@ -2894,7 +2910,7 @@ function updateTotalPosAmounts(transactions, totalRow, date) {
        <strong>${date} SUMMARY:</strong>
      </td>
      <td  class="date-header py-1 px-2 mt-1 mb-1">
-       <strong>Total Amount</strong> = ₦${formatAmountWithCommas(totalAmount)}
+       <strong>Grand Amount</strong> = ₦${formatAmountWithCommas(totalAmount)}
      </td>
  
      <td  class="date-header py-1 px-2 mt-1 mb-1">
@@ -2928,7 +2944,7 @@ function updateTotalPosAmounts(transactions, totalRow, date) {
      </td>
  
      <td  class="date-header py-1 px-2 mt-1 mb-1">
-       <strong>Total Bill Paymen</strong> = ₦${formatAmountWithCommas(
+       <strong>Total Bill Payment</strong> = ₦${formatAmountWithCommas(
          billPaymentAmount
        )}
      </td>

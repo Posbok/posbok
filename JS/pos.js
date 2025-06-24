@@ -112,9 +112,9 @@ export async function handlePosFormSubmit() {
       const amount = document.getElementById(
         isAdmin ? 'adminPosTransactionAmount' : 'posTransactionAmount'
       ).value;
-      const customerName = document.getElementById(
-        isAdmin ? 'adminPosCustomerName' : 'posCustomerName'
-      ).value;
+      // const customerName = document.getElementById(
+      //   isAdmin ? 'adminPosCustomerName' : 'posCustomerName'
+      // ).value;
       const customerPhone = document.getElementById(
         isAdmin ? 'adminPosCustomerPhone' : 'posCustomerPhone'
       ).value;
@@ -160,7 +160,7 @@ export async function handlePosFormSubmit() {
         shopId,
         transactionType: transactionType.toUpperCase(),
         amount: Number(getAmountForSubmission(amount)),
-        customerName: customerName,
+        //   customerName: customerName,
         customerPhone: customerPhone,
         paymentMethod: paymentMethod.toUpperCase(),
         chargePaymentMethod: posFeePaymentType.toUpperCase(),
@@ -214,9 +214,9 @@ export async function handlePosFormSubmit() {
         document.getElementById(
           isAdmin ? 'adminPosTransactionAmount' : 'posTransactionAmount'
         ).value = '';
-        document.getElementById(
-          isAdmin ? 'adminPosCustomerName' : 'posCustomerName'
-        ).value = '';
+        //   document.getElementById(
+        //     isAdmin ? 'adminPosCustomerName' : 'posCustomerName'
+        //   ).value = '';
         document.getElementById(
           isAdmin ? 'adminPosCustomerPhone' : 'posCustomerPhone'
         ).value = '';
