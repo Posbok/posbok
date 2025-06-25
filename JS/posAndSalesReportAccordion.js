@@ -318,6 +318,7 @@ export function getPosAndSalesReportAccordion(shop) {
                   <button class="tab-btn tab-btn_${shop.id} " data-tab="product_${shop.id}">Sales by Product</button>
                </div>
 
+               <!-- Daily Summary Start -->
                <div class="tab-content tab-content_${shop.id} active" id="daily_${shop.id}">
                
                <h2 class="filter-heading heading-subtext mb-2">Filter Transactions</h2>
@@ -374,9 +375,71 @@ export function getPosAndSalesReportAccordion(shop) {
 
                </div>
 
+                <!-- Daily Summary End -->
+
+                 <!-- Monthly Summary Start -->
+
                <div class="tab-content tab-content_${shop.id}" id="monthly_${shop.id}">
-                  <div id="monthlyChart_${shop.id}"></div>
+
+                           <h2 class="filter-heading heading-subtext mb-2">Filter Transactions</h2>
+
+               <div class="filter-section mb-2">
+
+                  <div class="pos-method-form_input">
+                     <select id="monthSelect_admin_${shop.id}">
+                          <option value="">Select Month</option>
+                     </select>
+                  </div>
+
+                  <div class="pos-method-form_input">
+                     <select id="yearSelect_admin_${shop.id}">
+                          <option value="">Select Year</option>
+                     </select>
+                  </div>
+
+
+                  <div class="filter-buttons">
+                     <button id="applyMonthlySummaryDateFiltersBtn_admin_${shop.id}" class="hero-btn-dark">Apply Filters</button>
+
+                     <button id="resetFiltersBtn_admin_${shop.id}" class="hero-btn-outline">Reset</button>
+                  </div>
+                  
                </div>
+
+                            <div class="productSales-summary mb-1">
+                     <!-- Total Sales -->
+                     <div class="summary-card">
+                        <h3>Total Sales</h3>
+                        <p class="amount" id="totalMonthlySales_${shop.id}">₦0</p>
+                     </div>
+
+                     <!-- Total Amount -->
+                     <div class="summary-card">
+                        <h3>Total Amount</h3>
+                        <p class="amount" id="totalMonthlyAmount_${shop.id}">₦0</p>
+                     </div>
+
+                     <!-- Total Paid -->
+                     <div class="summary-card">
+                        <h3>Total Paid</h3>
+                        <p class="amount" id="totalMonthlyPaid_${shop.id}">₦0</p>
+                     </div>
+
+                     <!-- Total Balance -->
+                     <div class="summary-card">
+                        <h3>Total Balance</h3>
+                        <p class="amount" id="totalMonthlyBalance_${shop.id}">₦0</p>
+                     </div>
+                  </div>
+
+                  <div id="monthlyChart_${shop.id}"></div>
+
+                           <div class="chart-center">
+                     <div id="monthlyPaymentMethodChart_${shop.id}"></div>
+                  </div>
+               </div>
+
+                  <!-- Monthly Summary end -->
 
                <!-- <div class="tab-content tab-content_${shop.id}" id="monthly_${shop.id}" style="overflow-x: auto;">
                      <canvas id="monthlyChart" style="min-width: 800px; height: max-content;"></canvas>
@@ -481,9 +544,9 @@ export function getPosAndSalesReportAccordion(shop) {
 
                <!-- Check Staff Performance -->
                <div class="pos-method-form_input">
-                  <label for="reportStaffDropdown">Select Staff</label>
+                  <label for="reportStaffDropdown_admin_${shop.id}">Select Staff</label>
 
-                  <select id="reportStaffDropdown" class="form-control" required>
+                  <select id="reportStaffDropdown_admin_${shop.id}" class="form-control" required>
                      <option value="">Select a Staff</option>
                      <!-- <option value="1">Loading Staffs...</option> -->
 
@@ -494,25 +557,25 @@ export function getPosAndSalesReportAccordion(shop) {
                <div class="sales-summary">
                   <div class="summary-card">
                      <h3>Total Sales</h3>
-                     <p class="amount" id="staffTotal-sales">₦0</p>
+                     <p class="amount" id="staffTotal-sales_admin_${shop.id}">₦0</p>
                   </div>
                   <div class="summary-card">
                      <h3>Total Amount</h3>
-                     <p class="amount" id="staffTotal-amount">₦0</p>
+                     <p class="amount" id="staffTotal-amount_admin_${shop.id}">₦0</p>
                   </div>
                   <div class="summary-card">
                      <h3>Total Paid</h3>
-                     <p class="amount" id="staffTotal-paid">₦0</p>
+                     <p class="amount" id="staffTotal-paid_admin_${shop.id}">₦0</p>
                   </div>
                   <div class="summary-card">
                      <h3>Balance</h3>
-                     <p class="amount" id="staffTotal-balance">₦0</p>
+                     <p class="amount" id="staffTotal-balance_admin_${shop.id}">₦0</p>
                   </div>
                </div>
 
                    <div class="reports-table-container">
 
-                     <table id="staffSalesTable" class="reports-table">
+                     <table id="staffSalesTable_admin_${shop.id}" class="reports-table">
                         <thead>
                            <tr class="table-header-row">
                               <th class="py-1">S/N</th>

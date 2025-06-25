@@ -601,3 +601,28 @@ export async function ensureBusinessDayOpen(shopId) {
 
   return true;
 }
+
+export function clearReceiptDiv() {
+  // Top Part Below
+  document.getElementById('soldDetailShop').textContent = '';
+  document.getElementById('soldDetailShopAddress').textContent = '';
+
+  document.getElementById('soldDetailReceiptNumber').textContent = '';
+  document.getElementById('soldDetailCustomerName').textContent = '';
+  document.getElementById('soldDetailStaffName').textContent = '';
+  document.getElementById('soldDetailDate').textContent = '';
+
+  // Bottom Part Below
+
+  document.getElementById('soldDetailPaymentMethod').textContent = '';
+
+  document.getElementById('soldDetailTotalAmount').textContent = '';
+  document.getElementById('soldDetailPaidAmount').textContent = '';
+  document.getElementById('soldDetailBalanceAmount').textContent = '';
+
+  document.getElementById('soldDetailStatus').textContent = '';
+
+  // Sales Items - Middle Part Below
+  const itemsTableBody = document.querySelector('.itemsTable tbody');
+  itemsTableBody.innerHTML = ''; // clear previous rows
+}

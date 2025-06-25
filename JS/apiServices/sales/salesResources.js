@@ -163,6 +163,7 @@ export async function getDailySalesSummary(shopId, date) {
     console.log(
       `${baseUrl}/api/sales/summary/daily?date=${date}&shopId=${shopId}`
     );
+
     //  console.log('dailySalesSummaryData received...');
 
     //  console.log('dailySalesSummaryData:', dailySalesSummaryData);
@@ -174,17 +175,22 @@ export async function getDailySalesSummary(shopId, date) {
   }
 }
 
-export async function getMonthlySalesSummary(year, month) {
+export async function getMonthlySalesSummary(year, month, shopId) {
+  console.log(year, month, shopId);
   try {
     showGlobalLoader();
     const monthlySalesSummaryData = await safeFetch(
-      `${baseUrl}/api/sales/summary/monthly?year=${year}&month=${month}`,
+      `${baseUrl}/api/sales/summary/monthly?year=${year}&month=${month}&shopId=${shopId}`,
       {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
       }
+    );
+
+    console.log(
+      `${baseUrl}/api/sales/summary/monthly?year=${year}&month=${month}&shopId=${shopId}`
     );
 
     //  console.log('monthlySalesSummaryData received...');
