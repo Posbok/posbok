@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /wp-admin/
+Disallow: /private/
+Allow: /  
+
+Sitemap: https://www.posbok.com/sitemap.xml
