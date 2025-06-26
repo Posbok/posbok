@@ -28,28 +28,6 @@ const isStaffProfilePage = window.location.href.includes('staff-profile');
 
 let enrichedShopData = [];
 
-// window.addEventListener('DOMContentLoaded', async () => {
-//   try {
-//     const shopData = await checkAndPromptCreateShop();
-
-//     // Assign to outer variables
-
-//     //  enrichedShopData = shopData.enrichedShopData;
-
-//     //  await checkAndPromptCreateStaff();
-
-//     //  console.log('Shops loaded:', userShops);
-//     //  console.log('enrichedShopData loaded:', enrichedShopData);
-
-//     // ✅ Now that data is available, call populateStaffTable here
-//     //  populateStaffTable();
-
-//     // Now you can safely call functions below that depend on them
-//   } catch (err) {
-//     console.error('Failed to load shop data:', err.message);
-//   }
-// });
-
 export async function createStaff(staffDetails) {
   try {
     //  console.log('Sending POST request...');

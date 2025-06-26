@@ -50,8 +50,6 @@ const userData = config.userData;
 
 const parsedUserData = userData ? JSON.parse(userData) : null;
 
-// const shopId = parsedUserData?.shopId || dummyShopId;
-
 const isAdmin = parsedUserData?.accountType === 'ADMIN';
 const isStaff = parsedUserData?.accountType === 'STAFF';
 const staffShopId = parsedUserData?.shopId;
@@ -1445,20 +1443,6 @@ if (isAdmin) {
     });
   });
 }
-
-//  const autocompleteList = document.getElementById(
-//    isAdmin ? 'adminAutocompleteList' : 'autocompleteList'
-//  );
-
-//  const productBoughtPrice = document.getElementById(
-//    isAdmin ? 'adminProductBoughtPrice' : 'productBoughtPrice'
-//  );
-//  const itemSellingprice = document.getElementById(
-//    isAdmin ? 'adminItemSellingPrice' : 'itemSellingPrice'
-//  );
-//  const itemQuantityAvailable = document.getElementById(
-//    isAdmin ? 'adminItemQuantityAvailable' : 'itemQuantityAvailable'
-//  );
 
 // Open Sale Detail Modal
 export function openSaleDetailsModal() {
