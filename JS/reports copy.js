@@ -8,6 +8,7 @@ import {
   fetchShopDetail,
 } from './apiServices/shop/shopResource';
 import {
+  clearReceiptDiv,
   formatAmountWithCommas,
   formatSaleStatus,
   formatTransactionType,
@@ -18,6 +19,8 @@ import {
 import { hideGlobalLoader, showGlobalLoader } from '../JS/helper/helper';
 import {
   getAllSales,
+  getDailySalesSummary,
+  getMonthlySalesSummary,
   getSaleById,
   getSalesByProduct,
   getSalesByStaff,
@@ -28,14 +31,29 @@ import {
   getProductCategories,
   getProductInventory,
 } from './apiServices/inventory/inventoryResources';
-import { getPosAndSalesReportAccordion } from './posAndSalesReportAccordion';
+import {
+  adminPosReportHtml,
+  getAdminPosReportHtml,
+  getAdminSalesReportHtml,
+  getPosAndSalesReportAccordion,
+} from './posAndSalesReportAccordion';
 import { checkAndPromptCreateStaff } from './apiServices/user/userResource';
+import {
+  displayAllCategories,
+  displayAllProducts,
+  fetchAllCategories,
+  fetchAllProducts,
+  updateDailySalesData,
+  updateMonthlySalesData,
+  updateSalesReceipt,
+  updateStaffSalesData,
+  updateTotalSalesAmounts,
+} from './apiServices/utility/salesReportUtility';
+import { updateTotalPosAmounts } from './apiServices/utility/posReportUtility';
 
 const userData = config.userData;
 
 const parsedUserData = userData ? JSON.parse(userData) : null;
-
-// const shopId = parsedUserData?.shopId || dummyShopId;
 
 const isAdmin = parsedUserData?.accountType === 'ADMIN';
 const isStaff = parsedUserData?.accountType === 'STAFF';
@@ -86,6 +104,53 @@ function getFilters(role, shopId) {
   };
 }
 
+// Monthly Filter Function
+
+function getMonthlySummaryFilters(role, shopId) {
+  const suffix = role === 'admin' ? `${role}_${shopId}` : role;
+
+  const formattedMonth = new Date().getMonth() + 1;
+  const formattedYear = new Date().getFullYear();
+
+  return {
+    monthlySummaryMonth:
+      document.getElementById(`monthSelect_${suffix}`)?.value ||
+      Number(formattedMonth),
+
+    monthlySummaryYear:
+      document.getElementById(`yearSelect_${suffix}`)?.value || formattedYear,
+  };
+}
+
+function resetMonthlySummaryFilters(role, shopId) {
+  const suffix = role === 'admin' ? `${role}_${shopId}` : role;
+
+  document.getElementById(`monthSelect_${suffix}`).value = '';
+
+  document.getElementById(`yearSelect_${suffix}`).value = '';
+}
+
+// Daily Filter Function
+
+function getDailySummaryFilters(role, shopId) {
+  const suffix = role === 'admin' ? `${role}_${shopId}` : role;
+
+  const today = new Date();
+  const formattedDate = today.toISOString().split('T')[0]; // "YYYY-MM-DD"
+
+  return {
+    dailySummaryDate:
+      document.getElementById(`dailySummaryDateFilter_${suffix}`)?.value ||
+      formattedDate,
+  };
+}
+
+function resetDailySummaryFilters(role, shopId) {
+  const suffix = role === 'admin' ? `${role}_${shopId}` : role;
+
+  document.getElementById(`dailySummaryDateFilter_${suffix}`).value = '';
+}
+
 function resetFilters(role, shopId) {
   const suffix = role === 'admin' ? `${role}_${shopId}` : role;
 
@@ -130,9 +195,10 @@ if (isAdmin) {
   let enrichedShopData = [];
   const currentFiltersByShop = {};
   const currentSalesFiltersByShop = {};
+  const currentDailySalesFiltersByShop = {};
+  const currentMonthlySalesFiltersByShop = {};
 
   const container = document.getElementById('accordionShops');
-  //   console.log('report', container);
   const { enrichedShopData: loadedShops } = await checkAndPromptCreateShop();
   hideGlobalLoader();
   enrichedShopData = loadedShops;
@@ -151,7 +217,25 @@ if (isAdmin) {
     const shopId = shop.id;
 
     accordion.className = 'accordion-section';
-    accordion.innerHTML = getPosAndSalesReportAccordion(shop);
+    //  accordion.innerHTML = getPosAndSalesReportAccordion(shop);
+    accordion.innerHTML = `
+        <button class="accordion-toggle card heading-text" data-shop-id="${
+          shop.id
+        }">
+                  <h2 class="heading-subtext">
+                     ${shop.shop_name}
+                  </h2>
+
+                  <i class="fa-solid icon fa-chevron-down"></i>
+               </button>
+               
+                   <div class="accordion-content">
+
+             
+                   ${console.log('object')}
+                   ${getAdminSalesReportHtml(shop)}
+                        </div>
+    `;
 
     container.appendChild(accordion);
     container.dataset.shopId;
@@ -213,7 +297,7 @@ if (isAdmin) {
             `loadMoreSaleButton_admin_${shop.id}`
           ),
         });
-        console.log('filters:', filters);
+        //   console.log('filters:', filters);
       });
 
     document
@@ -236,6 +320,101 @@ if (isAdmin) {
           ),
         });
       });
+
+    // Admin Daily Sales Simmary
+
+    document
+      .getElementById(`applyDailySummaryDateFiltersBtn_admin_${shop.id}`)
+      ?.addEventListener('click', () => {
+        const dailyFilters = getDailySummaryFilters('admin', shop.id);
+        currentDailySalesFiltersByShop[shop.id] = dailyFilters;
+
+        const { dailySummaryDate } = dailyFilters;
+
+        renderDailySummary(shopId, dailySummaryDate);
+      });
+
+    document
+      .getElementById(`resetFiltersBtn_admin_${shop.id}`)
+      ?.addEventListener('click', () => {
+        const role = 'admin';
+
+        resetDailySummaryFilters(role, shop.id);
+
+        const dailyFilters = getDailySummaryFilters(role, shop.id);
+        currentDailySalesFiltersByShop[shop.id] = dailyFilters;
+
+        const { dailySummaryDate } = dailyFilters;
+
+        renderDailySummary(shopId, dailySummaryDate);
+      });
+
+    // Admin Monthly Sales Simmary
+
+    document
+      .getElementById(`applyMonthlySummaryDateFiltersBtn_admin_${shop.id}`)
+      ?.addEventListener('click', () => {
+        const monthlyFilters = getMonthlySummaryFilters('admin', shop.id);
+        currentDailySalesFiltersByShop[shop.id] = monthlyFilters;
+        const { monthlySummaryMonth, monthlySummaryYear } = monthlyFilters;
+
+        let month = monthlySummaryMonth;
+        let year = monthlySummaryYear;
+
+        renderMonthlySummary(year, month, shopId);
+      });
+
+    document
+      .getElementById(`resetMonthlySummaryFiltersBtn_admin_${shop.id}`)
+      ?.addEventListener('click', () => {
+        const role = 'admin';
+
+        resetMonthlySummaryFilters(role, shop.id);
+
+        const monthlyFilters = getMonthlySummaryFilters(role, shop.id);
+        currentMonthlySalesFiltersByShop[shop.id] = monthlyFilters;
+        const { monthlySummaryMonth, monthlySummaryYear } = monthlyFilters;
+
+        let month = monthlySummaryMonth;
+        let year = monthlySummaryYear;
+
+        renderMonthlySummary(year, month, shopId);
+      });
+
+    // Populate months
+    const monthSelect = document.getElementById(`monthSelect_admin_${shop.id}`);
+
+    const monthNames = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+
+    monthNames.forEach((month, index) => {
+      const option = document.createElement('option');
+      option.value = index + 1;
+      option.textContent = month;
+      monthSelect.appendChild(option);
+    });
+
+    // Populate years (2020–2030 for example)
+    const yearSelect = document.getElementById(`yearSelect_admin_${shop.id}`);
+
+    for (let year = 2030; year >= 2020; year--) {
+      const option = document.createElement('option');
+      option.value = year;
+      option.textContent = year;
+      yearSelect.appendChild(option);
+    }
 
     // Admin Sales
     const loadMoreSalesButton = document.getElementById(
@@ -339,7 +518,7 @@ if (isAdmin) {
         limit,
       });
 
-      // console.log('queryParams', queryParams);
+      console.log('queryParams', queryParams);
 
       if (filters.startDate) queryParams.append('startDate', filters.startDate);
       if (filters.endDate) queryParams.append('endDate', filters.endDate);
@@ -353,7 +532,7 @@ if (isAdmin) {
         filters,
       });
 
-      // console.log(result);
+      console.log(result);
 
       if (!result) throw new Error(result.message || 'Failed to fetch');
 
@@ -427,6 +606,7 @@ if (isAdmin) {
         //   `;
 
         transactions.forEach((posTransaction) => {
+          //  console.log(posTransaction);
           const {
             transaction_type,
             amount,
@@ -455,7 +635,9 @@ if (isAdmin) {
      <td class="py-1 posTransTypeReport">${formatTransactionType(
        transaction_type
      )}</td>
-     <td class="py-1 posCustomerInfo">${`${customer_name} - ${customer_phone}`}</td>
+     <td class="py-1 posCustomerInfo">${`${
+       customer_phone === '' ? '-' : customer_phone
+     }`}</td>
      <td class="py-1 posAmountReport">&#x20A6;${formatAmountWithCommas(
        amount
      )}</td>
@@ -509,10 +691,9 @@ if (isAdmin) {
     tableBodyId,
     loadMoreButton,
   }) {
-    console.log('🧪 Applied Filters:', filters);
+    //  console.log('🧪 Applied Filters:', filters);
 
     const salesTableBody = document.querySelector(tableBodyId);
-    console.log(salesTableBody);
 
     if (!salesTableBody) {
       console.error('Error: Table body not found');
@@ -521,7 +702,7 @@ if (isAdmin) {
 
     try {
       let loadingRow = document.querySelector('.loading-row');
-      console.log(loadingRow);
+
       if (!loadingRow) {
         loadingRow = document.createElement('tr');
         loadingRow.className = 'leoading-row';
@@ -550,8 +731,6 @@ if (isAdmin) {
         limit: pageSize,
         filters,
       });
-
-      console.log(result);
 
       if (!result) throw new Error(result.message || 'Failed to fetch');
 
@@ -582,7 +761,7 @@ if (isAdmin) {
 
       const groupedByDate = {};
 
-      // console.log(allSalesReport);
+      console.log(allSalesReport);
 
       allSalesReport.forEach((sl) => {
         const dateObj = new Date(sl.business_day);
@@ -642,7 +821,9 @@ if (isAdmin) {
           row.innerHTML = `
                 <td class="py-1">${serialNumber++}.</td>
                <td class="py-1 soldItemReceiptReport">${receipt_number}</td>
-               <td class="py-1 soldItemCustomerNameReport">${customer_name}</td>
+               <td class="py-1 soldItemCustomerNameReport">${
+                 customer_name === '' ? '-' : customer_name
+               }</td>
                 <td class="py-1 soldItemCustomerNameReport">${first_name} ${last_name}</td>
                  <td class="py-1 soldItemTotalAmountReport">&#x20A6;${formatAmountWithCommas(
                    total_amount
@@ -696,6 +877,369 @@ if (isAdmin) {
     }
   }
 
+  async function renderDailySummary(shopId, dailySummaryDate) {
+    //  console.log(dailySummaryDate);
+
+    const response = await getDailySalesSummary(shopId, dailySummaryDate);
+
+    if (!response?.data?.hourlyData) {
+      console.warn('No hourly data available');
+      return;
+    }
+
+    const hourlyData = response.data.hourlyData;
+    const paymentMethods = response.data.paymentMethods;
+    const dailySalesData = response.data;
+
+    //  console.log(paymentMethods);
+
+    const methodLabels = Object.keys(paymentMethods);
+    const methodValues = Object.values(paymentMethods);
+
+    const options = {
+      chart: {
+        type: 'area',
+        stacked: false,
+        height: 350,
+        toolbar: {
+          show: true,
+          tools: {
+            download: false,
+            selection: false,
+            zoom: false,
+            zoomin: false,
+            zoomout: false,
+            pan: false,
+            reset: true,
+          },
+        },
+        zoom: {
+          enabled: true,
+        },
+      },
+      dataLabels: { enabled: false },
+      markers: { size: 0 },
+      title: {
+        text: `Daily Summary of Sales - ${response.data.date}`,
+        align: 'left',
+        style: {
+          fontSize: '16px',
+          fontWeight: 'bold',
+          color: '#15464C',
+        },
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.5,
+          opacityTo: 0,
+          stops: [0, 90, 100],
+        },
+      },
+      series: [
+        {
+          name: 'Hourly Revenue (₦)',
+          data: hourlyData.map((h) => h.amount),
+        },
+      ],
+      xaxis: {
+        categories: hourlyData.map((h) => `${h.hour}:00`),
+        title: { text: 'Hour of Day' },
+        labels: {
+          rotate: -45,
+          style: { fontSize: '11px' },
+        },
+      },
+      yaxis: {
+        title: { text: 'Amount (₦)' },
+      },
+      tooltip: {
+        y: {
+          formatter: (val) => `₦${val.toLocaleString()}`,
+        },
+      },
+      responsive: [
+        {
+          breakpoint: 768,
+          options: {
+            chart: { height: 300 },
+            xaxis: {
+              labels: { rotate: -90 },
+            },
+          },
+        },
+      ],
+    };
+
+    const chartContainer = document.querySelector(`#dailyChart_${shopId}`);
+    chartContainer.innerHTML = ''; // Clear old chart if necessary
+
+    if (window[`dailyChartInstance_${shopId}`]) {
+      window[`dailyChartInstance_${shopId}`].destroy();
+    }
+
+    const dailyChart = new ApexCharts(chartContainer, options);
+    dailyChart.render();
+
+    window[`dailyChartInstance_${shopId}`] = dailyChart;
+
+    // Daily Transaction Summary
+    updateDailySalesData(dailySalesData, shopId);
+
+    // Daily Payment Method Summary
+
+    const paymentMethodOptions = {
+      series: methodValues,
+      chart: {
+        width: 380,
+        type: 'donut',
+      },
+      labels: methodLabels,
+      plotOptions: {
+        pie: {
+          startAngle: -90,
+          endAngle: 270,
+        },
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: function (val, opts) {
+          return `${val.toFixed(1)}%`;
+        },
+      },
+      // fill: {
+      //   type: 'gradient',
+      // },
+      legend: {
+        position: 'bottom',
+        formatter: function (val, opts) {
+          const amount = methodValues[opts.seriesIndex].toLocaleString();
+          return `${val}: ₦${amount}`;
+        },
+      },
+      title: {
+        text: 'Sales by Payment Method',
+        align: 'left',
+        style: {
+          fontSize: '16px',
+          fontWeight: 'bold',
+          color: '#15464C',
+        },
+      },
+      tooltip: {
+        y: {
+          formatter: (val) => `₦${val.toLocaleString()}`,
+        },
+      },
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 260,
+            },
+            legend: {
+              position: 'bottom',
+            },
+          },
+        },
+      ],
+    };
+
+    const chartEl = document.querySelector(`#paymentMethodChart_${shopId}`);
+    if (window[`paymentMethodChartInstance_${shopId}`]) {
+      window[`paymentMethodChartInstance_${shopId}`].destroy();
+    }
+
+    const paymentChart = new ApexCharts(chartEl, paymentMethodOptions);
+    paymentChart.render();
+    window[`paymentMethodChartInstance_${shopId}`] = paymentChart;
+  }
+
+  async function renderMonthlySummary(year, month, shopId) {
+    const response = await getMonthlySalesSummary(year, month, shopId);
+
+    //  console.log(response);
+
+    if (!response) {
+      console.warn('No Monthly data available');
+      return;
+    }
+
+    const dailyData = response.data.dailyData;
+    const paymentMethods = response.data.paymentMethods;
+    const monthlySalesData = response.data;
+
+    //  console.log(paymentMethods);
+
+    const methodLabels = Object.keys(paymentMethods);
+    const methodValues = Object.values(paymentMethods);
+
+    const options = {
+      chart: {
+        type: 'area',
+        stacked: false,
+        height: 350,
+        toolbar: {
+          show: true,
+          tools: {
+            download: false,
+            selection: false,
+            zoom: false,
+            zoomin: false,
+            zoomout: false,
+            pan: false,
+            reset: true,
+          },
+        },
+        zoom: {
+          enabled: true,
+        },
+      },
+      dataLabels: { enabled: false },
+      markers: { size: 0 },
+      title: {
+        text: `Monthly Summary of Sales - ${response.data.month}/${response.data.year}`,
+        align: 'left',
+        style: {
+          fontSize: '16px',
+          fontWeight: 'bold',
+          color: '#15464C',
+        },
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.5,
+          opacityTo: 0,
+          stops: [0, 90, 100],
+        },
+      },
+      series: [
+        {
+          name: 'Daily Revenue (₦)',
+          data: dailyData.map((d) => d.amount),
+        },
+      ],
+      xaxis: {
+        categories: dailyData.map((d) => `${d.day}`),
+        title: { text: 'Day of Month' },
+        labels: {
+          rotate: -45,
+          style: { fontSize: '11px' },
+        },
+      },
+      yaxis: {
+        title: { text: 'Amount (₦)' },
+      },
+      tooltip: {
+        y: {
+          formatter: (val) => `₦${val.toLocaleString()}`,
+        },
+      },
+      responsive: [
+        {
+          breakpoint: 768,
+          options: {
+            chart: { height: 300 },
+            xaxis: {
+              labels: { rotate: -90 },
+            },
+          },
+        },
+      ],
+    };
+
+    const chartContainer = document.querySelector(`#monthlyChart_${shopId}`);
+    chartContainer.innerHTML = ''; // Clear old chart if necessary
+
+    if (window[`monthlyChartInstance_${shopId}`]) {
+      window[`monthlyChartInstance_${shopId}`].destroy();
+    }
+
+    const monthlyChart = new ApexCharts(chartContainer, options);
+    monthlyChart.render();
+
+    window[`monthlyChartInstance_${shopId}`] = monthlyChart;
+
+    // Monthly Transaction Summary
+    updateMonthlySalesData(monthlySalesData, shopId);
+
+    // Monthly Payment Method Summary
+
+    const paymentMethodOptions = {
+      series: methodValues,
+      chart: {
+        width: 380,
+        type: 'donut',
+      },
+      labels: methodLabels,
+      plotOptions: {
+        pie: {
+          startAngle: -90,
+          endAngle: 270,
+        },
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: function (val, opts) {
+          return `${val.toFixed(1)}%`;
+        },
+      },
+      // fill: {
+      //   type: 'gradient',
+      // },
+      legend: {
+        position: 'bottom',
+        formatter: function (val, opts) {
+          const amount = methodValues[opts.seriesIndex].toLocaleString();
+          return `${val}: ₦${amount}`;
+        },
+      },
+      title: {
+        text: 'Monthly Sales by Payment Method',
+        align: 'left',
+        style: {
+          fontSize: '16px',
+          fontWeight: 'bold',
+          color: '#15464C',
+        },
+      },
+      tooltip: {
+        y: {
+          formatter: (val) => `₦${val.toLocaleString()}`,
+        },
+      },
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 260,
+            },
+            legend: {
+              position: 'bottom',
+            },
+          },
+        },
+      ],
+    };
+
+    const chartEl = document.querySelector(
+      `#monthlyPaymentMethodChart_${shopId}`
+    );
+
+    if (window[`monthlyPaymentMethodChartInstance_${shopId}`]) {
+      window[`monthlyPaymentMethodChartInstance_${shopId}`].destroy();
+    }
+
+    const paymentChart = new ApexCharts(chartEl, paymentMethodOptions);
+    paymentChart.render();
+    window[`monthlyPaymentMethodChartInstance_${shopId}`] = paymentChart;
+  }
+
   container.addEventListener('click', async function (e) {
     const toggleBtn = e.target.closest('.accordion-toggle');
     if (!toggleBtn) return;
@@ -725,6 +1269,7 @@ if (isAdmin) {
 
     const filters = getFilters('admin', shopId);
     currentFiltersByShop[shopId] = filters;
+
     shopPageTracker[shopId] = 1;
 
     const shopPosTransactiionSection = document.getElementById(
@@ -733,10 +1278,6 @@ if (isAdmin) {
     const shopSalesTransactiionSection = document.getElementById(
       `shopSales-report-${shopId}`
     );
-
-    console.log('shopPosTransactiionSection', shopPosTransactiionSection);
-
-    console.log('shopSalesTransactiionSection', shopSalesTransactiionSection);
 
     if (
       shopPosTransactiionSection &&
@@ -772,9 +1313,29 @@ if (isAdmin) {
       shopSalesTransactiionSection.dataset.loaded = 'true';
     }
 
-    const searchSellProdutItem = document.getElementById(
-      isAdmin ? 'adminSearchSellProdutItem' : 'searchSellProdutItem'
-    );
+    // Render Daily sales Summary
+    const dailyFilters = getDailySummaryFilters('admin', shopId);
+    currentDailySalesFiltersByShop[shopId] = dailyFilters;
+
+    const { dailySummaryDate } = dailyFilters;
+
+    await renderDailySummary(shopId, dailySummaryDate);
+
+    // Render Monthly sales Summary
+    const monthlyFilters = getMonthlySummaryFilters('admin', shopId);
+    currentMonthlySalesFiltersByShop[shopId] = monthlyFilters;
+
+    //  console.log(monthlyFilters);
+
+    const { monthlySummaryMonth, monthlySummaryYear } = monthlyFilters;
+    let month = monthlySummaryMonth;
+    let year = monthlySummaryYear;
+
+    await renderMonthlySummary(year, month, shopId);
+
+    //  const searchSellProdutItem = document.getElementById(
+    //    isAdmin ? `adminSearchSellProdutItem_${shopId}` : 'searchSellProdutItem'
+    //  );
 
     //  const sellProductCategorySection = document.querySelector(
     //    isAdmin
@@ -785,8 +1346,6 @@ if (isAdmin) {
     const sellProductCategorySection = document.querySelector(
       '.adminSellProductCategory-section'
     );
-
-    console.log(sellProductCategorySection);
 
     const sellProductName = document.querySelector(
       isAdmin ? '.adminSellProductName' : '.sellProductName'
@@ -836,8 +1395,8 @@ if (isAdmin) {
     await fetchAllProducts(shopId);
 
     // JS for Tabs and Charts
-    const tabs = document.querySelectorAll('.tab-btn');
-    const contents = document.querySelectorAll('.tab-content');
+    const tabs = document.querySelectorAll(`.tab-btn_${shopId}`);
+    const contents = document.querySelectorAll(`.tab-content_${shopId}`);
 
     tabs.forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -845,215 +1404,22 @@ if (isAdmin) {
         contents.forEach((c) => c.classList.remove('active'));
 
         btn.classList.add('active');
-        document.getElementById(btn.dataset.tab).classList.add('active');
+        //   document.getElementById(btn.dataset.tab).classList.add('active');
+
+        const targetId = btn.dataset.tab;
+        const targetContent = document.getElementById(targetId);
+
+        if (targetContent) {
+          targetContent.classList.add('active');
+        } else {
+          console.warn(`Tab content with ID "${targetId}" not found.`);
+        }
       });
     });
 
-    // Dummy chart data For Daily and Monthly Sales
-    const dailyCtx = document.getElementById('dailyChart');
-    const monthlyCtx = document.getElementById('monthlyChart');
-
-    const dummyHourlyData = Array.from({ length: 24 }, (_, hour) => ({
-      hour,
-      count: Math.floor(Math.random() * 5),
-      amount: Math.floor(Math.random() * 1000),
-    }));
-
-    const dailyOptions = {
-      chart: {
-        type: 'area',
-        stacked: false,
-        height: 350,
-        toolbar: {
-          show: true,
-          tools: {
-            download: false,
-            selection: false,
-            zoom: false,
-            zoomin: false,
-            zoomout: false,
-            pan: false,
-            reset: true, // ✅ Only this will show
-          },
-        },
-        zoom: {
-          enabled: true, // Must be true for reset to work
-        },
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      markers: {
-        size: 0,
-      },
-      title: {
-        text: 'Daily Summary of Sales',
-        align: 'left',
-        style: {
-          fontSize: '16px',
-          fontWeight: 'bold',
-          color: '#205329',
-        },
-      },
-      //   gradientToColors: ['#ec1a23'],
-      //   colors: ['#205329', '#ec1a23'],
-      fill: {
-        type: 'gradient',
-        gradient: {
-          shadeIntensity: 1,
-          opacityFrom: 0.5,
-          opacityTo: 0,
-          stops: [0, 90, 100],
-        },
-      },
-      series: [
-        {
-          name: 'Hourly Revenue (₦)',
-          data: dummyHourlyData.map((h) => h.amount),
-        },
-      ],
-      xaxis: {
-        categories: dummyHourlyData.map((h) => `${h.hour}:00`),
-        title: { text: 'Hour of Day' },
-        labels: {
-          rotate: -45,
-          style: { fontSize: '11px' },
-        },
-      },
-      yaxis: {
-        title: { text: 'Amount (₦)' },
-      },
-      tooltip: {
-        y: {
-          formatter: (val) => `₦${val.toLocaleString()}`,
-        },
-      },
-      //   fill: {
-      //     type: 'gradient',
-      //     gradient: {
-      //       shade: 'dark',
-      //       type: 'horizontal',
-      //       shadeIntensity: 0.5,
-      //       gradientToColors: undefined, // optional, if not defined - uses the shades of same color in series
-      //       inverseColors: true,
-      //       opacityFrom: 1,
-      //       opacityTo: 1,
-      //       stops: [0, 50, 100],
-      //       colorStops: [],
-      //     },
-      //   },
-      responsive: [
-        {
-          breakpoint: 768,
-          options: {
-            chart: { height: 300 },
-            xaxis: {
-              labels: { rotate: -90 },
-            },
-          },
-        },
-      ],
-    };
-
-    const dailyChart = new ApexCharts(
-      document.querySelector('#dailyChart'),
-      dailyOptions
+    const reportStaffDropdown = document.getElementById(
+      `reportStaffDropdown_admin_${shopId}`
     );
-    dailyChart.render();
-    const dummyMonthlyData = Array.from({ length: 31 }, (_, i) => ({
-      day: i + 1,
-      count: Math.floor(Math.random() * 10),
-      amount: Math.floor(Math.random() * 10000),
-    }));
-
-    const options = {
-      chart: {
-        type: 'area',
-        stacked: false,
-        height: 350,
-        toolbar: {
-          show: true,
-          tools: {
-            download: false,
-            selection: false,
-            zoom: false,
-            zoomin: false,
-            zoomout: false,
-            pan: false,
-            reset: true, // ✅ Only this will show
-          },
-        },
-        zoom: {
-          enabled: true, // Must be true for reset to work
-        },
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      markers: {
-        size: 0,
-      },
-      title: {
-        text: 'Daily Summary of Sales',
-        align: 'left',
-        style: {
-          fontSize: '16px',
-          fontWeight: 'bold',
-          color: '#205329',
-        },
-      },
-      //   gradientToColors: ['#ec1a23'],
-      //   colors: ['#205329', '#ec1a23'],
-      fill: {
-        type: 'gradient',
-        gradient: {
-          shadeIntensity: 1,
-          opacityFrom: 0.5,
-          opacityTo: 0,
-          stops: [0, 90, 100],
-        },
-      },
-      series: [
-        {
-          name: 'Daily Revenue (₦)',
-          data: dummyMonthlyData.map((d) => d.amount),
-        },
-      ],
-      xaxis: {
-        categories: dummyMonthlyData.map((d) => `Day ${d.day}`),
-        labels: {
-          rotate: -45,
-          style: { fontSize: '12px' },
-        },
-      },
-      yaxis: {
-        title: { text: 'Amount (₦)' },
-      },
-      tooltip: {
-        y: {
-          formatter: (val) => `₦${val.toLocaleString()}`,
-        },
-      },
-      responsive: [
-        {
-          breakpoint: 768,
-          options: {
-            chart: { height: 300 },
-            xaxis: {
-              labels: { rotate: -90 },
-            },
-          },
-        },
-      ],
-    };
-
-    const chart = new ApexCharts(
-      document.querySelector('#monthlyChart'),
-      options
-    );
-    chart.render();
-
-    const reportStaffDropdown = document.getElementById('reportStaffDropdown');
 
     // Update Staff Sales Report
 
@@ -1063,7 +1429,13 @@ if (isAdmin) {
         const staffData = await checkAndPromptCreateStaff();
         //  console.log('Staff Data', staffData);
         const staffDataList = staffData?.data.users;
-        populateBusinessStaffDropdown(staffDataList, 'reportStaffDropdown');
+
+        //   console.log(staffData);
+
+        populateBusinessStaffDropdown(
+          staffDataList,
+          `reportStaffDropdown_admin_${shopId}`
+        );
         hideGlobalLoader();
       } catch (err) {
         hideGlobalLoader();
@@ -1074,8 +1446,6 @@ if (isAdmin) {
     loadStaffDropdown();
 
     reportStaffDropdown.addEventListener('change', async () => {
-      console.log(reportStaffDropdown.value);
-
       const staffId = reportStaffDropdown.value;
 
       const staffSalesResponse = await getSalesByStaff(staffId);
@@ -1091,237 +1461,11 @@ if (isAdmin) {
       const staffSalesList = staffSalesDetails.sales;
       const staffSalesSummary = staffSalesDetails.summary;
 
-      console.log(staffSalesDetails);
-
       //  Staff Overview / Staff Performance
 
-      updateStaffSalesData(staffSalesList, staffSalesSummary);
+      updateStaffSalesData(staffSalesList, staffSalesSummary, shopId);
     });
   });
-}
-
-async function fetchAllProducts(shopId) {
-  let products = [];
-
-  //   console.log('Fetching products for shop:', shopId);
-
-  try {
-    const productInventoryData = await getProductInventory(shopId); // Fetch products
-
-    if (productInventoryData) {
-      // console.log(`Fetching product inventory:`, productInventoryData.data);
-      products = products.concat(productInventoryData.data); // Add data to all products array
-    }
-
-    //  console.log('Products', products);
-  } catch (error) {
-    console.error('Error fetching products:', error);
-    throw error;
-  }
-
-  console.log(products);
-  return products;
-}
-
-async function fetchAllCategories(shopId) {
-  let categories = [];
-
-  try {
-    const productCategoryData = await getProductCategories(shopId); // Fetch Categories
-
-    if (productCategoryData) {
-      // console.log(`Fetching product categories:`, productCategoryData.data);
-      categories = categories.concat(productCategoryData.data); // Add data to all Categories array
-    }
-
-    //  console.log('Categories', categories);
-  } catch (error) {
-    console.error('Error fetching categories:', error);
-    throw error;
-  }
-
-  console.log(categories);
-  return categories;
-}
-
-async function displayAllProducts(shopId) {
-  try {
-    showGlobalLoader();
-
-    allProducts = await fetchAllProducts(shopId); // Fetch and store all products
-
-    //  console.log(`Total products fetched:`, allProducts);
-
-    updateAutocompleteList(allProducts, shopId); // Populate the autocomplete dropdown with all products
-
-    // Autocomplete filter on input
-    searchSellProdutItem.addEventListener('input', function () {
-      const inputValue = searchSellProdutItem.value.toLowerCase();
-
-      if (inputValue.value === '') {
-        sellProductName.style.display = 'none';
-        autocompleteList.style.display = 'none';
-        return;
-      } else if (inputValue.length > 0) {
-        sellProductName.style.display = 'block';
-        autocompleteList.style.display = 'block';
-
-        let filteredProducts = allProducts;
-
-        // Filter by selected category (if any)
-        if (activeCategoryId !== null) {
-          filteredProducts = filteredProducts.filter(
-            (product) => product.Product.ProductCategory.id === activeCategoryId
-          );
-        }
-
-        // Further filter by input value
-        filteredProducts = filteredProducts.filter(
-          (product) =>
-            product.Product.name.toLowerCase().includes(inputValue) ||
-            product.Product.description.toLowerCase().includes(inputValue)
-        );
-
-        updateAutocompleteList(filteredProducts, shopId);
-
-        return;
-      } else {
-        sellProductName.style.display = 'none';
-        autocompleteList.style.display = 'none';
-        return;
-      }
-    });
-
-    //  searchSellProdutItem.addEventListener('click', function () {
-    //    autocompleteList.style.display = 'block';
-    //  });
-  } catch (error) {
-    console.error('Error displaying products:', error);
-  } finally {
-    hideGlobalLoader();
-  }
-}
-const searchSellProdutItem = document.getElementById(
-  isAdmin ? 'adminSearchSellProdutItem' : 'searchSellProdutItem'
-);
-const sellProductName = document.querySelector(
-  isAdmin ? '.adminSellProductName' : '.sellProductName'
-);
-
-//  const autocompleteList = document.getElementById(
-//    isAdmin ? 'adminAutocompleteList' : 'autocompleteList'
-//  );
-
-//  const productBoughtPrice = document.getElementById(
-//    isAdmin ? 'adminProductBoughtPrice' : 'productBoughtPrice'
-//  );
-//  const itemSellingprice = document.getElementById(
-//    isAdmin ? 'adminItemSellingPrice' : 'itemSellingPrice'
-//  );
-//  const itemQuantityAvailable = document.getElementById(
-//    isAdmin ? 'adminItemQuantityAvailable' : 'itemQuantityAvailable'
-//  );
-
-async function displayAllCategories(shopId) {
-  const sellProductCategorySection = document.querySelector(
-    '.adminSellProductCategory-section'
-  );
-
-  try {
-    showGlobalLoader();
-
-    // Clear old category buttons
-    sellProductCategorySection.innerHTML = '';
-    activeCategoryId = null; // Reset category filter
-
-    allCategories = await fetchAllCategories(); // Fetch and store all Categories
-
-    //  console.log(`Total Categories fetched:`, allCategories);
-
-    const allBtn = document.createElement('button');
-    allBtn.classList.add('adminSellProductCategoryBtn');
-    allBtn.type = 'button';
-    allBtn.textContent = 'All';
-    allBtn.dataset.categoryId = 'all';
-
-    allBtn.addEventListener('click', function () {
-      document
-        .querySelectorAll('.adminSellProductCategoryBtn')
-        .forEach((btn) => {
-          btn.classList.remove('active');
-        });
-
-      allBtn.classList.add('active');
-      activeCategoryId = null; // Reset filter to all
-
-      sellProductName.style.display = 'block';
-      autocompleteList.style.display = 'block';
-
-      let filteredProducts = allProducts;
-
-      const inputValue = searchSellProdutItem.value.toLowerCase().trim();
-      if (inputValue.length > 0) {
-        filteredProducts = filteredProducts.filter(
-          (product) =>
-            product.Product.name.toLowerCase().includes(inputValue) ||
-            product.Product.description.toLowerCase().includes(inputValue)
-        );
-      }
-
-      updateAutocompleteList(filteredProducts, shopId);
-    });
-
-    sellProductCategorySection.appendChild(allBtn);
-
-    allCategories.forEach((category) => {
-      const categoryBtn = document.createElement('button');
-      categoryBtn.classList.add('adminSellProductCategoryBtn');
-      categoryBtn.type = 'button';
-      categoryBtn.textContent = category.name;
-      categoryBtn.dataset.categoryId = category.id;
-
-      categoryBtn.addEventListener('click', function () {
-        // Remove active class from all other buttons
-        document
-          .querySelectorAll('.adminSellProductCategoryBtn')
-          .forEach((btn) => {
-            btn.classList.remove('active');
-          });
-
-        // Toggle current button as active
-        categoryBtn.classList.add('active');
-        activeCategoryId = parseInt(categoryBtn.dataset.categoryId);
-
-        sellProductName.style.display = 'block';
-        autocompleteList.style.display = 'block';
-
-        const categoryId = parseInt(categoryBtn.dataset.categoryId);
-
-        let filteredProducts = allProducts.filter(
-          //  (product) => product.Product.ProductCategory.id === categoryId
-          (product) => product.Product.ProductCategory.id === activeCategoryId
-        );
-
-        const inputValue = searchSellProdutItem.value.toLowerCase().trim();
-
-        if (inputValue.length > 0) {
-          filteredProducts = filteredProducts.filter(
-            (product) =>
-              product.Product.name.toLowerCase().includes(inputValue) ||
-              product.Product.description.toLowerCase().includes(inputValue)
-          );
-        }
-
-        updateAutocompleteList(filteredProducts, shopId);
-      });
-
-      sellProductCategorySection.appendChild(categoryBtn);
-    });
-  } catch (error) {
-    console.error('Error displaying products:', error);
-  } finally {
-    hideGlobalLoader();
-  }
 }
 
 // Open Sale Detail Modal
@@ -1360,129 +1504,8 @@ export function renderSaleDetailById() {
   if (form) {
     form.addEventListener('submit', async function (e) {
       e.preventDefault();
-
-      const adminDepositposCapitalShopDropdown = document.querySelector(
-        '#adminDepositposCapitalShopDropdown'
-      ).value;
-
-      const posDepositAmount = isAdmin
-        ? document.querySelector('#adminPosCapitalAmount')
-        : document.querySelector('#posCapitalAmount');
-
-      const posCapitalDetails = {
-        shopId: isAdmin ? adminDepositposCapitalShopDropdown : shopId,
-        amount: Number(getAmountForSubmission(posDepositAmount)),
-      };
-
-      // console.log('Sending POS Capital with:', posCapitalDetails);
-      const submitPosCapital = document.querySelector('.submitPosCapital');
-
-      try {
-        showBtnLoader(submitPosCapital);
-        showGlobalLoader();
-        const addPosCapitalData = await addPosCapital(posCapitalDetails);
-
-        if (addPosCapitalData) {
-          //  initAccountOverview();
-          showToast('success', `✅ ${addPosCapitalData.message}`);
-          closeModal();
-        }
-
-        // closeModal(); // close modal after success
-      } catch (err) {
-        console.error('Error adding POS Capital:', err.message);
-        showToast('fail', `❎ ${err.message}`);
-      } finally {
-        hideBtnLoader(submitPosCapital);
-        hideGlobalLoader();
-      }
     });
   }
-}
-// Update Product Sales Report
-function updateProductData(productSalesList, productSalesSummary) {
-  const totalQty = document.getElementById('totalQty');
-  const totalRev = document.getElementById('totalRev');
-  const totalCostContainer = document.getElementById('totalCost');
-  const totalProfitContainer = document.getElementById('totalProfit');
-  const tableBody = document.querySelector('#productSalesTable tbody');
-
-  if (!productSalesSummary) {
-    console.error('productSalesSummary is undefined:', productSalesSummary);
-    return;
-  }
-
-  // console.log(productSalesList);
-  // console.log(productSalesSummary);
-  const {
-    productName,
-    totalQuantitySold,
-    totalRevenue,
-    totalCost,
-    totalProfit,
-  } = productSalesSummary;
-
-  totalQty.textContent = totalQuantitySold;
-  totalRev.textContent = `₦${formatAmountWithCommas(totalRevenue)}`;
-  totalCostContainer.textContent = `₦${formatAmountWithCommas(totalCost)}`;
-  totalProfitContainer.textContent = `₦${formatAmountWithCommas(totalProfit)}`;
-
-  if (tableBody) tableBody.innerHTML = '';
-
-  console.log(!productSalesList.length);
-  console.log(productSalesList.length);
-
-  if (!productSalesList.length) {
-    const emptyRow = document.createElement('tr');
-    emptyRow.innerHTML = `
-        <td colspan="11" class="table-error-text">No Sales on this Product.</td>
-      `;
-    if (tableBody) tableBody.appendChild(emptyRow);
-    return;
-  }
-
-  productSalesList.forEach((sale, index) => {
-    const row = document.createElement('tr');
-    row.classList.add('table-body-row');
-
-    console.log('sale', sale);
-
-    const { id, quantity, unit_price, selling_price, business_day } = sale;
-
-    const staffName = `${sale.Sale.Account.first_name} - ${sale.Sale.Account.last_name} `;
-    const shopName = sale.Sale.Shop.shop_name;
-    const customerName = sale.Sale.customer_name;
-    const customerPhone = sale.Sale.customer_phone;
-    const totalAmount = sale.Sale.total_amount;
-    const amountPaid = sale.Sale.amount_paid;
-    const balance = sale.Sale.balance;
-
-    row.dataset.saleId = id;
-    if (row)
-      row.innerHTML = `
-      <tr  class="table-body-row">
-        <td  class="py-1">${index + 1}</td>
-        <td  class="py-1">${business_day}</td>
-        <td  class="py-1">${shopName}</td>
-        <td  class="py-1">${staffName}</td>
-        <td  class="py-1">${customerName}</td>
-        <td  class="py-1">${quantity}</td>
-        <td class="py-1">₦${formatAmountWithCommas(unit_price)}</td>
-        <td class="py-1">₦${formatAmountWithCommas(selling_price)}</td>
-        <td class="py-1">₦${formatAmountWithCommas(totalAmount)}</td>
-        <td class="py-1">₦${formatAmountWithCommas(amountPaid)}</td>
-        <td class="py-1">₦${formatAmountWithCommas(balance)}</td>
-               <td class="py-1 soldItemDetailReport" data-sale-id="${id}"><i class="fa fa-eye"></i></td>
-      </tr>
-    `;
-
-    row.addEventListener('click', async (e) => {
-      updateSalesReceipt(e, row);
-      console.log('Row Clicked');
-    });
-
-    if (tableBody) tableBody.appendChild(row);
-  });
 }
 
 // Update the autocomplete list with provided products
@@ -1499,415 +1522,6 @@ const itemSellingprice = document.getElementById(
 const itemQuantityAvailable = document.getElementById(
   isAdmin ? 'adminItemQuantityAvailable' : 'itemQuantityAvailable'
 );
-
-function updateAutocompleteList(products, shopId) {
-  const productInput = document.getElementById(
-    isAdmin ? `adminProductInput_${shopId}` : 'productInput'
-  );
-
-  autocompleteList.innerHTML = '';
-
-  if (products.length === 0) {
-    const listItem = document.createElement('li');
-    listItem.textContent = 'Item Not Found';
-    listItem.classList.add('autocomplete-list-item');
-    autocompleteList.appendChild(listItem);
-  } else {
-    products.forEach((product) => {
-      // console.log(product);
-      const listItem = document.createElement('li');
-      // listItem.textContent = product.Product.name;
-      // listItem.classList.add('autocomplete-list-item');
-      listItem.innerHTML = `         
-         <li class="autocomplete-list-item">
-            <p>${product.Product.name}</p>
-            <small>${product.Product.description}</span>
-         </li>
-         `;
-
-      listItem.addEventListener('click', async function () {
-        selectedProduct = product.Product; // Store selected product to later get the product ID
-
-        // console.log(selectedProduct);
-
-        productInput.value = product.Product.name;
-
-        autocompleteList.style.display = 'none';
-
-        const productSalesResponse = await getSalesByProduct(
-          selectedProduct.id
-        );
-
-        if (!productSalesResponse) {
-          hideGlobalLoader();
-          showToast(
-            'fail',
-            `❎ ${
-              productSalesResponse.message || 'Error Getting Sales By Product'
-            }`
-          );
-          return;
-        }
-
-        const productSalesData = productSalesResponse.data;
-        const productSalesList = productSalesData.sales;
-        const productSalesSummary = productSalesData.summary;
-
-        updateProductData(productSalesList, productSalesSummary);
-        console.log(productSalesData);
-      });
-      autocompleteList.appendChild(listItem);
-    });
-  }
-}
-
-function updateStaffSalesData(staffSalesList, staffSalesSummary) {
-  const staffTotalSale = document.getElementById('staffTotal-sales');
-  const staffTotalAmount = document.getElementById('staffTotal-amount');
-  const staffTotalPaid = document.getElementById('staffTotal-paid');
-  const staffTotalBalance = document.getElementById('staffTotal-balance');
-
-  const tableBody = document.querySelector('#staffSalesTable tbody');
-
-  console.log(staffSalesList);
-  console.log(staffSalesSummary);
-
-  if (!staffSalesSummary || !staffSalesList) {
-    console.error('staffSalesSummary/staffSalesList is undefined:');
-    return;
-  }
-
-  const { totalSales, totalAmount, totalPaid, totalBalance } =
-    staffSalesSummary;
-
-  staffTotalSale.textContent = totalSales;
-  staffTotalAmount.textContent = `₦${formatAmountWithCommas(totalAmount)}`;
-  staffTotalPaid.textContent = `₦${formatAmountWithCommas(totalPaid)}`;
-  staffTotalBalance.textContent = `₦${formatAmountWithCommas(totalBalance)}`;
-
-  if (tableBody) tableBody.innerHTML = '';
-
-  console.log(!staffSalesList.length);
-  console.log(staffSalesList.length);
-
-  if (!staffSalesList.length) {
-    const emptyRow = document.createElement('tr');
-    emptyRow.innerHTML = `
-        <td colspan="11" class="table-error-text">No Sales for this Staff.</td>
-      `;
-    if (tableBody) tableBody.appendChild(emptyRow);
-    return;
-  }
-
-  staffSalesList.forEach((sale, index) => {
-    const row = document.createElement('tr');
-    row.classList.add('table-body-row');
-    row.dataset.saleId = sale.id;
-
-    console.log('sale', sale);
-
-    const {
-      id,
-      business_day,
-      customer_name,
-      total_amount,
-      amount_paid,
-      balance,
-      status,
-    } = sale;
-
-    const shopName = sale.Shop.shop_name;
-    const salesItems = sale.SalesItems;
-
-    if (row)
-      row.innerHTML = `
-      <tr  class="table-body-row">
-        <td  class="py-1">${index + 1}</td>
-        <td  class="py-1">${business_day}</td>
-        <td  class="py-1">${shopName}</td>
-        <td  class="py-1">${customer_name}</td>
-        <td class="py-1">₦${formatAmountWithCommas(total_amount)}</td>
-        <td class="py-1">₦${formatAmountWithCommas(amount_paid)}</td>
-        <td class="py-1">₦${formatAmountWithCommas(balance)}</td>
-        <td class="py-1">${formatSaleStatus(status)}</td>
-        <td class="py-1 soldItemDetailReport" data-sale-id="${id}"><i class="fa fa-eye"></i></td>
-      </tr>
-    `;
-
-    row.addEventListener('click', async (e) => {
-      updateSalesReceipt(e, row);
-      console.log('Row Clicked');
-    });
-
-    if (tableBody) tableBody.appendChild(row);
-  });
-}
-
-// Display individual Sales Report
-
-async function updateSalesReceipt(e, row) {
-  e.preventDefault();
-  showGlobalLoader();
-  // Finally open the modal
-  openSaleDetailsModal();
-  const saleId = row.dataset.saleId;
-  console.log(`Open details for Sale ID: ${saleId}`);
-
-  // Get Sales by ID
-  try {
-    showGlobalLoader();
-    const saleDetails = await getSaleById(saleId);
-    const shopDetails = JSON.parse(localStorage.getItem(shopKey)) || [];
-
-    console.log('shopDetails', shopDetails);
-    console.log('saleDetails', saleDetails);
-
-    if (!shopDetails) {
-      console.log('No shopDetails');
-      showToast('error', '❎ Cannot get Shop Details');
-      closeModal();
-      return;
-    }
-
-    if (!saleDetails || !saleDetails.data) {
-      console.log('No saleDetails');
-      showToast('error', '❎  Cannot get Sale Details');
-      closeModal();
-      return;
-    }
-
-    const {
-      Account,
-      SaleItems,
-      Shop,
-      receipt_number,
-      customer_name,
-      customer_phone,
-      payment_method,
-
-      total_amount,
-      amount_paid,
-      balance,
-      status,
-      business_day,
-      sale_time,
-    } = saleDetails.data;
-
-    showGlobalLoader();
-    const shopData = await fetchShopDetail(Shop.id);
-    //  hideGlobalLoader
-
-    console.log('shopData', shopData);
-
-    // Populate sale summary
-
-    // Top Part Below
-    document.getElementById('soldDetailShop').textContent =
-      Shop?.shop_name || 'N/A';
-    document.getElementById('soldDetailShopAddress').textContent =
-      shopData?.data?.location || 'N/A';
-
-    document.getElementById('soldDetailReceiptNumber').textContent =
-      receipt_number;
-    document.getElementById('soldDetailCustomerName').textContent =
-      `${customer_name} - ${customer_phone}` || 'N/A';
-    document.getElementById('soldDetailStaffName').textContent =
-      `${Account?.first_name} ${Account?.last_name}` || 'N/A';
-    document.getElementById('soldDetailDate').textContent = new Date(
-      sale_time
-    ).toLocaleString();
-
-    // Bottom Part Below
-
-    document.getElementById('soldDetailPaymentMethod').textContent =
-      payment_method || 'N/A';
-
-    document.getElementById(
-      'soldDetailTotalAmount'
-    ).textContent = `₦${formatAmountWithCommas(total_amount)}`;
-    document.getElementById(
-      'soldDetailPaidAmount'
-    ).textContent = `₦${formatAmountWithCommas(amount_paid)}`;
-    document.getElementById(
-      'soldDetailBalanceAmount'
-    ).textContent = `₦${formatAmountWithCommas(balance)}`;
-
-    document.getElementById('soldDetailStatus').textContent =
-      formatSaleStatus(status);
-
-    // Sales Items - Middle Part Below
-    const itemsTableBody = document.querySelector('.itemsTable tbody');
-    itemsTableBody.innerHTML = ''; // clear previous rows
-
-    SaleItems.forEach((item, index) => {
-      const itemRow = document.createElement('tr');
-      itemRow.classList.add('table-body-row');
-      itemRow.innerHTML = `
-             <td class="py-1">${item.Product.name}</td>
-                           <td class="py-1">${item.quantity}</td>
-                           <td class="py-1">₦${formatAmountWithCommas(
-                             item.unit_price
-                           )}</td>
-                           <td class="py-1">${formatAmountWithCommas(
-                             item.selling_price
-                           )}</td>
-             
-                     `;
-      itemsTableBody.appendChild(itemRow);
-    });
-
-    // Print & Download
-
-    //   Print
-    //   const printReceiptBtn =
-    //     document.querySelector('.printReceiptBtn');
-
-    //Keep this earlier Print Logic
-
-    //            printReceiptBtn.addEventListener('click', () => {
-    //              showBtnLoader(printReceiptBtn);
-    //              const receiptContent =
-    //                document.querySelector('.pdfHere').innerHTML;
-
-    //              const printWindow = window.open('', '', 'width=300,height=500');
-    //              printWindow.document.write(`
-    //  <html>
-    //    <head>
-    //      <title>Print Receipt</title>
-    //      <style>
-    //        body { font-family: monospace; width: 58mm; font-size: 8px; padding: 5px; }
-    //        .center { text-align: center; }
-    //        .bold { font-weight: bold; }
-    //        .line { border-top: 1px dashed #000; margin: 4px 0; }
-    //        table { width: 100%; font-size: 12px; border-collapse: collapse; }
-    //        td { padding: 2px 5px; }
-    //        .footer { text-align: center; margin-top: 10px; }
-    //      </style>
-    //    </head>
-    //    <body>${receiptContent}</body>
-    //  </html>`);
-    //              printWindow.document.close();
-    //              printWindow.focus();
-    //              printWindow.print();
-    //              // printWindow.close();
-    //              hideBtnLoader(printReceiptBtn);
-    //            });
-
-    const printReceiptBtn = document.querySelector('.printReceiptBtn');
-
-    const receiptHeight = document.querySelector('.pdfHere').scrollHeight;
-    const heightInMM = receiptHeight * 0.264583; // px to mm
-
-    console.log(heightInMM);
-
-    printReceiptBtn?.addEventListener('click', () => {
-      showBtnLoader(printReceiptBtn);
-      const receiptElement = document.querySelector('.pdfHere');
-      if (!receiptElement) {
-        showToast('fail', '❎ Receipt content not found.');
-        return;
-      }
-
-      const opt = {
-        margin: 0,
-        filename: `receipt-${Date.now()}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: {
-          unit: 'mm',
-          format: [58, 200], // adjust height based on content
-          orientation: 'portrait',
-        },
-      };
-
-      // console.log(opt);
-      html2pdf().set(opt).from(receiptElement).save();
-      hideBtnLoader(printReceiptBtn);
-    });
-
-    //  printReceiptBtn.addEventListener('click', () => {
-    //    showBtnLoader(printReceiptBtn);
-    //    printReceiptBtn.disabled = true; // Disable the button
-
-    //    const receiptContent = document.querySelector('.pdfHere').innerHTML;
-
-    //    const printWindow = window.open('', '', 'width=300,height=500');
-    //    printWindow?.document.write(`
-    //                 <html>
-    //                     <head>
-    //                         <title>Print Receipt</title>
-    //                         <style>
-    //                             body { font-family: monospace; width: 58mm; font-size: 8px; padding: 5px; }
-    //                             .center { text-align: center; }
-    //                             .bold { font-weight: bold; }
-    //                             .line { border-top: 1px dashed #000; margin: 4px 0; }
-    //                             table { width: 100%; font-size: 12px; border-collapse: collapse; }
-    //                             td { padding: 2px 5px; }
-    //                             .footer { text-align: center; margin-top: 10px; }
-    //                         </style>
-    //                     </head>
-    //                     <body onload="window.print()">
-    //                         ${receiptContent}
-    //                         <script>
-    //                             window.onafterprint = () => {
-    //                                 window.close();
-    //                             };
-    //                         </script>
-    //                     </body>
-    //                 </html>
-    //             `);
-
-    //    printWindow?.document.close();
-    //    printWindow?.focus();
-
-    //    const checkClosedInterval = setInterval(() => {
-    //      if (printWindow?.closed) {
-    //        clearInterval(checkClosedInterval);
-    //        hideBtnLoader(printReceiptBtn);
-    //        printReceiptBtn.disabled = false; // Re-enable the button
-    //      }
-    //    }, 500);
-    //  });
-
-    //   Download;
-
-    const generatePdfBtn = document.querySelector('.generatePdfBtn');
-    generatePdfBtn?.addEventListener('click', () => {
-      showBtnLoader(generatePdfBtn);
-      const receiptElement = document.querySelector('.pdfHere');
-      if (!receiptElement) {
-        showToast('fail', '❎ Receipt content not found.');
-        return;
-      }
-
-      const opt = {
-        margin: 10,
-        filename: `receipt-${Date.now()}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: {
-          unit: 'mm',
-          format: 'a4', // adjust height based on content
-          orientation: 'portrait',
-        },
-      };
-
-      console.log(opt);
-      html2pdf().set(opt).from(receiptElement).save();
-      hideBtnLoader(generatePdfBtn);
-    });
-
-    hideGlobalLoader();
-    //   openSaleDetailsModal();
-  } catch (err) {
-    hideGlobalLoader();
-    console.error('Error fetching sale details:', err.message);
-    showToast('fail', `❎ Failed to load sale details`);
-    closeModal();
-  } finally {
-    hideGlobalLoader();
-  }
-}
 
 if (isStaff) {
   const shopId = parsedUserData?.shopId;
@@ -2030,7 +1644,7 @@ if (isStaff) {
         filters,
       });
 
-      // console.log(result);
+      console.log(result);
 
       if (!result) throw new Error(result.message || 'Failed to fetch');
 
@@ -2124,7 +1738,9 @@ if (isStaff) {
        <td class="py-1 posTransTypeReport">${formatTransactionType(
          transaction_type
        )}</td>
-       <td class="py-1 posCustomerInfo">${`${customer_name} - ${customer_phone}`}</td>
+       <td class="py-1 posCustomerInfo">${`${
+         customer_phone === '' ? '-' : customer_phone
+       }`}</td>
        <td class="py-1 posAmountReport">&#x20A6;${formatAmountWithCommas(
          amount
        )}</td>
@@ -2218,7 +1834,7 @@ if (isStaff) {
         filters,
       });
 
-      // console.log(result);
+      console.log(result);
 
       if (!result) throw new Error(result.message || 'Failed to fetch');
 
@@ -2249,7 +1865,7 @@ if (isStaff) {
 
       const groupedByDate = {};
 
-      // console.log(allSalesReport);
+      console.log(allSalesReport);
 
       allSalesReport.forEach((sl) => {
         const dateObj = new Date(sl.business_day);
@@ -2343,8 +1959,8 @@ if (isStaff) {
               const shopDetails =
                 JSON.parse(localStorage.getItem(shopKey)) || [];
 
-              console.log('shopDetails', shopDetails);
-              console.log('saleDetails', saleDetails);
+              //   console.log('shopDetails', shopDetails);
+              //   console.log('saleDetails', saleDetails);
 
               if (!shopDetails) {
                 console.log('No shopDetails');
@@ -2354,9 +1970,11 @@ if (isStaff) {
               }
 
               if (!saleDetails || !saleDetails.data) {
-                console.log('No saleDetails');
+                //  console.log('No saleDetails');
+
                 showToast('error', '❎  Cannot get Sale Details');
                 closeModal();
+                clearReceiptDiv();
                 return;
               }
 
@@ -2383,7 +2001,7 @@ if (isStaff) {
               document.getElementById('soldDetailShop').textContent =
                 Shop?.shop_name || 'N/A';
               document.getElementById('soldDetailShopAddress').textContent =
-                shopDetails?.location || 'N/A';
+                shopDetails?.data?.location || 'N/A';
 
               document.getElementById('soldDetailReceiptNumber').textContent =
                 receipt_number;
@@ -2425,17 +2043,17 @@ if (isStaff) {
              <td class="py-1">${item.Product.name}</td>
                            <td class="py-1">${item.quantity}</td>
                            <td class="py-1">₦${formatAmountWithCommas(
-                             item.unit_price
+                             item.selling_price
                            )}</td>
                            <td class="py-1">${formatAmountWithCommas(
-                             item.selling_price
+                             item.quantity * item.selling_price
                            )}</td>
              
                      `;
                 itemsTableBody.appendChild(itemRow);
               });
 
-              // Print & Download
+              // Print & Download - Staff
 
               //   Print
               //   const printReceiptBtn =
@@ -2475,50 +2093,45 @@ if (isStaff) {
               const printReceiptBtn =
                 document.querySelector('.printReceiptBtn');
 
-              printReceiptBtn.addEventListener('click', () => {
-                showBtnLoader(printReceiptBtn);
-                printReceiptBtn.disabled = true; // Disable the button
+              printReceiptBtn.onclick = () => {
+                const container = document.getElementById('receiptPrintPDF');
 
-                const receiptContent =
-                  document.querySelector('.pdfHere').innerHTML;
+                container.innerHTML = renderReceiptPrintHTML(
+                  saleDetails.data,
+                  shopDetails.data
+                );
 
-                const printWindow = window.open('', '', 'width=300,height=500');
-                printWindow.document.write(`
-                   <html>
-                       <head>
-                           <title>Print Receipt</title>
-                           <style>
-                               body { font-family: monospace; width: 58mm; font-size: 8px; padding: 5px; }
-                               .center { text-align: center; }
-                               .bold { font-weight: bold; }
-                               .line { border-top: 1px dashed #000; margin: 4px 0; }
-                               table { width: 100%; font-size: 12px; border-collapse: collapse; }
-                               td { padding: 2px 5px; }
-                               .footer { text-align: center; margin-top: 10px; }
-                           </style>
-                       </head>
-                       <body onload="window.print()">
-                           ${receiptContent}
-                           <script>
-                               window.onafterprint = () => {
-                                   window.close();
-                               };
-                           </script>
-                       </body>
-                   </html>
-               `);
+                container.style.display = 'block'; // temporarily show
 
-                printWindow.document.close();
-                printWindow.focus();
+                // const receiptHeightPx = container.scrollHeight;
+                const receiptHeightPx =
+                  container.getBoundingClientRect().height;
+                const heightInMM = receiptHeightPx * 0.264583;
+                // const adjustedHeight = Math.floor(heightInMM) - 4;
 
-                const checkClosedInterval = setInterval(() => {
-                  if (printWindow.closed) {
-                    clearInterval(checkClosedInterval);
-                    hideBtnLoader(printReceiptBtn);
-                    printReceiptBtn.disabled = false; // Re-enable the button
-                  }
-                }, 500);
-              });
+                console.log(adjustedHeight);
+
+                const opt = {
+                  margin: 0,
+                  filename: `receipt-${Date.now()}.pdf`,
+                  image: { type: 'jpeg', quality: 0.98 },
+                  html2canvas: { scale: 2 },
+                  pagebreak: { avoid: 'tr', mode: ['css', 'legacy'] },
+                  jsPDF: {
+                    unit: 'mm',
+                    format: [58, heightInMM], // height can be adjusted dynamically if needed
+                    orientation: 'portrait',
+                  },
+                };
+
+                html2pdf()
+                  .set(opt)
+                  .from(container)
+                  .save()
+                  .then(() => {
+                    container.style.display = 'none';
+                  });
+              };
 
               //   Download;
 
@@ -2543,7 +2156,6 @@ if (isStaff) {
                   },
                 };
 
-                // console.log(opt);
                 html2pdf().set(opt).from(receiptElement).save();
                 hideBtnLoader(generatePdfBtn);
               });
@@ -2555,6 +2167,7 @@ if (isStaff) {
               console.error('Error fetching sale details:', err.message);
               showToast('fail', `❎ Failed to load sale details`);
               closeModal();
+              clearReceiptDiv();
             }
           });
 
@@ -2593,178 +2206,6 @@ if (isStaff) {
   renderPosTable();
 }
 
-function updateTotalPosAmounts(transactions, totalRow, date) {
-  //   Deposit Amount Sum
-  const depositTransactions = transactions.filter(
-    (item) => item.transaction_type === 'DEPOSIT'
-  );
-
-  const depositAmount = depositTransactions.reduce(
-    (sum, item) => sum + Number(item.amount),
-    0
-  );
-
-  //   console.log('object', depositTransactions);
-  //   console.log('Total deposit amount:', depositAmount);
-
-  //   Withdrawal Amount Sum
-  const withdrawalTransactions = transactions.filter(
-    (item) => item.transaction_type === 'WITHDRAWAL'
-  );
-
-  const withdrawalAmount = withdrawalTransactions.reduce(
-    (sum, item) => sum + Number(item.amount),
-    0
-  );
-
-  //   console.log('object', withdrawalTransactions);
-  //   console.log('Total withdrawal amount:', withdrawalAmount);
-
-  //   Withdrawal_Transfer Amount Sum
-  const withdrawalTransferTransactions = transactions.filter(
-    (item) => item.transaction_type === 'WITHDRAWAL_TRANSFER'
-  );
-
-  const withdrawalTransferAmount = withdrawalTransferTransactions.reduce(
-    (sum, item) => sum + Number(item.amount),
-    0
-  );
-
-  //   Bill Payment Amount Sum
-  const billPaymentTransactions = transactions.filter(
-    (item) => item.transaction_type === 'BILL_PAYMENT'
-  );
-
-  const billPaymentAmount = billPaymentTransactions.reduce(
-    (sum, item) => sum + Number(item.amount || 0),
-    0
-  );
-
-  //   console.log('object', billPaymentTransactions);
-  //   console.log('Total Bill Payment amount:', billPaymentAmount);
-
-  //   POS charges Amount Sum
-  const posChargesItems = transactions.filter(
-    (item) => item.charges && item.charges.charge_amount
-  );
-
-  //   console.log('total pos Charge', posChargesItems);
-
-  const posChargesAmount = posChargesItems.reduce(
-    (sum, item) => sum + Number(item.charges.charge_amount),
-    0
-  );
-
-  //   console.log('object', posCharges);
-  //   console.log('Total POS Charges amount:', posChargesAmount);
-
-  //   Total Machine
-  const machineFeeItems = transactions.filter(
-    (item) => item.fees && item.fees.fee_amount
-  );
-
-  const totalMachineFeeAmount = machineFeeItems.reduce(
-    (sum, item) => sum + Number(item.fees.fee_amount),
-    0
-  );
-
-  //   console.log('Total Machine fee:', totalMachineFeeAmount);
-
-  //   total Amount Sum
-  const totalAmount =
-    depositAmount +
-    withdrawalAmount +
-    billPaymentAmount +
-    withdrawalTransferAmount;
-
-  totalRow.innerHTML = `
-     <td colspan="4" class="date-header py-1 px-2 mt-1 mb-1">
-       <strong>${date} SUMMARY:</strong>
-     </td>
-     <td  class="date-header py-1 px-2 mt-1 mb-1">
-       <strong>Total Amount</strong> = ₦${formatAmountWithCommas(totalAmount)}
-     </td>
- 
-     <td  class="date-header py-1 px-2 mt-1 mb-1">
-       <strong>Total POS Charges </strong> = ₦${formatAmountWithCommas(
-         posChargesAmount
-       )}
-     </td>
- 
-     <td  class="date-header py-1 px-2 mt-1 mb-1">
-       <strong>Total Machine Fee </strong> = ₦${formatAmountWithCommas(
-         totalMachineFeeAmount
-       )}
-     </td>
- 
-     <td  class="date-header py-1 px-2 mt-1 mb-1">
-       <strong>Total Deposit</strong> = ₦${formatAmountWithCommas(
-         depositAmount
-       )}
-     </td>
- 
-     <td  class="date-header py-1 px-2 mt-1 mb-1">
-       <strong>Total Withdrawals</strong> = ₦${formatAmountWithCommas(
-         withdrawalAmount
-       )}
-     </td>
- 
-     <td  class="date-header py-1 px-2 mt-1 mb-1">
-       <strong>Total Withdrawals/Transfer</strong> = ₦${formatAmountWithCommas(
-         withdrawalTransferAmount
-       )}
-     </td>
- 
-     <td  class="date-header py-1 px-2 mt-1 mb-1">
-       <strong>Total Bill Payment</strong> = ₦${formatAmountWithCommas(
-         billPaymentAmount
-       )}
-     </td>
-   `;
-}
-
-// JS to give total Sold Amount
-function updateTotalSalesAmounts(sales, totalSalesRow, date) {
-  const totalSalesAmount = sales.reduce(
-    (sum, item) => sum + Number(item.total_amount),
-    0
-  );
-
-  const totalPaidAmount = sales.reduce(
-    (sum, item) => sum + Number(item.amount_paid),
-    0
-  );
-
-  const totalBalanceAmount = sales.reduce(
-    (sum, item) => sum + Number(item.balance),
-    0
-  );
-
-  totalSalesRow.innerHTML = `
-     <td colspan="4" class="date-header py-1 px-2 mt-1 mb-1">
-       <strong>${date} SUMMARY:</strong>
-     </td>
-     <td colspan="2" class="date-header py-1 px-2 mt-1 mb-1">
-       <strong>Total Sales Amount</strong> = ₦${formatAmountWithCommas(
-         totalSalesAmount
-       )}
-     </td>
-     <td colspan="2" class="date-header py-1 px-2 mt-1 mb-1">
-       <strong>Total Paid Amount</strong> = ₦${formatAmountWithCommas(
-         totalPaidAmount
-       )}
-     </td>
-     <td colspan="2" class="date-header py-1 px-2 mt-1 mb-1">
-       <strong>Total Balance Amount</strong> = ₦${formatAmountWithCommas(
-         totalBalanceAmount
-       )}
-     </td>
-        <td colspan="1" class="empty-header py-1 px-2 mt-1 mb-1">
-       <strong></strong>
-     </td>
-     `;
-}
-
 // JS for modal
 const main = document.querySelector('.main');
 const sidebar = document.querySelector('.sidebar');
@@ -2775,6 +2216,7 @@ const closeImageModalBtn = document.querySelectorAll('.closeImageModal');
 closeModalButton.forEach((closeButton) => {
   closeButton.addEventListener('click', function () {
     closeModal();
+    clearReceiptDiv();
   });
 });
 

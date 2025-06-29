@@ -1,12 +1,151 @@
-export function getAdminSalesReportHtml(shop) {
-  console.log('Sales Report');
-  return `    
+export function getPosAndSalesReportAccordion(shop) {
+  return `        <button class="accordion-toggle card heading-text" data-shop-id="${shop.id}">
+                  <h2 class="heading-subtext">
+                     ${shop.shop_name}
+                  </h2>
 
+                  <i class="fa-solid icon fa-chevron-down"></i>
+               </button>
+               
+                   <div class="accordion-content">
 
+    <!-- POS HTML starts Here -->
 
-
-
+      <div id="shop-report-${shop.id}" class="reports card" data-loaded="false">
       
+                 <div class="reports">
+                     <div class="reports-method">
+                        <h2 class="heading-text mb-2">
+                           POS Reports
+                        </h2>
+
+                        <h2 class="filter-heading heading-subtext mb-2">Filter Transactions</h2>
+
+                        <div class="filter-section mb-2">
+
+                           <div class="pos-method-form_input">
+                              <label for="startDateFilter_admin_${shop.id}">Start Date:</label>
+
+                              <input type="date" id="startDateFilter_admin_${shop.id}">
+                           </div>
+
+                           <div class="pos-method-form_input">
+                              <label for="endDateFilter_admin_${shop.id}">End Date:</label>
+
+                              <input type="date" id="endDateFilter_admin_${shop.id}">
+                           </div>
+
+                           <div class="pos-method-form_input ">
+
+                              <label for="typeFilter_admin_${shop.id}">Transaction Type:</label>
+
+                              <select id="typeFilter_admin_${shop.id}" name="typeFilter_admin_${shop.id}">
+                                 <option value="">All</option>
+                                 <option value="DEPOSIT">Deposit</option>
+                                 <option value="WITHDRAWAL">Withdrawal</option>
+                                 <option value="WITHDRAWAL_TRANSFER">Withdrawal/Transfer</option>
+                                 <option value="BILL_PAYMENT">Bill Payment</option>
+                              </select>
+                           </div>
+
+                           <div class="pos-method-form_input ">
+
+                              <label for="statusFilter_admin_${shop.id}">Status:</label>
+
+                              <select id="statusFilter_admin_${shop.id}" name="statusFilter_admin_${shop.id}">
+                                 <option value="">All</option>
+                                 <option value="SUCCESSFUL">Successful</option>
+                                 <option value="FAILED">Failed</option>
+                                 <option value="PENDING">Pending</option>
+                              </select>
+                           </div>
+
+
+                           <div class="filter-buttons">
+                              <button id="applyFiltersBtn_admin_${shop.id}" class="hero-btn-dark">Apply Filters</button>
+                              <button id="resetFiltersBtn_${shop.id}" class="hero-btn-outline">Reset</button>
+                           </div>
+
+                        </div>
+
+                        <!-- <div id="transactionList" class="transaction-list mb-3"></div> -->
+
+                        <div class="table-header">
+                           <!-- <h2 class="heading-subtext"> POS </h2> -->
+                        </div>
+
+                        <div class="reports-table-container">
+
+                           <table class="reports-table posTableDisplay_admin_${shop.id}">
+                                     <thead>
+                                 <tr class="table-header-row">
+                                    <th class="py-1">S/N</th>
+                                    <th class="py-1">Date</th>
+                                    <th class="py-1">Transaction Type</th>
+                                    <th class="py-1">Customer Phone No.</th>
+                                    <th class="py-1">Amount</th>
+                                    <th class="py-1">Charges</th>
+                                    <th class="py-1">Machine Fee</th>
+                                    <th class="py-1">Charge Payment Method</th>
+                                    <th class="py-1">Payment Method</th>
+                                    <th class="py-1">Remarks</th>
+                                    <th class="py-1">Receipt ID</th>
+                                 </tr>
+                              </thead>
+
+                                <tbody  id="pos-tbody-${shop.id}">
+
+                                       </tbody>
+
+                                               <tfoot>
+                                 <tr class="table-foot-row px-2">
+                                    <td colspan="4"></td>
+                                    <td id="totalPosAmount" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+
+                                    <td id="totalPosFee" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+
+                                    <td id="totalMachineFee" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+
+                                    <td id="totalDepositAmount" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+
+                                    <td id="totalWithdrawalAmount" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+
+                                    <td id="totalWithdrawalTransferAmount" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+
+                                    <td id="totalBillPaymentAmount" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+                                    <!-- <td></td> -->
+                                 </tr>
+                              </tfoot>
+                           </table>
+
+                                     <div id="loadMoreButtonDiv_admin" class=" center-button mt-2">
+
+                              <button id="loadMoreButton_admin_${shop.id}" class=" hero-btn-dark load-more-button">Load
+                                 More</button>
+                              <!-- <button id="loadMoreButton" class="">Load More</button> -->
+                           </div>
+
+                        </div>
+
+      </div>
+    </div>
+    </div>
+
+        <!-- POS HTML Ends Here -->
 
     <!-- Sales HTML starts Here -->
 
@@ -467,148 +606,6 @@ export function getAdminSalesReportHtml(shop) {
 
     
     `;
-}
-
-export function getAdminPosReportHtml(shop) {
-  console.log('POS Report');
-  return `
-      <!-- POS HTML starts Here -->
-         <div id="shop-report-${shop.id}" class="reports card" data-loaded="false">
-      
-                 <div class="reports">
-                     <div class="reports-method">
-                        <h2 class="heading-text mb-2">
-                           POS Reports
-                        </h2>
-
-                        <h2 class="filter-heading heading-subtext mb-2">Filter Transactions</h2>
-
-                        <div class="filter-section mb-2">
-
-                           <div class="pos-method-form_input">
-                              <label for="startDateFilter_admin_${shop.id}">Start Date:</label>
-
-                              <input type="date" id="startDateFilter_admin_${shop.id}">
-                           </div>
-
-                           <div class="pos-method-form_input">
-                              <label for="endDateFilter_admin_${shop.id}">End Date:</label>
-
-                              <input type="date" id="endDateFilter_admin_${shop.id}">
-                           </div>
-
-                           <div class="pos-method-form_input ">
-
-                              <label for="typeFilter_admin_${shop.id}">Transaction Type:</label>
-
-                              <select id="typeFilter_admin_${shop.id}" name="typeFilter_admin_${shop.id}">
-                                 <option value="">All</option>
-                                 <option value="DEPOSIT">Deposit</option>
-                                 <option value="WITHDRAWAL">Withdrawal</option>
-                                 <option value="WITHDRAWAL_TRANSFER">Withdrawal/Transfer</option>
-                                 <option value="BILL_PAYMENT">Bill Payment</option>
-                              </select>
-                           </div>
-
-                           <div class="pos-method-form_input ">
-
-                              <label for="statusFilter_admin_${shop.id}">Status:</label>
-
-                              <select id="statusFilter_admin_${shop.id}" name="statusFilter_admin_${shop.id}">
-                                 <option value="">All</option>
-                                 <option value="SUCCESSFUL">Successful</option>
-                                 <option value="FAILED">Failed</option>
-                                 <option value="PENDING">Pending</option>
-                              </select>
-                           </div>
-
-
-                           <div class="filter-buttons">
-                              <button id="applyFiltersBtn_admin_${shop.id}" class="hero-btn-dark">Apply Filters</button>
-                              <button id="resetFiltersBtn_${shop.id}" class="hero-btn-outline">Reset</button>
-                           </div>
-
-                        </div>
-
-                        <!-- <div id="transactionList" class="transaction-list mb-3"></div> -->
-
-                        <div class="table-header">
-                           <!-- <h2 class="heading-subtext"> POS </h2> -->
-                        </div>
-
-                        <div class="reports-table-container">
-
-                           <table class="reports-table posTableDisplay_admin_${shop.id}">
-                                     <thead>
-                                 <tr class="table-header-row">
-                                    <th class="py-1">S/N</th>
-                                    <th class="py-1">Date</th>
-                                    <th class="py-1">Transaction Type</th>
-                                    <th class="py-1">Customer Phone No.</th>
-                                    <th class="py-1">Amount</th>
-                                    <th class="py-1">Charges</th>
-                                    <th class="py-1">Machine Fee</th>
-                                    <th class="py-1">Charge Payment Method</th>
-                                    <th class="py-1">Payment Method</th>
-                                    <th class="py-1">Remarks</th>
-                                    <th class="py-1">Receipt ID</th>
-                                 </tr>
-                              </thead>
-
-                                <tbody  id="pos-tbody-${shop.id}">
-
-                                       </tbody>
-
-                                               <tfoot>
-                                 <tr class="table-foot-row px-2">
-                                    <td colspan="4"></td>
-                                    <td id="totalPosAmount" class="py-1 px-2">
-                                       <strong></strong>
-                                    </td>
-
-                                    <td id="totalPosFee" class="py-1 px-2">
-                                       <strong></strong>
-                                    </td>
-
-                                    <td id="totalMachineFee" class="py-1 px-2">
-                                       <strong></strong>
-                                    </td>
-
-                                    <td id="totalDepositAmount" class="py-1 px-2">
-                                       <strong></strong>
-                                    </td>
-
-                                    <td id="totalWithdrawalAmount" class="py-1 px-2">
-                                       <strong></strong>
-                                    </td>
-
-                                    <td id="totalWithdrawalTransferAmount" class="py-1 px-2">
-                                       <strong></strong>
-                                    </td>
-
-                                    <td id="totalBillPaymentAmount" class="py-1 px-2">
-                                       <strong></strong>
-                                    </td>
-                                    <!-- <td></td> -->
-                                 </tr>
-                              </tfoot>
-                           </table>
-
-                                     <div id="loadMoreButtonDiv_admin" class=" center-button mt-2">
-
-                              <button id="loadMoreButton_admin_${shop.id}" class=" hero-btn-dark load-more-button">Load
-                                 More</button>
-                              <!-- <button id="loadMoreButton" class="">Load More</button> -->
-                           </div>
-
-                        </div>
-
-      </div>
-    </div>
-    </div>
-
-      <!-- POS HTML Ends Here -->
-   `;
 }
 
 // MOD
