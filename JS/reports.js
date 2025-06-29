@@ -260,6 +260,180 @@ function setupPosFilters({
   });
 }
 
+function setupSalesFilters({
+  shopId,
+  shopPageTracker,
+  currentSalesFiltersByShop,
+  currentDailySalesFiltersByShop,
+  currentMonthlySalesFiltersByShop,
+  limit,
+  renderSalesTableFn,
+  renderDailySummaryFn,
+  renderMonthlySummaryFn,
+}) {
+  // Admin Sales Filter
+  document
+    .getElementById(`applySalesFiltersBtn_admin_${shopId}`)
+    ?.addEventListener('click', () => {
+      const filters = getSalesFilters('admin', shopId);
+      currentSalesFiltersByShop[shopId] = filters;
+
+      renderSalesTableFn({
+        page: currentPage,
+        limit,
+        filters,
+        shopId,
+        tableBodyId: `#sale-tbody-${shopId}`,
+        loadMoreButton: document.getElementById(
+          `loadMoreSaleButton_admin_${shopId}`
+        ),
+      });
+      //   console.log('filters:', filters);
+    });
+
+  document
+    .getElementById(`resetSalesFiltersBtn_${shopId}`)
+    ?.addEventListener('click', () => {
+      const role = 'admin';
+      resetSalesFilters(role, shopId);
+      const filters = getSalesFilters(role, shopId);
+      currentSalesFiltersByShop[shopId] = filters;
+      const tableSelector = '.posTableDisplay_staff tbody';
+
+      renderSalesTableFn({
+        page: currentPage,
+        limit,
+        filters,
+        shopId,
+        tableBodyId: `#sale-tbody-${shopId}`,
+        loadMoreButton: document.getElementById(
+          `loadMoreSaleButton_admin_${shopId}`
+        ),
+      });
+    });
+
+  // Admin Daily Sales Simmary
+
+  document
+    .getElementById(`applyDailySummaryDateFiltersBtn_admin_${shopId}`)
+    ?.addEventListener('click', () => {
+      const dailyFilters = getDailySummaryFilters('admin', shopId);
+      currentDailySalesFiltersByShop[shopId] = dailyFilters;
+
+      const { dailySummaryDate } = dailyFilters;
+
+      renderDailySummaryFn(shopId, dailySummaryDate);
+    });
+
+  document
+    .getElementById(`resetFiltersBtn_admin_${shopId}`)
+    ?.addEventListener('click', () => {
+      const role = 'admin';
+
+      resetDailySummaryFilters(role, shopId);
+
+      const dailyFilters = getDailySummaryFilters(role, shopId);
+      currentDailySalesFiltersByShop[shopId] = dailyFilters;
+
+      const { dailySummaryDate } = dailyFilters;
+
+      renderDailySummaryFn(shopId, dailySummaryDate);
+    });
+
+  // Admin Monthly Sales Simmary
+
+  document
+    .getElementById(`applyMonthlySummaryDateFiltersBtn_admin_${shopId}`)
+    ?.addEventListener('click', () => {
+      const monthlyFilters = getMonthlySummaryFilters('admin', shopId);
+      currentDailySalesFiltersByShop[shopId] = monthlyFilters;
+      const { monthlySummaryMonth, monthlySummaryYear } = monthlyFilters;
+
+      let month = monthlySummaryMonth;
+      let year = monthlySummaryYear;
+
+      renderMonthlySummaryFn(year, month, shopId);
+    });
+
+  document
+    .getElementById(`resetMonthlySummaryFiltersBtn_admin_${shopId}`)
+    ?.addEventListener('click', () => {
+      const role = 'admin';
+
+      resetMonthlySummaryFilters(role, shopId);
+
+      const monthlyFilters = getMonthlySummaryFilters(role, shopId);
+      currentMonthlySalesFiltersByShop[shopId] = monthlyFilters;
+      const { monthlySummaryMonth, monthlySummaryYear } = monthlyFilters;
+
+      let month = monthlySummaryMonth;
+      let year = monthlySummaryYear;
+
+      renderMonthlySummaryFn(year, month, shopId);
+    });
+
+  // Populate months
+  const monthSelect = document.getElementById(`monthSelect_admin_${shopId}`);
+
+  const monthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+
+  monthNames.forEach((month, index) => {
+    const option = document.createElement('option');
+    option.value = index + 1;
+    option.textContent = month;
+    monthSelect.appendChild(option);
+  });
+
+  // Populate years (2020–2030 for example)
+  const yearSelect = document.getElementById(`yearSelect_admin_${shopId}`);
+
+  for (let year = 2030; year >= 2020; year--) {
+    const option = document.createElement('option');
+    option.value = year;
+    option.textContent = year;
+    yearSelect.appendChild(option);
+  }
+
+  // Admin Sales
+  const loadMoreSalesButton = document.getElementById(
+    `loadMoreSaleButton_admin_${shopId}`
+  );
+
+  loadMoreSalesButton.style.display = 'none';
+
+  loadMoreSalesButton.addEventListener('click', () => {
+    const role = 'admin';
+    const nextPage = ++shopPageTracker[shopId];
+    const filters = currentSalesFiltersByShop[shopId] || {};
+
+    //  const tableBodyId = '.posTableDisplay_staff tbody';
+
+    renderSalesTableFn({
+      page: nextPage,
+      limit,
+      filters,
+      shopId,
+      tableBodyId: `#sale-tbody-${shopId}`,
+      loadMoreButton: document.getElementById(
+        `loadMoreSaleButton_admin_${shopId}`
+      ),
+    });
+  });
+}
+
 if (isAdmin) {
   showGlobalLoader();
 
@@ -518,6 +692,8 @@ if (isAdmin) {
     // Admin POS Filter Logic Start
 
     if (servicePermission === 'POS' || servicePermission === 'BOTH') {
+      // Admin POS Filter Logic
+
       setupPosFilters({
         shopId: shop.id,
         shopPageTracker,
@@ -529,168 +705,18 @@ if (isAdmin) {
     // Admin POS Filter Logic End
 
     if (servicePermission === 'SALES' || servicePermission === 'BOTH') {
-      // Admin Sales Filter
-      document
-        .getElementById(`applySalesFiltersBtn_admin_${shop.id}`)
-        ?.addEventListener('click', () => {
-          const filters = getSalesFilters('admin', shop.id);
-          currentSalesFiltersByShop[shop.id] = filters;
+      // Admin Sales Filter Logic
 
-          renderSalesTable({
-            page: currentPage,
-            limit,
-            filters,
-            shopId,
-            tableBodyId: `#sale-tbody-${shop.id}`,
-            loadMoreButton: document.getElementById(
-              `loadMoreSaleButton_admin_${shop.id}`
-            ),
-          });
-          //   console.log('filters:', filters);
-        });
-
-      document
-        .getElementById(`resetSalesFiltersBtn_${shop.id}`)
-        ?.addEventListener('click', () => {
-          const role = 'admin';
-          resetSalesFilters(role, shop.id);
-          const filters = getSalesFilters(role, shop.id);
-          currentSalesFiltersByShop[shop.id] = filters;
-          const tableSelector = '.posTableDisplay_staff tbody';
-
-          renderSalesTable({
-            page: currentPage,
-            limit,
-            filters,
-            shopId,
-            tableBodyId: `#sale-tbody-${shop.id}`,
-            loadMoreButton: document.getElementById(
-              `loadMoreSaleButton_admin_${shop.id}`
-            ),
-          });
-        });
-
-      // Admin Daily Sales Simmary
-
-      document
-        .getElementById(`applyDailySummaryDateFiltersBtn_admin_${shop.id}`)
-        ?.addEventListener('click', () => {
-          const dailyFilters = getDailySummaryFilters('admin', shop.id);
-          currentDailySalesFiltersByShop[shop.id] = dailyFilters;
-
-          const { dailySummaryDate } = dailyFilters;
-
-          renderDailySummary(shopId, dailySummaryDate);
-        });
-
-      document
-        .getElementById(`resetFiltersBtn_admin_${shop.id}`)
-        ?.addEventListener('click', () => {
-          const role = 'admin';
-
-          resetDailySummaryFilters(role, shop.id);
-
-          const dailyFilters = getDailySummaryFilters(role, shop.id);
-          currentDailySalesFiltersByShop[shop.id] = dailyFilters;
-
-          const { dailySummaryDate } = dailyFilters;
-
-          renderDailySummary(shopId, dailySummaryDate);
-        });
-
-      // Admin Monthly Sales Simmary
-
-      document
-        .getElementById(`applyMonthlySummaryDateFiltersBtn_admin_${shop.id}`)
-        ?.addEventListener('click', () => {
-          const monthlyFilters = getMonthlySummaryFilters('admin', shop.id);
-          currentDailySalesFiltersByShop[shop.id] = monthlyFilters;
-          const { monthlySummaryMonth, monthlySummaryYear } = monthlyFilters;
-
-          let month = monthlySummaryMonth;
-          let year = monthlySummaryYear;
-
-          renderMonthlySummary(year, month, shopId);
-        });
-
-      document
-        .getElementById(`resetMonthlySummaryFiltersBtn_admin_${shop.id}`)
-        ?.addEventListener('click', () => {
-          const role = 'admin';
-
-          resetMonthlySummaryFilters(role, shop.id);
-
-          const monthlyFilters = getMonthlySummaryFilters(role, shop.id);
-          currentMonthlySalesFiltersByShop[shop.id] = monthlyFilters;
-          const { monthlySummaryMonth, monthlySummaryYear } = monthlyFilters;
-
-          let month = monthlySummaryMonth;
-          let year = monthlySummaryYear;
-
-          renderMonthlySummary(year, month, shopId);
-        });
-
-      // Populate months
-      const monthSelect = document.getElementById(
-        `monthSelect_admin_${shop.id}`
-      );
-
-      const monthNames = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December',
-      ];
-
-      monthNames.forEach((month, index) => {
-        const option = document.createElement('option');
-        option.value = index + 1;
-        option.textContent = month;
-        monthSelect.appendChild(option);
-      });
-
-      // Populate years (2020–2030 for example)
-      const yearSelect = document.getElementById(`yearSelect_admin_${shop.id}`);
-
-      for (let year = 2030; year >= 2020; year--) {
-        const option = document.createElement('option');
-        option.value = year;
-        option.textContent = year;
-        yearSelect.appendChild(option);
-      }
-
-      // Admin Sales
-      const loadMoreSalesButton = document.getElementById(
-        `loadMoreSaleButton_admin_${shop.id}`
-      );
-
-      loadMoreSalesButton.style.display = 'none';
-
-      loadMoreSalesButton.addEventListener('click', () => {
-        const role = 'admin';
-        const nextPage = ++shopPageTracker[shop.id];
-        const filters = currentSalesFiltersByShop[shop.id] || {};
-
-        //  const tableBodyId = '.posTableDisplay_staff tbody';
-
-        renderSalesTable({
-          page: nextPage,
-          limit,
-          filters,
-          shopId,
-          tableBodyId: `#sale-tbody-${shop.id}`,
-          loadMoreButton: document.getElementById(
-            `loadMoreSaleButton_admin_${shop.id}`
-          ),
-        });
+      setupSalesFilters({
+        shopId: shop.id,
+        shopPageTracker,
+        currentSalesFiltersByShop,
+        currentDailySalesFiltersByShop,
+        currentMonthlySalesFiltersByShop,
+        limit,
+        renderSalesTableFn: renderSalesTable,
+        renderDailySummaryFn: renderDailySummary,
+        renderMonthlySummaryFn: renderMonthlySummary,
       });
     }
 
@@ -701,6 +727,7 @@ if (isAdmin) {
     currentSalesFiltersByShop[shop.id] = salesFilters;
   });
 
+  //   if (servicePermission === 'SALES' || servicePermission === 'BOTH') {
   async function renderSalesTable({
     page = 1,
     limit,
@@ -1257,8 +1284,10 @@ if (isAdmin) {
     paymentChart.render();
     window[`monthlyPaymentMethodChartInstance_${shopId}`] = paymentChart;
   }
+  //   }
 
   container.addEventListener('click', async function (e) {
+    console.log('Container was clicked');
     const toggleBtn = e.target.closest('.accordion-toggle');
     if (!toggleBtn) return;
 

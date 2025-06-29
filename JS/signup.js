@@ -65,7 +65,7 @@ if (createbusinessForm) {
       versionPreference: versionPreferenceValue,
     };
 
-    //  console.log('📦 Business Details:', businessDetails);
+    console.log('📦 Business Details:', businessDetails);
 
     registerBusiness(businessDetails)
       .then((data) => {
@@ -139,6 +139,7 @@ if (signupForm) {
   const parseBusinessData = JSON.parse(businessData);
 
   const businessId = parseBusinessData?.data.id;
+  const businessType = parseBusinessData?.data.business_type;
 
   parseBusinessData
     ? (document.querySelector(
@@ -191,7 +192,7 @@ if (signupForm) {
       //   address: guarantorAddress,
       // },
       accountType: 'ADMIN',
-      servicePermission: 'BOTH',
+      servicePermission: businessType,
     };
 
     //  console.log('📦 Admin Details:', adminDetails);
