@@ -602,6 +602,7 @@ export function getPosAndSalesReportAccordion(shop) {
     `;
 }
 
+// MOD
 // Stored Here.
 
 // renderGoodsTable();
