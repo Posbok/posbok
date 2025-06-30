@@ -3187,13 +3187,15 @@ body.authentication {
   font-size: 1.5rem; }
 
 .productSales-summary,
-.sales-summary {
+.sales-summary,
+.posTransactions-summary {
   display: flex;
   gap: 1rem;
   margin: 1rem 0;
   flex-wrap: wrap; }
   .productSales-summary .summary-card,
-  .sales-summary .summary-card {
+  .sales-summary .summary-card,
+  .posTransactions-summary .summary-card {
     flex: 1 1 200px;
     background: #f8f9fa;
     border: 1px solid #e0e0e0;
@@ -3202,11 +3204,13 @@ body.authentication {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     text-align: center; }
     .productSales-summary .summary-card h4,
-    .sales-summary .summary-card h4 {
+    .sales-summary .summary-card h4,
+    .posTransactions-summary .summary-card h4 {
       margin: 0 0 0.5rem;
       font-size: 1rem; }
     .productSales-summary .summary-card .amount,
-    .sales-summary .summary-card .amount {
+    .sales-summary .summary-card .amount,
+    .posTransactions-summary .summary-card .amount {
       font-size: 1.4rem;
       font-weight: 600;
       color: #1b5e20; }
