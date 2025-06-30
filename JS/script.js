@@ -59,6 +59,7 @@ const isAdmin = parsedUserData?.accountType === 'ADMIN';
 const isStaff = parsedUserData?.accountType === 'STAFF';
 const shopId = parsedUserData?.shopId;
 const staffUserId = parsedUserData?.id;
+const servicePermission = parsedUserData?.servicePermission;
 
 const shopKey = `shop_${staffUserId}`;
 
@@ -1169,7 +1170,7 @@ const manageNav = document.getElementById('manageNav');
 
 // Stop everything if no user is logged in
 if (!userData) {
-  //   console.log('❎❎❎❎ No user data found in localStorage');
+  //   console.log('❎❎❎❎ No user data found');
 } else {
   //    User Name
   if (userNameDisplay) {
@@ -1191,51 +1192,49 @@ if (!userData) {
     .replace('.html', '')
     .split('?')[0];
 
-  //   if (parsedUserData.accountType === 'ADMIN') {
-  //     if (sellIndexTab) sellIndexTab.style.display = 'none';
-  //     if (posIndexTab) posIndexTab.style.display = 'none';
-  //     if (posNav) posNav.style.display = 'none';
-  //     if (sellNav) sellNav.style.display = 'none';
+  if (isStaff) {
+    // First, hide all tabs by default
+    if (sellIndexTab) sellIndexTab.style.display = 'none';
+    if (posIndexTab) posIndexTab.style.display = 'none';
+    if (reportIndexTab) reportIndexTab.style.display = 'none';
 
-  //     if (reportIndexTab) reportIndexTab.style.display = 'block';
-  //     if (manageIndexTab) manageIndexTab.style.display = 'block';
-  //     if (reportsNav) reportsNav.style.display = 'block';
-  //     if (manageNav) manageNav.style.display = 'block';
+    if (sellNav) sellNav.style.display = 'none';
+    if (posNav) posNav.style.display = 'none';
+    if (reportsNav) reportsNav.style.display = 'none';
 
-  //     if (posDepositButton) posDepositButton.style.display = 'none';
+    // Show only what's allowed based on servicePermission
+    if (
+      servicePermission === 'POS_TRANSACTIONS' ||
+      servicePermission === 'BOTH'
+    ) {
+      if (posIndexTab) posIndexTab.style.display = 'block';
+      if (posNav) posNav.style.display = 'block';
+      // if (posDepositButton) posDepositButton.style.display = 'block';
+    }
 
-  //     //  List of pages not open to admin
-  //     const restrictedAdminPages = ['pos', 'sell'];
+    if (
+      servicePermission === 'INVENTORY_SALES' ||
+      servicePermission === 'BOTH'
+    ) {
+      if (sellIndexTab) sellIndexTab.style.display = 'block';
+      if (sellNav) sellNav.style.display = 'block';
+    }
 
-  //     if (restrictedAdminPages.includes(currentPageName)) {
-  //       window.location.href = 'index.html';
-  //     }
+    // Show report tab only if either service is active
+    if (
+      servicePermission === 'POS_TRANSACTIONS' ||
+      servicePermission === 'INVENTORY_SALES' ||
+      servicePermission === 'BOTH'
+    ) {
+      if (reportIndexTab) reportIndexTab.style.display = 'block';
+      if (reportsNav) reportsNav.style.display = 'block';
+    }
 
-  //     //  const isOnRestrictedAdminPage = RestrictedAdminPage.some((page) =>
-  //     //    currentPage.includes(page)
-  //     //  );
-
-  //     //  // If admin is on a protected page, redirect to login
-  //     //  if (isOnRestrictedAdminPage) {
-  //     //    window.location.href = 'index.html';
-  //     //  }
-  //   }
-
-  if (parsedUserData.accountType === 'STAFF') {
-    if (sellIndexTab) sellIndexTab.style.display = 'block';
-    if (posIndexTab) posIndexTab.style.display = 'block';
-    if (reportIndexTab) reportIndexTab.style.display = 'block';
-    if (sellNav) sellNav.style.display = 'block';
-    if (posNav) posNav.style.display = 'block';
-    if (reportsNav) reportsNav.style.display = 'block';
-
+    // Hide manage tab completely for staff
     if (manageIndexTab) manageIndexTab.style.display = 'none';
     if (manageNav) manageNav.style.display = 'none';
 
-    if (posDepositButton) posDepositButton.style.display = 'block';
-
-    //  List of pages not open to Staff
-
+    // Prevent staff from opening restricted pages directly
     const restrictedStaffPages = [
       'manage',
       'staff-profile',
@@ -1246,15 +1245,39 @@ if (!userData) {
     if (restrictedStaffPages.includes(currentPageName)) {
       window.location.href = 'index.html';
     }
+  }
 
-    //  const isOnRestrictedStaffPage = restrictedStaffPage.some((page) =>
-    //    currentPage.includes(page)
-    //  );
+  if (isAdmin) {
+    // Always show Manage and Reports tabs
+    if (manageIndexTab) manageIndexTab.style.display = 'block';
+    if (manageNav) manageNav.style.display = 'block';
 
-    //  // If Staff is on a protected page, redirect to login
-    //  if (isOnRestrictedStaffPage) {
-    //    window.location.href = 'index.html';
-    //  }
+    if (reportIndexTab) reportIndexTab.style.display = 'block';
+    if (reportsNav) reportsNav.style.display = 'block';
+
+    // Conditionally show POS tab
+    if (
+      servicePermission === 'POS_TRANSACTIONS' ||
+      servicePermission === 'BOTH'
+    ) {
+      if (posIndexTab) posIndexTab.style.display = 'block';
+      if (posNav) posNav.style.display = 'block';
+    } else {
+      if (posIndexTab) posIndexTab.style.display = 'none';
+      if (posNav) posNav.style.display = 'none';
+    }
+
+    // Conditionally show Sell tab
+    if (
+      servicePermission === 'INVENTORY_SALES' ||
+      servicePermission === 'BOTH'
+    ) {
+      if (sellIndexTab) sellIndexTab.style.display = 'block';
+      if (sellNav) sellNav.style.display = 'block';
+    } else {
+      if (sellIndexTab) sellIndexTab.style.display = 'none';
+      if (sellNav) sellNav.style.display = 'none';
+    }
   }
 }
 
