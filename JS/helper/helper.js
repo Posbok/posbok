@@ -288,6 +288,20 @@ export function formatTransactionType(value) {
   }
 }
 
+// Format Service Permission
+export function formatServicePermission(value) {
+  switch (value.toLowerCase()) {
+    case 'pos_transactions':
+      return 'POS Transactions';
+    case 'inventory_sales':
+      return 'Sales & Inventory';
+    case 'both':
+      return 'POS & Sales';
+    default:
+      return value;
+  }
+}
+
 // Format Sale Status
 export function formatSaleStatus(value) {
   switch (value.toLowerCase()) {

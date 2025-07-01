@@ -26,7 +26,7 @@ const isStaff = parsedUserData?.accountType === 'STAFF';
 const staffShopId = parsedUserData?.shopId;
 const staffUserId = parsedUserData?.id;
 const shopKey = `shop_${staffUserId}`;
-const servicePermission = parsedUserData.servicePermission;
+const servicePermission = parsedUserData?.servicePermission;
 
 export function getAdminSalesReportHtml(shop) {
   //   console.log('Sales Report');

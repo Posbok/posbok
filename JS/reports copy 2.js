@@ -59,7 +59,7 @@ const isStaff = parsedUserData?.accountType === 'STAFF';
 const staffShopId = parsedUserData?.shopId;
 const staffUserId = parsedUserData?.id;
 const shopKey = `shop_${staffUserId}`;
-const servicePermission = parsedUserData.servicePermission;
+const servicePermission = parsedUserData?.servicePermission;
 
 function toTitleCase(value) {
   return value.charAt(0).toUpperCase() + value.slice(1);

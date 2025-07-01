@@ -17,6 +17,7 @@ import {
 import { safeFetch } from './apiServices/utility/safeFetch';
 import {
   clearFormInputs,
+  formatServicePermission,
   hideBtnLoader,
   hideGlobalLoader,
   showBtnLoader,
@@ -26,6 +27,8 @@ import { closeModal, showToast } from './script';
 
 const userData = config.userData;
 const baseUrl = config.baseUrl;
+const parsedUserData = userData ? JSON.parse(userData) : null;
+const servicePermission = parsedUserData?.servicePermission;
 
 let userShops = [];
 let enrichedShopData = [];
@@ -63,12 +66,49 @@ if (userData) {
   });
 }
 
+// const businessData = await fetchBusinessDetails();
+// console.log(businessData);
+
 export function setupCreateStaffForm() {
   const form = document.querySelector('.createStaffModal');
 
   if (!form || form.dataset.bound === 'true') return;
 
   form.dataset.bound = 'true';
+
+  // 👇 Run once when modal opens to control which access types can be selected
+  (async function applyAccessControlBasedOnBusinessPermission() {
+    try {
+      const businessData = await fetchBusinessDetails();
+      const businessPermission = businessData.data.business_type;
+
+      // Get radio buttons
+      const posRadio = document.getElementById('staffPosCheckbox');
+      const sellRadio = document.getElementById('staffSellCheckbox');
+      const bothRadio = document.getElementById('staffPosAndSellCheckbox');
+
+      // Enable all first
+      [posRadio, sellRadio, bothRadio].forEach((el) => {
+        el.disabled = false;
+        el.checked = false;
+      });
+
+      // Apply logic
+      if (businessPermission === 'POS_TRANSACTIONS') {
+        posRadio.checked = true;
+        sellRadio.disabled = true;
+        bothRadio.disabled = true;
+      } else if (businessPermission === 'INVENTORY_SALES') {
+        sellRadio.checked = true;
+        posRadio.disabled = true;
+        bothRadio.disabled = true;
+      } else if (businessPermission === 'BOTH') {
+        posRadio.checked = true; // Or leave all unchecked if no default
+      }
+    } catch (err) {
+      console.error('❌ Failed to load business permissions:', err);
+    }
+  })();
 
   // Password Validation start
   // Wait for input in the password and confirm password fields
@@ -165,6 +205,7 @@ export function setupCreateStaffForm() {
       const accessTypeCheckboxes = document.querySelectorAll(
         'input[name="accessType"]:checked'
       );
+
       const accessType = Array.from(accessTypeCheckboxes).map((cb) => cb.value);
       const accessTypeValue = accessType[0] || null;
 
@@ -291,7 +332,9 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
         <td class="py-1 staffEmail">${staff.email}
           </td>
         <td class="py-1 staffAccountType">${staff.accountType}</td>
-        <td class="py-1 staffServicePermission">${staff.servicePermission}</td>
+        <td class="py-1 staffServicePermission">${formatServicePermission(
+          staff.servicePermission
+        )}</td>
         <td class="py-1 staffshop">${staff.shop_name || 'No Shop Assigned'}</td>
         <td class="py-1 action-buttons">
           <button class="hero-btn-outline editStaffButton" data-staff-id="${
@@ -319,7 +362,9 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
     <td class="py-1 staffEmail">${staff.email}
       </td>
     <td class="py-1 staffAccountType">${staff.accountType}</td>
-    <td class="py-1 staffServicePermission">${staff.servicePermission}</td>
+    <td class="py-1 staffServicePermission">${formatServicePermission(
+      staff.servicePermission
+    )}</td>
        <td class="py-1 staffshop">ADMIN</td>
     <td class="py-1 action-buttons">
       <button class="hero-btn-outline editStaffButton" disabled data-staff-id="${
@@ -542,6 +587,42 @@ export function bindUpdateStaffFormListener() {
 export function setupUpdateStaffForm(user) {
   const form = document.querySelector('.adminUpdateUserDataModal');
   if (!form) return;
+
+  // 👇 Run once when modal opens to control which access types can be selected
+  (async function applyAccessControlBasedOnBusinessPermission() {
+    try {
+      const businessData = await fetchBusinessDetails();
+      const businessPermission = businessData.data.business_type;
+
+      // Get radio buttons
+      const posRadio = document.getElementById('updateStaffPosCheckbox');
+      const sellRadio = document.getElementById('updateStaffSellCheckbox');
+      const bothRadio = document.getElementById(
+        'updateStaffPosAndSellCheckbox'
+      );
+
+      // Enable all first
+      [posRadio, sellRadio, bothRadio].forEach((el) => {
+        el.disabled = false;
+        el.checked = false;
+      });
+
+      // Apply logic
+      if (businessPermission === 'POS_TRANSACTIONS') {
+        posRadio.checked = true;
+        sellRadio.disabled = true;
+        bothRadio.disabled = true;
+      } else if (businessPermission === 'INVENTORY_SALES') {
+        sellRadio.checked = true;
+        posRadio.disabled = true;
+        bothRadio.disabled = true;
+      } else if (businessPermission === 'BOTH') {
+        posRadio.checked = true; // Or leave all unchecked if no default
+      }
+    } catch (err) {
+      console.error('❌ Failed to load business permissions:', err);
+    }
+  })();
 
   // Save user.id in the form for later use
   form.dataset.userId = user.id;

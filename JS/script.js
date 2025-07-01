@@ -482,12 +482,16 @@ async function renderBusinessDayButtons() {
 
   if (isStaff) {
     const businessDay = await getCurrentBusinessDay(isStaff ? shopId : '');
-
     console.log('new Business Day:', businessDay.data);
 
-    if (!businessInitBtnDiv) return;
+    const openingCash = businessDay?.data?.opening_cash || 0;
+    updateCashInMachineUI(openingCash);
 
-    businessInitBtnDiv.innerHTML = ''; // Clear current buttons
+    console.log(openingCash);
+
+    //  if (!businessInitBtnDiv) return;
+
+    if (businessInitBtnDiv) businessInitBtnDiv.innerHTML = ''; // Clear current buttons
 
     if (
       businessDay.data === false ||
@@ -498,7 +502,8 @@ async function renderBusinessDayButtons() {
       openBusinessDayBtn.classList.add('openBusinessDayBtn', 'businessInitBtn');
       openBusinessDayBtn.id = 'openBusinessDayBtn';
       openBusinessDayBtn.innerText = 'Open Business Day';
-      businessInitBtnDiv.appendChild(openBusinessDayBtn);
+      if (businessInitBtnDiv)
+        businessInitBtnDiv.appendChild(openBusinessDayBtn);
 
       document
         .querySelector('#openBusinessDayBtn')
@@ -507,11 +512,13 @@ async function renderBusinessDayButtons() {
       openStaffBusinessDayModal();
     } else if (businessDay.success === null) {
       // fallback
-      businessInitBtnDiv.innerHTML = `
+      if (businessInitBtnDiv)
+        businessInitBtnDiv.innerHTML = `
     <p class="text-danger">⚠️ Failed to fetch business day status. Please refresh or try again later.</p>
   `;
     } else {
-      businessInitBtnDiv.innerHTML = `
+      if (businessInitBtnDiv)
+        businessInitBtnDiv.innerHTML = `
       <button class="hero-btn-danger closeBusinessDayModal mb-0" id="closeBusinessDayModal">Close Business Day</button>
       <button class="depositPosCapitalBtn businessInitBtn" id="depositPosCapitalBtn">Deposit POS Capital</button>
     `;
@@ -529,21 +536,20 @@ async function renderBusinessDayButtons() {
       initAccountOverview();
     }
     //   else if (businessDay.data.status === 'closed')
-    //    businessInitBtnDiv.innerHTML = `
+    //  if (businessInitBtnDiv)   businessInitBtnDiv.innerHTML = `
     //   <button class="viewSummaryBtn businessInitBtn" id="viewSummaryBtn">📊 View Business Day Summary</button>
     // `;
 
     //   }
 
     // Update Opening Cash Input - Cash in Machine
-    const openingCash = businessDay?.data?.opening_cash || 0;
-    updateCashInMachineUI(openingCash);
   }
 
   if (isAdmin) {
-    if (!businessInitBtnDiv) return;
+    //  if (!businessInitBtnDiv) return;
 
-    businessInitBtnDiv.innerHTML = `
+    if (businessInitBtnDiv)
+      businessInitBtnDiv.innerHTML = `
     <button class="businessInitBtn" id="openBusinessDayBtn">Open Business Day</button>
 
     <button class="businessInitBtn" id="depositPosCapitalBtn">Deposit POS Capital</button>
@@ -567,7 +573,7 @@ async function renderBusinessDayButtons() {
     initAccountOverview();
   }
   //   else if (businessDay.data.status === 'closed')
-  //    businessInitBtnDiv.innerHTML = `
+  //     if (businessInitBtnDiv)  businessInitBtnDiv.innerHTML = `
   //   <button class="viewSummaryBtn businessInitBtn" id="viewSummaryBtn">📊 View Business Day Summary</button>
   // `;
 
@@ -1191,6 +1197,25 @@ if (!userData) {
     .substring(currentPath.lastIndexOf('/') + 1)
     .replace('.html', '')
     .split('?')[0];
+
+  // Step 2: Define permission-restricted pages
+  const permissionRestrictedPages = {
+    pos: ['POS_TRANSACTIONS', 'BOTH'],
+    sell: ['INVENTORY_SALES', 'BOTH'],
+  };
+
+  // Step 3: Apply logic separately for both staff and admin
+  const restrictedServiceAccess = Object.entries(
+    permissionRestrictedPages
+  ).find(
+    ([pageKey, allowedPermissions]) =>
+      currentPageName === pageKey &&
+      !allowedPermissions.includes(servicePermission)
+  );
+
+  if (restrictedServiceAccess) {
+    window.location.href = 'index.html';
+  }
 
   if (isStaff) {
     // First, hide all tabs by default

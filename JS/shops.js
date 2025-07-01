@@ -6,6 +6,7 @@ import {
   updateShop,
 } from './apiServices/shop/shopResource';
 import {
+  formatServicePermission,
   hideBtnLoader,
   hideGlobalLoader,
   showBtnLoader,
@@ -56,7 +57,9 @@ export function populateShopsTable(shopData = []) {
         <td class="py-1 shopSerialNumber">${index + 1}</td>
         <td class="py-1 shopName">${shop.shop_name}</td>
         <td class="py-1 shopLocation">${shop.location}</td>
-        <td class="py-1 shopServiceType">${shop.service_type}</td>
+        <td class="py-1 shopServiceType">${formatServicePermission(
+          shop.service_type
+        )}</td>
         <td class="py-1 shopManager">${staffNames || '—'}</td>
         <td class="py-1 action-buttons">
           <button class="hero-btn-outline editShopButton" data-shop-id="${

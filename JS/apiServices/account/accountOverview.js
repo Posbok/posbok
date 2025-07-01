@@ -46,16 +46,15 @@ export function updatePosCapitalUI(posCapitalData) {
 
   const posCapital = posCapitalData?.data?.totalCapital || 0;
 
-  if (posCapitalData) {
-    if (totalPosCapital)
-      totalPosCapital.value = formatAmountWithCommas(posCapital);
-  }
+  if (totalPosCapital)
+    totalPosCapital.innerHTML = formatAmountWithCommas(posCapital || 0);
 }
 
 export function updateCashInMachineUI(openingCash) {
   const cashInMachine = document.getElementById('cashInMachine');
+
   if (cashInMachine)
-    cashInMachine.value = formatAmountWithCommas(openingCash || 0);
+    cashInMachine.innerHTML = formatAmountWithCommas(openingCash || 0);
 }
 
 // Later:
