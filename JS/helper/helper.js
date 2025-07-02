@@ -29,6 +29,9 @@ export function clearFormInputs() {
   const addProductForm = document.querySelector('.addProductModal');
   const addCategoryForm = document.querySelector('.addCategoryModal');
   const updateProductForm = document.querySelector('.updateProductModal');
+  const addExistingProductForm = document.querySelector(
+    '.addExistingProductModal'
+  );
   const openBusinessDayForm = document.querySelector('.openBusinessDayModal');
   const checkoutForm = document.querySelector('.checkout-form');
 
@@ -221,7 +224,43 @@ export function clearFormInputs() {
         }
       });
 
-    delete updateProductForm.dataset.staffId;
+    delete updateProductForm.dataset.productId;
+  }
+
+  // Clear Add Existing  Product Form Inputs
+  if (addExistingProductForm) {
+    addExistingProductForm
+      .querySelectorAll('input, textarea, select')
+      .forEach((el) => {
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          el.checked = false;
+        } else {
+          el.value = '';
+        }
+      });
+
+    const adminSellProductSearchSection = document.querySelector(
+      '.addExistingSellProductSearch-section'
+    );
+    const adminSellProductCategorySection = document.querySelector(
+      '.addExistingSellProductCategory-section'
+    );
+    const adminSellProductName = document.querySelector(
+      '.addExistingSellProductName'
+    );
+    const adminAutocompleteList = document.getElementById(
+      'addExistingAutocompleteList'
+    );
+
+    if (adminSellProductSearchSection)
+      adminSellProductSearchSection.style.display = 'none';
+    if (adminSellProductCategorySection)
+      adminSellProductCategorySection.style.display = 'none';
+    if (adminSellProductName) adminSellProductName.style.display = 'none';
+    if (adminAutocompleteList) adminAutocompleteList.style.display = 'none';
+
+    delete addExistingProductForm.dataset.shopId;
+    delete addExistingProductForm.dataset.productId;
   }
 
   // Clear Open Business Day  Inputs
@@ -283,6 +322,20 @@ export function formatTransactionType(value) {
       return 'Bill Payment';
     case 'deposit':
       return 'Deposit';
+    default:
+      return value;
+  }
+}
+
+// Format Service Permission
+export function formatServicePermission(value) {
+  switch (value.toLowerCase()) {
+    case 'pos_transactions':
+      return 'POS Transactions';
+    case 'inventory_sales':
+      return 'Sales & Inventory';
+    case 'both':
+      return 'POS & Sales';
     default:
       return value;
   }
@@ -625,4 +678,56 @@ export function clearReceiptDiv() {
   // Sales Items - Middle Part Below
   const itemsTableBody = document.querySelector('.itemsTable tbody');
   itemsTableBody.innerHTML = ''; // clear previous rows
+}
+
+export function truncateProductNames(namesArray, options) {
+  const {
+    maxItems = Infinity,
+    maxLength = Infinity,
+    separator = ', ',
+  } = options;
+
+  let resultNames = [];
+  let currentLength = 0;
+  let truncated = false;
+
+  for (let i = 0; i < namesArray.length; i++) {
+    const name = namesArray[i];
+    const nameWithSeparatorLength =
+      name.length + (i > 0 ? separator.length : 0);
+
+    if (
+      currentLength + nameWithSeparatorLength > maxLength &&
+      resultNames.length > 0
+    ) {
+      truncated = true;
+      break;
+    }
+    if (resultNames.length >= maxItems) {
+      truncated = true;
+      break;
+    }
+
+    resultNames.push(name);
+    currentLength += nameWithSeparatorLength;
+  }
+
+  let finalString = resultNames.join(separator);
+
+  if (finalString.length > maxLength && maxLength !== Infinity) {
+    finalString = finalString.substring(0, maxLength).trim();
+    truncated = true;
+  }
+
+  if (truncated && namesArray.length > resultNames.length) {
+    return finalString + '...';
+  } else if (
+    truncated &&
+    namesArray.length === resultNames.length &&
+    finalString.length === maxLength
+  ) {
+    return finalString + '...';
+  }
+
+  return finalString;
 }

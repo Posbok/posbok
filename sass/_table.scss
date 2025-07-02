@@ -332,6 +332,11 @@
    display: none;
 }
 
+.staffPosReportDiv,
+.staffSalesReportDiv {
+   display: none;
+}
+
 .loading-row td {
    padding: 1.5rem 1rem;
    text-align: center;
@@ -421,7 +426,8 @@
 }
 
 .productSales-summary,
-.sales-summary {
+.sales-summary,
+.posTransactions-summary {
    display: flex;
    gap: 1rem;
    margin: 1rem 0;

@@ -1,4 +1,5 @@
 import config from '../config';
+import './script.js';
 import {
   addInventory,
   createProduct,
@@ -31,6 +32,11 @@ import { showToast, closeModal, setupModalCloseButtons } from './script';
 import { populateShopDropdown } from './staff';
 
 let isSubmitting = false;
+let allProducts = [];
+let allCategories = [];
+let activeCategoryId = null; // null means "All"
+let selectedProduct = null;
+
 const deleteProductButton = document.querySelector('.deleteProductButton');
 
 // JS for Adding Products
@@ -82,6 +88,19 @@ export function openAddProductModalBtn() {
   createProductForm();
 }
 
+export function openAddExistingProductModalBtn() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const addExistingProductContainer = document.querySelector(
+    '.addExistingProduct'
+  );
+
+  if (addExistingProductContainer)
+    addExistingProductContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
 export function openUpdateProductButton() {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
@@ -115,6 +134,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document
     .querySelector('#openAddProductModalBtn')
     ?.addEventListener('click', openAddProductModalBtn);
+
+  document
+    .querySelector('#openAddExistingProductModalBtn')
+    ?.addEventListener('click', openAddExistingProductModalBtn);
 
   document
     .querySelector('#openUpdateProductBtn')
@@ -243,7 +266,7 @@ export function populateCategoryTable(productCategoriesData) {
         // Store categoryId in modal container for reference
         updateCategoryModalContainer.dataset.categoryId = categoryId;
 
-        console.log(updateCategoryModalContainer.dataset.categoryId);
+        //   console.log(updateCategoryModalContainer.dataset.categoryId);
         // Fetch staff detail
         const CategoryDetail = await getProductCategories(categoryId);
 
@@ -261,42 +284,6 @@ export function populateCategoryTable(productCategoriesData) {
         }
       }
     });
-
-    //  const deleteBtn = row.querySelector('.deleteShopButton');
-    //  deleteBtn.addEventListener('click', async () => {
-    //    const shopId = deleteBtn.dataset.shopId;
-    //    await deleteShop(shopId);
-    //  });
-
-    //  const updateShopBtn = row.querySelector('.editShopButton');
-    //  updateShopBtn?.addEventListener('click', async () => {
-    //    showGlobalLoader();
-    //    const shopId = updateShopBtn.dataset.shopId;
-
-    //    const adminUpdateShopDataContainer = document.querySelector(
-    //      '.adminUpdateShopData'
-    //    );
-
-    //    if (adminUpdateShopDataContainer) {
-    //      // Store shopId in modal container for reference
-    //      adminUpdateShopDataContainer.dataset.shopId = shopId;
-
-    //      // Fetch Shop detail
-    //      const shopDetail = await fetchShopDetail(shopId);
-
-    //      //   console.log(shopDetail);
-
-    //      // Call function to prefill modal inputs
-    //      if (shopDetail?.data) {
-    //        hideGlobalLoader();
-    //        openUpdateShopModal(); // Show modal after data is ready
-    //        setupUpdateShopForm(shopDetail.data);
-    //      } else {
-    //        hideGlobalLoader();
-    //        showToast('fail', '❌ Failed to fetch shop details.');
-    //      }
-    //    }
-    //  });
   });
 }
 
@@ -304,16 +291,36 @@ export function populateGoodsShopDropdown(shopList = []) {
   const inventoryShopDropdown = document.getElementById(
     'inventoryShopDropdown'
   );
-  if (!inventoryShopDropdown) return;
 
-  inventoryShopDropdown.innerHTML = `<option value="">Select a shop</option>`;
+  const addExistingProductShopDropdown = document.getElementById(
+    'addExistingProductShopDropdown'
+  );
 
-  shopList.forEach((shop) => {
-    const option = document.createElement('option');
-    option.value = shop.id;
-    option.textContent = `${shop.shop_name} - ${shop.location}`;
-    inventoryShopDropdown.appendChild(option);
-  });
+  if (inventoryShopDropdown) {
+    inventoryShopDropdown.innerHTML = `<option value="">Select a shop</option>`;
+
+    shopList.forEach((shop) => {
+      const option = document.createElement('option');
+      option.value = shop.id;
+      option.textContent = `${shop.shop_name} - ${shop.location}`;
+      inventoryShopDropdown.appendChild(option);
+    });
+  } else {
+    return;
+  }
+
+  if (addExistingProductShopDropdown) {
+    addExistingProductShopDropdown.innerHTML = `<option value="">Select a shop</option>`;
+
+    shopList.forEach((shop) => {
+      const option = document.createElement('option');
+      option.value = shop.id;
+      option.textContent = `${shop.shop_name} - ${shop.location}`;
+      addExistingProductShopDropdown.appendChild(option);
+    });
+  } else {
+    return;
+  }
 }
 
 export function populateCategoriesDropdown(categoriesData = []) {
@@ -408,7 +415,7 @@ export function createProductForm() {
         //     return;
         //   }
 
-        console.log(productData);
+        //   console.log(productData);
 
         const productId = productData?.data.id;
 
@@ -451,6 +458,391 @@ export function createProductForm() {
         console.error('Error Creating product:', err);
         showToast('fail', `❎ ${err.message}`);
       }
+    });
+  }
+}
+
+//  Add Existing Product
+export function bindAddExistingProductFormListener() {
+  const form = document.querySelector('.addExistingProductModal');
+  if (!form) return;
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      // console.log('Form got here');
+
+      const productId = form.dataset.productId;
+      const shopId = form.dataset.shopId;
+
+      if (!productId) {
+        showToast('fail', '❎ No Product selected for addExisting.');
+        return;
+      }
+
+      if (!shopId) {
+        showToast('fail', '❎ No shop selected for addExisting.');
+        return;
+      }
+
+      const itemQuantityAvailable = document.querySelector(
+        '#itemQuantityAvailable'
+      ).value;
+      const itemNewQuantityAvailable = document.querySelector(
+        '#itemNewQuantityAvailable'
+      ).value;
+
+      const updateItemQuantityDetails = {
+        quantity:
+          Number(itemQuantityAvailable) + Number(itemNewQuantityAvailable),
+      };
+
+      // console.log(
+      //   'Updating Product Detail with:',
+      //   updateItemQuantityDetails,
+      //   productId,
+      //   shopId
+      // );
+
+      const addExistingProductModalBtn = document.querySelector(
+        '.addExistingProductModalBtn'
+      );
+
+      try {
+        showBtnLoader(addExistingProductModalBtn);
+        const updateItemQuantityData = await updateProductInventory(
+          updateItemQuantityDetails,
+          shopId,
+          productId
+        );
+
+        if (!updateItemQuantityData) {
+          console.error('fail', updateItemQuantityData.message);
+          return;
+        }
+
+        if (updateItemQuantityData) {
+          showToast('success', `✅ ${updateItemQuantityData.message}`);
+          closeModal();
+          clearFormInputs();
+          await renderProductInventoryTable(shopId);
+        }
+
+        //   hideGlobalLoader();
+      } catch (err) {
+        hideBtnLoader(addExistingProductModalBtn);
+
+        console.error('Error Updating product:', err);
+        showToast('fail', `❎ ${err.message}`);
+        return;
+      } finally {
+        hideBtnLoader(addExistingProductModalBtn);
+      }
+    });
+  }
+}
+
+const adminSellProductSearchSection = document.querySelector(
+  '.addExistingSellProductSearch-section'
+);
+const adminSellProductCategorySection = document.querySelector(
+  '.addExistingSellProductCategory-section'
+);
+const adminSellProductName = document.querySelector(
+  '.addExistingSellProductName'
+);
+const adminAutocompleteList = document.getElementById(
+  'addExistingAutocompleteList'
+);
+// const
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (adminSellProductSearchSection)
+    adminSellProductSearchSection.style.display = 'none';
+  if (adminSellProductCategorySection)
+    adminSellProductCategorySection.style.display = 'none';
+  if (adminSellProductName) adminSellProductName.style.display = 'none';
+  if (adminAutocompleteList) adminAutocompleteList.style.display = 'none';
+});
+
+const addExistingProductShopDropdown = document.getElementById(
+  'addExistingProductShopDropdown'
+);
+
+export function addExistingProductForm() {
+  const form = document.querySelector('.addExistingProductModal');
+  if (!form) return;
+
+  addExistingProductShopDropdown.addEventListener('change', async (e) => {
+    //  console.log('Dropdown changed:', e.target.value);
+
+    const form = document.querySelector('.addExistingProductModal');
+
+    const selectedShopId = e.target.value;
+    if (!selectedShopId) return;
+
+    form.dataset.shopId = selectedShopId;
+
+    adminSellProductCategorySection.innerHTML = '';
+    adminAutocompleteList.innerHTML = '';
+    productInput.value = '';
+    searchSellProdutItem.value = '';
+    allProducts = [];
+
+    adminSellProductSearchSection.style.display = 'block';
+    adminSellProductCategorySection.style.display = 'flex';
+    adminSellProductName.style.display = 'block';
+
+    await displayAllCategories(selectedShopId);
+    await displayAllProducts(selectedShopId);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  bindAddExistingProductFormListener();
+  addExistingProductForm();
+});
+
+async function displayAllProducts(selectedShopId) {
+  //   console.log('products; After Sale entry');
+  try {
+    showGlobalLoader();
+
+    allProducts = await fetchAllProducts(selectedShopId); // Fetch and store all products
+
+    //  console.log(`Total products fetched:`, allProducts);
+
+    updateAutocompleteList(allProducts); // Populate the autocomplete dropdown with all products
+
+    // Autocomplete filter on input
+    searchSellProdutItem.addEventListener('input', function () {
+      const inputValue = searchSellProdutItem.value.toLowerCase();
+
+      if (inputValue.value === '') {
+        adminSellProductName.style.display = 'none';
+        adminAutocompleteList.style.display = 'none';
+        return;
+      } else if (inputValue.length > 0) {
+        adminSellProductName.style.display = 'block';
+        adminAutocompleteList.style.display = 'block';
+
+        let filteredProducts = allProducts;
+
+        // Filter by selected category (if any)
+        if (activeCategoryId !== null) {
+          filteredProducts = filteredProducts.filter(
+            (product) => product.Product.ProductCategory.id === activeCategoryId
+          );
+        }
+
+        // Further filter by input value
+        filteredProducts = filteredProducts.filter(
+          (product) =>
+            product.Product.name.toLowerCase().includes(inputValue) ||
+            product.Product.description.toLowerCase().includes(inputValue)
+        );
+
+        updateAutocompleteList(filteredProducts);
+
+        return;
+      } else {
+        adminSellProductName.style.display = 'none';
+        adminAutocompleteList.style.display = 'none';
+        return;
+      }
+    });
+
+    //  searchSellProdutItem.addEventListener('click', function () {
+    //    autocompleteList.style.display = 'block';
+    //  });
+  } catch (error) {
+    console.error('Error displaying products:', error);
+  } finally {
+    hideGlobalLoader();
+  }
+}
+
+async function displayAllCategories() {
+  try {
+    showGlobalLoader();
+
+    // Clear old category buttons
+    adminSellProductCategorySection.innerHTML = '';
+    activeCategoryId = null; // Reset category filter
+
+    allCategories = await fetchAllCategories(); // Fetch and store all Categories
+
+    //  console.log(`Total Categories fetched:`, allCategories);
+
+    const allBtn = document.createElement('button');
+    allBtn.classList.add('sellProductCategoryBtn');
+    allBtn.type = 'button';
+    allBtn.textContent = 'All';
+    allBtn.dataset.categoryId = 'all';
+
+    allBtn.addEventListener('click', function () {
+      document.querySelectorAll('.sellProductCategoryBtn').forEach((btn) => {
+        btn.classList.remove('active');
+      });
+
+      allBtn.classList.add('active');
+      activeCategoryId = null; // Reset filter to all
+
+      adminSellProductName.style.display = 'block';
+      adminAutocompleteList.style.display = 'block';
+
+      let filteredProducts = allProducts;
+
+      const inputValue = searchSellProdutItem.value.toLowerCase().trim();
+      if (inputValue.length > 0) {
+        filteredProducts = filteredProducts.filter(
+          (product) =>
+            product.Product.name.toLowerCase().includes(inputValue) ||
+            product.Product.description.toLowerCase().includes(inputValue)
+        );
+      }
+
+      updateAutocompleteList(filteredProducts);
+    });
+
+    adminSellProductCategorySection.appendChild(allBtn);
+
+    allCategories.forEach((category) => {
+      const categoryBtn = document.createElement('button');
+      categoryBtn.classList.add('sellProductCategoryBtn');
+      categoryBtn.type = 'button';
+      categoryBtn.textContent = category.name;
+      categoryBtn.dataset.categoryId = category.id;
+
+      categoryBtn.addEventListener('click', function () {
+        // Remove active class from all other buttons
+        document.querySelectorAll('.sellProductCategoryBtn').forEach((btn) => {
+          btn.classList.remove('active');
+        });
+
+        // Toggle current button as active
+        categoryBtn.classList.add('active');
+        activeCategoryId = parseInt(categoryBtn.dataset.categoryId);
+
+        adminSellProductName.style.display = 'block';
+        adminAutocompleteList.style.display = 'block';
+
+        const categoryId = parseInt(categoryBtn.dataset.categoryId);
+
+        let filteredProducts = allProducts.filter(
+          //  (product) => product.Product.ProductCategory.id === categoryId
+          (product) => product.Product.ProductCategory.id === activeCategoryId
+        );
+
+        const inputValue = searchSellProdutItem.value.toLowerCase().trim();
+
+        if (inputValue.length > 0) {
+          filteredProducts = filteredProducts.filter(
+            (product) =>
+              product.Product.name.toLowerCase().includes(inputValue) ||
+              product.Product.description.toLowerCase().includes(inputValue)
+          );
+        }
+
+        updateAutocompleteList(filteredProducts);
+      });
+
+      adminSellProductCategorySection.appendChild(categoryBtn);
+    });
+  } catch (error) {
+    console.error('Error displaying products:', error);
+  } finally {
+    hideGlobalLoader();
+  }
+}
+
+async function fetchAllProducts(shopId) {
+  let products = [];
+
+  //   console.log('Fetching products for shop:', shopId);
+
+  try {
+    const productInventoryData = await getProductInventory(shopId); // Fetch products
+
+    if (productInventoryData) {
+      // console.log(`Fetching product inventory:`, productInventoryData.data);
+      products = products.concat(productInventoryData.data); // Add data to all products array
+
+      if (adminSellProductSearchSection)
+        adminSellProductSearchSection.style.display = 'block';
+      if (adminSellProductCategorySection)
+        adminSellProductCategorySection.style.display = 'flex';
+    }
+
+    //  console.log('Products', products);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    throw error;
+  }
+
+  //   console.log(products);
+  return products;
+}
+
+async function fetchAllCategories() {
+  let categories = [];
+
+  try {
+    const productCategoryData = await getProductCategories(); // Fetch Categories
+
+    if (productCategoryData) {
+      // console.log(`Fetching product categories:`, productCategoryData.data);
+      categories = categories.concat(productCategoryData.data); // Add data to all Categories array
+    }
+
+    //  console.log('Categories', categories);
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    throw error;
+  }
+
+  //   console.log(categories);
+  return categories;
+}
+
+// Update the autocomplete list with provided products
+function updateAutocompleteList(products) {
+  adminAutocompleteList.innerHTML = '';
+  const itemQuantityAvailable = document.getElementById(
+    'itemQuantityAvailable'
+  );
+  const productInput = document.getElementById('productInput');
+  const form = document.querySelector('.addExistingProductModal');
+
+  if (products.length === 0) {
+    const listItem = document.createElement('li');
+    listItem.textContent = 'Item Not Found';
+    listItem.classList.add('autocomplete-list-item');
+    adminAutocompleteList.appendChild(listItem);
+  } else {
+    products.forEach((product) => {
+      // console.log(product);
+      const listItem = document.createElement('li');
+      // listItem.textContent = product.Product.name;
+      // listItem.classList.add('autocomplete-list-item');
+      listItem.innerHTML = `         
+         <li class="autocomplete-list-item">
+            <p>${product.Product.name}</p>
+            <small>${product.Product.description}</span>
+         </li>
+         `;
+
+      listItem.addEventListener('click', function () {
+        selectedProduct = product.Product; // Store selected product to later get the product ID
+        //   console.log(product);
+        form.dataset.productId = product.Product.id;
+        //   form.dataset.shopId = product.Shop.id;
+        productInput.value = product.Product.name;
+        itemQuantityAvailable.value = product.quantity;
+        adminAutocompleteList.style.display = 'none';
+      });
+      adminAutocompleteList.appendChild(listItem);
     });
   }
 }
@@ -708,8 +1100,8 @@ export function updateCategoryForm(categoryDetail) {
   const categories = categoryDetail.data;
 
   categories.forEach((category) => {
-    console.log('category', category.id);
-    console.log('dataset', form.dataset.categoryId);
+    //  console.log('category', category.id);
+    //  console.log('dataset', form.dataset.categoryId);
 
     if (category.id === Number(form.dataset.categoryId)) {
       const categoryName = category.name;

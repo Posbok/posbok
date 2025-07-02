@@ -1033,6 +1033,9 @@ button:disabled:hover {
 .px-2 {
   padding-top: 2rem; }
 
+.force-m-0 {
+  margin: 0rem !important; }
+
 .mt-1 {
   margin-top: 1rem; }
 
@@ -1041,6 +1044,9 @@ button:disabled:hover {
 
 .mt-4 {
   margin-top: 4rem; }
+
+.force-mb-0 {
+  margin-bottom: 0rem !important; }
 
 .mb-0 {
   margin-bottom: 0rem; }
@@ -1419,8 +1425,10 @@ body.authentication {
       .adminSellProduct-method-form_input .sellProductName,
       .adminSellProduct-method-form_input .adminSellProductName {
         display: none; }
+      .sellProduct-method-form_input #addExistingAutocompleteList,
       .sellProduct-method-form_input .adminAutocomplete-list,
       .sellProduct-method-form_input .autocomplete-list,
+      .adminSellProduct-method-form_input #addExistingAutocompleteList,
       .adminSellProduct-method-form_input .adminAutocomplete-list,
       .adminSellProduct-method-form_input .autocomplete-list {
         list-style: none;
@@ -1436,34 +1444,46 @@ body.authentication {
         border-radius: 4px;
         display: none; }
         @media only screen and (max-width: 18.8em) {
+          .sellProduct-method-form_input #addExistingAutocompleteList,
           .sellProduct-method-form_input .adminAutocomplete-list,
           .sellProduct-method-form_input .autocomplete-list,
+          .adminSellProduct-method-form_input #addExistingAutocompleteList,
           .adminSellProduct-method-form_input .adminAutocomplete-list,
           .adminSellProduct-method-form_input .autocomplete-list {
             width: 75%; } }
+        .sellProduct-method-form_input #addExistingAutocompleteList::-webkit-scrollbar,
         .sellProduct-method-form_input .adminAutocomplete-list::-webkit-scrollbar,
         .sellProduct-method-form_input .autocomplete-list::-webkit-scrollbar,
+        .adminSellProduct-method-form_input #addExistingAutocompleteList::-webkit-scrollbar,
         .adminSellProduct-method-form_input .adminAutocomplete-list::-webkit-scrollbar,
         .adminSellProduct-method-form_input .autocomplete-list::-webkit-scrollbar {
           width: .8rem; }
+          .sellProduct-method-form_input #addExistingAutocompleteList::-webkit-scrollbar-thumb,
           .sellProduct-method-form_input .adminAutocomplete-list::-webkit-scrollbar-thumb,
           .sellProduct-method-form_input .autocomplete-list::-webkit-scrollbar-thumb,
+          .adminSellProduct-method-form_input #addExistingAutocompleteList::-webkit-scrollbar-thumb,
           .adminSellProduct-method-form_input .adminAutocomplete-list::-webkit-scrollbar-thumb,
           .adminSellProduct-method-form_input .autocomplete-list::-webkit-scrollbar-thumb {
             background-color: #51cf66;
             border-radius: 10px; }
+            .sellProduct-method-form_input #addExistingAutocompleteList::-webkit-scrollbar-thumb:active,
             .sellProduct-method-form_input .adminAutocomplete-list::-webkit-scrollbar-thumb:active,
             .sellProduct-method-form_input .autocomplete-list::-webkit-scrollbar-thumb:active,
+            .adminSellProduct-method-form_input #addExistingAutocompleteList::-webkit-scrollbar-thumb:active,
             .adminSellProduct-method-form_input .adminAutocomplete-list::-webkit-scrollbar-thumb:active,
             .adminSellProduct-method-form_input .autocomplete-list::-webkit-scrollbar-thumb:active {
               background-color: #10AB2B; }
+          .sellProduct-method-form_input #addExistingAutocompleteList::-webkit-scrollbar-track,
           .sellProduct-method-form_input .adminAutocomplete-list::-webkit-scrollbar-track,
           .sellProduct-method-form_input .autocomplete-list::-webkit-scrollbar-track,
+          .adminSellProduct-method-form_input #addExistingAutocompleteList::-webkit-scrollbar-track,
           .adminSellProduct-method-form_input .adminAutocomplete-list::-webkit-scrollbar-track,
           .adminSellProduct-method-form_input .autocomplete-list::-webkit-scrollbar-track {
             background-color: #ebfbee; }
+        .sellProduct-method-form_input #addExistingAutocompleteList-item,
         .sellProduct-method-form_input .adminAutocomplete-list-item,
         .sellProduct-method-form_input .autocomplete-list-item,
+        .adminSellProduct-method-form_input #addExistingAutocompleteList-item,
         .adminSellProduct-method-form_input .adminAutocomplete-list-item,
         .adminSellProduct-method-form_input .autocomplete-list-item {
           padding: 10px;
@@ -1471,8 +1491,10 @@ body.authentication {
           background-color: #fff;
           border-bottom: 1px solid #51cf66;
           transition: background-color 0.2s; }
+          .sellProduct-method-form_input #addExistingAutocompleteList-item:hover,
           .sellProduct-method-form_input .adminAutocomplete-list-item:hover,
           .sellProduct-method-form_input .autocomplete-list-item:hover,
+          .adminSellProduct-method-form_input #addExistingAutocompleteList-item:hover,
           .adminSellProduct-method-form_input .adminAutocomplete-list-item:hover,
           .adminSellProduct-method-form_input .autocomplete-list-item:hover {
             background-color: #0F7A89;
@@ -1480,6 +1502,59 @@ body.authentication {
     .sellProduct-method-form .hero-btn-dark,
     .adminSellProduct-method-form .hero-btn-dark {
       margin-top: 3rem; }
+
+#addExistingAutocompleteList,
+.adminAutocomplete-list,
+.autocomplete-list {
+  color: #205329;
+  font-size: 1.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  z-index: 1;
+  width: 30rem;
+  border: 1px solid #ccc;
+  border-bottom: 4px solid #ccc;
+  max-height: 15rem;
+  overflow-y: auto;
+  border-radius: 4px;
+  display: none; }
+  @media only screen and (max-width: 18.8em) {
+    #addExistingAutocompleteList,
+    .adminAutocomplete-list,
+    .autocomplete-list {
+      width: 75%; } }
+  #addExistingAutocompleteList::-webkit-scrollbar,
+  .adminAutocomplete-list::-webkit-scrollbar,
+  .autocomplete-list::-webkit-scrollbar {
+    width: .8rem; }
+    #addExistingAutocompleteList::-webkit-scrollbar-thumb,
+    .adminAutocomplete-list::-webkit-scrollbar-thumb,
+    .autocomplete-list::-webkit-scrollbar-thumb {
+      background-color: #51cf66;
+      border-radius: 10px; }
+      #addExistingAutocompleteList::-webkit-scrollbar-thumb:active,
+      .adminAutocomplete-list::-webkit-scrollbar-thumb:active,
+      .autocomplete-list::-webkit-scrollbar-thumb:active {
+        background-color: #10AB2B; }
+    #addExistingAutocompleteList::-webkit-scrollbar-track,
+    .adminAutocomplete-list::-webkit-scrollbar-track,
+    .autocomplete-list::-webkit-scrollbar-track {
+      background-color: #ebfbee; }
+  #addExistingAutocompleteList-item,
+  .adminAutocomplete-list-item,
+  .autocomplete-list-item {
+    padding: 10px;
+    cursor: pointer;
+    background-color: #fff;
+    border-bottom: 1px solid #51cf66;
+    transition: background-color 0.2s; }
+    #addExistingAutocompleteList-item:hover,
+    .adminAutocomplete-list-item:hover,
+    .autocomplete-list-item:hover {
+      background-color: #0F7A89;
+      color: #ebfbee; }
 
 .sellProductCategory-section,
 .adminSellProductCategory-section {
@@ -3124,6 +3199,10 @@ body.authentication {
 .staff-view {
   display: none; }
 
+.staffPosReportDiv,
+.staffSalesReportDiv {
+  display: none; }
+
 .loading-row td {
   padding: 1.5rem 1rem;
   text-align: center;
@@ -3187,13 +3266,15 @@ body.authentication {
   font-size: 1.5rem; }
 
 .productSales-summary,
-.sales-summary {
+.sales-summary,
+.posTransactions-summary {
   display: flex;
   gap: 1rem;
   margin: 1rem 0;
   flex-wrap: wrap; }
   .productSales-summary .summary-card,
-  .sales-summary .summary-card {
+  .sales-summary .summary-card,
+  .posTransactions-summary .summary-card {
     flex: 1 1 200px;
     background: #f8f9fa;
     border: 1px solid #e0e0e0;
@@ -3202,11 +3283,13 @@ body.authentication {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     text-align: center; }
     .productSales-summary .summary-card h4,
-    .sales-summary .summary-card h4 {
+    .sales-summary .summary-card h4,
+    .posTransactions-summary .summary-card h4 {
       margin: 0 0 0.5rem;
       font-size: 1rem; }
     .productSales-summary .summary-card .amount,
-    .sales-summary .summary-card .amount {
+    .sales-summary .summary-card .amount,
+    .posTransactions-summary .summary-card .amount {
       font-size: 1.4rem;
       font-weight: 600;
       color: #1b5e20; }

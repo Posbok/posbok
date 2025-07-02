@@ -59,6 +59,7 @@ const isAdmin = parsedUserData?.accountType === 'ADMIN';
 const isStaff = parsedUserData?.accountType === 'STAFF';
 const shopId = parsedUserData?.shopId;
 const staffUserId = parsedUserData?.id;
+const servicePermission = parsedUserData?.servicePermission;
 
 const shopKey = `shop_${staffUserId}`;
 
@@ -481,12 +482,16 @@ async function renderBusinessDayButtons() {
 
   if (isStaff) {
     const businessDay = await getCurrentBusinessDay(isStaff ? shopId : '');
-
     console.log('new Business Day:', businessDay.data);
 
-    if (!businessInitBtnDiv) return;
+    const openingCash = businessDay?.data?.opening_cash || 0;
+    updateCashInMachineUI(openingCash);
 
-    businessInitBtnDiv.innerHTML = ''; // Clear current buttons
+    //  console.log(openingCash);
+
+    //  if (!businessInitBtnDiv) return;
+
+    if (businessInitBtnDiv) businessInitBtnDiv.innerHTML = ''; // Clear current buttons
 
     if (
       businessDay.data === false ||
@@ -497,7 +502,8 @@ async function renderBusinessDayButtons() {
       openBusinessDayBtn.classList.add('openBusinessDayBtn', 'businessInitBtn');
       openBusinessDayBtn.id = 'openBusinessDayBtn';
       openBusinessDayBtn.innerText = 'Open Business Day';
-      businessInitBtnDiv.appendChild(openBusinessDayBtn);
+      if (businessInitBtnDiv)
+        businessInitBtnDiv.appendChild(openBusinessDayBtn);
 
       document
         .querySelector('#openBusinessDayBtn')
@@ -506,11 +512,13 @@ async function renderBusinessDayButtons() {
       openStaffBusinessDayModal();
     } else if (businessDay.success === null) {
       // fallback
-      businessInitBtnDiv.innerHTML = `
+      if (businessInitBtnDiv)
+        businessInitBtnDiv.innerHTML = `
     <p class="text-danger">⚠️ Failed to fetch business day status. Please refresh or try again later.</p>
   `;
     } else {
-      businessInitBtnDiv.innerHTML = `
+      if (businessInitBtnDiv)
+        businessInitBtnDiv.innerHTML = `
       <button class="hero-btn-danger closeBusinessDayModal mb-0" id="closeBusinessDayModal">Close Business Day</button>
       <button class="depositPosCapitalBtn businessInitBtn" id="depositPosCapitalBtn">Deposit POS Capital</button>
     `;
@@ -528,21 +536,20 @@ async function renderBusinessDayButtons() {
       initAccountOverview();
     }
     //   else if (businessDay.data.status === 'closed')
-    //    businessInitBtnDiv.innerHTML = `
+    //  if (businessInitBtnDiv)   businessInitBtnDiv.innerHTML = `
     //   <button class="viewSummaryBtn businessInitBtn" id="viewSummaryBtn">📊 View Business Day Summary</button>
     // `;
 
     //   }
 
     // Update Opening Cash Input - Cash in Machine
-    const openingCash = businessDay?.data?.opening_cash || 0;
-    updateCashInMachineUI(openingCash);
   }
 
   if (isAdmin) {
-    if (!businessInitBtnDiv) return;
+    //  if (!businessInitBtnDiv) return;
 
-    businessInitBtnDiv.innerHTML = `
+    if (businessInitBtnDiv)
+      businessInitBtnDiv.innerHTML = `
     <button class="businessInitBtn" id="openBusinessDayBtn">Open Business Day</button>
 
     <button class="businessInitBtn" id="depositPosCapitalBtn">Deposit POS Capital</button>
@@ -566,7 +573,7 @@ async function renderBusinessDayButtons() {
     initAccountOverview();
   }
   //   else if (businessDay.data.status === 'closed')
-  //    businessInitBtnDiv.innerHTML = `
+  //     if (businessInitBtnDiv)  businessInitBtnDiv.innerHTML = `
   //   <button class="viewSummaryBtn businessInitBtn" id="viewSummaryBtn">📊 View Business Day Summary</button>
   // `;
 
@@ -882,6 +889,7 @@ export function closeModal() {
   const addMachineFee = document.querySelector('.addMachineFees');
   const addCategory = document.querySelector('.addCategory');
   const addProduct = document.querySelector('.addProduct');
+  const addExistingProduct = document.querySelector('.addExistingProduct');
   const updateProduct = document.querySelector('.updateProduct');
   const openAdminBusinessDay = document.querySelector('.openAdminBusinessDay');
   const openStaffBusinessDay = document.querySelector('.openStaffBusinessDay');
@@ -943,6 +951,11 @@ export function closeModal() {
   if (addProduct) {
     addProduct.classList.remove('active');
     //  delete addProduct.dataset.staffId;
+  }
+
+  if (addExistingProduct) {
+    addExistingProduct.classList.remove('active');
+    //  delete addExistingProduct.dataset.staffId;
   }
 
   if (updateProduct) {
@@ -1144,7 +1157,7 @@ function checkIfTokenExpiredDaily() {
       localStorage.clear();
       window.location.href = 'login.html';
 
-      console.log('savedDate && savedDate !== today');
+      // console.log('savedDate && savedDate !== today');
     });
   }
 }
@@ -1169,7 +1182,7 @@ const manageNav = document.getElementById('manageNav');
 
 // Stop everything if no user is logged in
 if (!userData) {
-  //   console.log('❎❎❎❎ No user data found in localStorage');
+  //   console.log('❎❎❎❎ No user data found');
 } else {
   //    User Name
   if (userNameDisplay) {
@@ -1191,51 +1204,68 @@ if (!userData) {
     .replace('.html', '')
     .split('?')[0];
 
-  //   if (parsedUserData.accountType === 'ADMIN') {
-  //     if (sellIndexTab) sellIndexTab.style.display = 'none';
-  //     if (posIndexTab) posIndexTab.style.display = 'none';
-  //     if (posNav) posNav.style.display = 'none';
-  //     if (sellNav) sellNav.style.display = 'none';
+  // Step 2: Define permission-restricted pages
+  const permissionRestrictedPages = {
+    pos: ['POS_TRANSACTIONS', 'BOTH'],
+    sell: ['INVENTORY_SALES', 'BOTH'],
+  };
 
-  //     if (reportIndexTab) reportIndexTab.style.display = 'block';
-  //     if (manageIndexTab) manageIndexTab.style.display = 'block';
-  //     if (reportsNav) reportsNav.style.display = 'block';
-  //     if (manageNav) manageNav.style.display = 'block';
+  // Step 3: Apply logic separately for both staff and admin
+  const restrictedServiceAccess = Object.entries(
+    permissionRestrictedPages
+  ).find(
+    ([pageKey, allowedPermissions]) =>
+      currentPageName === pageKey &&
+      !allowedPermissions.includes(servicePermission)
+  );
 
-  //     if (posDepositButton) posDepositButton.style.display = 'none';
+  if (restrictedServiceAccess) {
+    window.location.href = 'index.html';
+  }
 
-  //     //  List of pages not open to admin
-  //     const restrictedAdminPages = ['pos', 'sell'];
+  if (isStaff) {
+    // First, hide all tabs by default
+    if (sellIndexTab) sellIndexTab.style.display = 'none';
+    if (posIndexTab) posIndexTab.style.display = 'none';
+    if (reportIndexTab) reportIndexTab.style.display = 'none';
 
-  //     if (restrictedAdminPages.includes(currentPageName)) {
-  //       window.location.href = 'index.html';
-  //     }
+    if (sellNav) sellNav.style.display = 'none';
+    if (posNav) posNav.style.display = 'none';
+    if (reportsNav) reportsNav.style.display = 'none';
 
-  //     //  const isOnRestrictedAdminPage = RestrictedAdminPage.some((page) =>
-  //     //    currentPage.includes(page)
-  //     //  );
+    // Show only what's allowed based on servicePermission
+    if (
+      servicePermission === 'POS_TRANSACTIONS' ||
+      servicePermission === 'BOTH'
+    ) {
+      if (posIndexTab) posIndexTab.style.display = 'block';
+      if (posNav) posNav.style.display = 'block';
+      // if (posDepositButton) posDepositButton.style.display = 'block';
+    }
 
-  //     //  // If admin is on a protected page, redirect to login
-  //     //  if (isOnRestrictedAdminPage) {
-  //     //    window.location.href = 'index.html';
-  //     //  }
-  //   }
+    if (
+      servicePermission === 'INVENTORY_SALES' ||
+      servicePermission === 'BOTH'
+    ) {
+      if (sellIndexTab) sellIndexTab.style.display = 'block';
+      if (sellNav) sellNav.style.display = 'block';
+    }
 
-  if (parsedUserData.accountType === 'STAFF') {
-    if (sellIndexTab) sellIndexTab.style.display = 'block';
-    if (posIndexTab) posIndexTab.style.display = 'block';
-    if (reportIndexTab) reportIndexTab.style.display = 'block';
-    if (sellNav) sellNav.style.display = 'block';
-    if (posNav) posNav.style.display = 'block';
-    if (reportsNav) reportsNav.style.display = 'block';
+    // Show report tab only if either service is active
+    if (
+      servicePermission === 'POS_TRANSACTIONS' ||
+      servicePermission === 'INVENTORY_SALES' ||
+      servicePermission === 'BOTH'
+    ) {
+      if (reportIndexTab) reportIndexTab.style.display = 'block';
+      if (reportsNav) reportsNav.style.display = 'block';
+    }
 
+    // Hide manage tab completely for staff
     if (manageIndexTab) manageIndexTab.style.display = 'none';
     if (manageNav) manageNav.style.display = 'none';
 
-    if (posDepositButton) posDepositButton.style.display = 'block';
-
-    //  List of pages not open to Staff
-
+    // Prevent staff from opening restricted pages directly
     const restrictedStaffPages = [
       'manage',
       'staff-profile',
@@ -1246,15 +1276,39 @@ if (!userData) {
     if (restrictedStaffPages.includes(currentPageName)) {
       window.location.href = 'index.html';
     }
+  }
 
-    //  const isOnRestrictedStaffPage = restrictedStaffPage.some((page) =>
-    //    currentPage.includes(page)
-    //  );
+  if (isAdmin) {
+    // Always show Manage and Reports tabs
+    if (manageIndexTab) manageIndexTab.style.display = 'block';
+    if (manageNav) manageNav.style.display = 'block';
 
-    //  // If Staff is on a protected page, redirect to login
-    //  if (isOnRestrictedStaffPage) {
-    //    window.location.href = 'index.html';
-    //  }
+    if (reportIndexTab) reportIndexTab.style.display = 'block';
+    if (reportsNav) reportsNav.style.display = 'block';
+
+    // Conditionally show POS tab
+    if (
+      servicePermission === 'POS_TRANSACTIONS' ||
+      servicePermission === 'BOTH'
+    ) {
+      if (posIndexTab) posIndexTab.style.display = 'block';
+      if (posNav) posNav.style.display = 'block';
+    } else {
+      if (posIndexTab) posIndexTab.style.display = 'none';
+      if (posNav) posNav.style.display = 'none';
+    }
+
+    // Conditionally show Sell tab
+    if (
+      servicePermission === 'INVENTORY_SALES' ||
+      servicePermission === 'BOTH'
+    ) {
+      if (sellIndexTab) sellIndexTab.style.display = 'block';
+      if (sellNav) sellNav.style.display = 'block';
+    } else {
+      if (sellIndexTab) sellIndexTab.style.display = 'none';
+      if (sellNav) sellNav.style.display = 'none';
+    }
   }
 }
 

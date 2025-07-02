@@ -27,9 +27,8 @@
    <!-- <script defer type="module" src="JS/script.js"></script>
    <script defer type="module" src="JS/goods.js"></script> -->
 
-   <script src="dist/main.bundle.js" defer></script>
+   <!-- <script src="dist/main.bundle.js" defer></script> -->
    <script src="dist/goods.bundle.js" defer></script>
-   <!-- <script src="dist/staff.bundle.js" defer></script> -->
 
    <title>POSBOK &mdash; Inventory Management</title>
    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -165,9 +164,14 @@
 
             <!-- <div class="table-header" style="display: flex; flex-direction: column; width: max-content;"> -->
 
-            <div class="adminHeader">
-               <button class="hero-btn-dark openAddProductModalBtn mr-0 " id="openAddProductModalBtn">
-                  <span class="btn-text">Add Product</span>
+            <div class="adminHeader" style="display: flex; flex-direction: row; gap: 1rem; align-items: center;">
+               <button class="hero-btn-dark openAddProductModalBtn mr-0 force-mb-0 " id="openAddProductModalBtn">
+                  <span class="btn-text">Add New Product</span>
+                  <span class="btn-spinner hidden"></span>
+               </button>
+
+               <button class="hero-btn-dark openAddExistingProductModalBtn mr-0 " id="openAddExistingProductModalBtn">
+                  <span class="btn-text">Add Existing Product</span>
                   <span class="btn-spinner hidden"></span>
                </button>
             </div>
@@ -438,10 +442,11 @@
       </div>
    </form>
 
+   <!-- Add New Product -->
    <form class="modal-form addProductModal" name="modal">
       <div class="card addProduct modal ">
          <div>
-            <h1 class="heading-text  addItemName">Add product</h1>
+            <h1 class="heading-text  addItemName">Add New Product</h1>
          </div>
 
          <!-- Assign Add Inventory to shop -->
@@ -513,7 +518,80 @@
          <div class="center-button">
 
             <button class="hero-btn-dark addProductModalBtn" id="addProductModalBtn">
-               <span class="btn-text">Add Product</span>
+               <span class="btn-text">Add New Product</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <!-- Add Existing Product -->
+   <form class="modal-form addExistingProductModal" name="modal">
+      <div class="card addExistingProduct modal ">
+         <div>
+            <h1 class="heading-text  addItemName">Add Existing Product</h1>
+         </div>
+
+         <!-- Assign Add Existing Inventory to shop -->
+         <div class="modal-form_input">
+            <label for="addExistingProductShopDropdown">Select Shop</label>
+
+            <select id="addExistingProductShopDropdown" class="form-control">
+               <option value="">Select a shop</option>
+               <!-- <option value="1">Loading Shops...</option> -->
+
+               <!-- Add Main shops dynamically -->
+            </select>
+         </div>
+
+         <div class="addExistingSellProductSearch-section mb-2">
+
+            <div class="sellProduct-method-form_input ">
+               <div class="search-input-container">
+                  <input type="search" id="searchSellProdutItem" class="searchSellProdutItem"
+                     placeholder="Search Product Name or Description ">
+                  <span class="searchIcon"><i class="fa-solid fa-magnifying-glass mr-2"></i></span>
+               </div>
+            </div>
+         </div>
+
+         <div class=" addExistingSellProductCategory-section">
+            <!-- <button class="sellProductCategoryBtn active" type="button">
+                  All
+               </button> -->
+
+         </div>
+
+         <div class="addExistingSellProduct-method-form_input mt-2">
+
+            <div class="input-container addExistingSellProductName">
+               <input type="text" id="productInput" disabled required>
+               <i class="fa fa-times clear-icon" id="clearIcon" aria-hidden="true"></i>
+            </div>
+
+            <ul class="autocomplete-list" id="addExistingAutocompleteList"></ul>
+         </div>
+
+         <div class="modal-form_input">
+            <label for="itemQuantityAvailable">Quantity Available</label>
+
+            <input id="itemQuantityAvailable" type="text" placeholder="Enter Current Quantity"
+               name="itemQuantityAvailable" disabled required>
+         </div>
+
+         <div class="modal-form_input">
+            <label for="newStockQuantity">New Stock Quantity</label>
+
+            <input id="itemNewQuantityAvailable" type="text" placeholder="Enter New Item Quantity"
+               name="itemNewQuantityAvailable" required>
+         </div>
+
+         <div class="center-button">
+
+            <button class="hero-btn-dark addExistingProductModalBtn" id="addExistingProductModalBtn">
+               <span class="btn-text">Add Existing Product</span>
                <span class="btn-spinner hidden"></span>
             </button>
          </div>

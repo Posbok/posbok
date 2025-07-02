@@ -9,6 +9,7 @@ import {
   hideGlobalLoader,
   showBtnLoader,
   showGlobalLoader,
+  truncateProductNames,
 } from '../../helper/helper';
 import { openSaleDetailsModal } from '../../reports';
 import {
@@ -944,7 +945,20 @@ export function updateStaffSalesData(
     } = sale;
 
     const shopName = sale.Shop.shop_name;
-    const salesItems = sale.SalesItems;
+    const salesItems = sale.SaleItems;
+
+    //  console.log('salesItems', salesItems);
+
+    const productNames = salesItems.map(
+      (item) => item.Product?.name || 'Unknown Product'
+    ); // Added null check for Product.name
+    const truncatedProductNames = truncateProductNames(productNames, {
+      maxItems: 3,
+      maxLength: 50,
+      separator: ', ',
+    });
+
+    //  console.log(truncatedProductNames);
 
     if (row)
       row.innerHTML = `
@@ -952,7 +966,7 @@ export function updateStaffSalesData(
         <td  class="py-1">${index + 1}</td>
         <td  class="py-1">${business_day}</td>
         <td  class="py-1">${shopName}</td>
-        <td  class="py-1">${customer_name}</td>
+        <td  class="py-1">${truncatedProductNames}</td>
         <td class="py-1">₦${formatAmountWithCommas(total_amount)}</td>
         <td class="py-1">₦${formatAmountWithCommas(amount_paid)}</td>
         <td class="py-1">₦${formatAmountWithCommas(balance)}</td>

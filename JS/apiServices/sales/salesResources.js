@@ -160,9 +160,9 @@ export async function getDailySalesSummary(shopId, date) {
       }
     );
 
-    console.log(
-      `${baseUrl}/api/sales/summary/daily?date=${date}&shopId=${shopId}`
-    );
+    //  console.log(
+    //    `${baseUrl}/api/sales/summary/daily?date=${date}&shopId=${shopId}`
+    //  );
 
     //  console.log('dailySalesSummaryData received...');
 
@@ -176,7 +176,6 @@ export async function getDailySalesSummary(shopId, date) {
 }
 
 export async function getMonthlySalesSummary(year, month, shopId) {
-  console.log(year, month, shopId);
   try {
     showGlobalLoader();
     const monthlySalesSummaryData = await safeFetch(
@@ -189,9 +188,9 @@ export async function getMonthlySalesSummary(year, month, shopId) {
       }
     );
 
-    console.log(
-      `${baseUrl}/api/sales/summary/monthly?year=${year}&month=${month}&shopId=${shopId}`
-    );
+    //  console.log(
+    //    `${baseUrl}/api/sales/summary/monthly?year=${year}&month=${month}&shopId=${shopId}`
+    //  );
 
     //  console.log('monthlySalesSummaryData received...');
 

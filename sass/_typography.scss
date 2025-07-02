@@ -636,6 +636,11 @@ button:disabled:hover {
    padding-top: 2rem;
 }
 
+// Margin
+.force-m-0 {
+   margin: 0rem !important;
+}
+
 // Margin Top
 .mt-1 {
    margin-top: 1rem;
@@ -650,6 +655,10 @@ button:disabled:hover {
 }
 
 // Margin Bottom
+
+.force-mb-0 {
+   margin-bottom: 0rem !important;
+}
 
 .mb-0 {
    margin-bottom: 0rem;

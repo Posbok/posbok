@@ -297,8 +297,8 @@ export async function checkAndPromptCreateStaff() {
       throw new Error(data.message || 'Something went wrong');
     }
 
-    console.log('allStaff', allStaffs);
-    console.log('enrichedShopData', enrichedShopData);
+    //  console.log('allStaff', allStaffs);
+    //  console.log('enrichedShopData', enrichedShopData);
 
     return data;
   } catch (error) {

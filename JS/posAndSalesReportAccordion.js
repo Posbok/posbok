@@ -1,150 +1,43 @@
-export function getPosAndSalesReportAccordion(shop) {
-  return `        <button class="accordion-toggle card heading-text" data-shop-id="${shop.id}">
-                  <h2 class="heading-subtext">
-                     ${shop.shop_name}
-                  </h2>
+import config from '../config';
+import { getPosTransactions } from './apiServices/pos/posResources';
+import {
+  getAllSales,
+  getDailySalesSummary,
+  getMonthlySalesSummary,
+  getSaleById,
+} from './apiServices/sales/salesResources';
+import { updateTotalPosAmounts } from './apiServices/utility/posReportUtility';
+import {
+  updateDailySalesData,
+  updateMonthlySalesData,
+  updateSalesReceipt,
+  updateTotalSalesAmounts,
+} from './apiServices/utility/salesReportUtility';
+import {
+  formatAmountWithCommas,
+  formatSaleStatus,
+  formatTransactionType,
+  truncateProductNames,
+} from './helper/helper';
 
-                  <i class="fa-solid icon fa-chevron-down"></i>
-               </button>
-               
-                   <div class="accordion-content">
-      <div id="shop-report-${shop.id}" class="reports card" data-loaded="false">
-                 <div class="reports">
-                     <div class="reports-method">
-                        <h2 class="heading-text mb-2">
-                           POS Reports
-                        </h2>
+const userData = config.userData;
+const parsedUserData = userData ? JSON.parse(userData) : null;
 
-                        <h2 class="filter-heading heading-subtext mb-2">Filter Transactions</h2>
+const isAdmin = parsedUserData?.accountType === 'ADMIN';
+const isStaff = parsedUserData?.accountType === 'STAFF';
+const staffShopId = parsedUserData?.shopId;
+const staffUserId = parsedUserData?.id;
+const shopKey = `shop_${staffUserId}`;
+const servicePermission = parsedUserData?.servicePermission;
 
-                        <div class="filter-section mb-2">
-
-                           <div class="pos-method-form_input">
-                              <label for="startDateFilter_admin_${shop.id}">Start Date:</label>
-
-                              <input type="date" id="startDateFilter_admin_${shop.id}">
-                           </div>
-
-                           <div class="pos-method-form_input">
-                              <label for="endDateFilter_admin_${shop.id}">End Date:</label>
-
-                              <input type="date" id="endDateFilter_admin_${shop.id}">
-                           </div>
-
-                           <div class="pos-method-form_input ">
-
-                              <label for="typeFilter_admin_${shop.id}">Transaction Type:</label>
-
-                              <select id="typeFilter_admin_${shop.id}" name="typeFilter_admin_${shop.id}">
-                                 <option value="">All</option>
-                                 <option value="DEPOSIT">Deposit</option>
-                                 <option value="WITHDRAWAL">Withdrawal</option>
-                                 <option value="WITHDRAWAL_TRANSFER">Withdrawal/Transfer</option>
-                                 <option value="BILL_PAYMENT">Bill Payment</option>
-                              </select>
-                           </div>
-
-                           <div class="pos-method-form_input ">
-
-                              <label for="statusFilter_admin_${shop.id}">Status:</label>
-
-                              <select id="statusFilter_admin_${shop.id}" name="statusFilter_admin_${shop.id}">
-                                 <option value="">All</option>
-                                 <option value="SUCCESSFUL">Successful</option>
-                                 <option value="FAILED">Failed</option>
-                                 <option value="PENDING">Pending</option>
-                              </select>
-                           </div>
-
-
-                           <div class="filter-buttons">
-                              <button id="applyFiltersBtn_admin_${shop.id}" class="hero-btn-dark">Apply Filters</button>
-                              <button id="resetFiltersBtn_${shop.id}" class="hero-btn-outline">Reset</button>
-                           </div>
-
-                        </div>
-
-                        <!-- <div id="transactionList" class="transaction-list mb-3"></div> -->
-
-                        <div class="table-header">
-                           <!-- <h2 class="heading-subtext"> POS </h2> -->
-                        </div>
-
-                        <div class="reports-table-container">
-
-                           <table class="reports-table posTableDisplay_admin_${shop.id}">
-                                     <thead>
-                                 <tr class="table-header-row">
-                                    <th class="py-1">S/N</th>
-                                    <th class="py-1">Date</th>
-                                    <th class="py-1">Transaction Type</th>
-                                    <th class="py-1">Customer Phone No.</th>
-                                    <th class="py-1">Amount</th>
-                                    <th class="py-1">Charges</th>
-                                    <th class="py-1">Machine Fee</th>
-                                    <th class="py-1">Charge Payment Method</th>
-                                    <th class="py-1">Payment Method</th>
-                                    <th class="py-1">Remarks</th>
-                                    <th class="py-1">Receipt ID</th>
-                                 </tr>
-                              </thead>
-
-                                <tbody  id="pos-tbody-${shop.id}">
-
-                                       </tbody>
-
-                                               <tfoot>
-                                 <tr class="table-foot-row px-2">
-                                    <td colspan="4"></td>
-                                    <td id="totalPosAmount" class="py-1 px-2">
-                                       <strong></strong>
-                                    </td>
-
-                                    <td id="totalPosFee" class="py-1 px-2">
-                                       <strong></strong>
-                                    </td>
-
-                                    <td id="totalMachineFee" class="py-1 px-2">
-                                       <strong></strong>
-                                    </td>
-
-                                    <td id="totalDepositAmount" class="py-1 px-2">
-                                       <strong></strong>
-                                    </td>
-
-                                    <td id="totalWithdrawalAmount" class="py-1 px-2">
-                                       <strong></strong>
-                                    </td>
-
-                                    <td id="totalWithdrawalTransferAmount" class="py-1 px-2">
-                                       <strong></strong>
-                                    </td>
-
-                                    <td id="totalBillPaymentAmount" class="py-1 px-2">
-                                       <strong></strong>
-                                    </td>
-                                    <!-- <td></td> -->
-                                 </tr>
-                              </tfoot>
-                           </table>
-
-                                     <div id="loadMoreButtonDiv_admin" class=" center-button mt-2">
-
-                              <button id="loadMoreButton_admin_${shop.id}" class=" hero-btn-dark load-more-button">Load
-                                 More</button>
-                              <!-- <button id="loadMoreButton" class="">Load More</button> -->
-                           </div>
-
-                        </div>
-
-      </div>
-    </div>
-    </div>
-
+export function getAdminSalesReportHtml(shop) {
+  //   console.log('Sales Report');
+  return `    
     <!-- Sales HTML starts Here -->
 
-          <div  id="shopSales-report-${shop.id}"  class=" reports card" data-loaded="false" mt-4 mb-4 ">
-           <div class="reports">
+          <div  id="shopSales-report-${shop.id}"  class=" reports " data-loaded="false" mt-4 mb-4 ">
+
+           <div class="reports card">
          <div class="reports-method">
             <h2 class="heading-text mb-2">
                Sales Reports
@@ -211,7 +104,7 @@ export function getPosAndSalesReportAccordion(shop) {
                      <tr class="table-header-row">
                         <th class="py-1">S/N</th>
                         <th class="py-1">Receipt #</th>
-                        <th class="py-1">Customer</th>
+                        <th class="py-1">Product Name</th>
                         <th class="py-1">Staff</th>
                         <th class="py-1">Amount</th>
                         <th class="py-1">Paid</th>
@@ -300,7 +193,6 @@ export function getPosAndSalesReportAccordion(shop) {
                      Sales</button>
                   <!-- <button id="loadMoreButton" class="">Load More</button> -->
                </div>
-            </div>
             </div>
             </div>
             </div>
@@ -581,7 +473,7 @@ export function getPosAndSalesReportAccordion(shop) {
                               <th class="py-1">S/N</th>
                               <th class="py-1">Date</th>
                               <th class="py-1">Shop</th>
-                              <th class="py-1">Customer</th>
+                              <th class="py-1">Product Name</th>
                               <th class="py-1">Total Amount</th>
                               <th class="py-1">Amount Paid</th>
                               <th class="py-1">Balance</th>
@@ -597,9 +489,1045 @@ export function getPosAndSalesReportAccordion(shop) {
             </div>
          </div>
       </div>
+            </div>
 
     
     `;
+}
+
+export function getAdminPosReportHtml(shop) {
+  //   console.log('POS Report');
+  return `
+      <!-- POS HTML starts Here -->
+         <div id="shop-report-${shop.id}" class="reports card" data-loaded="false">
+      
+                 <div class="reports">
+                     <div class="reports-method">
+                        <h2 class="heading-text mb-2">
+                           POS Reports
+                        </h2>
+
+                        <h2 class="filter-heading heading-subtext mb-2">Filter Transactions</h2>
+
+                        <div class="filter-section mb-2">
+
+                           <div class="pos-method-form_input">
+                              <label for="startDateFilter_admin_${shop.id}">Start Date:</label>
+
+                              <input type="date" id="startDateFilter_admin_${shop.id}">
+                           </div>
+
+                           <div class="pos-method-form_input">
+                              <label for="endDateFilter_admin_${shop.id}">End Date:</label>
+
+                              <input type="date" id="endDateFilter_admin_${shop.id}">
+                           </div>
+
+                           <div class="pos-method-form_input ">
+
+                              <label for="typeFilter_admin_${shop.id}">Transaction Type:</label>
+
+                              <select id="typeFilter_admin_${shop.id}" name="typeFilter_admin_${shop.id}">
+                                 <option value="">All</option>
+                                 <option value="DEPOSIT">Deposit</option>
+                                 <option value="WITHDRAWAL">Withdrawal</option>
+                                 <option value="WITHDRAWAL_TRANSFER">Withdrawal/Transfer</option>
+                                 <option value="BILL_PAYMENT">Bill Payment</option>
+                              </select>
+                           </div>
+
+                           <div class="pos-method-form_input ">
+
+                              <label for="statusFilter_admin_${shop.id}">Status:</label>
+
+                              <select id="statusFilter_admin_${shop.id}" name="statusFilter_admin_${shop.id}">
+                                 <option value="">All</option>
+                                 <option value="SUCCESSFUL">Successful</option>
+                                 <option value="FAILED">Failed</option>
+                                 <option value="PENDING">Pending</option>
+                              </select>
+                           </div>
+
+
+                           <div class="filter-buttons">
+                              <button id="applyFiltersBtn_admin_${shop.id}" class="hero-btn-dark">Apply Filters</button>
+                              <button id="resetFiltersBtn_${shop.id}" class="hero-btn-outline">Reset</button>
+                           </div>
+
+                        </div>
+
+                        <!-- <div id="transactionList" class="transaction-list mb-3"></div> -->
+
+                        <div class="table-header">
+                           <!-- <h2 class="heading-subtext"> POS </h2> -->
+                        </div>
+
+                        <div class="reports-table-container">
+
+                           <table class="reports-table posTableDisplay_admin_${shop.id}">
+                                     <thead>
+                                 <tr class="table-header-row">
+                                    <th class="py-1">S/N</th>
+                                    <th class="py-1">Date</th>
+                                    <th class="py-1">Transaction Type</th>
+                                    <th class="py-1">Customer Phone No.</th>
+                                    <th class="py-1">Amount</th>
+                                    <th class="py-1">Charges</th>
+                                    <th class="py-1">Machine Fee</th>
+                                    <th class="py-1">Charge Payment Method</th>
+                                    <th class="py-1">Payment Method</th>
+                                    <th class="py-1">Remarks</th>
+                                    <th class="py-1">Receipt ID</th>
+                                 </tr>
+                              </thead>
+
+                                <tbody  id="pos-tbody-${shop.id}">
+
+                                       </tbody>
+
+                                               <tfoot>
+                                 <tr class="table-foot-row px-2">
+                                    <td colspan="4"></td>
+                                    <td id="totalPosAmount" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+
+                                    <td id="totalPosFee" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+
+                                    <td id="totalMachineFee" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+
+                                    <td id="totalDepositAmount" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+
+                                    <td id="totalWithdrawalAmount" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+
+                                    <td id="totalWithdrawalTransferAmount" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+
+                                    <td id="totalBillPaymentAmount" class="py-1 px-2">
+                                       <strong></strong>
+                                    </td>
+                                    <!-- <td></td> -->
+                                 </tr>
+                              </tfoot>
+                           </table>
+
+                                     <div id="loadMoreButtonDiv_admin" class=" center-button mt-2">
+
+                              <button id="loadMoreButton_admin_${shop.id}" class=" hero-btn-dark load-more-button">Load
+                                 More</button>
+                              <!-- <button id="loadMoreButton" class="">Load More</button> -->
+                           </div>
+
+                        </div>
+
+      </div>
+    </div>
+    </div>
+
+      <!-- POS HTML Ends Here -->
+   `;
+}
+
+export function getAdminPosTransactionList(
+  transaction_type,
+  amount,
+  fee_payment_type,
+  customer_name,
+  customer_phone,
+  payment_method,
+  status,
+  receipt_id,
+  remarks,
+  business_day,
+  transaction_time,
+  machineFee,
+  transactionCharges,
+  transaction_fee,
+  serialNumber
+) {
+  return `
+    <td class="py-1">${serialNumber++}.</td>
+               <td class="py-1">${business_day}</td>
+               <td class="py-1 posTransTypeReport">${formatTransactionType(
+                 transaction_type
+               )}</td>
+               <td class="py-1 posCustomerInfo">${`${
+                 customer_phone === '' ? '-' : customer_phone
+               }`}</td>
+               <td class="py-1 posAmountReport">&#x20A6;${formatAmountWithCommas(
+                 amount
+               )}</td>
+               <td class="py-1 posChargesReport">&#x20A6;${formatAmountWithCommas(
+                 transactionCharges
+               )}</td>
+               <td class="py-1 posMachineFeeReport">&#x20A6;${formatAmountWithCommas(
+                 machineFee
+               )}</td>
+               <td class="py-1 posFeePaymentMethodReport">${fee_payment_type}</td>
+               <td class="py-1 posPaymentMethodReport">${payment_method}</td>
+               <td class="py-1 posPaymentMethodRemark">${remarks}</td>
+               <td class="py-1 posPaymentMethodRemark">${receipt_id}</td>`;
+}
+
+export function getAdminSalesTransactionList(
+  serialNumber,
+  id,
+  receipt_number,
+  amount_paid,
+  total_amount,
+  balance,
+  customer_name,
+  customer_phone,
+  payment_method,
+  business_day,
+  status,
+  first_name,
+  last_name,
+  truncatedProductNames
+) {
+  return `
+    <td class="py-1">${serialNumber++}.</td>
+                  <td class="py-1 soldItemReceiptReport">${receipt_number}</td>
+                  <td class="py-1 soldItemNameReport">${truncatedProductNames}</td>
+                   <td class="py-1 soldItemStaffNameReport">${first_name} ${last_name}</td>
+                    <td class="py-1 soldItemTotalAmountReport">&#x20A6;${formatAmountWithCommas(
+                      total_amount
+                    )}</td>
+                    <td class="py-1 soldItemPaidAmountReport">&#x20A6;${formatAmountWithCommas(
+                      amount_paid
+                    )}</td>
+                     <td class="py-1 soldItemBalanceAmountReport">&#x20A6;${formatAmountWithCommas(
+                       balance
+                     )}</td>
+                     <td class="py-1 soldItemDateReport">${payment_method}</td>
+                     <td class="py-1 soldItemDateReport">${business_day}</td>
+                      <td class="py-1 soldItemStatusReport">${formatSaleStatus(
+                        status
+                      )}</td>
+                       <td class="py-1 soldItemDetailReport" data-sale-id="${id}"><i class="fa fa-eye"></i></td>
+   `;
+}
+
+let allPosTransactions = [];
+let allSalesReport = [];
+
+// Pagination control for load more
+let currentPage;
+let shopPageTracker = {};
+// let shopPageTracker = {};
+let totalItems;
+let totalPages;
+let pageSize = 10;
+let limit = pageSize;
+let currentFilters = {};
+
+export async function renderPosTable({
+  page = 1,
+  limit = pageSize,
+  filters,
+  shopId,
+  tableBodyId,
+  loadMoreButton,
+  append = false,
+}) {
+  if (
+    servicePermission === 'POS_TRANSACTIONS' ||
+    servicePermission === 'BOTH'
+  ) {
+    const posTableBody = document.querySelector(tableBodyId);
+
+    if (!posTableBody) {
+      console.error('Error: Table body not found');
+      return;
+    }
+
+    try {
+      let loadingRow = document.querySelector('.loading-row');
+      // console.log('loading', loadingRow);
+      if (!loadingRow) {
+        loadingRow = document.createElement('tr');
+        loadingRow.className = 'loading-row';
+        loadingRow.innerHTML = `<td colspan="11" class="table-loading-text">Loading transactions...</td>`;
+        posTableBody.appendChild(loadingRow);
+      }
+
+      loadMoreButton.style.display = 'none';
+
+      // Build query with filters
+      const queryParams = new URLSearchParams({
+        shopId: shopId,
+        page,
+        limit,
+      });
+
+      // console.log('queryParams', queryParams);
+
+      if (filters.startDate) queryParams.append('startDate', filters.startDate);
+      if (filters.endDate) queryParams.append('endDate', filters.endDate);
+      if (filters.type) queryParams.append('type', filters.type);
+      if (filters.status) queryParams.append('status', filters.status);
+
+      const result = await getPosTransactions({
+        shopId,
+        page,
+        limit: pageSize,
+        filters,
+      });
+
+      // console.log(result);
+
+      if (!result) throw new Error(result.message || 'Failed to fetch');
+
+      const posTransactions = result.data.transactions;
+      totalPages = result.data.totalPages;
+      totalItems = result.data.totalItems;
+      currentPage = result.data.currentPage;
+
+      // Only reset array if starting from page 1
+      if (page === 1) {
+        allPosTransactions = [];
+      }
+
+      //  if (posTransactions.length === 0 && page === 1) {
+      //    posTableBody.innerHTML =
+      //      '<tr><td colspan="11" class="table-no-data">No transactions found.</td></tr>';
+      //    return;
+      //  }
+
+      if (posTransactions.length === 0 && currentPage === 1) {
+        posTableBody.innerHTML =
+          '<tr class="loading-row"><td colspan="11" class="table-error-text ">No Transactions Available.</td></tr>';
+        return;
+      }
+
+      posTransactions.forEach((transaction) => {
+        if (!allPosTransactions.some((t) => t.id === transaction.id)) {
+          allPosTransactions.push(transaction);
+        }
+      });
+
+      // Clear the table body and render all accumulated transactions
+      if (!append) {
+        posTableBody.innerHTML = '';
+      }
+      posTableBody.innerHTML = '';
+
+      // allPosTransactions.push(...posTransactions);
+
+      const groupedByDate = {};
+
+      allPosTransactions.forEach((tx) => {
+        const dateObj = new Date(tx.business_day);
+        const dateKey = dateObj.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }); // "May 11, 2025"
+
+        if (!groupedByDate[dateKey]) groupedByDate[dateKey] = [];
+        groupedByDate[dateKey].push(tx);
+      });
+
+      //  console.log(groupedByDate);
+
+      let serialNumber = 1;
+
+      Object.entries(groupedByDate).forEach(([date, transactions]) => {
+        // Insert group row (header for the date)
+        const groupRow = document.createElement('tr');
+        groupRow.className = 'date-group-row table-body-row ';
+
+        groupRow.innerHTML = `
+    <td colspan="11" class="date-header py-1 mt-1 mb-1">
+      <strong>${date}</strong>     </td>
+
+   `;
+        posTableBody.appendChild(groupRow);
+
+        //       groupRow.innerHTML = `
+        //     <td colspan="11" class="date-header py-1 mt-1 mb-1">
+        //       <strong>${date}</strong> — Total: ₦${formatAmountWithCommas(dailyTotal)}
+        //     </td>
+        //   `;
+
+        transactions.forEach((posTransaction) => {
+          //  console.log(posTransaction);
+          const {
+            transaction_type,
+            amount,
+            fee_payment_type,
+            customer_name,
+            customer_phone,
+            payment_method,
+            status,
+            receipt_id,
+            remarks,
+            business_day,
+            transaction_time,
+            charges,
+            fees,
+            transaction_fee,
+          } = posTransaction;
+
+          const machineFee = fees?.fee_amount || '-';
+          const transactionCharges = charges?.charge_amount || '-';
+
+          const row = document.createElement('tr');
+          row.classList.add('table-body-row');
+          row.innerHTML = getAdminPosTransactionList(
+            transaction_type,
+            amount,
+            fee_payment_type,
+            customer_name,
+            customer_phone,
+            payment_method,
+            status,
+            receipt_id,
+            remarks,
+            business_day,
+            transaction_time,
+            machineFee,
+            transactionCharges,
+            transaction_fee,
+            serialNumber
+          );
+
+          posTableBody.appendChild(row);
+        });
+
+        // Insert total row (Footer for Daily Totals))
+        const totalRow = document.createElement('tr');
+        totalRow.className = 'total-row table-body-row ';
+
+        // const dailyTotal = transactions.reduce(
+        //   (sum, t) => sum + Number(t.amount),
+        //   0
+        // );
+
+        // Update total amounts for each day startinf wth partial totals and ending the day with final Total.
+        updateTotalPosAmounts(transactions, totalRow, date);
+
+        posTableBody.appendChild(totalRow);
+      });
+
+      // Handle Load More button visibility
+      if (currentPage >= totalPages) {
+        loadMoreButton.style.display = 'none';
+      } else {
+        loadMoreButton.style.display = 'block';
+      }
+    } catch (error) {
+      console.error('Error rendering transactions:', error);
+      posTableBody.innerHTML =
+        '<tr><td colspan="6" class="table-error-text">Error loading transactions.</td></tr>';
+    }
+  }
+}
+
+export async function renderSalesTable({
+  page = 1,
+  limit,
+  filters,
+  shopId,
+  tableBodyId,
+  loadMoreButton,
+}) {
+  if (servicePermission === 'INVENTORY_SALES' || servicePermission === 'BOTH') {
+    //  console.log('🧪 Applied Filters:', filters);
+    const salesTableBody = document.querySelector(tableBodyId);
+
+    if (!salesTableBody) {
+      console.error('Error: Table body not found');
+      return;
+    }
+
+    try {
+      let loadingRow = document.querySelector('.loading-row');
+
+      if (!loadingRow) {
+        loadingRow = document.createElement('tr');
+        loadingRow.className = 'loading-row';
+        loadingRow.innerHTML = `<td colspan="11" class="table-loading-text">Loading Sales Transactions...</td>`;
+        salesTableBody.appendChild(loadingRow);
+      }
+
+      loadMoreButton.style.display = 'none';
+
+      // Build query with filters
+      const queryParams = new URLSearchParams({
+        shopId: shopId,
+        page,
+        limit: pageSize,
+      });
+
+      if (filters.startDate) queryParams.append('startDate', filters.startDate);
+      if (filters.endDate) queryParams.append('endDate', filters.endDate);
+      if (filters.paymentMethod)
+        queryParams.append('paymentMethod', filters.paymentMethod);
+      if (filters.status) queryParams.append('status', filters.status);
+
+      const result = await getAllSales({
+        shopId,
+        page,
+        limit: pageSize,
+        filters,
+      });
+
+      if (!result) throw new Error(result.message || 'Failed to fetch');
+
+      const salesReports = result.data.sales;
+      totalPages = result.data.totalPages;
+      totalItems = result.data.totalItems;
+      currentPage = result.data.currentPage;
+
+      // Only reset array if starting from page 1
+      if (page === 1) {
+        allSalesReport = [];
+      }
+
+      if (salesReports.length === 0 && currentPage === 1) {
+        salesTableBody.innerHTML =
+          '<tr class="loading-row"><td colspan="11" class="table-error-text ">No Sales Report Available.</td></tr>';
+        return;
+      }
+
+      salesReports.forEach((sale) => {
+        if (!allSalesReport.some((s) => s.id === sale.id)) {
+          allSalesReport.push(sale);
+        }
+      });
+
+      // Clear the table body and render all accumulated sales
+      salesTableBody.innerHTML = '';
+
+      const groupedByDate = {};
+
+      console.log(allSalesReport);
+
+      // --- SALES ITEM FETCH & TRUNCATE: Start ---
+      // Prepare an array of promises for fetching sale details for *all* sales in allSalesReport
+      const salesWithDetailsPromises = allSalesReport.map(
+        async (saleSummary) => {
+          try {
+            const saleDetailsResult = await getSaleById(saleSummary.id);
+            if (saleDetailsResult && saleDetailsResult.success) {
+              return {
+                ...saleSummary,
+                SaleItems: saleDetailsResult.data.SaleItems,
+              };
+            }
+            return { ...saleSummary, SaleItems: [] }; // Return summary with empty SaleItems if fetch fails
+          } catch (detailError) {
+            console.error(
+              `Error fetching details for sale ID ${saleSummary.id}:`,
+              detailError
+            );
+            return { ...saleSummary, SaleItems: [] }; // Handle error, return empty SaleItems
+          }
+        }
+      );
+
+      // Wait for all sale details to be fetched in parallel
+      const enrichedSalesTransactions = await Promise.all(
+        salesWithDetailsPromises
+      );
+
+      // Now, iterate over the enriched data to group by date and render
+      enrichedSalesTransactions.forEach((sl) => {
+        const dateObj = new Date(sl.business_day);
+        const dateKey = dateObj.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        });
+        if (!groupedByDate[dateKey]) groupedByDate[dateKey] = [];
+        groupedByDate[dateKey].push(sl);
+      });
+      // --- SALES ITEM FETCH & TRUNCATE: End ---
+
+      //  console.log(groupedByDate);
+
+      let serialNumber = 1;
+
+      Object.entries(groupedByDate).forEach(([date, sales]) => {
+        // Insert group row (header for the date)
+        const groupRow = document.createElement('tr');
+        groupRow.className = 'date-group-row table-body-row ';
+
+        groupRow.innerHTML = `
+      <td colspan="11" class="date-header py-1 mt-1 mb-1">
+        <strong>${date}</strong>     </td>
+
+     `;
+        salesTableBody.appendChild(groupRow);
+
+        //       groupRow.innerHTML = `
+        //     <td colspan="11" class="date-header py-1 mt-1 mb-1">
+        //       <strong>${date}</strong> — Total: ₦${formatAmountWithCommas(dailyTotal)}
+        //     </td>
+        //   `;
+
+        sales.forEach((salesTransaction) => {
+          const {
+            id,
+            receipt_number,
+            amount_paid,
+            total_amount,
+            balance,
+            customer_name,
+            customer_phone,
+            payment_method,
+            business_day,
+            status,
+            SaleItems,
+          } = salesTransaction;
+
+          const { first_name, last_name } = salesTransaction.Account;
+
+          // --- Truncate Item Names ---
+          const productNames = SaleItems.map(
+            (item) => item.Product?.name || 'Unknown Product'
+          ); // Added null check for Product.name
+          const truncatedProductNames = truncateProductNames(productNames, {
+            maxItems: 3,
+            maxLength: 50,
+            separator: ', ',
+          });
+
+          console.log(salesTransaction);
+
+          // const saleDetails = await getSaleById(saleId);
+
+          const row = document.createElement('tr');
+          row.classList.add('table-body-row');
+
+          row.dataset.saleId = id; // Store sale ID for detail view
+          row.innerHTML = getAdminSalesTransactionList(
+            serialNumber,
+            id,
+            receipt_number,
+            amount_paid,
+            total_amount,
+            balance,
+            customer_name,
+            customer_phone,
+            payment_method,
+            business_day,
+            status,
+            first_name,
+            last_name,
+            truncatedProductNames
+          );
+
+          row.addEventListener('click', async (e) => {
+            updateSalesReceipt(e, row);
+          });
+
+          salesTableBody.appendChild(row);
+        });
+
+        // Insert total row (Footer for Daily Totals))
+        const totalSalesRow = document.createElement('tr');
+        totalSalesRow.className = 'totalSales-row table-body-row ';
+
+        // const dailyTotal = transactions.reduce(
+        //   (sum, t) => sum + Number(t.amount),
+        //   0
+        // );
+
+        // Update total amounts for each day startinf wth partial totals and ending the day with final Total.
+        updateTotalSalesAmounts(sales, totalSalesRow, date);
+
+        salesTableBody.appendChild(totalSalesRow);
+      });
+
+      // Handle Load More button visibility
+      if (currentPage >= totalPages) {
+        loadMoreButton.style.display = 'none';
+      } else {
+        loadMoreButton.style.display = 'block';
+      }
+    } catch (error) {
+      console.error('Error rendering transactions:', error);
+      salesTableBody.innerHTML =
+        '<tr><td colspan="6" class="table-error-text">Error loading transactions.</td></tr>';
+    }
+  }
+}
+
+export async function renderDailySummary(shopId, dailySummaryDate) {
+  if (servicePermission === 'INVENTORY_SALES' || servicePermission === 'BOTH') {
+    //  console.log(dailySummaryDate);
+    const response = await getDailySalesSummary(shopId, dailySummaryDate);
+
+    if (!response?.data?.hourlyData) {
+      console.warn('No hourly data available');
+      return;
+    }
+
+    const hourlyData = response.data.hourlyData;
+    const paymentMethods = response.data.paymentMethods;
+    const dailySalesData = response.data;
+
+    //  console.log(paymentMethods);
+
+    const methodLabels = Object.keys(paymentMethods);
+    const methodValues = Object.values(paymentMethods);
+
+    const options = {
+      chart: {
+        type: 'area',
+        stacked: false,
+        height: 350,
+        toolbar: {
+          show: true,
+          tools: {
+            download: false,
+            selection: false,
+            zoom: false,
+            zoomin: false,
+            zoomout: false,
+            pan: false,
+            reset: true,
+          },
+        },
+        zoom: {
+          enabled: true,
+        },
+      },
+      dataLabels: { enabled: false },
+      markers: { size: 0 },
+      title: {
+        text: `Daily Summary of Sales - ${response.data.date}`,
+        align: 'left',
+        style: {
+          fontSize: '16px',
+          fontWeight: 'bold',
+          color: '#15464C',
+        },
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.5,
+          opacityTo: 0,
+          stops: [0, 90, 100],
+        },
+      },
+      series: [
+        {
+          name: 'Hourly Revenue (₦)',
+          data: hourlyData.map((h) => h.amount),
+        },
+      ],
+      xaxis: {
+        categories: hourlyData.map((h) => `${h.hour}:00`),
+        title: { text: 'Hour of Day' },
+        labels: {
+          rotate: -45,
+          style: { fontSize: '11px' },
+        },
+      },
+      yaxis: {
+        title: { text: 'Amount (₦)' },
+      },
+      tooltip: {
+        y: {
+          formatter: (val) => `₦${val.toLocaleString()}`,
+        },
+      },
+      responsive: [
+        {
+          breakpoint: 768,
+          options: {
+            chart: { height: 300 },
+            xaxis: {
+              labels: { rotate: -90 },
+            },
+          },
+        },
+      ],
+    };
+
+    const chartContainer = document.querySelector(`#dailyChart_${shopId}`);
+    chartContainer.innerHTML = ''; // Clear old chart if necessary
+
+    if (window[`dailyChartInstance_${shopId}`]) {
+      window[`dailyChartInstance_${shopId}`].destroy();
+    }
+
+    const dailyChart = new ApexCharts(chartContainer, options);
+    dailyChart.render();
+
+    window[`dailyChartInstance_${shopId}`] = dailyChart;
+
+    // Daily Transaction Summary
+    updateDailySalesData(dailySalesData, shopId);
+
+    // Daily Payment Method Summary
+
+    const paymentMethodOptions = {
+      series: methodValues,
+      chart: {
+        width: 380,
+        type: 'donut',
+      },
+      labels: methodLabels,
+      plotOptions: {
+        pie: {
+          startAngle: -90,
+          endAngle: 270,
+        },
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: function (val, opts) {
+          return `${val.toFixed(1)}%`;
+        },
+      },
+      // fill: {
+      //   type: 'gradient',
+      // },
+      legend: {
+        position: 'bottom',
+        formatter: function (val, opts) {
+          const amount = methodValues[opts.seriesIndex].toLocaleString();
+          return `${val}: ₦${amount}`;
+        },
+      },
+      title: {
+        text: 'Sales by Payment Method',
+        align: 'left',
+        style: {
+          fontSize: '16px',
+          fontWeight: 'bold',
+          color: '#15464C',
+        },
+      },
+      tooltip: {
+        y: {
+          formatter: (val) => `₦${val.toLocaleString()}`,
+        },
+      },
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 260,
+            },
+            legend: {
+              position: 'bottom',
+            },
+          },
+        },
+      ],
+    };
+
+    const chartEl = document.querySelector(`#paymentMethodChart_${shopId}`);
+    if (window[`paymentMethodChartInstance_${shopId}`]) {
+      window[`paymentMethodChartInstance_${shopId}`].destroy();
+    }
+
+    const paymentChart = new ApexCharts(chartEl, paymentMethodOptions);
+    paymentChart.render();
+    window[`paymentMethodChartInstance_${shopId}`] = paymentChart;
+  }
+}
+
+export async function renderMonthlySummary(year, month, shopId) {
+  if (servicePermission === 'INVENTORY_SALES' || servicePermission === 'BOTH') {
+    const response = await getMonthlySalesSummary(year, month, shopId);
+
+    //  console.log(response);
+
+    if (!response) {
+      console.warn('No Monthly data available');
+      return;
+    }
+
+    const dailyData = response.data.dailyData;
+    const paymentMethods = response.data.paymentMethods;
+    const monthlySalesData = response.data;
+
+    //  console.log(paymentMethods);
+
+    const methodLabels = Object.keys(paymentMethods);
+    const methodValues = Object.values(paymentMethods);
+
+    const options = {
+      chart: {
+        type: 'area',
+        stacked: false,
+        height: 350,
+        toolbar: {
+          show: true,
+          tools: {
+            download: false,
+            selection: false,
+            zoom: false,
+            zoomin: false,
+            zoomout: false,
+            pan: false,
+            reset: true,
+          },
+        },
+        zoom: {
+          enabled: true,
+        },
+      },
+      dataLabels: { enabled: false },
+      markers: { size: 0 },
+      title: {
+        text: `Monthly Summary of Sales - ${response.data.month}/${response.data.year}`,
+        align: 'left',
+        style: {
+          fontSize: '16px',
+          fontWeight: 'bold',
+          color: '#15464C',
+        },
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.5,
+          opacityTo: 0,
+          stops: [0, 90, 100],
+        },
+      },
+      series: [
+        {
+          name: 'Daily Revenue (₦)',
+          data: dailyData.map((d) => d.amount),
+        },
+      ],
+      xaxis: {
+        categories: dailyData.map((d) => `${d.day}`),
+        title: { text: 'Day of Month' },
+        labels: {
+          rotate: -45,
+          style: { fontSize: '11px' },
+        },
+      },
+      yaxis: {
+        title: { text: 'Amount (₦)' },
+      },
+      tooltip: {
+        y: {
+          formatter: (val) => `₦${val.toLocaleString()}`,
+        },
+      },
+      responsive: [
+        {
+          breakpoint: 768,
+          options: {
+            chart: { height: 300 },
+            xaxis: {
+              labels: { rotate: -90 },
+            },
+          },
+        },
+      ],
+    };
+
+    const chartContainer = document.querySelector(`#monthlyChart_${shopId}`);
+    chartContainer.innerHTML = ''; // Clear old chart if necessary
+
+    if (window[`monthlyChartInstance_${shopId}`]) {
+      window[`monthlyChartInstance_${shopId}`].destroy();
+    }
+
+    const monthlyChart = new ApexCharts(chartContainer, options);
+    monthlyChart.render();
+
+    window[`monthlyChartInstance_${shopId}`] = monthlyChart;
+
+    // Monthly Transaction Summary
+    updateMonthlySalesData(monthlySalesData, shopId);
+
+    // Monthly Payment Method Summary
+
+    const paymentMethodOptions = {
+      series: methodValues,
+      chart: {
+        width: 380,
+        type: 'donut',
+      },
+      labels: methodLabels,
+      plotOptions: {
+        pie: {
+          startAngle: -90,
+          endAngle: 270,
+        },
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: function (val, opts) {
+          return `${val.toFixed(1)}%`;
+        },
+      },
+      // fill: {
+      //   type: 'gradient',
+      // },
+      legend: {
+        position: 'bottom',
+        formatter: function (val, opts) {
+          const amount = methodValues[opts.seriesIndex].toLocaleString();
+          return `${val}: ₦${amount}`;
+        },
+      },
+      title: {
+        text: 'Monthly Sales by Payment Method',
+        align: 'left',
+        style: {
+          fontSize: '16px',
+          fontWeight: 'bold',
+          color: '#15464C',
+        },
+      },
+      tooltip: {
+        y: {
+          formatter: (val) => `₦${val.toLocaleString()}`,
+        },
+      },
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 260,
+            },
+            legend: {
+              position: 'bottom',
+            },
+          },
+        },
+      ],
+    };
+
+    const chartEl = document.querySelector(
+      `#monthlyPaymentMethodChart_${shopId}`
+    );
+
+    if (window[`monthlyPaymentMethodChartInstance_${shopId}`]) {
+      window[`monthlyPaymentMethodChartInstance_${shopId}`].destroy();
+    }
+
+    const paymentChart = new ApexCharts(chartEl, paymentMethodOptions);
+    paymentChart.render();
+    window[`monthlyPaymentMethodChartInstance_${shopId}`] = paymentChart;
+  }
 }
 
 // MOD

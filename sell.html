@@ -27,7 +27,7 @@
    <!-- <script defer type="module" src="JS/script.js"></script>
    <script defer type="module" src="JS/sell.js"></script> -->
 
-   <script src="dist/main.bundle.js" defer></script>
+   <!-- <script src="dist/main.bundle.js" defer></script> -->
    <script src="dist/sell.bundle.js" defer></script>
 
    <title>POSBOK &mdash; Sales </title>
@@ -234,14 +234,13 @@
                   name="adminSoldProductQuantity" oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
             </div>
 
-
-            <div class="center-button">
-               <button class="hero-btn-dark mb-2 adminAddToCartButton has-spinner" type="submit">
+            <div class="center-button mt-2" style="display: flex; align-items: center; gap: 1.5rem;">
+               <button class="hero-btn-dark adminAddToCartButton has-spinner force-m-0" type="submit">
                   <span class="btn-text"> Add To Cart</span>
                   <span class="btn-spinner hidden"></span>
                </button>
 
-               <button class="hero-btn-dark mb-2 adminSellNowBtn has-spinner" type="submit">
+               <button class="hero-btn-dark adminSellNowBtn has-spinner force-m-0" type="submit">
                   <span class="btn-text"> Quick Sell</span>
                   <span class="btn-spinner hidden"></span>
                </button>
@@ -289,15 +288,15 @@
                <ul class="autocomplete-list" id="autocompleteList"></ul>
             </div>
 
-            <div class="sellProduct-form_input">
-               <label for="productBoughtPrice ">Amount Bought</label>
+            <!-- <div class="sellProduct-form_input">
+               <label for="productBoughtPrice ">Amount Bought</label> -->
 
-               <div class="naira-input-container">
-                  <input id="productBoughtPrice" type="text" placeholder="Select An Item To Sell"
-                     name="productBoughtPrice" disabled>
-                  <span class="naira">&#x20A6;</span>
-               </div>
-            </div>
+            <!-- <div class="naira-input-container"> -->
+            <input id="productBoughtPrice" type="hidden" placeholder="Select An Item To Sell" name="productBoughtPrice"
+               disabled>
+            <!-- <span class="naira">&#x20A6;</span> -->
+            <!-- </div> -->
+            <!-- </div> -->
 
             <div class="sellProduct-form_input">
                <label for="productSellingPrice ">Amount To Sell</label>
@@ -335,19 +334,14 @@
             </div>
 
 
-            <div class="center-button">
-               <button class="hero-btn-dark mb-2 addToCartButton has-spinner" type="submit">
+            <div class="center-button mt-2" style="display: flex; align-items: center; gap: 1.5rem;">
+               <button class="hero-btn-dark addToCartButton has-spinner force-m-0" type="submit">
                   <span class="btn-text"> Add To Cart</span>
                   <span class="btn-spinner hidden"></span>
                </button>
 
-               <!-- <button class="hero-btn-dark mb-2 sellNowBtn has-spinner" type="submit">
-                  <span class="btn-text">Quick Sell</span>
-                  <span class="btn-spinner hidden"></span>
-               </button> -->
-
                <!-- <div class="sellNowBtnWrapper"> -->
-               <button class="hero-btn-dark sellNowBtn has-spinner">
+               <button class="hero-btn-dark sellNowBtn has-spinner force-m-0">
                   <span class="btn-text">Quick Sell</span>
                   <span class="btn-spinner hidden"></span>
                </button>

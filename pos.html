@@ -28,7 +28,7 @@
    <script defer type="module" src="JS/pos.js"></script> -->
 
 
-   <script src="dist/main.bundle.js" defer></script>
+   <!-- <script src="dist/main.bundle.js" defer></script> -->
    <script src="dist/pos.bundle.js" defer></script>
 
    <title>POSBOK &mdash; POS Transaction</title>
@@ -132,10 +132,10 @@
       </header>
 
       <!-- Admin POS Form -->
-      <div class="pos adminPosContainer card admin-view">
+      <div class="pos adminPosContainer  admin-view">
 
 
-         <div class="pos-method">
+         <div class="pos-method card">
             <h2 class="heading-text">
                Admin: POS TRANSACTION
             </h2>
@@ -181,7 +181,6 @@
                <!-- Transaction Amount -->
                <div class="pos-method-form_input">
                   <label for="amount">Transaction Amount</label>
-
                   <div class="naira-input-container">
                      <input id="adminPosTransactionAmount" type="text" placeholder="Enter Amount"
                         name="posTransactionAmount" required>
@@ -277,15 +276,58 @@
 
             </form>
          </div>
+
+         <div class="posTransactions-summary mb-1 mt-2 card">
+            <!-- Total POS Capital -->
+            <div class="summary-card">
+               <h3>Total POS Capital</h3>
+               <p class="amount">₦<span id="adminTotalPosCapital">0</span></p>
+            </div>
+
+            <!-- Cash In Machine -->
+            <div class="summary-card">
+               <h3>Cash In Machine</h3>
+               <p class="amount">₦<span id="adminCashInMachine">0</span></p>
+            </div>
+
+            <!-- Cash At Hand -->
+            <div class="summary-card">
+               <h3>Cash At Hand</h3>
+               <p class="amount">₦<span id="adminCashAtHand">0</span></p>
+            </div>
+
+            <!-- Total POS Charges -->
+            <div class="summary-card">
+               <h3>Total POS Charges</h3>
+               <p class="amount">₦<span id="adminTotalPosCharges">0</span></p>
+            </div>
+
+            <!-- Charges (Cash) -->
+            <div class="summary-card">
+               <h3>Charges (Cash)</h3>
+               <p class="amount">₦<span id="adminCashCharges">0</span></p>
+            </div>
+
+            <!-- Charges (Machine) -->
+            <div class="summary-card">
+               <h3>Charges (Machine)</h3>
+               <p class="amount">₦<span id="adminMachineCharges">0</span></p>
+            </div>
+
+            <!-- Machine Fee -->
+            <div class="summary-card">
+               <h3>Machine Fee</h3>
+               <p class="amount">₦<span id="adminMachineFee">0</span></p>
+            </div>
+         </div>
       </div>
 
       <!-- Staff POS Form -->
       <!-- Staff POS Form -->
       <!-- Staff POS Form -->
-      <div class="pos staffPosContainer card staff-view">
+      <div class="pos staffPosContainer  staff-view">
 
-
-         <div class="pos-method">
+         <div class="pos-method card">
             <h2 class="heading-text">
                POS TRANSACTION
             </h2>
@@ -414,6 +456,50 @@
                </div>
 
             </form>
+         </div>
+
+         <div class="posTransactions-summary mb-1 mt-2 card">
+            <!-- Total POS Capital -->
+            <div class="summary-card">
+               <h3>Total POS Capital</h3>
+               <p class="amount">₦<span id="totalPosCapital">0</span></p>
+            </div>
+
+            <!-- Cash In Machine -->
+            <div class="summary-card">
+               <h3>Cash In Machine</h3>
+               <p class="amount">₦<span id="cashInMachine">0</span></p>
+            </div>
+
+            <!-- Cash At Hand -->
+            <div class="summary-card">
+               <h3>Cash At Hand</h3>
+               <p class="amount">₦<span id="cashAtHand">0</span></p>
+            </div>
+
+            <!-- Total POS Charges -->
+            <div class="summary-card">
+               <h3>Total POS Charges</h3>
+               <p class="amount">₦<span id="totalPosCharges">0</span></p>
+            </div>
+
+            <!-- Charges (Cash) -->
+            <div class="summary-card">
+               <h3>Charges (Cash)</h3>
+               <p class="amount">₦<span id="cashCharges">0</span></p>
+            </div>
+
+            <!-- Charges (Machine) -->
+            <div class="summary-card">
+               <h3>Charges (Machine)</h3>
+               <p class="amount">₦<span id="machineCharges">0</span></p>
+            </div>
+
+            <!-- Machine Fee -->
+            <div class="summary-card">
+               <h3>Machine Fee</h3>
+               <p class="amount">₦<span id="machineFee">0</span></p>
+            </div>
          </div>
       </div>
    </main>
