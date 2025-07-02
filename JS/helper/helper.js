@@ -29,6 +29,9 @@ export function clearFormInputs() {
   const addProductForm = document.querySelector('.addProductModal');
   const addCategoryForm = document.querySelector('.addCategoryModal');
   const updateProductForm = document.querySelector('.updateProductModal');
+  const addExistingProductForm = document.querySelector(
+    '.addExistingProductModal'
+  );
   const openBusinessDayForm = document.querySelector('.openBusinessDayModal');
   const checkoutForm = document.querySelector('.checkout-form');
 
@@ -221,7 +224,43 @@ export function clearFormInputs() {
         }
       });
 
-    delete updateProductForm.dataset.staffId;
+    delete updateProductForm.dataset.productId;
+  }
+
+  // Clear Add Existing  Product Form Inputs
+  if (addExistingProductForm) {
+    addExistingProductForm
+      .querySelectorAll('input, textarea, select')
+      .forEach((el) => {
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          el.checked = false;
+        } else {
+          el.value = '';
+        }
+      });
+
+    const adminSellProductSearchSection = document.querySelector(
+      '.addExistingSellProductSearch-section'
+    );
+    const adminSellProductCategorySection = document.querySelector(
+      '.addExistingSellProductCategory-section'
+    );
+    const adminSellProductName = document.querySelector(
+      '.addExistingSellProductName'
+    );
+    const adminAutocompleteList = document.getElementById(
+      'addExistingAutocompleteList'
+    );
+
+    if (adminSellProductSearchSection)
+      adminSellProductSearchSection.style.display = 'none';
+    if (adminSellProductCategorySection)
+      adminSellProductCategorySection.style.display = 'none';
+    if (adminSellProductName) adminSellProductName.style.display = 'none';
+    if (adminAutocompleteList) adminAutocompleteList.style.display = 'none';
+
+    delete addExistingProductForm.dataset.shopId;
+    delete addExistingProductForm.dataset.productId;
   }
 
   // Clear Open Business Day  Inputs

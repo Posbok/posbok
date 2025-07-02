@@ -546,7 +546,7 @@
             </select>
          </div>
 
-         <div class="sellProductSearch-section mb-2">
+         <div class="addExistingSellProductSearch-section mb-2">
 
             <div class="sellProduct-method-form_input ">
                <div class="search-input-container">
@@ -557,49 +557,35 @@
             </div>
          </div>
 
-         <div class=" sellProductCategory-section">
+         <div class=" addExistingSellProductCategory-section">
             <!-- <button class="sellProductCategoryBtn active" type="button">
                   All
                </button> -->
 
          </div>
 
-         <div class="sellProduct-method-form_input">
+         <div class="addExistingSellProduct-method-form_input mt-2">
 
-            <div class="input-container sellProductName">
+            <div class="input-container addExistingSellProductName">
                <input type="text" id="productInput" disabled required>
                <i class="fa fa-times clear-icon" id="clearIcon" aria-hidden="true"></i>
             </div>
 
-            <ul class="autocomplete-list" id="autocompleteList"></ul>
+            <ul class="autocomplete-list" id="addExistingAutocompleteList"></ul>
          </div>
-
-         <!-- Product Category -->
-         <!-- <div class="modal-form_input">
-            <label for="addExistingProductCategory">Product Category</label>
-
-            <select id="addExistingProductCategory" class="form-control" required>
-               <option value="">Select a Category</option>
-               <option value="01">Category 1</option>
-               <option value="02">Category 2</option>
-               <option value="03">Category 3</option>
-            </select>
-         </div> -->
 
          <div class="modal-form_input">
             <label for="itemQuantityAvailable">Quantity Available</label>
 
             <input id="itemQuantityAvailable" type="text" placeholder="Enter Current Quantity"
-               name="itemQuantityAvailable" required>
-
+               name="itemQuantityAvailable" disabled required>
          </div>
 
          <div class="modal-form_input">
             <label for="newStockQuantity">New Stock Quantity</label>
 
-            <input id="addExistingNewStockQuantity" type="text" placeholder="Enter NewStock Quantity"
-               name="addExistingNewStockQuantity" required>
-
+            <input id="itemNewQuantityAvailable" type="text" placeholder="Enter New Item Quantity"
+               name="itemNewQuantityAvailable" required>
          </div>
 
          <div class="center-button">

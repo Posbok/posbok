@@ -266,7 +266,7 @@ export function populateCategoryTable(productCategoriesData) {
         // Store categoryId in modal container for reference
         updateCategoryModalContainer.dataset.categoryId = categoryId;
 
-        console.log(updateCategoryModalContainer.dataset.categoryId);
+        //   console.log(updateCategoryModalContainer.dataset.categoryId);
         // Fetch staff detail
         const CategoryDetail = await getProductCategories(categoryId);
 
@@ -284,42 +284,6 @@ export function populateCategoryTable(productCategoriesData) {
         }
       }
     });
-
-    //  const deleteBtn = row.querySelector('.deleteShopButton');
-    //  deleteBtn.addEventListener('click', async () => {
-    //    const shopId = deleteBtn.dataset.shopId;
-    //    await deleteShop(shopId);
-    //  });
-
-    //  const updateShopBtn = row.querySelector('.editShopButton');
-    //  updateShopBtn?.addEventListener('click', async () => {
-    //    showGlobalLoader();
-    //    const shopId = updateShopBtn.dataset.shopId;
-
-    //    const adminUpdateShopDataContainer = document.querySelector(
-    //      '.adminUpdateShopData'
-    //    );
-
-    //    if (adminUpdateShopDataContainer) {
-    //      // Store shopId in modal container for reference
-    //      adminUpdateShopDataContainer.dataset.shopId = shopId;
-
-    //      // Fetch Shop detail
-    //      const shopDetail = await fetchShopDetail(shopId);
-
-    //      //   console.log(shopDetail);
-
-    //      // Call function to prefill modal inputs
-    //      if (shopDetail?.data) {
-    //        hideGlobalLoader();
-    //        openUpdateShopModal(); // Show modal after data is ready
-    //        setupUpdateShopForm(shopDetail.data);
-    //      } else {
-    //        hideGlobalLoader();
-    //        showToast('fail', '❌ Failed to fetch shop details.');
-    //      }
-    //    }
-    //  });
   });
 }
 
@@ -451,7 +415,7 @@ export function createProductForm() {
         //     return;
         //   }
 
-        console.log(productData);
+        //   console.log(productData);
 
         const productId = productData?.data.id;
 
@@ -507,6 +471,8 @@ export function bindAddExistingProductFormListener() {
     form.addEventListener('submit', async function (e) {
       e.preventDefault();
 
+      // console.log('Form got here');
+
       const productId = form.dataset.productId;
       const shopId = form.dataset.shopId;
 
@@ -520,45 +486,23 @@ export function bindAddExistingProductFormListener() {
         return;
       }
 
-      const addExistingProductCategory = document.querySelector(
-        '#addExistingProductCategory'
+      const itemQuantityAvailable = document.querySelector(
+        '#itemQuantityAvailable'
       ).value;
-      const addExistingProductName = document.querySelector(
-        '#addExistingProductName'
-      ).value;
-      const addExistingProductDescription = document.querySelector(
-        '#addExistingProductDescription'
-      ).value;
-      const addExistingProductBoughtPrice = document.querySelector(
-        '#addExistingProductBoughtPrice'
-      ).value;
-      const addExistingProductSellingPrice = document.querySelector(
-        '#addExistingProductSellingPrice'
-      ).value;
-      const addExistingProductQuantity = document.querySelector(
-        '#addExistingProductQuantity'
+      const itemNewQuantityAvailable = document.querySelector(
+        '#itemNewQuantityAvailable'
       ).value;
 
-      const addExistingProductDetails = {
-        categoryId: addExistingProductCategory,
-        name: addExistingProductName,
-        description: addExistingProductDescription,
-        purchasePrice: Number(
-          getAmountForSubmission(addExistingProductBoughtPrice)
-        ),
-        sellingPrice: Number(
-          getAmountForSubmission(addExistingProductSellingPrice)
-        ),
-      };
-
-      const addExistingInventoryDetails = {
-        quantity: Number(addExistingProductQuantity),
+      const updateItemQuantityDetails = {
+        quantity:
+          Number(itemQuantityAvailable) + Number(itemNewQuantityAvailable),
       };
 
       // console.log(
       //   'Updating Product Detail with:',
-      //   addExistingProductDetails,
-      //   productId
+      //   updateItemQuantityDetails,
+      //   productId,
+      //   shopId
       // );
 
       const addExistingProductModalBtn = document.querySelector(
@@ -567,45 +511,24 @@ export function bindAddExistingProductFormListener() {
 
       try {
         showBtnLoader(addExistingProductModalBtn);
-        const addExistingdProductData = await addExistingProduct(
-          productId,
-          addExistingProductDetails,
-          shopId
+        const updateItemQuantityData = await updateProductInventory(
+          updateItemQuantityDetails,
+          shopId,
+          productId
         );
 
-        if (!addExistingdProductData) {
-          console.error('fail', addExistingdProductData.message);
+        if (!updateItemQuantityData) {
+          console.error('fail', updateItemQuantityData.message);
           return;
         }
 
-        //   console.log('Adding Products with:', addProductDetails);
-
-        try {
-          const inventoryData = await addExistingProductInventory(
-            addExistingInventoryDetails,
-            shopId,
-            productId
-          );
-
-          if (inventoryData) {
-            showToast('success', `✅ ${inventoryData.message}`);
-            closeModal();
-            clearFormInputs();
-            await renderProductInventoryTable(shopId);
-          }
-        } catch (inventoryDataErr) {
-          showToast(
-            'fail',
-            `❎ ${
-              inventoryDataErr.message || 'Failed to addExisting inventory'
-            }`
-          );
-          console.error(
-            'Error During Inventory Updating:',
-            inventoryDataErr.message
-          );
+        if (updateItemQuantityData) {
+          showToast('success', `✅ ${updateItemQuantityData.message}`);
+          closeModal();
+          clearFormInputs();
+          await renderProductInventoryTable(shopId);
         }
-        hideBtnLoader(addExistingProductModalBtn);
+
         //   hideGlobalLoader();
       } catch (err) {
         hideBtnLoader(addExistingProductModalBtn);
@@ -613,19 +536,25 @@ export function bindAddExistingProductFormListener() {
         console.error('Error Updating product:', err);
         showToast('fail', `❎ ${err.message}`);
         return;
+      } finally {
+        hideBtnLoader(addExistingProductModalBtn);
       }
     });
   }
 }
 
 const adminSellProductSearchSection = document.querySelector(
-  '.sellProductSearch-section'
+  '.addExistingSellProductSearch-section'
 );
 const adminSellProductCategorySection = document.querySelector(
-  '.sellProductCategory-section'
+  '.addExistingSellProductCategory-section'
 );
-const adminSellProductName = document.querySelector('.sellProductName');
-const adminAutocompleteList = document.getElementById('autocompleteList');
+const adminSellProductName = document.querySelector(
+  '.addExistingSellProductName'
+);
+const adminAutocompleteList = document.getElementById(
+  'addExistingAutocompleteList'
+);
 // const
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -641,64 +570,19 @@ const addExistingProductShopDropdown = document.getElementById(
   'addExistingProductShopDropdown'
 );
 
-console.log('Loaded at:', new Date().toISOString());
-
-// let isShopDropdownChangeBound = false;
-
-// export function addExistingProductForm() {
-//   //   console.log('Product Detail:', productDetail);
-
-//   const form = document.querySelector('.addExistingProductModal');
-//   if (!form || isShopDropdownChangeBound) return;
-
-//   isShopDropdownChangeBound = true;
-
-//   addExistingProductShopDropdown.addEventListener('change', async (e) => {
-//     console.log('Dropdown changed:', e.target.value);
-//     const selectedShopId = e.target.value;
-
-//     if (!selectedShopId) {
-//       // hideSections();
-//       return;
-//     }
-
-//     // Clear UI
-//     adminSellProductCategorySection.innerHTML = '';
-//     adminAutocompleteList.innerHTML = '';
-//     productInput.value = '';
-//     searchSellProdutItem.value = '';
-//     allProducts = []; // reset
-
-//     // Show UI
-//     adminSellProductSearchSection.style.display = 'block';
-//     adminSellProductCategorySection.style.display = 'flex';
-//     adminSellProductName.style.display = 'block';
-
-//     // Now fetch categories and products AFTER shop selection
-//     await displayAllProducts(selectedShopId);
-//     await displayAllCategories();
-//   });
-// }
-
-// document.addEventListener('DOMContentLoaded', () => {
-//   bindAddExistingProductFormListener();
-//   addExistingProductForm(); // <== This was missing
-// });
-
-let isShopDropdownBound = false;
-
 export function addExistingProductForm() {
-  if (isShopDropdownBound) return;
-  isShopDropdownBound = true;
-
   const form = document.querySelector('.addExistingProductModal');
   if (!form) return;
 
   addExistingProductShopDropdown.addEventListener('change', async (e) => {
-    console.log('Dropdown changed:', e.target.value);
+    //  console.log('Dropdown changed:', e.target.value);
+
+    const form = document.querySelector('.addExistingProductModal');
 
     const selectedShopId = e.target.value;
     if (!selectedShopId) return;
+
+    form.dataset.shopId = selectedShopId;
 
     adminSellProductCategorySection.innerHTML = '';
     adminAutocompleteList.innerHTML = '';
@@ -715,19 +599,10 @@ export function addExistingProductForm() {
   });
 }
 
-let isInitialized = false;
-
-function initializeGoodsPage() {
-  if (isInitialized) return;
-  isInitialized = true;
-
-  console.log('✅ Initializing goods.js logic');
-
+document.addEventListener('DOMContentLoaded', () => {
   bindAddExistingProductFormListener();
   addExistingProductForm();
-}
-
-document.addEventListener('DOMContentLoaded', initializeGoodsPage);
+});
 
 async function displayAllProducts(selectedShopId) {
   //   console.log('products; After Sale entry');
@@ -798,7 +673,7 @@ async function displayAllCategories() {
 
     allCategories = await fetchAllCategories(); // Fetch and store all Categories
 
-    console.log(`Total Categories fetched:`, allCategories);
+    //  console.log(`Total Categories fetched:`, allCategories);
 
     const allBtn = document.createElement('button');
     allBtn.classList.add('sellProductCategoryBtn');
@@ -938,6 +813,7 @@ function updateAutocompleteList(products) {
     'itemQuantityAvailable'
   );
   const productInput = document.getElementById('productInput');
+  const form = document.querySelector('.addExistingProductModal');
 
   if (products.length === 0) {
     const listItem = document.createElement('li');
@@ -959,7 +835,9 @@ function updateAutocompleteList(products) {
 
       listItem.addEventListener('click', function () {
         selectedProduct = product.Product; // Store selected product to later get the product ID
-
+        //   console.log(product);
+        form.dataset.productId = product.Product.id;
+        //   form.dataset.shopId = product.Shop.id;
         productInput.value = product.Product.name;
         itemQuantityAvailable.value = product.quantity;
         adminAutocompleteList.style.display = 'none';
@@ -1222,8 +1100,8 @@ export function updateCategoryForm(categoryDetail) {
   const categories = categoryDetail.data;
 
   categories.forEach((category) => {
-    console.log('category', category.id);
-    console.log('dataset', form.dataset.categoryId);
+    //  console.log('category', category.id);
+    //  console.log('dataset', form.dataset.categoryId);
 
     if (category.id === Number(form.dataset.categoryId)) {
       const categoryName = category.name;

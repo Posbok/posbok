@@ -51,8 +51,6 @@ import {
 const userData = config.userData;
 const dummyShopId = config.dummyShopId;
 
-console.log('script.js was imported successfully!');
-
 let parsedUserData = null;
 
 parsedUserData = userData ? JSON.parse(userData) : null;
@@ -489,7 +487,7 @@ async function renderBusinessDayButtons() {
     const openingCash = businessDay?.data?.opening_cash || 0;
     updateCashInMachineUI(openingCash);
 
-    console.log(openingCash);
+    //  console.log(openingCash);
 
     //  if (!businessInitBtnDiv) return;
 
@@ -1159,7 +1157,7 @@ function checkIfTokenExpiredDaily() {
       localStorage.clear();
       window.location.href = 'login.html';
 
-      console.log('savedDate && savedDate !== today');
+      // console.log('savedDate && savedDate !== today');
     });
   }
 }
