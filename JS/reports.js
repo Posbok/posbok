@@ -15,6 +15,7 @@ import {
   hideBtnLoader,
   populateBusinessStaffDropdown,
   showBtnLoader,
+  truncateProductNames,
 } from './helper/helper';
 import { hideGlobalLoader, showGlobalLoader } from '../JS/helper/helper';
 import {
@@ -49,6 +50,7 @@ import {
   displayAllProducts,
   fetchAllCategories,
   fetchAllProducts,
+  renderReceiptPrintHTML,
   updateDailySalesData,
   updateMonthlySalesData,
   updateSalesReceipt,
@@ -588,7 +590,7 @@ if (isAdmin) {
       `shopSales-report-${shopId}`
     );
 
-    // Sales Transactions
+    // POS Transactions
     if (
       servicePermission === 'POS_TRANSACTIONS' ||
       servicePermission === 'BOTH'
@@ -848,213 +850,186 @@ const itemQuantityAvailable = document.getElementById(
 if (isStaff) {
   const shopId = parsedUserData?.shopId;
 
-  document
-    .getElementById('applyFiltersBtn_staff')
-    ?.addEventListener('click', () => {
-      const filters = getFilters('staff');
-      renderPosTable(1, pageSize, filters, 'staff');
-    });
-
-  document
-    .getElementById('resetFiltersBtn_staff')
-    ?.addEventListener('click', () => {
-      const role = 'staff';
-      resetFilters(role);
-      const filters = getFilters(role);
-      const tableSelector = '.posTableDisplay_staff tbody';
-      renderPosTable(1, pageSize, filters, 'staff');
-    });
-
-  //Sales Filter
-  document
-    .getElementById('applySalesFiltersBtn_staff')
-    ?.addEventListener('click', () => {
-      const filters = getSalesFilters('staff');
-      renderSalesTable(1, pageSize, filters, 'staff');
-      console.log('filters:', filters);
-    });
-
-  document
-    .getElementById('resetSalesFiltersBtn_staff')
-    ?.addEventListener('click', () => {
-      const role = 'staff';
-      resetSalesFilters(role);
-      const filters = getSalesFilters(role);
-      const tableSelector = '.posTableDisplay_staff tbody';
-      renderSalesTable(1, pageSize, filters, 'staff');
-    });
-
-  // Sales
+  // POS Loadmore Button
+  const loadMoreButton = document.getElementById('loadMoreButton_staff');
+  // Sales loadmore Button
   const loadMoreSalesButton = document.getElementById(
     'loadMoreSalesButton_staff'
   );
 
-  loadMoreSalesButton.style.display = 'none';
-
-  loadMoreSalesButton.addEventListener('click', () => {
-    const role = 'staff';
-    currentPage += 1;
-    const filters = getSalesFilters(role);
-
-    //  const tableBodyId = '.posTableDisplay_staff tbody';
-
-    renderSalesTable(currentPage, pageSize, filters, role);
-  });
-
-  // POS
-  const loadMoreButton = document.getElementById('loadMoreButton_staff');
-
-  loadMoreButton.style.display = 'none';
-
-  loadMoreButton.addEventListener('click', () => {
-    const role = 'staff';
-    currentPage += 1;
-    const filters = getFilters(role);
-
-    //  const tableBodyId = '.posTableDisplay_staff tbody';
-
-    renderPosTable(currentPage, pageSize, filters, role);
-  });
-
-  //   loadMoreButton.addEventListener('click', () => {
-  //     currentPage += 1;
-  //     renderPosTable(currentPage, pageSize, currentFilters);
-  //   });
-
-  async function renderPosTable(
-    page = 1,
-    pageSize,
-    filters = {},
-    role = 'staff'
+  // POS Transactions
+  if (
+    servicePermission === 'POS_TRANSACTIONS' ||
+    servicePermission === 'BOTH'
   ) {
-    const posTableBody = document.querySelector(
-      `.posTableDisplay_${role} tbody`
-    );
+    const staffPosReportDiv = document.querySelector('.staffPosReportDiv');
+    staffPosReportDiv.style.display = 'block';
 
-    if (!posTableBody) {
-      console.error('Error: Table body not found');
-      return;
-    }
-
-    try {
-      let loadingRow = document.querySelector('.loading-row');
-      if (!loadingRow) {
-        loadingRow = document.createElement('tr');
-        loadingRow.className = 'loading-row';
-        loadingRow.innerHTML = `<td colspan="11" class="table-loading-text">Loading transactions...</td>`;
-        posTableBody.appendChild(loadingRow);
-      }
-
-      loadMoreButton.style.display = 'none';
-
-      // Build query with filters
-      const queryParams = new URLSearchParams({
-        shopId: shopId,
-        page,
-        limit: pageSize,
+    // Pos Filer Logic
+    document
+      .getElementById('applyFiltersBtn_staff')
+      ?.addEventListener('click', () => {
+        const filters = getFilters('staff');
+        renderStaffPosTable(1, pageSize, filters, 'staff');
       });
 
-      if (filters.startDate) queryParams.append('startDate', filters.startDate);
-      if (filters.endDate) queryParams.append('endDate', filters.endDate);
-      if (filters.type) queryParams.append('type', filters.type);
-      if (filters.status) queryParams.append('status', filters.status);
-
-      const result = await getPosTransactions({
-        shopId,
-        page,
-        limit: pageSize,
-        filters,
+    document
+      .getElementById('resetFiltersBtn_staff')
+      ?.addEventListener('click', () => {
+        const role = 'staff';
+        resetFilters(role);
+        const filters = getFilters(role);
+        const tableSelector = '.posTableDisplay_staff tbody';
+        renderStaffPosTable(1, pageSize, filters, 'staff');
       });
 
-      console.log(result);
+    loadMoreButton.style.display = 'none';
 
-      if (!result) throw new Error(result.message || 'Failed to fetch');
+    loadMoreButton.addEventListener('click', () => {
+      const role = 'staff';
+      currentPage += 1;
+      const filters = getFilters(role);
 
-      const posTransactions = result.data.transactions;
-      totalPages = result.data.totalPages;
-      totalItems = result.data.totalItems;
-      currentPage = result.data.currentPage;
+      //  const tableBodyId = '.posTableDisplay_staff tbody';
 
-      // Only reset array if starting from page 1
-      if (page === 1) {
-        allPosTransactions = [];
-      }
+      renderStaffPosTable(currentPage, pageSize, filters, role);
+    });
 
-      if (posTransactions.length === 0 && currentPage === 1) {
-        posTableBody.innerHTML =
-          '<tr class="loading-row"><td colspan="11" class="table-error-text ">No Transactions Available.</td></tr>';
+    async function renderStaffPosTable(
+      page = 1,
+      pageSize,
+      filters = {},
+      role = 'staff'
+    ) {
+      const posTableBody = document.querySelector(
+        `.posTableDisplay_${role} tbody`
+      );
+
+      if (!posTableBody) {
+        console.error('Error: Table body not found');
         return;
       }
 
-      posTransactions.forEach((transaction) => {
-        if (!allPosTransactions.some((t) => t.id === transaction.id)) {
-          allPosTransactions.push(transaction);
+      try {
+        let loadingRow = document.querySelector('.loading-row');
+        if (!loadingRow) {
+          loadingRow = document.createElement('tr');
+          loadingRow.className = 'loading-row';
+          loadingRow.innerHTML = `<td colspan="11" class="table-loading-text">Loading transactions...</td>`;
+          posTableBody.appendChild(loadingRow);
         }
-      });
 
-      // Clear the table body and render all accumulated transactions
-      posTableBody.innerHTML = '';
+        loadMoreButton.style.display = 'none';
 
-      const groupedByDate = {};
+        // Build query with filters
+        const queryParams = new URLSearchParams({
+          shopId: shopId,
+          page,
+          limit: pageSize,
+        });
 
-      allPosTransactions.forEach((tx) => {
-        const dateObj = new Date(tx.business_day);
-        const dateKey = dateObj.toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        }); // "May 11, 2025"
+        if (filters.startDate)
+          queryParams.append('startDate', filters.startDate);
+        if (filters.endDate) queryParams.append('endDate', filters.endDate);
+        if (filters.type) queryParams.append('type', filters.type);
+        if (filters.status) queryParams.append('status', filters.status);
 
-        if (!groupedByDate[dateKey]) groupedByDate[dateKey] = [];
-        groupedByDate[dateKey].push(tx);
-      });
+        const result = await getPosTransactions({
+          shopId,
+          page,
+          limit: pageSize,
+          filters,
+        });
 
-      //  console.log(groupedByDate);
+        console.log(result);
 
-      let serialNumber = 1;
+        if (!result) throw new Error(result.message || 'Failed to fetch');
 
-      Object.entries(groupedByDate).forEach(([date, transactions]) => {
-        // Insert group row (header for the date)
-        const groupRow = document.createElement('tr');
-        groupRow.className = 'date-group-row table-body-row ';
+        const posTransactions = result.data.transactions;
+        totalPages = result.data.totalPages;
+        totalItems = result.data.totalItems;
+        currentPage = result.data.currentPage;
 
-        groupRow.innerHTML = `
+        // Only reset array if starting from page 1
+        if (page === 1) {
+          allPosTransactions = [];
+        }
+
+        if (posTransactions.length === 0 && currentPage === 1) {
+          posTableBody.innerHTML =
+            '<tr class="loading-row"><td colspan="11" class="table-error-text ">No Transactions Available.</td></tr>';
+          return;
+        }
+
+        posTransactions.forEach((transaction) => {
+          if (!allPosTransactions.some((t) => t.id === transaction.id)) {
+            allPosTransactions.push(transaction);
+          }
+        });
+
+        // Clear the table body and render all accumulated transactions
+        posTableBody.innerHTML = '';
+
+        const groupedByDate = {};
+
+        allPosTransactions.forEach((tx) => {
+          const dateObj = new Date(tx.business_day);
+          const dateKey = dateObj.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          }); // "May 11, 2025"
+
+          if (!groupedByDate[dateKey]) groupedByDate[dateKey] = [];
+          groupedByDate[dateKey].push(tx);
+        });
+
+        //  console.log(groupedByDate);
+
+        let serialNumber = 1;
+
+        Object.entries(groupedByDate).forEach(([date, transactions]) => {
+          // Insert group row (header for the date)
+          const groupRow = document.createElement('tr');
+          groupRow.className = 'date-group-row table-body-row ';
+
+          groupRow.innerHTML = `
       <td colspan="11" class="date-header py-1 mt-1 mb-1">
         <strong>${date}</strong>     </td>
 
      `;
-        posTableBody.appendChild(groupRow);
+          posTableBody.appendChild(groupRow);
 
-        //       groupRow.innerHTML = `
-        //     <td colspan="11" class="date-header py-1 mt-1 mb-1">
-        //       <strong>${date}</strong> — Total: ₦${formatAmountWithCommas(dailyTotal)}
-        //     </td>
-        //   `;
+          //       groupRow.innerHTML = `
+          //     <td colspan="11" class="date-header py-1 mt-1 mb-1">
+          //       <strong>${date}</strong> — Total: ₦${formatAmountWithCommas(dailyTotal)}
+          //     </td>
+          //   `;
 
-        transactions.forEach((posTransaction) => {
-          const {
-            transaction_type,
-            amount,
-            fee_payment_type,
-            customer_name,
-            customer_phone,
-            payment_method,
-            status,
-            receipt_id,
-            remarks,
-            business_day,
-            transaction_time,
-            charges,
-            fees,
-            transaction_fee,
-          } = posTransaction;
+          transactions.forEach((posTransaction) => {
+            const {
+              transaction_type,
+              amount,
+              fee_payment_type,
+              customer_name,
+              customer_phone,
+              payment_method,
+              status,
+              receipt_id,
+              remarks,
+              business_day,
+              transaction_time,
+              charges,
+              fees,
+              transaction_fee,
+            } = posTransaction;
 
-          const machineFee = fees?.fee_amount || '-';
-          const transactionCharges = charges?.charge_amount || '-';
+            const machineFee = fees?.fee_amount || '-';
+            const transactionCharges = charges?.charge_amount || '-';
 
-          const row = document.createElement('tr');
-          row.classList.add('table-body-row');
-          row.innerHTML = `
+            const row = document.createElement('tr');
+            row.classList.add('table-body-row');
+            row.innerHTML = `
        <td class="py-1">${serialNumber++}.</td>
        <td class="py-1">${business_day}</td>
        <td class="py-1 posTransTypeReport">${formatTransactionType(
@@ -1077,178 +1052,256 @@ if (isStaff) {
        <td class="py-1 posPaymentMethodRemark">${remarks}</td>
        <td class="py-1 posPaymentMethodRemark">${receipt_id}</td>
      `;
-          posTableBody.appendChild(row);
+            posTableBody.appendChild(row);
+          });
+
+          // Insert total row (Footer for Daily Totals))
+          const totalRow = document.createElement('tr');
+          totalRow.className = 'total-row table-body-row ';
+
+          // const dailyTotal = transactions.reduce(
+          //   (sum, t) => sum + Number(t.amount),
+          //   0
+          // );
+
+          // Update total amounts for each day startinf wth partial totals and ending the day with final Total.
+          updateTotalPosAmounts(transactions, totalRow, date);
+
+          posTableBody.appendChild(totalRow);
         });
 
-        // Insert total row (Footer for Daily Totals))
-        const totalRow = document.createElement('tr');
-        totalRow.className = 'total-row table-body-row ';
-
-        // const dailyTotal = transactions.reduce(
-        //   (sum, t) => sum + Number(t.amount),
-        //   0
-        // );
-
-        // Update total amounts for each day startinf wth partial totals and ending the day with final Total.
-        updateTotalPosAmounts(transactions, totalRow, date);
-
-        posTableBody.appendChild(totalRow);
-      });
-
-      // Handle Load More button visibility
-      if (currentPage >= totalPages) {
-        loadMoreButton.style.display = 'none';
-      } else {
-        loadMoreButton.style.display = 'block';
+        // Handle Load More button visibility
+        if (currentPage >= totalPages) {
+          loadMoreButton.style.display = 'none';
+        } else {
+          loadMoreButton.style.display = 'block';
+        }
+      } catch (error) {
+        console.error('Error rendering transactions:', error);
+        posTableBody.innerHTML =
+          '<tr><td colspan="6" class="table-error-text">Error loading transactions.</td></tr>';
       }
-    } catch (error) {
-      console.error('Error rendering transactions:', error);
-      posTableBody.innerHTML =
-        '<tr><td colspan="6" class="table-error-text">Error loading transactions.</td></tr>';
     }
+
+    renderStaffPosTable();
   }
 
-  async function renderSalesTable(
-    page = 1,
-    pageSize,
-    filters = {},
-    role = 'staff'
-  ) {
-    //  console.log('🧪 Applied Filters:', filters);
+  // Sales Transactions
+  if (servicePermission === 'INVENTORY_SALES' || servicePermission === 'BOTH') {
+    const staffSalesReportDiv = document.querySelector('.staffSalesReportDiv');
 
-    const salesTableBody = document.querySelector(
-      `.soldTableDisplay_${role} tbody`
-    );
+    staffSalesReportDiv.style.display = 'block';
 
-    if (!salesTableBody) {
-      console.error('Error: Table body not found');
-      return;
-    }
-
-    try {
-      let loadingRow = document.querySelector('.loading-row');
-      if (!loadingRow) {
-        loadingRow = document.createElement('tr');
-        loadingRow.className = 'loading-row';
-        loadingRow.innerHTML = `<td colspan="11" class="table-loading-text">Loading transactions...</td>`;
-        salesTableBody.appendChild(loadingRow);
-      }
-
-      loadMoreButton.style.display = 'none';
-
-      // Build query with filters
-      // const queryParams = new URLSearchParams({
-      //   shopId: shopId,
-      //   page,
-      //   limit: pageSize,
-      // });
-
-      // if (filters.startDate) queryParams.append('startDate', filters.startDate);
-      // if (filters.endDate) queryParams.append('endDate', filters.endDate);
-      // if (filters.paymentMethod)
-      //   queryParams.append('paymentMethod', filters.paymentMethod);
-      // if (filters.status) queryParams.append('status', filters.status);
-
-      const result = await getAllSales({
-        shopId,
-        page,
-        limit: pageSize,
-        filters,
+    //Sales Filter logic
+    document
+      .getElementById('applySalesFiltersBtn_staff')
+      ?.addEventListener('click', () => {
+        const filters = getSalesFilters('staff');
+        renderStaffSalesTable(1, pageSize, filters, 'staff');
+        console.log('filters:', filters);
       });
 
-      console.log(result);
+    document
+      .getElementById('resetSalesFiltersBtn_staff')
+      ?.addEventListener('click', () => {
+        const role = 'staff';
+        resetSalesFilters(role);
+        const filters = getSalesFilters(role);
+        const tableSelector = '.posTableDisplay_staff tbody';
+        renderStaffSalesTable(1, pageSize, filters, 'staff');
+      });
 
-      if (!result) throw new Error(result.message || 'Failed to fetch');
+    loadMoreSalesButton.style.display = 'none';
 
-      const salesReports = result.data.sales;
-      totalPages = result.data.totalPages;
-      totalItems = result.data.totalItems;
-      currentPage = result.data.currentPage;
+    loadMoreSalesButton.addEventListener('click', () => {
+      const role = 'staff';
+      currentPage += 1;
+      const filters = getSalesFilters(role);
 
-      // Only reset array if starting from page 1
-      if (page === 1) {
-        allSalesReport = [];
-      }
+      //  const tableBodyId = '.posTableDisplay_staff tbody';
 
-      if (salesReports.length === 0 && currentPage === 1) {
-        salesTableBody.innerHTML =
-          '<tr class="loading-row"><td colspan="11" class="table-error-text ">No Sales Report Available.</td></tr>';
+      renderStaffSalesTable(currentPage, pageSize, filters, role);
+    });
+
+    async function renderStaffSalesTable(
+      page = 1,
+      pageSize,
+      filters = {},
+      role = 'staff'
+    ) {
+      //  console.log('🧪 Applied Filters:', filters);
+
+      const salesTableBody = document.querySelector(
+        `.soldTableDisplay_${role} tbody`
+      );
+
+      if (!salesTableBody) {
+        console.error('Error: Table body not found');
         return;
       }
 
-      salesReports.forEach((sale) => {
-        if (!allSalesReport.some((s) => s.id === sale.id)) {
-          allSalesReport.push(sale);
+      try {
+        let loadingRow = document.querySelector('.loading-row');
+        if (!loadingRow) {
+          loadingRow = document.createElement('tr');
+          loadingRow.className = 'loading-row';
+          loadingRow.innerHTML = `<td colspan="11" class="table-loading-text">Loading transactions...</td>`;
+          salesTableBody.appendChild(loadingRow);
         }
-      });
 
-      // Clear the table body and render all accumulated sales
-      salesTableBody.innerHTML = '';
+        loadMoreButton.style.display = 'none';
 
-      const groupedByDate = {};
+        // Build query with filters
+        // const queryParams = new URLSearchParams({
+        //   shopId: shopId,
+        //   page,
+        //   limit: pageSize,
+        // });
 
-      console.log(allSalesReport);
+        // if (filters.startDate) queryParams.append('startDate', filters.startDate);
+        // if (filters.endDate) queryParams.append('endDate', filters.endDate);
+        // if (filters.paymentMethod)
+        //   queryParams.append('paymentMethod', filters.paymentMethod);
+        // if (filters.status) queryParams.append('status', filters.status);
 
-      allSalesReport.forEach((sl) => {
-        const dateObj = new Date(sl.business_day);
+        const result = await getAllSales({
+          shopId,
+          page,
+          limit: pageSize,
+          filters,
+        });
 
-        const dateKey = dateObj.toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        }); // "May 11, 2025"
+        console.log(result);
 
-        if (!groupedByDate[dateKey]) groupedByDate[dateKey] = [];
-        groupedByDate[dateKey].push(sl);
-      });
+        if (!result) throw new Error(result.message || 'Failed to fetch');
 
-      //  console.log(groupedByDate);
+        const salesReports = result.data.sales;
+        totalPages = result.data.totalPages;
+        totalItems = result.data.totalItems;
+        currentPage = result.data.currentPage;
 
-      let serialNumber = 1;
+        // Only reset array if starting from page 1
+        if (page === 1) {
+          allSalesReport = [];
+        }
 
-      Object.entries(groupedByDate).forEach(([date, sales]) => {
-        // Insert group row (header for the date)
-        const groupRow = document.createElement('tr');
-        groupRow.className = 'date-group-row table-body-row ';
+        if (salesReports.length === 0 && currentPage === 1) {
+          salesTableBody.innerHTML =
+            '<tr class="loading-row"><td colspan="11" class="table-error-text ">No Sales Report Available.</td></tr>';
+          return;
+        }
 
-        groupRow.innerHTML = `
+        salesReports.forEach((sale) => {
+          if (!allSalesReport.some((s) => s.id === sale.id)) {
+            allSalesReport.push(sale);
+          }
+        });
+
+        // Clear the table body and render all accumulated sales
+        salesTableBody.innerHTML = '';
+
+        const groupedByDate = {};
+
+        console.log(allSalesReport);
+        // --- SALES ITEM FETCH & TRUNCATE: Start ---
+        // Prepare an array of promises for fetching sale details for *all* sales in allSalesReport
+        const salesWithDetailsPromises = allSalesReport.map(
+          async (saleSummary) => {
+            try {
+              const saleDetailsResult = await getSaleById(saleSummary.id);
+              if (saleDetailsResult && saleDetailsResult.success) {
+                return {
+                  ...saleSummary,
+                  SaleItems: saleDetailsResult.data.SaleItems,
+                };
+              }
+              return { ...saleSummary, SaleItems: [] }; // Return summary with empty SaleItems if fetch fails
+            } catch (detailError) {
+              console.error(
+                `Error fetching details for sale ID ${saleSummary.id}:`,
+                detailError
+              );
+              return { ...saleSummary, SaleItems: [] }; // Handle error, return empty SaleItems
+            }
+          }
+        );
+
+        // Wait for all sale details to be fetched in parallel
+        const enrichedSalesTransactions = await Promise.all(
+          salesWithDetailsPromises
+        );
+
+        // Now, iterate over the enriched data to group by date and render
+        enrichedSalesTransactions.forEach((sl) => {
+          const dateObj = new Date(sl.business_day);
+          const dateKey = dateObj.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          });
+          if (!groupedByDate[dateKey]) groupedByDate[dateKey] = [];
+          groupedByDate[dateKey].push(sl);
+        });
+        // --- SALES ITEM FETCH & TRUNCATE: End ---
+
+        //  console.log(groupedByDate);
+
+        let serialNumber = 1;
+
+        Object.entries(groupedByDate).forEach(([date, sales]) => {
+          // Insert group row (header for the date)
+          const groupRow = document.createElement('tr');
+          groupRow.className = 'date-group-row table-body-row ';
+
+          groupRow.innerHTML = `
       <td colspan="11" class="date-header py-1 mt-1 mb-1">
         <strong>${date}</strong>     </td>
 
      `;
-        salesTableBody.appendChild(groupRow);
+          salesTableBody.appendChild(groupRow);
 
-        //       groupRow.innerHTML = `
-        //     <td colspan="11" class="date-header py-1 mt-1 mb-1">
-        //       <strong>${date}</strong> — Total: ₦${formatAmountWithCommas(dailyTotal)}
-        //     </td>
-        //   `;
+          //       groupRow.innerHTML = `
+          //     <td colspan="11" class="date-header py-1 mt-1 mb-1">
+          //       <strong>${date}</strong> — Total: ₦${formatAmountWithCommas(dailyTotal)}
+          //     </td>
+          //   `;
 
-        sales.forEach((salesTransaction) => {
-          const {
-            id,
-            receipt_number,
-            amount_paid,
-            total_amount,
-            balance,
-            customer_name,
-            customer_phone,
-            payment_method,
-            business_day,
-            status,
-          } = salesTransaction;
+          sales.forEach((salesTransaction) => {
+            const {
+              id,
+              receipt_number,
+              amount_paid,
+              total_amount,
+              balance,
+              customer_name,
+              customer_phone,
+              payment_method,
+              business_day,
+              status,
+              SaleItems,
+            } = salesTransaction;
 
-          const { first_name, last_name } = salesTransaction.Account;
+            const { first_name, last_name } = salesTransaction.Account;
 
-          const row = document.createElement('tr');
-          row.classList.add('table-body-row');
+            // --- Truncate Item Names ---
+            const productNames = SaleItems.map(
+              (item) => item.Product?.name || 'Unknown Product'
+            ); // Added null check for Product.name
+            const truncatedProductNames = truncateProductNames(productNames, {
+              maxItems: 3,
+              maxLength: 50,
+              separator: ', ',
+            });
 
-          row.dataset.saleId = id; // Store sale ID for detail view
-          row.innerHTML = `
+            const row = document.createElement('tr');
+            row.classList.add('table-body-row');
+
+            row.dataset.saleId = id; // Store sale ID for detail view
+            row.innerHTML = `
                 <td class="py-1">${serialNumber++}.</td>
                <td class="py-1 soldItemReceiptReport">${receipt_number}</td>
-               <td class="py-1 soldItemCustomerNameReport">${customer_name}</td>
-                <td class="py-1 soldItemCustomerNameReport">${first_name} ${last_name}</td>
+               <td class="py-1 soldItemNameReport">${truncatedProductNames}</td>
+                <td class="py-1 soldItemStaffNameReport">${first_name} ${last_name}</td>
                  <td class="py-1 soldItemTotalAmountReport">&#x20A6;${formatAmountWithCommas(
                    total_amount
                  )}</td>
@@ -1266,266 +1319,48 @@ if (isStaff) {
                     <td class="py-1 soldItemDetailReport" data-sale-id="${id}"><i class="fa fa-eye"></i></td>
      `;
 
-          row.addEventListener('click', async (e) => {
-            e.preventDefault();
-            showGlobalLoader();
-            // Finally open the modal
-            openSaleDetailsModal();
-            const saleId = row.dataset.saleId;
-            console.log(`Open details for Sale ID: ${saleId}`);
+            row.addEventListener('click', async (e) => {
+              updateSalesReceipt(e, row);
+            });
 
-            // Get Sales by ID
-            try {
-              showGlobalLoader();
-              const saleDetails = await getSaleById(saleId);
-              const shopDetails =
-                JSON.parse(localStorage.getItem(shopKey)) || [];
-
-              //   console.log('shopDetails', shopDetails);
-              //   console.log('saleDetails', saleDetails);
-
-              if (!shopDetails) {
-                console.log('No shopDetails');
-                showToast('error', '❎ Cannot get Shop Details');
-                closeModal();
-                return;
-              }
-
-              if (!saleDetails || !saleDetails.data) {
-                //  console.log('No saleDetails');
-
-                showToast('error', '❎  Cannot get Sale Details');
-                closeModal();
-                clearReceiptDiv();
-                return;
-              }
-
-              const {
-                Account,
-                SaleItems,
-                Shop,
-                receipt_number,
-                customer_name,
-                customer_phone,
-                payment_method,
-
-                total_amount,
-                amount_paid,
-                balance,
-                status,
-                business_day,
-                sale_time,
-              } = saleDetails.data;
-
-              // Populate sale summary
-
-              // Top Part Below
-              document.getElementById('soldDetailShop').textContent =
-                Shop?.shop_name || 'N/A';
-              document.getElementById('soldDetailShopAddress').textContent =
-                shopDetails?.data?.location || 'N/A';
-
-              document.getElementById('soldDetailReceiptNumber').textContent =
-                receipt_number;
-              document.getElementById('soldDetailCustomerName').textContent =
-                `${customer_name} - ${customer_phone}` || 'N/A';
-              document.getElementById('soldDetailStaffName').textContent =
-                `${Account?.first_name} ${Account?.last_name}` || 'N/A';
-              document.getElementById('soldDetailDate').textContent = new Date(
-                sale_time
-              ).toLocaleString();
-
-              // Bottom Part Below
-
-              document.getElementById('soldDetailPaymentMethod').textContent =
-                payment_method || 'N/A';
-
-              document.getElementById(
-                'soldDetailTotalAmount'
-              ).textContent = `₦${formatAmountWithCommas(total_amount)}`;
-              document.getElementById(
-                'soldDetailPaidAmount'
-              ).textContent = `₦${formatAmountWithCommas(amount_paid)}`;
-              document.getElementById(
-                'soldDetailBalanceAmount'
-              ).textContent = `₦${formatAmountWithCommas(balance)}`;
-
-              document.getElementById('soldDetailStatus').textContent =
-                formatSaleStatus(status);
-
-              // Sales Items - Middle Part Below
-              const itemsTableBody =
-                document.querySelector('.itemsTable tbody');
-              itemsTableBody.innerHTML = ''; // clear previous rows
-
-              SaleItems.forEach((item, index) => {
-                const itemRow = document.createElement('tr');
-                itemRow.classList.add('table-body-row');
-                itemRow.innerHTML = `
-             <td class="py-1">${item.Product.name}</td>
-                           <td class="py-1">${item.quantity}</td>
-                           <td class="py-1">₦${formatAmountWithCommas(
-                             item.selling_price
-                           )}</td>
-                           <td class="py-1">${formatAmountWithCommas(
-                             item.quantity * item.selling_price
-                           )}</td>
-             
-                     `;
-                itemsTableBody.appendChild(itemRow);
-              });
-
-              // Print & Download - Staff
-
-              //   Print
-              //   const printReceiptBtn =
-              //     document.querySelector('.printReceiptBtn');
-
-              //Keep this earlier Print Logic
-
-              //            printReceiptBtn.addEventListener('click', () => {
-              //              showBtnLoader(printReceiptBtn);
-              //              const receiptContent =
-              //                document.querySelector('.pdfHere').innerHTML;
-
-              //              const printWindow = window.open('', '', 'width=300,height=500');
-              //              printWindow.document.write(`
-              //  <html>
-              //    <head>
-              //      <title>Print Receipt</title>
-              //      <style>
-              //        body { font-family: monospace; width: 58mm; font-size: 8px; padding: 5px; }
-              //        .center { text-align: center; }
-              //        .bold { font-weight: bold; }
-              //        .line { border-top: 1px dashed #000; margin: 4px 0; }
-              //        table { width: 100%; font-size: 12px; border-collapse: collapse; }
-              //        td { padding: 2px 5px; }
-              //        .footer { text-align: center; margin-top: 10px; }
-              //      </style>
-              //    </head>
-              //    <body>${receiptContent}</body>
-              //  </html>`);
-              //              printWindow.document.close();
-              //              printWindow.focus();
-              //              printWindow.print();
-              //              // printWindow.close();
-              //              hideBtnLoader(printReceiptBtn);
-              //            });
-
-              const printReceiptBtn =
-                document.querySelector('.printReceiptBtn');
-
-              printReceiptBtn.onclick = () => {
-                const container = document.getElementById('receiptPrintPDF');
-
-                container.innerHTML = renderReceiptPrintHTML(
-                  saleDetails.data,
-                  shopDetails.data
-                );
-
-                container.style.display = 'block'; // temporarily show
-
-                // const receiptHeightPx = container.scrollHeight;
-                const receiptHeightPx =
-                  container.getBoundingClientRect().height;
-                const heightInMM = receiptHeightPx * 0.264583;
-                // const adjustedHeight = Math.floor(heightInMM) - 4;
-
-                console.log(adjustedHeight);
-
-                const opt = {
-                  margin: 0,
-                  filename: `receipt-${Date.now()}.pdf`,
-                  image: { type: 'jpeg', quality: 0.98 },
-                  html2canvas: { scale: 2 },
-                  pagebreak: { avoid: 'tr', mode: ['css', 'legacy'] },
-                  jsPDF: {
-                    unit: 'mm',
-                    format: [58, heightInMM], // height can be adjusted dynamically if needed
-                    orientation: 'portrait',
-                  },
-                };
-
-                html2pdf()
-                  .set(opt)
-                  .from(container)
-                  .save()
-                  .then(() => {
-                    container.style.display = 'none';
-                  });
-              };
-
-              //   Download;
-
-              const generatePdfBtn = document.querySelector('.generatePdfBtn');
-              generatePdfBtn?.addEventListener('click', () => {
-                showBtnLoader(generatePdfBtn);
-                const receiptElement = document.querySelector('.pdfHere');
-                if (!receiptElement) {
-                  showToast('fail', '❎ Receipt content not found.');
-                  return;
-                }
-
-                const opt = {
-                  margin: 10,
-                  filename: `receipt-${Date.now()}.pdf`,
-                  image: { type: 'jpeg', quality: 0.98 },
-                  html2canvas: { scale: 2 },
-                  jsPDF: {
-                    unit: 'mm',
-                    format: 'a4', // adjust height based on content
-                    orientation: 'portrait',
-                  },
-                };
-
-                html2pdf().set(opt).from(receiptElement).save();
-                hideBtnLoader(generatePdfBtn);
-              });
-
-              hideGlobalLoader();
-              //   openSaleDetailsModal();
-            } catch (err) {
-              hideGlobalLoader();
-              console.error('Error fetching sale details:', err.message);
-              showToast('fail', `❎ Failed to load sale details`);
-              closeModal();
-              clearReceiptDiv();
-            }
+            salesTableBody.appendChild(row);
           });
 
-          salesTableBody.appendChild(row);
+          // Insert total row (Footer for Daily Totals))
+          const totalSalesRow = document.createElement('tr');
+          totalSalesRow.className = 'totalSales-row table-body-row ';
+
+          // const dailyTotal = transactions.reduce(
+          //   (sum, t) => sum + Number(t.amount),
+          //   0
+          // );
+
+          // Update total amounts for each day startinf wth partial totals and ending the day with final Total.
+          updateTotalSalesAmounts(sales, totalSalesRow, date);
+
+          salesTableBody.appendChild(totalSalesRow);
         });
 
-        // Insert total row (Footer for Daily Totals))
-        const totalSalesRow = document.createElement('tr');
-        totalSalesRow.className = 'totalSales-row table-body-row ';
-
-        // const dailyTotal = transactions.reduce(
-        //   (sum, t) => sum + Number(t.amount),
-        //   0
-        // );
-
-        // Update total amounts for each day startinf wth partial totals and ending the day with final Total.
-        updateTotalSalesAmounts(sales, totalSalesRow, date);
-
-        salesTableBody.appendChild(totalSalesRow);
-      });
-
-      // Handle Load More button visibility
-      if (currentPage >= totalPages) {
-        loadMoreSalesButton.style.display = 'none';
-      } else {
-        loadMoreSalesButton.style.display = 'block';
+        // Handle Load More button visibility
+        if (currentPage >= totalPages) {
+          loadMoreSalesButton.style.display = 'none';
+        } else {
+          loadMoreSalesButton.style.display = 'block';
+        }
+      } catch (error) {
+        console.error('Error rendering transactions:', error);
+        salesTableBody.innerHTML =
+          '<tr><td colspan="6" class="table-error-text">Error loading transactions.</td></tr>';
       }
-    } catch (error) {
-      console.error('Error rendering transactions:', error);
-      salesTableBody.innerHTML =
-        '<tr><td colspan="6" class="table-error-text">Error loading transactions.</td></tr>';
     }
+
+    renderStaffSalesTable();
   }
 
-  renderSalesTable();
-  renderPosTable();
+  //   loadMoreButton.addEventListener('click', () => {
+  //     currentPage += 1;
+  //     renderStaffPosTable(currentPage, pageSize, currentFilters);
+  //   });
 }
 
 // JS for modal

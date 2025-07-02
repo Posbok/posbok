@@ -3124,6 +3124,10 @@ body.authentication {
 .staff-view {
   display: none; }
 
+.staffPosReportDiv,
+.staffSalesReportDiv {
+  display: none; }
+
 .loading-row td {
   padding: 1.5rem 1rem;
   text-align: center;

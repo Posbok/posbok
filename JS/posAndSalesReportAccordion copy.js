@@ -217,7 +217,7 @@ export function getPosAndSalesReportAccordion(shop) {
                      <tr class="table-header-row">
                         <th class="py-1">S/N</th>
                         <th class="py-1">Receipt #</th>
-                        <th class="py-1">Customer</th>
+                        <th class="py-1">Product Name</th>
                         <th class="py-1">Staff</th>
                         <th class="py-1">Amount</th>
                         <th class="py-1">Paid</th>

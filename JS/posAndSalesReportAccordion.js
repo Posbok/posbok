@@ -4,6 +4,7 @@ import {
   getAllSales,
   getDailySalesSummary,
   getMonthlySalesSummary,
+  getSaleById,
 } from './apiServices/sales/salesResources';
 import { updateTotalPosAmounts } from './apiServices/utility/posReportUtility';
 import {
@@ -16,6 +17,7 @@ import {
   formatAmountWithCommas,
   formatSaleStatus,
   formatTransactionType,
+  truncateProductNames,
 } from './helper/helper';
 
 const userData = config.userData;
@@ -31,13 +33,6 @@ const servicePermission = parsedUserData?.servicePermission;
 export function getAdminSalesReportHtml(shop) {
   //   console.log('Sales Report');
   return `    
-
-
-
-
-
-      
-
     <!-- Sales HTML starts Here -->
 
           <div  id="shopSales-report-${shop.id}"  class=" reports " data-loaded="false" mt-4 mb-4 ">
@@ -109,7 +104,7 @@ export function getAdminSalesReportHtml(shop) {
                      <tr class="table-header-row">
                         <th class="py-1">S/N</th>
                         <th class="py-1">Receipt #</th>
-                        <th class="py-1">Customer</th>
+                        <th class="py-1">Product Name</th>
                         <th class="py-1">Staff</th>
                         <th class="py-1">Amount</th>
                         <th class="py-1">Paid</th>
@@ -478,7 +473,7 @@ export function getAdminSalesReportHtml(shop) {
                               <th class="py-1">S/N</th>
                               <th class="py-1">Date</th>
                               <th class="py-1">Shop</th>
-                              <th class="py-1">Customer</th>
+                              <th class="py-1">Product Name</th>
                               <th class="py-1">Total Amount</th>
                               <th class="py-1">Amount Paid</th>
                               <th class="py-1">Balance</th>
@@ -696,15 +691,14 @@ export function getAdminSalesTransactionList(
   business_day,
   status,
   first_name,
-  last_name
+  last_name,
+  truncatedProductNames
 ) {
   return `
     <td class="py-1">${serialNumber++}.</td>
                   <td class="py-1 soldItemReceiptReport">${receipt_number}</td>
-                  <td class="py-1 soldItemCustomerNameReport">${
-                    customer_name === '' ? '-' : customer_name
-                  }</td>
-                   <td class="py-1 soldItemCustomerNameReport">${first_name} ${last_name}</td>
+                  <td class="py-1 soldItemNameReport">${truncatedProductNames}</td>
+                   <td class="py-1 soldItemStaffNameReport">${first_name} ${last_name}</td>
                     <td class="py-1 soldItemTotalAmountReport">&#x20A6;${formatAmountWithCommas(
                       total_amount
                     )}</td>
@@ -961,7 +955,7 @@ export async function renderSalesTable({
 
       if (!loadingRow) {
         loadingRow = document.createElement('tr');
-        loadingRow.className = 'leoading-row';
+        loadingRow.className = 'loading-row';
         loadingRow.innerHTML = `<td colspan="11" class="table-loading-text">Loading Sales Transactions...</td>`;
         salesTableBody.appendChild(loadingRow);
       }
@@ -1019,18 +1013,46 @@ export async function renderSalesTable({
 
       console.log(allSalesReport);
 
-      allSalesReport.forEach((sl) => {
-        const dateObj = new Date(sl.business_day);
+      // --- SALES ITEM FETCH & TRUNCATE: Start ---
+      // Prepare an array of promises for fetching sale details for *all* sales in allSalesReport
+      const salesWithDetailsPromises = allSalesReport.map(
+        async (saleSummary) => {
+          try {
+            const saleDetailsResult = await getSaleById(saleSummary.id);
+            if (saleDetailsResult && saleDetailsResult.success) {
+              return {
+                ...saleSummary,
+                SaleItems: saleDetailsResult.data.SaleItems,
+              };
+            }
+            return { ...saleSummary, SaleItems: [] }; // Return summary with empty SaleItems if fetch fails
+          } catch (detailError) {
+            console.error(
+              `Error fetching details for sale ID ${saleSummary.id}:`,
+              detailError
+            );
+            return { ...saleSummary, SaleItems: [] }; // Handle error, return empty SaleItems
+          }
+        }
+      );
 
+      // Wait for all sale details to be fetched in parallel
+      const enrichedSalesTransactions = await Promise.all(
+        salesWithDetailsPromises
+      );
+
+      // Now, iterate over the enriched data to group by date and render
+      enrichedSalesTransactions.forEach((sl) => {
+        const dateObj = new Date(sl.business_day);
         const dateKey = dateObj.toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'long',
           day: 'numeric',
-        }); // "May 11, 2025"
-
+        });
         if (!groupedByDate[dateKey]) groupedByDate[dateKey] = [];
         groupedByDate[dateKey].push(sl);
       });
+      // --- SALES ITEM FETCH & TRUNCATE: End ---
 
       //  console.log(groupedByDate);
 
@@ -1066,9 +1088,24 @@ export async function renderSalesTable({
             payment_method,
             business_day,
             status,
+            SaleItems,
           } = salesTransaction;
 
           const { first_name, last_name } = salesTransaction.Account;
+
+          // --- Truncate Item Names ---
+          const productNames = SaleItems.map(
+            (item) => item.Product?.name || 'Unknown Product'
+          ); // Added null check for Product.name
+          const truncatedProductNames = truncateProductNames(productNames, {
+            maxItems: 3,
+            maxLength: 50,
+            separator: ', ',
+          });
+
+          console.log(salesTransaction);
+
+          // const saleDetails = await getSaleById(saleId);
 
           const row = document.createElement('tr');
           row.classList.add('table-body-row');
@@ -1087,7 +1124,8 @@ export async function renderSalesTable({
             business_day,
             status,
             first_name,
-            last_name
+            last_name,
+            truncatedProductNames
           );
 
           row.addEventListener('click', async (e) => {

@@ -757,7 +757,7 @@ function handleAddToCart() {
   if (selling < purchase) {
     showToast(
       'error',
-      `❎ Selling Price (${soldProductPrice.value}) lower than Purchase Price (${productBoughtPrice.value}). Please adjust.`
+      `❎ Selling price is too low. Please enter a valid amount.`
     );
     return;
   }
@@ -996,6 +996,17 @@ sellNowBtn?.addEventListener('click', () => {
   // ✅ If already 1 item in cart, skip add and just open checkout
   if (existingCart.length === 1) {
     openCheckout();
+    return;
+  }
+
+  const selling = parseFloat(soldProductPrice.value.replace(/,/g, ''));
+  const purchase = parseFloat(productBoughtPrice.value.replace(/,/g, ''));
+
+  if (selling < purchase) {
+    showToast(
+      'error',
+      `❎ Selling price is too low. Please enter a valid amount.`
+    );
     return;
   }
 

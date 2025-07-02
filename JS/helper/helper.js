@@ -640,3 +640,55 @@ export function clearReceiptDiv() {
   const itemsTableBody = document.querySelector('.itemsTable tbody');
   itemsTableBody.innerHTML = ''; // clear previous rows
 }
+
+export function truncateProductNames(namesArray, options) {
+  const {
+    maxItems = Infinity,
+    maxLength = Infinity,
+    separator = ', ',
+  } = options;
+
+  let resultNames = [];
+  let currentLength = 0;
+  let truncated = false;
+
+  for (let i = 0; i < namesArray.length; i++) {
+    const name = namesArray[i];
+    const nameWithSeparatorLength =
+      name.length + (i > 0 ? separator.length : 0);
+
+    if (
+      currentLength + nameWithSeparatorLength > maxLength &&
+      resultNames.length > 0
+    ) {
+      truncated = true;
+      break;
+    }
+    if (resultNames.length >= maxItems) {
+      truncated = true;
+      break;
+    }
+
+    resultNames.push(name);
+    currentLength += nameWithSeparatorLength;
+  }
+
+  let finalString = resultNames.join(separator);
+
+  if (finalString.length > maxLength && maxLength !== Infinity) {
+    finalString = finalString.substring(0, maxLength).trim();
+    truncated = true;
+  }
+
+  if (truncated && namesArray.length > resultNames.length) {
+    return finalString + '...';
+  } else if (
+    truncated &&
+    namesArray.length === resultNames.length &&
+    finalString.length === maxLength
+  ) {
+    return finalString + '...';
+  }
+
+  return finalString;
+}
