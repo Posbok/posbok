@@ -1,4 +1,5 @@
 import html2pdf from 'html2pdf.js/dist/html2pdf.min.js';
+import './script.js';
 import config from '../config';
 import {
   getProductCategories,

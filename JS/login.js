@@ -1,4 +1,5 @@
 import config from '../config';
+import './script.js';
 import { loginUser } from './apiServices/login';
 import { safeFetch } from './apiServices/utility/safeFetch';
 import { hideBtnLoader, showBtnLoader } from './helper/helper';

@@ -1,3 +1,4 @@
+import './script.js';
 import config from '../config';
 import { fetchBusinessDetails } from './apiServices/business/businessResource';
 import { checkAndPromptCreateShop } from './apiServices/shop/shopResource';

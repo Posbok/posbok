@@ -51,6 +51,8 @@ import {
 const userData = config.userData;
 const dummyShopId = config.dummyShopId;
 
+console.log('script.js was imported successfully!');
+
 let parsedUserData = null;
 
 parsedUserData = userData ? JSON.parse(userData) : null;
@@ -889,6 +891,7 @@ export function closeModal() {
   const addMachineFee = document.querySelector('.addMachineFees');
   const addCategory = document.querySelector('.addCategory');
   const addProduct = document.querySelector('.addProduct');
+  const addExistingProduct = document.querySelector('.addExistingProduct');
   const updateProduct = document.querySelector('.updateProduct');
   const openAdminBusinessDay = document.querySelector('.openAdminBusinessDay');
   const openStaffBusinessDay = document.querySelector('.openStaffBusinessDay');
@@ -950,6 +953,11 @@ export function closeModal() {
   if (addProduct) {
     addProduct.classList.remove('active');
     //  delete addProduct.dataset.staffId;
+  }
+
+  if (addExistingProduct) {
+    addExistingProduct.classList.remove('active');
+    //  delete addExistingProduct.dataset.staffId;
   }
 
   if (updateProduct) {

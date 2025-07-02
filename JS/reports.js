@@ -1,4 +1,5 @@
 import config from '../config';
+import './script.js';
 import {
   deleteAllTransactions,
   getPosTransactions,

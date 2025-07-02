@@ -1,3 +1,4 @@
+import './script.js';
 import {
   deleteShop,
   fetchShopDetail,

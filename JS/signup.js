@@ -1,3 +1,4 @@
+import './script.js';
 import { parse } from 'postcss';
 import { fetchBusinessDetails } from './apiServices/business/businessResource';
 import { registerAdmin, registerBusiness } from './apiServices/registration';
