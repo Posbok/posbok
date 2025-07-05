@@ -38,7 +38,7 @@ import {
   openDepositPosCapitalModal,
 } from './apiServices/pos/posResources.js';
 import {
-  //   initAccountOverview,
+  initAccountOverview,
   updateCapitalUI,
   updateCashInMachineUI,
 } from './apiServices/account/accountOverview.js';
@@ -447,6 +447,34 @@ export function openAdminBusinessDayModal() {
   if (sidebar) sidebar.classList.add('blur');
 }
 
+const adminBusinessDayContainer = document.querySelector(
+  '.adminBusinessDayContainer'
+);
+
+if (isAdmin && adminBusinessDayContainer) {
+  async function loadShopDropdown() {
+    try {
+      showGlobalLoader();
+      const { enrichedShopData } = await checkAndPromptCreateShop();
+      populateBusinessShopDropdown(enrichedShopData, 'businessDayShopDropdown');
+      populateBusinessShopDropdown(
+        enrichedShopData,
+        'adminDepositposCapitalShopDropdown'
+      );
+      populateBusinessShopDropdown(
+        enrichedShopData,
+        'closeBusinessDayShopDropdown'
+      );
+      hideGlobalLoader();
+    } catch (err) {
+      hideGlobalLoader();
+      console.error('Failed to load dropdown:', err.message);
+    }
+  }
+
+  loadShopDropdown();
+}
+
 async function renderBusinessDayButtons() {
   const businessInitBtnDiv = document.querySelector('.businessInitBtnDiv');
 
@@ -455,6 +483,9 @@ async function renderBusinessDayButtons() {
   if (isStaff) {
     const businessDay = await getCurrentBusinessDay(isStaff ? shopId : '');
     console.log('new Business Day:', businessDay.data);
+
+    const openingCash = businessDay?.data?.opening_cash || 0;
+    updateCashInMachineUI(openingCash);
 
     //  console.log(openingCash);
 
@@ -489,19 +520,20 @@ async function renderBusinessDayButtons() {
       if (businessInitBtnDiv)
         businessInitBtnDiv.innerHTML = `
       <button class="hero-btn-danger closeBusinessDayModal mb-0" id="closeBusinessDayModal">Close Business Day</button>
+      <button class="depositPosCapitalBtn businessInitBtn" id="depositPosCapitalBtn">Deposit POS Capital</button>
     `;
 
       setupModalCloseButtons();
 
-      // document
-      //   .querySelector('#depositPosCapitalBtn')
-      //   ?.addEventListener('click', openDepositPosCapitalModal);
+      document
+        .querySelector('#depositPosCapitalBtn')
+        ?.addEventListener('click', openDepositPosCapitalModal);
 
       document
         .querySelector('#closeBusinessDayModal')
         ?.addEventListener('click', openCloseBusinessDayModal);
 
-      // initAccountOverview();
+      initAccountOverview();
     }
     //   else if (businessDay.data.status === 'closed')
     //  if (businessInitBtnDiv)   businessInitBtnDiv.innerHTML = `
@@ -520,7 +552,7 @@ async function renderBusinessDayButtons() {
       businessInitBtnDiv.innerHTML = `
     <button class="businessInitBtn" id="openBusinessDayBtn">Open Business Day</button>
 
-
+    <button class="businessInitBtn" id="depositPosCapitalBtn">Deposit POS Capital</button>
 
     <button class=" hero-btn-danger adminCloseBusinessDayModal  " id="adminCloseBusinessDayModal">Close Business Day</button>
 
@@ -532,7 +564,9 @@ async function renderBusinessDayButtons() {
     document
       .querySelector('#adminCloseBusinessDayModal')
       ?.addEventListener('click', openAdminCloseBusinessDayModal);
-    document;
+    document
+      .querySelector('#depositPosCapitalBtn')
+      ?.addEventListener('click', openAdminDepositPosCapitalModal);
 
     setupModalCloseButtons();
 
@@ -605,15 +639,11 @@ export function bindOpenBusinessDayFormListener() {
 
       // console.log('Opening Business Day with:', openBusinessDayDetails);
       // console.log('Depositing POS Capital with:', posCapitalDetails);
-      const submitBusinessDay = document.querySelector(
-        '.openBusinessDaySubmitBtn'
-      );
-
-      console.log(submitBusinessDay);
+      const submitPosCapital = document.querySelector('.submitPosCapital');
 
       try {
         showGlobalLoader();
-        showBtnLoader(submitBusinessDay);
+        showBtnLoader(submitPosCapital);
         const openBusinessDayData = await openBusinessDay(
           openBusinessDayDetails
         );
@@ -642,7 +672,7 @@ export function bindOpenBusinessDayFormListener() {
             clearFormInputs();
             await getCurrentBusinessDay(shopId);
             await renderBusinessDayButtons();
-            // initAccountOverview();
+            initAccountOverview();
             // hideGlobalLoader();
           }
         } catch (posCapitalDepositDataErr) {
@@ -660,17 +690,17 @@ export function bindOpenBusinessDayFormListener() {
           //  hideGlobalLoader();
         }
         showToast('success', `✅ ${openBusinessDayData.message}`);
-        hideBtnLoader(submitBusinessDay);
+        hideBtnLoader(submitPosCapital);
         //   hideGlobalLoader();
       } catch (err) {
         console.error('Error Creating product:', err);
         showToast('fail', `❎ ${err.message}`);
         hideGlobalLoader();
-        hideBtnLoader(submitBusinessDay);
+        hideBtnLoader(submitPosCapital);
         return;
       } finally {
         // closeModal()
-        hideBtnLoader(submitBusinessDay);
+        hideBtnLoader(submitPosCapital);
         hideGlobalLoader();
         //   initAccountOverview();
         renderBusinessDayButtons();
@@ -689,6 +719,70 @@ export function openBusinessDayForm() {
 
 document.addEventListener('DOMContentLoaded', () => {
   bindOpenBusinessDayFormListener(); // Only once
+});
+
+// Function to deposit POS Capital - Added to script.js because of scope.
+
+export function bindDepositPosCapitalFormListener() {
+  const form = isAdmin
+    ? document.querySelector('.adminDepositPosCapitalModal')
+    : document.querySelector('.staffDepositPosCapitalModal');
+
+  if (!form) return;
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const adminDepositposCapitalShopDropdown = document.querySelector(
+        '#adminDepositposCapitalShopDropdown'
+      ).value;
+
+      const posDepositAmount = isAdmin
+        ? document.querySelector('#adminPosCapitalAmount')
+        : document.querySelector('#posCapitalAmount');
+
+      const posCapitalDetails = {
+        shopId: isAdmin ? adminDepositposCapitalShopDropdown : shopId,
+        amount: Number(getAmountForSubmission(posDepositAmount)),
+      };
+
+      // console.log('Sending POS Capital with:', posCapitalDetails);
+      const submitPosCapital = document.querySelector('.submitPosCapital');
+
+      try {
+        showBtnLoader(submitPosCapital);
+        showGlobalLoader();
+        const addPosCapitalData = await addPosCapital(posCapitalDetails);
+
+        if (addPosCapitalData) {
+          //  initAccountOverview();
+          showToast('success', `✅ ${addPosCapitalData.message}`);
+          closeModal();
+        }
+
+        // closeModal(); // close modal after success
+      } catch (err) {
+        console.error('Error adding POS Capital:', err.message);
+        showToast('fail', `❎ ${err.message}`);
+      } finally {
+        hideBtnLoader(submitPosCapital);
+        hideGlobalLoader();
+      }
+    });
+  }
+}
+
+export function depositPosCapitalForm() {
+  const form = isAdmin
+    ? document.querySelector('.adminDepositPosCapitalModal')
+    : document.querySelector('.staffDepositPosCapitalModal');
+
+  if (!form) return;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  bindDepositPosCapitalFormListener(); // Only once
 });
 
 // Close Business Day
@@ -785,9 +879,8 @@ closeModalButton.forEach((closeButton) => {
 });
 
 export function closeModal() {
-  const depositPosCapitalContainer = document.querySelector(
-    isAdmin ? '.adminDepositPosCapital' : '.depositPosCapital'
-  );
+  const depositPosCapitalContainer =
+    document.querySelector('.depositPosCapital');
   const createShop = document.querySelector('.createShop');
   const addUser = document.querySelector('.addUser');
   const adminUpdateUserData = document.querySelector('.adminUpdateUserData');
@@ -1075,6 +1168,8 @@ checkIfTokenExpiredDaily();
 //  JS for DOM Manioulation and Dynamic data e.g.
 const userNameDisplay = document.querySelector('.user-name');
 const businessNameDisplay = document.querySelector('.business-name');
+
+const posDepositButton = document.querySelector('.depositPosCapitalBtn');
 
 const sellIndexTab = document.getElementById('sellIndexTab');
 const posIndexTab = document.getElementById('posIndexTab');

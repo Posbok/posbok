@@ -839,9 +839,8 @@ export async function renderPosTable({
 
       //  console.log(groupedByDate);
 
-      let serialNumber = 1;
-
       Object.entries(groupedByDate).forEach(([date, transactions]) => {
+        let serialNumber = 1;
         // Insert group row (header for the date)
         const groupRow = document.createElement('tr');
         groupRow.className = 'date-group-row table-body-row ';
@@ -898,7 +897,7 @@ export async function renderPosTable({
             machineFee,
             transactionCharges,
             transaction_fee,
-            serialNumber
+            serialNumber++
           );
 
           posTableBody.appendChild(row);
@@ -1056,9 +1055,8 @@ export async function renderSalesTable({
 
       //  console.log(groupedByDate);
 
-      let serialNumber = 1;
-
       Object.entries(groupedByDate).forEach(([date, sales]) => {
+        let serialNumber = 1;
         // Insert group row (header for the date)
         const groupRow = document.createElement('tr');
         groupRow.className = 'date-group-row table-body-row ';
@@ -1112,7 +1110,7 @@ export async function renderSalesTable({
 
           row.dataset.saleId = id; // Store sale ID for detail view
           row.innerHTML = getAdminSalesTransactionList(
-            serialNumber,
+            serialNumber++,
             id,
             receipt_number,
             amount_paid,

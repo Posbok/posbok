@@ -121,6 +121,8 @@
          </div>
 
          <div class="main-heading_left">
+            <button class="hero-btn-dark depositPosCapitalBtn force-mb-0" id="depositPosCapitalBtn">Deposit Pos
+               Capital</button>
 
             <button class="hero-btn-dark logoutButton">LOGOUT</button>
 
@@ -256,7 +258,7 @@
                <div class="pos-method-form_input">
                   <label for="posCustomerPhone">Customer Phone Number</label>
 
-                  <input class="posCustomerPhone" id="adminPosCustomerPhone" type="text"
+                  <input class="posCustomerPhone" id="adminPosCustomerPhone" type="number"
                      placeholder="(Optional) Enter Customer Phone Number" name="posCustomerPhone">
                </div>
 
@@ -437,7 +439,7 @@
                <div class="pos-method-form_input">
                   <label for="posCustomerPhone">Customer Phone Number</label>
 
-                  <input class="posCustomerPhone" id="posCustomerPhone" type="text"
+                  <input class="posCustomerPhone" id="posCustomerPhone" type="number"
                      placeholder="(Optional) Enter Customer Phone Number" name="posCustomerPhone">
                </div>
 
@@ -625,6 +627,75 @@
                <span class="btn-spinner hidden"></span>
             </button>
 
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <!-- Deposit POS Capital Modals -->
+   <form class="depositPosCapital-form depositPosCapitalModal staffDepositPosCapitalModal" name="depositPosCapital">
+      <div class="card depositPosCapital modal ">
+         <div>
+            <h1 class="heading-text addItemName">Deposit POS Capital</h1>
+         </div>
+
+         <div class="depositPosCapital-form_input">
+            <label for="posCapitalAmount">Enter Amount</label>
+
+            <div class="naira-input-container">
+               <input id="posCapitalAmount" type="text" placeholder="Enter Amount" name="posCapitalAmount" required>
+               <span class="naira">&#x20A6;</span>
+            </div>
+         </div>
+
+         <div class="center-button">
+
+            <button class="hero-btn-dark submitPosCapital  mt-2 mb-1  has-spinner" type="submit">
+               <span class="btn-text">DEPOSIT </span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <form class="depositPosCapital-form depositPosCapitalModal adminDepositPosCapitalModal" name="depositPosCapital">
+      <div class="card adminDepositPosCapital modal ">
+         <div>
+            <h1 class="heading-text addItemName">Deposit POS Capital</h1>
+         </div>
+
+
+         <!-- Assign Pos Capital Deposit to shop -->
+         <div class="modal-form_input">
+            <label for="adminDepositposCapitalShopDropdown">Select Shop</label>
+
+            <select id="adminDepositposCapitalShopDropdown" class="form-control" required>
+               <option value="">Select a shop</option>
+               <!-- <option value="1">Loading Shops...</option> -->
+
+               <!-- Add Main shops dynamically -->
+            </select>
+         </div>
+
+         <div class="depositPosCapital-form_input">
+            <label for="adminPosCapitalAmount">Enter Amount</label>
+
+            <div class="naira-input-container">
+               <input id="adminPosCapitalAmount" type="text" placeholder="Enter Amount" name="adminPosCapitalAmount"
+                  required>
+               <span class="naira">&#x20A6;</span>
+            </div>
+         </div>
+
+         <div class="center-button">
+
+            <button class="hero-btn-dark submitPosCapital  mt-2 mb-1  has-spinner" type="submit">
+               <span class="btn-text">DEPOSIT </span>
+               <span class="btn-spinner hidden"></span>
+            </button>
          </div>
 
          <div class="close closeModal" id="">&times;</div>

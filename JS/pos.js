@@ -9,6 +9,9 @@ import {
   configurePosMachineFees,
   getPosChargeSettings,
   getPosMachineFeesettings,
+  getCurrentBusinessDay,
+  openDepositPosCapitalModal,
+  openAdminDepositPosCapitalModal,
 } from './apiServices/pos/posResources';
 import { closeModal, setupModalCloseButtons, showToast } from './script';
 import config from '../config.js';
@@ -27,12 +30,17 @@ import {
 } from './helper/helper.js';
 import { populateGoodsShopDropdown } from './goods.js';
 import { checkAndPromptCreateShop } from './apiServices/shop/shopResource.js';
+import {
+  initAccountOverview,
+  updateCashInMachineUI,
+} from './apiServices/account/accountOverview.js';
 
 const userData = config.userData;
 const dummyShopId = config.dummyShopId;
 
 const parsedUserData = userData ? JSON.parse(userData) : null;
 const isAdmin = parsedUserData?.accountType === 'ADMIN';
+const isStaff = parsedUserData?.accountType === 'STAFF';
 const staffShopId = parsedUserData?.shopId;
 
 if (isAdmin) {
@@ -92,9 +100,169 @@ if (isAdmin && adminPosContainer) {
   if (staffPosContainer) staffPosContainer.style.display = 'block';
 }
 
-const shopId = parsedUserData?.shopId;
-
 // JavaScript for POS Form
+
+// Function to deposit POS Capital - Added to script.js because of scope.
+
+if (isAdmin) {
+  async function loadShopDropdown() {
+    try {
+      showGlobalLoader();
+      const { enrichedShopData } = await checkAndPromptCreateShop();
+      populateBusinessShopDropdown(enrichedShopData, 'businessDayShopDropdown');
+      populateBusinessShopDropdown(
+        enrichedShopData,
+        'adminDepositposCapitalShopDropdown'
+      );
+      populateBusinessShopDropdown(
+        enrichedShopData,
+        'closeBusinessDayShopDropdown'
+      );
+      hideGlobalLoader();
+    } catch (err) {
+      hideGlobalLoader();
+      console.error('Failed to load dropdown:', err.message);
+    }
+  }
+
+  loadShopDropdown();
+}
+
+export function bindDepositPosCapitalFormListener() {
+  const form = isAdmin
+    ? document.querySelector('.adminDepositPosCapitalModal')
+    : document.querySelector('.staffDepositPosCapitalModal');
+
+  if (!form) return;
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const adminDepositposCapitalShopDropdown = document.querySelector(
+        '#adminDepositposCapitalShopDropdown'
+      ).value;
+
+      const posDepositAmount = isAdmin
+        ? document.querySelector('#adminPosCapitalAmount')
+        : document.querySelector('#posCapitalAmount');
+
+      const posCapitalDetails = {
+        shopId: isAdmin ? adminDepositposCapitalShopDropdown : staffShopId,
+        amount: Number(getAmountForSubmission(posDepositAmount)),
+      };
+
+      // console.log('Sending POS Capital with:', posCapitalDetails);
+      const submitPosCapital = document.querySelector('.submitPosCapital');
+
+      try {
+        showBtnLoader(submitPosCapital);
+        showGlobalLoader();
+        const addPosCapitalData = await addPosCapital(posCapitalDetails);
+
+        if (addPosCapitalData) {
+          initAccountOverview();
+          showToast('success', `✅ ${addPosCapitalData.message}`);
+          closeModal();
+        }
+
+        // closeModal(); // close modal after success
+      } catch (err) {
+        console.error('Error adding POS Capital:', err.message);
+        showToast('fail', `❎ ${err.message}`);
+      } finally {
+        hideBtnLoader(submitPosCapital);
+        hideGlobalLoader();
+      }
+    });
+  }
+}
+
+export function depositPosCapitalForm() {
+  const form = isAdmin
+    ? document.querySelector('.adminDepositPosCapitalModal')
+    : document.querySelector('.staffDepositPosCapitalModal');
+
+  if (!form) return;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document
+    .querySelector('#depositPosCapitalBtn')
+    ?.addEventListener(
+      'click',
+      isAdmin ? openAdminDepositPosCapitalModal : openDepositPosCapitalModal
+    );
+
+  bindDepositPosCapitalFormListener(); // Only once
+});
+
+document.addEventListener('DOMContentLoaded', async () => {
+  if (isStaff) {
+    const businessDay = await getCurrentBusinessDay(staffShopId);
+    const openingCash = businessDay?.data?.opening_cash || 0;
+
+    if (
+      businessDay.data === false ||
+      businessDay.data === null ||
+      businessDay.success === false
+    ) {
+      return;
+    }
+    updateCashInMachineUI(openingCash);
+    initAccountOverview();
+  }
+
+  if (isAdmin) {
+    //  document.querySelector('.pos-method-form').style.display = 'block';
+    const posShopDropdown = document.getElementById('posShopDropdown');
+    const posTransactionSummary = document.querySelector(
+      '.posTransactions-summary'
+    );
+    if (posTransactionSummary) posTransactionSummary.style.display = 'none';
+
+    if (posShopDropdown)
+      posShopDropdown.addEventListener('change', async function (e) {
+        const selectedShopId = e.target.value;
+        clearPosSummaryDiv();
+        posTransactionSummary.style.display = 'flex';
+
+        if (!selectedShopId) {
+          posTransactionSummary.style.display = 'none';
+          return;
+        }
+
+        const businessDay = await getCurrentBusinessDay(selectedShopId);
+        console.log('new Business Day:', businessDay.data);
+
+        const openingCash = businessDay?.data?.opening_cash || 0;
+        updateCashInMachineUI(openingCash);
+
+        console.log('Selected Shop ID:', selectedShopId);
+
+        try {
+          console.log('we are here');
+          initAccountOverview();
+        } catch (error) {
+          console.error('Error fetching POS Summary Details:', error.message);
+          showToast(
+            'fail',
+            `❎ Error fetching POS Summary Details: ${error.message}`
+          );
+        }
+      });
+  }
+
+  function clearPosSummaryDiv() {
+    document.getElementById('adminTotalPosCapital').innerHTML = 0;
+    document.getElementById('adminCashInMachine').innerHTML = 0;
+    document.getElementById('adminCashAtHand').innerHTML = 0;
+    document.getElementById('adminTotalPosCharges').innerHTML = 0;
+    document.getElementById('adminCashCharges').innerHTML = 0;
+    document.getElementById('adminMachineCharges').innerHTML = 0;
+    document.getElementById('adminMachineFee').innerHTML = 0;
+  }
+});
 
 // POS Form submission
 
@@ -131,28 +299,6 @@ export async function handlePosFormSubmit() {
       const posTransactionRemark = document.getElementById(
         isAdmin ? 'adminPosTransactionRemark' : 'posTransactionRemark'
       ).value;
-      // const posRemarksDiv = document.querySelector('.posRemarksDiv').value;
-      // const paymentMethodTypeDiv =
-      //   document.querySelector('.paymentMethodType').value;
-
-      // const fee = document.getElementById('posTransactionFee').value;
-      // const machineFeeContainer = document.querySelector('.machine-fee').value;
-      // const machineFeeInput = document.getElementById('posMachineFee').value;
-      // const posMachineFee = document.getElementById('posMachineFee');
-      // const posSuccessfulCheckbox = document.getElementById(
-      //   'posSuccessfulCheckbox'
-      // ).value;
-      // const posPendingCheckbox =
-      //   document.getElementById('posPendingCheckbox').value;
-      // const posTransactionConfirmation = document.getElementById(
-      //   'posTransactionConfirmation'
-      // ).value;
-
-      //   isSubmitting = true;
-
-      // const transactionTypeValue = transactionType.trim().toLowerCase();
-
-      // Create the form data with documentIds
 
       // "transactionType" must be one of [WITHDRAWAL, DEPOSIT, WITHDRAWAL_TRANSFER, BILL_PAYMENT]
       const shopId = isAdmin ? Number(posShopDropdown) : Number(staffShopId);

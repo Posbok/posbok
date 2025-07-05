@@ -140,19 +140,19 @@ export function clearFormInputs() {
   }
 
   // Clear POS Transaction Form Inputs
-  if (createPosTransactionForm) {
-    createPosTransactionForm
-      .querySelectorAll('input, textarea, select')
-      .forEach((el) => {
-        if (el.type === 'checkbox' || el.type === 'radio') {
-          el.checked = false;
-        } else {
-          el.value = '';
-        }
-      });
+  //   if (createPosTransactionForm) {
+  //     createPosTransactionForm
+  //       .querySelectorAll('input, textarea, select')
+  //       .forEach((el) => {
+  //         if (el.type === 'checkbox' || el.type === 'radio') {
+  //           el.checked = false;
+  //         } else {
+  //           el.value = '';
+  //         }
+  //       });
 
-    delete createPosTransactionForm.dataset.staffId;
-  }
+  //     delete createPosTransactionForm.dataset.staffId;
+  //   }
 
   // Clear POS Charges Form Inputs
   if (addPosChargeForm) {

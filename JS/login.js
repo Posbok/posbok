@@ -9,6 +9,22 @@ const loginForm = document.getElementById('loginForm');
 const baseUrl = config.baseUrl;
 
 if (loginForm) {
+  document.addEventListener('DOMContentLoaded', () => {
+    const passwordInput = document.getElementById('password');
+    const togglePasswordIcon = document.getElementById('togglePassword');
+
+    togglePasswordIcon.addEventListener('click', () => {
+      const isPasswordVisible = passwordInput.type === 'text';
+
+      // Toggle the input type
+      passwordInput.type = isPasswordVisible ? 'password' : 'text';
+
+      // Toggle icon class
+      togglePasswordIcon.classList.toggle('fa-eye');
+      togglePasswordIcon.classList.toggle('fa-eye-slash');
+    });
+  });
+
   loginForm.addEventListener('submit', function (e) {
     e.preventDefault(); // stop page refresh
 

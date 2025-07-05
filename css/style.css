@@ -324,20 +324,28 @@ body.home {
 
 .naira-input-container,
 .penEdit-input-container,
-.search-input-container {
+.search-input-container,
+.right-icon-input-container {
   position: relative;
   display: flex;
   align-items: center;
   width: 100%; }
 
-.penEditIcon {
+.penEditIcon,
+.passwordIcon {
   position: absolute;
   font-family: inherit;
   font-weight: 500;
   color: #205329;
   font-size: 1.6rem;
-  right: 10px;
+  right: 1rem;
   filter: opacity(0.2); }
+
+.passwordIcon {
+  filter: none;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer; }
 
 .naira,
 .searchIcon {

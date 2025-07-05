@@ -3,12 +3,13 @@ import { hideGlobalLoader, showGlobalLoader } from '../../helper/helper.js';
 import {
   addMachineFeeForm,
   addPosChargeForm,
+  depositPosCapitalForm,
   populateMachineFeesTable,
   populatePosChargesTable,
 } from '../../pos.js';
 import {
   closeBusinessDayForm,
-  depositPosCapitalForm,
+  //   depositPosCapitalForm,
   showToast,
 } from '../../script.js';
 import { initAccountOverview } from '../account/accountOverview.js';
@@ -263,7 +264,7 @@ export async function addPosCapital(posCapitalDetails) {
       // hideGlobalLoader();
     }
 
-    initAccountOverview();
+    isStaff ? initAccountOverview() : '';
 
     return addPosCapitalData;
   } catch (error) {

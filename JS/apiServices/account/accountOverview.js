@@ -17,10 +17,18 @@ const shopId = parsedUserData?.shopId;
 const isStaff = parsedUserData?.accountType === 'STAFF';
 
 export async function initAccountOverview() {
-  if (isStaff) {
-    showGlobalLoader();
-  }
-  if (!isStaff) return;
+  const posShopDropdown = document.getElementById('posShopDropdown')?.value;
+
+  const adminDepositposCapitalShopDropdown = document.querySelector(
+    '#adminDepositposCapitalShopDropdown'
+  )?.value;
+
+  const adminShopSelection =
+    posShopDropdown || adminDepositposCapitalShopDropdown;
+  //   if (isStaff) {
+  showGlobalLoader();
+  //   }
+  //   if (!isStaff) return;
   try {
     //  const [posCapitalData, charges, goodsData] = await Promise.all([
     //    getPosCapital(shopId),
@@ -28,7 +36,10 @@ export async function initAccountOverview() {
     //    //  getGoodsStats(shopId)
     //  ]);
 
-    const posCapitalData = await getPosCapital(shopId);
+    const posCapitalData = await getPosCapital(
+      isStaff ? shopId : adminShopSelection
+    );
+    console.log(posCapitalData, 'posCapitalData');
 
     updatePosCapitalUI(posCapitalData);
   } catch (error) {
@@ -40,9 +51,11 @@ export async function initAccountOverview() {
 
 // Updates just the POS capital section
 export function updatePosCapitalUI(posCapitalData) {
-  if (!isStaff) return;
+  //   if (!isStaff) return;
 
-  const totalPosCapital = document.getElementById('totalPosCapital');
+  const totalPosCapital = document.getElementById(
+    isStaff ? 'totalPosCapital' : 'adminTotalPosCapital'
+  );
 
   const posCapital = posCapitalData?.data?.totalCapital || 0;
 
@@ -51,7 +64,9 @@ export function updatePosCapitalUI(posCapitalData) {
 }
 
 export function updateCashInMachineUI(openingCash) {
-  const cashInMachine = document.getElementById('cashInMachine');
+  const cashInMachine = document.getElementById(
+    isStaff ? 'cashInMachine' : 'adminCashInMachine'
+  );
 
   if (cashInMachine)
     cashInMachine.innerHTML = formatAmountWithCommas(openingCash || 0);

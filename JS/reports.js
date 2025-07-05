@@ -987,9 +987,8 @@ if (isStaff) {
 
         //  console.log(groupedByDate);
 
-        let serialNumber = 1;
-
         Object.entries(groupedByDate).forEach(([date, transactions]) => {
+          let serialNumber = 1;
           // Insert group row (header for the date)
           const groupRow = document.createElement('tr');
           groupRow.className = 'date-group-row table-body-row ';
@@ -1247,9 +1246,8 @@ if (isStaff) {
 
         //  console.log(groupedByDate);
 
-        let serialNumber = 1;
-
         Object.entries(groupedByDate).forEach(([date, sales]) => {
+          let serialNumber = 1;
           // Insert group row (header for the date)
           const groupRow = document.createElement('tr');
           groupRow.className = 'date-group-row table-body-row ';
