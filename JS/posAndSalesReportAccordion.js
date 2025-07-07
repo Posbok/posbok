@@ -195,6 +195,14 @@ export function getAdminSalesReportHtml(shop) {
                </div>
             </div>
             </div>
+
+            <div class="profit-summary mt-4 mb-1">
+            <h1 class="headin-text mb-2" >Profit Overview:</h1>
+  <h2>Total Cost: <span id="totalCost"></span></h2>
+  <h2>Total Sold: <span id="totalSold"></span></h2>
+  <h2>Total Profit: <span id="totalProfit"></span></h2>
+</div>
+
             </div>
 
 <div class="reports card">
@@ -629,6 +637,8 @@ export function getAdminPosReportHtml(shop) {
 
                         </div>
 
+                        
+
       </div>
     </div>
     </div>
@@ -1055,6 +1065,20 @@ export async function renderSalesTable({
 
       //  console.log(groupedByDate);
 
+      // ✅ Run ONCE for all transactions before loop
+      const { totalCostPrice, totalSoldPrice, totalProfit } =
+        calculateProfitMetrics(enrichedSalesTransactions);
+
+      document.getElementById(
+        'totalCost'
+      ).textContent = `₦${formatAmountWithCommas(totalCostPrice)}`;
+      document.getElementById(
+        'totalSold'
+      ).textContent = `₦${formatAmountWithCommas(totalSoldPrice)}`;
+      document.getElementById(
+        'totalProfit'
+      ).textContent = `₦${formatAmountWithCommas(totalProfit)}`;
+
       Object.entries(groupedByDate).forEach(([date, sales]) => {
         let serialNumber = 1;
         // Insert group row (header for the date)
@@ -1102,6 +1126,8 @@ export async function renderSalesTable({
           });
 
           console.log(salesTransaction);
+
+          //  console.log(totalCostPrice, totalSoldPrice, totalProfit);
 
           // const saleDetails = await getSaleById(saleId);
 
@@ -1160,6 +1186,42 @@ export async function renderSalesTable({
         '<tr><td colspan="6" class="table-error-text">Error loading transactions.</td></tr>';
     }
   }
+}
+
+function calculateProfitMetrics(transactions) {
+  let totalCostPrice = 0;
+  let totalSoldPrice = 0;
+
+  transactions.forEach((transaction) => {
+    if (Array.isArray(transaction.SaleItems)) {
+      transaction.SaleItems.forEach((item) => {
+        const unitCost = Number(item.unit_price) || 0;
+        const sellingPrice = Number(item.selling_price) || 0;
+        const quantity = Number(item.quantity) || 0;
+
+        totalCostPrice += unitCost * quantity;
+        totalSoldPrice += sellingPrice * quantity;
+      });
+    }
+  });
+
+  const totalProfit = totalSoldPrice - totalCostPrice;
+
+  // Display it however you like, for now we'll log it
+  console.log(
+    '🧾 Total Cost Price: ₦' + formatAmountWithCommas(totalCostPrice)
+  );
+  console.log(
+    '💰 Total Sold Price: ₦' + formatAmountWithCommas(totalSoldPrice)
+  );
+  console.log('📈 Total Profit: ₦' + formatAmountWithCommas(totalProfit));
+
+  // Optionally return the values
+  return {
+    totalCostPrice,
+    totalSoldPrice,
+    totalProfit,
+  };
 }
 
 export async function renderDailySummary(shopId, dailySummaryDate) {
