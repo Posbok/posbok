@@ -1020,7 +1020,7 @@ export async function renderSalesTable({
 
       const groupedByDate = {};
 
-      console.log(allSalesReport);
+      // console.log(allSalesReport);
 
       // --- SALES ITEM FETCH & TRUNCATE: Start ---
       // Prepare an array of promises for fetching sale details for *all* sales in allSalesReport
@@ -1125,7 +1125,7 @@ export async function renderSalesTable({
             separator: ', ',
           });
 
-          console.log(salesTransaction);
+          //  console.log(salesTransaction);
 
           //  console.log(totalCostPrice, totalSoldPrice, totalProfit);
 
@@ -1207,14 +1207,13 @@ function calculateProfitMetrics(transactions) {
 
   const totalProfit = totalSoldPrice - totalCostPrice;
 
-  // Display it however you like, for now we'll log it
-  console.log(
-    '🧾 Total Cost Price: ₦' + formatAmountWithCommas(totalCostPrice)
-  );
-  console.log(
-    '💰 Total Sold Price: ₦' + formatAmountWithCommas(totalSoldPrice)
-  );
-  console.log('📈 Total Profit: ₦' + formatAmountWithCommas(totalProfit));
+  //   console.log(
+  //     '🧾 Total Cost Price: ₦' + formatAmountWithCommas(totalCostPrice)
+  //   );
+  //   console.log(
+  //     '💰 Total Sold Price: ₦' + formatAmountWithCommas(totalSoldPrice)
+  //   );
+  //   console.log('📈 Total Profit: ₦' + formatAmountWithCommas(totalProfit));
 
   // Optionally return the values
   return {

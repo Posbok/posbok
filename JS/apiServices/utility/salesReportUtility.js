@@ -110,7 +110,7 @@ export function updateDailySalesData(dailySalesData, shopId) {
   totalDailyBalance.textContent = `₦${formatAmountWithCommas(totalBalance)}`;
 }
 
-// JS to give total Sold Amount
+// JS to give total Sold Amount - Daily
 export function updateTotalSalesAmounts(sales, totalSalesRow, date) {
   const totalSalesAmount = sales.reduce(
     (sum, item) => sum + Number(item.total_amount),
@@ -127,8 +127,27 @@ export function updateTotalSalesAmounts(sales, totalSalesRow, date) {
     0
   );
 
+  // Calculate cost/sold/profit
+  let totalCostPrice = 0;
+  let totalSoldPrice = 0;
+
+  sales.forEach((transaction) => {
+    if (Array.isArray(transaction.SaleItems)) {
+      transaction.SaleItems.forEach((item) => {
+        const unitCost = Number(item.unit_price) || 0;
+        const sellingPrice = Number(item.selling_price) || 0;
+        const quantity = Number(item.quantity) || 0;
+
+        totalCostPrice += unitCost * quantity;
+        totalSoldPrice += sellingPrice * quantity;
+      });
+    }
+  });
+
+  const totalProfit = totalSoldPrice - totalCostPrice;
+
   totalSalesRow.innerHTML = `
-     <td colspan="4" class="date-header py-1 px-2 mt-1 mb-1">
+     <td colspan="2" class="date-header py-1 px-2 mt-1 mb-1">
        <strong>${date} SUMMARY:</strong>
      </td>
      <td colspan="2" class="date-header py-1 px-2 mt-1 mb-1">
@@ -146,9 +165,14 @@ export function updateTotalSalesAmounts(sales, totalSalesRow, date) {
          totalBalanceAmount
        )}
      </td>
-        <td colspan="1" class="empty-header py-1 px-2 mt-1 mb-1">
-       <strong></strong>
-     </td> 
+        <td colspan="2" class="date-header py-1 px-2 mt-1 mb-1">
+      <strong>Total Cost Price</strong> = ₦${formatAmountWithCommas(
+        totalCostPrice
+      )}
+    </td>
+        <td colspan="2" class="date-header py-1 px-2 mt-1 mb-1">
+      <strong>Total Profit</strong> = ₦${formatAmountWithCommas(totalProfit)}
+      </td>
      `;
 }
 
