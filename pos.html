@@ -168,7 +168,7 @@
                   </select>
                </div>
 
-               <!-- Payment Methos Type -->
+               <!-- Payment Methods Type -->
                <div class="pos-method-form_input paymentMethodType">
 
                   <label for="paymentMethod">Transaction Payment Method:</label>
@@ -180,12 +180,59 @@
                   </select>
                </div>
 
+               <!-- Number of Withdrawals -->
+               <div class="pos-method-form_input">
+                  <label for="adminNumberOfWithdrawals">Number of Withdrawals:</label>
+
+                  <select id="adminNumberOfWithdrawals" name="adminNumberOfWithdrawals">
+                     <option value="1">1</option>
+                     <option value="2">2</option>
+                     <option value="3">3</option>
+                     <option value="4">4</option>
+                     <option value="5">5</option>
+                     <option value="6">6</option>
+                     <option value="7">7</option>
+                     <option value="8">8</option>
+                     <option value="9">9</option>
+                     <option value="10">10</option>
+                  </select>
+               </div>
+
                <!-- Transaction Amount -->
                <div class="pos-method-form_input">
                   <label for="amount">Transaction Amount</label>
                   <div class="naira-input-container">
                      <input id="adminPosTransactionAmount" type="text" placeholder="Enter Amount"
                         name="posTransactionAmount" required>
+                     <span class="naira">&#x20A6;</span>
+                  </div>
+               </div>
+
+
+               <!-- Number of Transfer -->
+               <div class="pos-method-form_input">
+                  <label for="adminNumberOfTransfer">Number of Transfer:</label>
+
+                  <select id="adminNumberOfTransfer" name="adminNumberOfTransfer">
+                     <option value="1">1</option>
+                     <option value="2">2</option>
+                     <option value="3">3</option>
+                     <option value="4">4</option>
+                     <option value="5">5</option>
+                     <option value="6">6</option>
+                     <option value="7">7</option>
+                     <option value="8">8</option>
+                     <option value="9">9</option>
+                     <option value="10">10</option>
+                  </select>
+               </div>
+
+               <!-- Transfer Amount -->
+               <div class="pos-method-form_input">
+                  <label for="amount">Transfer Amount</label>
+                  <div class="naira-input-container">
+                     <input id="adminPosTransferAmount" type="text" placeholder="Enter Transfer Amount"
+                        name="posTransferAmount">
                      <span class="naira">&#x20A6;</span>
                   </div>
                </div>
@@ -279,47 +326,115 @@
             </form>
          </div>
 
-         <div class="posTransactions-summary mb-1 mt-2 card">
-            <!-- Total POS Capital -->
-            <div class="summary-card">
-               <h3>Total POS Capital</h3>
-               <p class="amount">₦<span id="adminTotalPosCapital">0</span></p>
+         <div class=" mb-1 mt-2 card">
+
+
+            <div class="pos-method card">
+               <h2 class="heading-text">
+                  Admin: Withdrawal Action
+               </h2>
+
+               <form class="pos-method-form" id="adminWithdrawalForm" name="pos-transaction">
+
+                  <!-- Assign POS transaction to shop -->
+                  <div class="pos-method-form_input">
+                     <label for="posShopDropdown-2">Select Shop</label>
+
+                     <select id="posShopDropdown-2" class="form-control" required>
+                        <option value="">Select a shop</option>
+                        <!-- <option value="1">Loading Shops...</option> -->
+
+                        <!-- Add Main shops dynamically -->
+                     </select>
+                  </div>
+
+                  <!-- transaction Type -->
+                  <div class="pos-method-form_input">
+                     <label for="transactionType">Select Transaction Type:</label>
+
+                     <select id="adminTransactionType-2" name="transactionType">
+                        <option value="cashInMachine">Cash In Machine</option>
+                        <option value="cashAtHand">Cash At Hand</option>
+                     </select>
+                  </div>
+
+                  <!-- Payment Methos Type -->
+                  <div class="pos-method-form_input paymentMethodType">
+
+                     <label for="withdrawalMethod">Transaction withdrawal Method:</label>
+
+                     <select id="adminWithdrawalMethod-2" name="withdrawalMethod">
+                        <option value="card">Card</option>
+                        <option value="transfer">Transfer</option>
+                        <option value="cash">Cash</option>
+                     </select>
+                  </div>
+
+                  <!-- Transaction Amount -->
+                  <div class="pos-method-form_input">
+                     <label for="amount">Transaction Amount</label>
+                     <div class="naira-input-container">
+                        <input id="adminWithdrawalAmount" type="text" placeholder="Enter Amount"
+                           name="adminWithdrawalAmount" required>
+                        <span class="naira">&#x20A6;</span>
+                     </div>
+                  </div>
+
+
+                  <div class="center-button">
+                     <button class="hero-btn-dark mb-2 withdrawalSubmitButton has-spinner" type="button">
+                        <span class="btn-text"> Withdraw</span>
+                        <span class="btn-spinner hidden"></span>
+                     </button>
+                  </div>
+
+               </form>
+
             </div>
 
-            <!-- Cash In Machine -->
-            <div class="summary-card">
-               <h3>Cash In Machine</h3>
-               <p class="amount">₦<span id="adminCashInMachine">0</span></p>
-            </div>
+            <div class="posTransactions-summary">
 
-            <!-- Cash At Hand -->
-            <div class="summary-card">
-               <h3>Cash At Hand</h3>
-               <p class="amount">₦<span id="adminCashAtHand">0</span></p>
-            </div>
+               <!-- Total POS Capital -->
+               <div class="summary-card">
+                  <h3>Total POS Capital</h3>
+                  <p class="amount">₦<span id="adminTotalPosCapital">0</span></p>
+               </div>
 
-            <!-- Total POS Charges -->
-            <div class="summary-card">
-               <h3>Total POS Charges</h3>
-               <p class="amount">₦<span id="adminTotalPosCharges">0</span></p>
-            </div>
+               <!-- Cash In Machine -->
+               <div class="summary-card">
+                  <h3>Cash In Machine</h3>
+                  <p class="amount">₦<span id="adminCashInMachine">0</span></p>
+               </div>
 
-            <!-- Charges (Cash) -->
-            <div class="summary-card">
-               <h3>Charges (Cash)</h3>
-               <p class="amount">₦<span id="adminCashCharges">0</span></p>
-            </div>
+               <!-- Cash At Hand -->
+               <div class="summary-card">
+                  <h3>Cash At Hand</h3>
+                  <p class="amount">₦<span id="adminCashAtHand">0</span></p>
+               </div>
 
-            <!-- Charges (Machine) -->
-            <div class="summary-card">
-               <h3>Charges (Machine)</h3>
-               <p class="amount">₦<span id="adminMachineCharges">0</span></p>
-            </div>
+               <!-- Total POS Charges -->
+               <div class="summary-card">
+                  <h3>Total POS Charges</h3>
+                  <p class="amount">₦<span id="adminTotalPosCharges">0</span></p>
+               </div>
 
-            <!-- Machine Fee -->
-            <div class="summary-card">
-               <h3>Machine Fee</h3>
-               <p class="amount">₦<span id="adminMachineFee">0</span></p>
+               <!-- Charges (Cash) -->
+               <div class="summary-card">
+                  <h3>Charges (Cash)</h3>
+                  <p class="amount">₦<span id="adminCashCharges">0</span></p>
+               </div>
+
+               <!-- Charges (Machine) -->
+               <div class="summary-card">
+                  <h3>Charges (Machine)</h3>
+                  <p class="amount">₦<span id="adminMachineCharges">0</span></p>
+               </div>
+
+               <!-- Machine Fee -->
+               <div class="summary-card">
+                  <h3>Machine Fee</h3>
+                  <p class="amount">₦<span id="adminMachineFee">0</span></p>
+               </div>
             </div>
          </div>
       </div>
@@ -360,6 +475,24 @@
                   </select>
                </div>
 
+               <!-- Number of Withdrawals -->
+               <div class="pos-method-form_input">
+                  <label for="numberOfWithdrawals">Number of Withdrawals:</label>
+
+                  <select id="numberOfWithdrawals" name="numberOfWithdrawals">
+                     <option value="1">1</option>
+                     <option value="2">2</option>
+                     <option value="3">3</option>
+                     <option value="4">4</option>
+                     <option value="5">5</option>
+                     <option value="6">6</option>
+                     <option value="7">7</option>
+                     <option value="8">8</option>
+                     <option value="9">9</option>
+                     <option value="10">10</option>
+                  </select>
+               </div>
+
                <!-- Transaction Amount -->
                <div class="pos-method-form_input">
                   <label for="amount">Transaction Amount</label>
@@ -370,6 +503,36 @@
                      <span class="naira">&#x20A6;</span>
                   </div>
                </div>
+
+
+               <!-- Number of Transfer -->
+               <div class="pos-method-form_input">
+                  <label for="numberOfTransfer">Number of Transfer:</label>
+
+                  <select id="numberOfTransfer" name="numberOfTransfer">
+                     <option value="1">1</option>
+                     <option value="2">2</option>
+                     <option value="3">3</option>
+                     <option value="4">4</option>
+                     <option value="5">5</option>
+                     <option value="6">6</option>
+                     <option value="7">7</option>
+                     <option value="8">8</option>
+                     <option value="9">9</option>
+                     <option value="10">10</option>
+                  </select>
+               </div>
+
+               <!-- Transfer Amount -->
+               <div class="pos-method-form_input">
+                  <label for="amount">Transfer Amount</label>
+                  <div class="naira-input-container">
+                     <input id="posTransferAmount" type="text" placeholder="Enter Transfer Amount"
+                        name="posTransferAmount">
+                     <span class="naira">&#x20A6;</span>
+                  </div>
+               </div>
+
 
                <!-- Machine Fee -->
                <!-- <div class="pos-method-form_input machine-fee">
@@ -893,6 +1056,5 @@
 
 
 </body>
-
 
 </html>

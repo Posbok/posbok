@@ -368,6 +368,16 @@ export function openUpdateStaffModal() {
   if (sidebar) sidebar.classList.add('blur');
 }
 
+export function openDeleteStaffModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const deleteStaffContainer = document.querySelector('.deleteStaffContainer');
+
+  if (deleteStaffContainer) deleteStaffContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
 export function openManageStaffModal() {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');

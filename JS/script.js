@@ -812,6 +812,15 @@ export function closeModal() {
     '.adminUpdateBusinessData'
   );
   const updateCategory = document.querySelector('.updateCategory');
+  const deleteShopContainer = document.querySelector('.deleteShopContainer');
+  const deleteStaffContainer = document.querySelector('.deleteStaffContainer');
+
+  const deleteProductContainer = document.querySelector(
+    '.deleteProductContainer'
+  );
+  const deleteCategoryContainer = document.querySelector(
+    '.deleteCategoryContainer'
+  );
   const saleDetails = document.querySelector('.saleDetails');
 
   if (depositPosCapitalContainer) {
@@ -901,6 +910,22 @@ export function closeModal() {
 
   if (updateCategory) {
     updateCategory.classList.remove('active');
+  }
+
+  if (deleteShopContainer) {
+    deleteShopContainer.classList.remove('active');
+  }
+
+  if (deleteStaffContainer) {
+    deleteStaffContainer.classList.remove('active');
+  }
+
+  if (deleteProductContainer) {
+    deleteProductContainer.classList.remove('active');
+  }
+
+  if (deleteCategoryContainer) {
+    deleteCategoryContainer.classList.remove('active');
   }
 
   if (saleDetails) {

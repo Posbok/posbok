@@ -321,7 +321,7 @@ export async function createPosTransaction(transactionDetail) {
     //  console.log('Response received...');
 
     if (posTransactionData) {
-      console.log('POS transaction added successfully:', posTransactionData);
+      // console.log('POS transaction added successfully:', posTransactionData);
       showToast('success', `✅ ${posTransactionData.message}`);
       // console.log(posTransactionData);
     }

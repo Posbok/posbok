@@ -253,6 +253,16 @@ export function openUpdateShopModal() {
   if (sidebar) sidebar.classList.add('blur');
 }
 
+export function openDeleteShopModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const deleteShopContainer = document.querySelector('.deleteShopContainer');
+
+  if (deleteShopContainer) deleteShopContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
 export function setupCreateShopForm() {
   const form = document.querySelector('.createShopModal');
 

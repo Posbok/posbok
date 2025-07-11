@@ -3,6 +3,7 @@ import {
   deleteShop,
   fetchShopDetail,
   getShopStaff,
+  openDeleteShopModal,
   openUpdateShopModal,
   updateShop,
 } from './apiServices/shop/shopResource';
@@ -68,7 +69,7 @@ export function populateShopsTable(shopData = []) {
           }">
             <i class="fa-solid fa-pen-to-square"></i>
           </button>
-          <button class="hero-btn-outline deleteShopButton" data-shop-id="${
+          <button class="hero-btn-outline deleteShopButtonModal" data-shop-id="${
             shop.id
           }">
             <i class="fa-solid fa-trash-can"></i>
@@ -78,10 +79,37 @@ export function populateShopsTable(shopData = []) {
 
     if (tbody) tbody.appendChild(row);
 
-    const deleteBtn = row.querySelector('.deleteShopButton');
-    deleteBtn.addEventListener('click', async () => {
-      const shopId = deleteBtn.dataset.shopId;
-      await deleteShop(shopId);
+    const deleteShopButtonModal = row.querySelector('.deleteShopButtonModal');
+
+    //  console.log(deleteShopButtonModal);
+
+    deleteShopButtonModal?.addEventListener('click', async () => {
+      showGlobalLoader();
+      const shopId = deleteShopButtonModal.dataset.shopId;
+
+      const deleteShopContainer = document.querySelector(
+        '.deleteShopContainer'
+      );
+
+      if (deleteShopContainer) {
+        // Store shopId in modal container for reference
+        deleteShopContainer.dataset.shopId = shopId;
+
+        // Fetch Shop detail
+        const shopDetail = await fetchShopDetail(shopId);
+
+        //   console.log('shopDetail', shopDetail);
+
+        // Call function to prefill modal inputs
+        if (shopDetail?.data) {
+          hideGlobalLoader();
+          openDeleteShopModal(); // Show modal after data is ready
+          deleteShopForm(shopDetail.data);
+        } else {
+          hideGlobalLoader();
+          showToast('fail', '❌ Failed to fetch shop details.');
+        }
+      }
     });
 
     const updateShopBtn = row.querySelector('.editShopButton');
@@ -99,8 +127,6 @@ export function populateShopsTable(shopData = []) {
 
         // Fetch Shop detail
         const shopDetail = await fetchShopDetail(shopId);
-
-        //   console.log(shopDetail);
 
         // Call function to prefill modal inputs
         if (shopDetail?.data) {
@@ -246,10 +272,58 @@ export function initUpdateShopFormListener() {
   });
 }
 
+export function deleteShopForm(shop) {
+  const form = document.querySelector('.deleteShopContainerModal');
+  if (!form) return;
+
+  form.dataset.shopId = shop.id;
+
+  document.getElementById('confirmation-text').textContent = shop.shop_name;
+}
+
+export function bindDeleteShopFormListener() {
+  const form = document.querySelector('.deleteShopContainerModal');
+  if (!form) return;
+
+  const deleteShopButton = form.querySelector('.deleteShopButton');
+  const cancelButton = form.querySelector('.cancel-close');
+
+  if (!form.dataset.bound) {
+    form.dataset.bound = true;
+
+    cancelButton?.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeModal();
+    });
+
+    deleteShopButton?.addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      const shopId = form.dataset.shopId;
+      if (!shopId) {
+        showToast('fail', '❎ No shop ID found.');
+        return;
+      }
+
+      try {
+        showBtnLoader(deleteShopButton);
+        await deleteShop(shopId);
+        hideBtnLoader(deleteShopButton);
+        closeModal();
+        showToast('success', '✅ Shop deleted successfully.');
+      } catch (err) {
+        hideBtnLoader(deleteShopButton);
+        showToast('fail', `❎ ${err.message}`);
+      }
+    });
+  }
+}
+
 // import { initUpdateShopFormListener } from './path/to/your/module.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   initUpdateShopFormListener();
+  bindDeleteShopFormListener();
 });
 
 // export function populateShopDropdown(shopList = [], preselectedShopId = '') {

@@ -19,6 +19,7 @@ import {
   clearFormInputs,
   ensureBusinessDayOpen,
   formatAmountWithCommas,
+  formatAmountWithCommasOnInput,
   formatDateTimeReadable,
   formatTransactionType,
   getAmountForSubmission,
@@ -86,6 +87,7 @@ if (isAdmin && adminPosContainer) {
       showGlobalLoader();
       const { enrichedShopData } = await checkAndPromptCreateShop();
       populateBusinessShopDropdown(enrichedShopData, 'posShopDropdown');
+      populateBusinessShopDropdown(enrichedShopData, 'posShopDropdown-2');
       hideGlobalLoader();
     } catch (err) {
       hideGlobalLoader();
@@ -216,6 +218,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (isAdmin) {
     //  document.querySelector('.pos-method-form').style.display = 'block';
     const posShopDropdown = document.getElementById('posShopDropdown');
+    const posShopDropdownWithdrawal =
+      document.getElementById('posShopDropdown-2');
     const posTransactionSummary = document.querySelector(
       '.posTransactions-summary'
     );
@@ -238,10 +242,43 @@ document.addEventListener('DOMContentLoaded', async () => {
         const openingCash = businessDay?.data?.opening_cash || 0;
         updateCashInMachineUI(openingCash);
 
-        console.log('Selected Shop ID:', selectedShopId);
+        //   console.log('Selected Shop ID:', selectedShopId);
 
         try {
-          console.log('we are here');
+          //  console.log('we are here');
+          initAccountOverview();
+        } catch (error) {
+          console.error('Error fetching POS Summary Details:', error.message);
+          showToast(
+            'fail',
+            `❎ Error fetching POS Summary Details: ${error.message}`
+          );
+        }
+      });
+
+    if (posShopDropdownWithdrawal)
+      posShopDropdownWithdrawal.addEventListener('change', async function (e) {
+        const selectedShopId = e.target.value;
+
+        //   console.log(selectedShopId);
+        clearPosSummaryDiv();
+        posTransactionSummary.style.display = 'flex';
+
+        if (!selectedShopId) {
+          posTransactionSummary.style.display = 'none';
+          return;
+        }
+
+        const businessDay = await getCurrentBusinessDay(selectedShopId);
+        console.log('new Business Day:', businessDay.data);
+
+        const openingCash = businessDay?.data?.opening_cash || 0;
+        updateCashInMachineUI(openingCash);
+
+        //   console.log('Selected Shop ID:', selectedShopId);
+
+        try {
+          //  console.log('we are here 2');
           initAccountOverview();
         } catch (error) {
           console.error('Error fetching POS Summary Details:', error.message);
@@ -265,6 +302,180 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // POS Form submission
+const transactionTypeSelect = document.getElementById(
+  isAdmin ? 'adminTransactionType' : 'transactionType'
+);
+
+const numberOfWithdrawalsSelect = document.getElementById(
+  isAdmin ? 'adminNumberOfWithdrawals' : 'numberOfWithdrawals'
+);
+const numberOfTransferSelect = document.getElementById(
+  isAdmin ? 'adminNumberOfTransfer' : 'numberOfTransfer'
+);
+
+const numberOfWithdrawalsDiv = numberOfWithdrawalsSelect?.closest(
+  '.pos-method-form_input'
+);
+const numberOfTransferDiv = numberOfTransferSelect?.closest(
+  '.pos-method-form_input'
+);
+
+const defaultWithdrawalAmountInput = document.getElementById(
+  isAdmin ? 'adminPosTransactionAmount' : 'posTransactionAmount'
+);
+const defaultTransferAmountInput = document.getElementById(
+  isAdmin ? 'adminPosTransferAmount' : 'posTransferAmount'
+);
+
+const transactionAmountLabel = defaultWithdrawalAmountInput
+  ?.closest('.pos-method-form_input')
+  ?.querySelector('label');
+
+//  Correct dynamic container placement
+const withdrawalAmountContainer = defaultWithdrawalAmountInput?.closest(
+  '.naira-input-container'
+);
+const transferAmountContainer = defaultTransferAmountInput?.closest(
+  '.naira-input-container'
+);
+
+// Create and place dynamic input containers directly below their default amount
+const dynamicWithdrawalContainer = document.createElement('div');
+const dynamicTransferContainer = document.createElement('div');
+dynamicWithdrawalContainer.id = 'dynamicAmountFields';
+dynamicTransferContainer.id = 'dynamicTransferAmountFields';
+dynamicWithdrawalContainer.style.marginTop = '1rem';
+dynamicTransferContainer.style.marginTop = '1rem';
+
+withdrawalAmountContainer?.parentNode.appendChild(dynamicWithdrawalContainer);
+transferAmountContainer?.parentNode.appendChild(dynamicTransferContainer);
+
+// ========== TOGGLE ==========
+function toggleTransactionOptions() {
+  const method = transactionTypeSelect?.value;
+  const transferAmountDiv = defaultTransferAmountInput?.closest(
+    '.pos-method-form_input'
+  );
+
+  if (method === 'withdrawal_transfer') {
+    if (numberOfWithdrawalsDiv) numberOfWithdrawalsDiv.style.display = 'block';
+    if (numberOfTransferDiv) numberOfTransferDiv.style.display = 'block';
+    if (transferAmountDiv) transferAmountDiv.style.display = 'block';
+    if (dynamicWithdrawalContainer)
+      dynamicWithdrawalContainer.style.display = 'block';
+    if (dynamicTransferContainer)
+      dynamicTransferContainer.style.display = 'block';
+
+    if (defaultWithdrawalAmountInput)
+      defaultWithdrawalAmountInput.placeholder = 'Enter Withdrawal Amount 1';
+    if (defaultTransferAmountInput)
+      defaultTransferAmountInput.placeholder = 'Enter Transfer Amount 1';
+
+    if (transactionAmountLabel) {
+      transactionAmountLabel.textContent = 'Withdrawal Amount';
+    }
+
+    renderAmountInputs();
+  } else {
+    if (numberOfWithdrawalsDiv) numberOfWithdrawalsDiv.style.display = 'none';
+    if (numberOfTransferDiv) numberOfTransferDiv.style.display = 'none';
+    if (transferAmountDiv) transferAmountDiv.style.display = 'none';
+    if (dynamicWithdrawalContainer)
+      dynamicWithdrawalContainer.style.display = 'none';
+    if (dynamicTransferContainer)
+      dynamicTransferContainer.style.display = 'none';
+
+    if (dynamicWithdrawalContainer) dynamicWithdrawalContainer.innerHTML = '';
+    if (dynamicTransferContainer) dynamicTransferContainer.innerHTML = '';
+
+    if (defaultWithdrawalAmountInput)
+      defaultWithdrawalAmountInput.placeholder = 'Enter Amount';
+    if (defaultTransferAmountInput)
+      defaultTransferAmountInput.placeholder = 'Enter Amount';
+
+    if (transactionAmountLabel) {
+      transactionAmountLabel.textContent = 'Transaction Amount';
+    }
+  }
+}
+
+// ========== DYNAMIC INPUTS ==========
+function renderAmountInputs() {
+  const withdrawalCount = parseInt(numberOfWithdrawalsSelect?.value || '1');
+  const transferCount = parseInt(numberOfTransferSelect?.value || '1');
+
+  // Preserve and reuse filled values
+  updateInputs(
+    dynamicWithdrawalContainer,
+    withdrawalCount,
+    'Withdrawal Amount',
+    'posWithdrawalAmount_'
+  );
+  updateInputs(
+    dynamicTransferContainer,
+    transferCount,
+    'Transfer Amount',
+    'posTransferAmount_'
+  );
+}
+
+function updateInputs(container, count, labelPrefix, namePrefix) {
+  const existingInputs = container.querySelectorAll('input');
+  const existingCount = existingInputs.length;
+
+  // Add new inputs if needed
+  for (let i = existingCount + 2; i <= count; i++) {
+    const inputWrapper = createInputWithLabel(
+      `${labelPrefix} ${i}`,
+      `${namePrefix}${i}`
+    );
+    container.appendChild(inputWrapper);
+  }
+
+  // Remove extra inputs if reduced
+  for (let i = existingCount + 1; i > count; i--) {
+    const inputToRemove = container.querySelector(`[name="${namePrefix}${i}"]`);
+    inputToRemove?.parentNode?.remove();
+  }
+}
+
+// ========== UTIL: Create Input ==========
+function createInputWithLabel(placeholder, name) {
+  const inputWrapper = document.createElement('div');
+  inputWrapper.className = 'naira-input-container mb-1';
+
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.name = name;
+  input.placeholder = `Enter ${placeholder}`;
+  input.classList.add('dynamic-amount-input');
+
+  // Format on input
+  input.addEventListener('input', () => formatAmountWithCommasOnInput(input));
+
+  const nairaSpan = document.createElement('span');
+  nairaSpan.className = 'naira';
+  nairaSpan.innerHTML = '₦';
+
+  inputWrapper.appendChild(input);
+  inputWrapper.appendChild(nairaSpan);
+
+  return inputWrapper;
+}
+
+// ========== LISTENERS ==========
+transactionTypeSelect?.addEventListener('change', toggleTransactionOptions);
+numberOfWithdrawalsSelect?.addEventListener('change', renderAmountInputs);
+numberOfTransferSelect?.addEventListener('change', renderAmountInputs);
+
+toggleTransactionOptions(); // Initial state
+
+// ========== GLOBAL FORMATTER ==========
+document.addEventListener('input', function (e) {
+  if (e.target.classList.contains('dynamic-amount-input')) {
+    formatAmountWithCommasOnInput(e.target);
+  }
+});
 
 export async function handlePosFormSubmit() {
   const posForm = document.querySelector('.pos-method-form');
@@ -319,7 +530,7 @@ export async function handlePosFormSubmit() {
       const posSubmitButton = document.querySelector('.posSubmitButton');
 
       try {
-        console.log('📦 POS Ttransaction Details:', posFormData);
+        //   console.log('📦 POS Ttransaction Details:', posFormData);
         showBtnLoader(posSubmitButton);
 
         const isDayOpen = await ensureBusinessDayOpen(shopId);
@@ -330,7 +541,7 @@ export async function handlePosFormSubmit() {
 
         const posTransactionCreated = await createPosTransaction(posFormData);
 
-        console.log(posTransactionCreated);
+        //   console.log(posTransactionCreated);
 
         //   console.log(
         //     'POS transaction sent successfully:',
@@ -348,7 +559,6 @@ export async function handlePosFormSubmit() {
       }
 
       function resetFormInputs() {
-        console.log('Reset fORM');
         document.getElementById(
           isAdmin ? 'adminTransactionType' : 'transactionType'
         ).value = 'withdrawal';
@@ -370,6 +580,59 @@ export async function handlePosFormSubmit() {
         document.getElementById(
           isAdmin ? 'adminPosTransactionRemark' : 'posTransactionRemark'
         ).value = '';
+
+        // Hide the dynamic amount fields
+        const numberOfWithdrawalsSelect = document.getElementById(
+          isAdmin ? 'adminNumberOfWithdrawals' : 'numberOfWithdrawals'
+        );
+        const numberOfTransferSelect = document.getElementById(
+          isAdmin ? 'adminNumberOfTransfer' : 'numberOfTransfer'
+        );
+        const numberOfWithdrawalsDiv = document
+          .querySelector(
+            isAdmin
+              ? '[name="adminNumberOfWithdrawals"]'
+              : '[name="numberOfWithdrawals"]'
+          )
+          .closest('.pos-method-form_input');
+        const numberOfTransferDiv = document
+          .querySelector(
+            isAdmin
+              ? '[name="adminNumberOfTransfer"]'
+              : '[name="numberOfTransfer"]'
+          )
+          .closest('.pos-method-form_input');
+        const dynamicAmountContainer = document.getElementById(
+          'dynamicAmountFields'
+        );
+
+        // Withdrawal and transfer logic
+        const defaultAmountInput = document.getElementById(
+          isAdmin ? `adminPosTransactionAmount` : `posTransactionAmount`
+        );
+        const defaultTransferAmountInput = document.getElementById(
+          isAdmin ? `adminPosTransferAmount` : `posTransferAmount`
+        );
+
+        numberOfWithdrawalsSelect.value = '1';
+        numberOfTransferSelect.value = '1';
+
+        defaultWithdrawalAmountInput.placeholder = 'Enter Amount';
+        defaultTransferAmountInput.placeholder = 'Enter Amount';
+        if (transactionAmountLabel) {
+          transactionAmountLabel.textContent = 'Transaction Amount';
+        }
+        defaultTransferAmountInput.closest(
+          '.pos-method-form_input'
+        ).style.display = 'none';
+
+        dynamicWithdrawalContainer.innerHTML = '';
+        dynamicTransferContainer.innerHTML = '';
+        dynamicWithdrawalContainer.style.display = 'none';
+        dynamicTransferContainer.style.display = 'none';
+        numberOfWithdrawalsDiv.style.display = 'none';
+        numberOfTransferDiv.style.display = 'none';
+
         document.querySelector('.paymentMethodType').style.display = 'block';
         document.querySelector('.posRemarksDiv').style.display = 'block';
 

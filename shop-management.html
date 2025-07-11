@@ -675,10 +675,34 @@
 
    <div id="toast" class="toast">This is a toast message!</div>
 
-
    <div id="global-loader" class="loader-overlay hidden">
       <div class="spinner"></div>
    </div>
+
+   <!-- Delete Shop Modal -->
+   <form class="modal-form deleteShopContainerModal " name="modal">
+
+      <div class="card confirmation deleteShopContainer modal ">
+         <h1 class="confirmation-text">Are you sure you want to Delete <span id="confirmation-text"
+               style="color: red;"></span>?
+         </h1>
+
+         <div class="confirmation-btn_container">
+
+            <button class="hero-btn-dark cancel-close">Cancel</button>
+
+            <button class="hero-btn-danger deleteShopButton  mt-2 has-spinner" type="submit">
+               <span class="btn-text">Delete Shop</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+
+
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
 </body>
 
 </html>

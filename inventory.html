@@ -316,20 +316,53 @@
       <div class="spinner"></div>
    </div>
 
-   <div class="card confirmation modal ">
-      <h1 class="confirmation-text">Are you sure you want to delete product <span id="product-name"></span>?</h1>
+   <!-- Delete Product Modal -->
+   <form class="modal-form deleteProductContainerModal " name="modal">
+
+      <div class="card confirmation deleteProductContainer modal ">
+         <h1 class="confirmation-text">Are you sure you want to Delete <span id="confirmation-text"
+               style="color: red;"></span>?
+         </h1>
+
+         <div class="confirmation-btn_container">
+
+            <button class="hero-btn-dark cancel-close">Cancel</button>
+
+            <button class="hero-btn-danger deleteProductButton  mt-2 has-spinner" type="submit">
+               <span class="btn-text">Delete Product</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
 
 
-      <div class="confirmation-btn_container">
+         </div>
 
-         <button class="hero-btn-dark cancel-delete">Cancel</button>
-
-         <button class="hero-btn-dark deleteProductButton">Delete</button>
-
+         <div class="close closeModal" id="">&times;</div>
       </div>
+   </form>
 
-      <div class="close closeModal" id="">&times;</div>
-   </div>
+   <!-- Delete Category Modal -->
+   <form class="modal-form deleteCategoryContainerModal " name="modal">
+
+      <div class="card confirmation deleteCategoryContainer modal ">
+         <h1 class="confirmation-text">Are you sure you want to Delete <span id="confirmation-text-2"
+               style="color: red;"></span> Category?
+         </h1>
+
+         <div class="confirmation-btn_container">
+
+            <button class="hero-btn-dark cancel-close">Cancel</button>
+
+            <button class="hero-btn-danger deleteCategoryButton  mt-2 has-spinner" type="submit">
+               <span class="btn-text">Delete Category</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+
+
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
 
    <form class="modal-form updateCategoryModal" name="updateCategory">
       <div class="card updateCategory modal ">

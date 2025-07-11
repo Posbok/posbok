@@ -113,6 +113,34 @@ export function openUpdateProductButton() {
   //   updateProductForm();
 }
 
+// Delete Product
+
+export function openDeleteProductModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const deleteProductContainer = document.querySelector(
+    '.deleteProductContainer'
+  );
+
+  if (deleteProductContainer) deleteProductContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
+// Delete Category
+
+export function openDeleteCategoryModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const deleteCategoryContainer = document.querySelector(
+    '.deleteCategoryContainer'
+  );
+
+  if (deleteCategoryContainer) deleteCategoryContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
 export function openUpdateCategoryButton() {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
@@ -122,6 +150,8 @@ export function openUpdateCategoryButton() {
   if (main) main.classList.add('blur');
   if (sidebar) sidebar.classList.add('blur');
 }
+
+// Delete Product
 
 document.addEventListener('DOMContentLoaded', () => {
   // Setup for Opening Pos Charges Modal
@@ -247,7 +277,36 @@ export function populateCategoryTable(productCategoriesData) {
     deleteCategoryButton.addEventListener('click', async () => {
       const categoryId = deleteCategoryButton.dataset.categoryId;
       // console.log('deleteCategoryButton clicked', categoryId);
-      await deleteCategory(categoryId);
+      // await deleteCategory(categoryId);
+    });
+
+    deleteCategoryButton.addEventListener('click', async () => {
+      showGlobalLoader();
+      const categoryId = deleteCategoryButton.dataset.categoryId;
+
+      const deleteCategoryContainer = document.querySelector(
+        '.deleteCategoryContainer'
+      );
+
+      if (deleteCategoryContainer) {
+        // Store categoryId in modal container for reference
+        deleteCategoryContainer.dataset.categoryId = categoryId;
+
+        // Fetch Shop detail
+        const categoryDetail = await getProductCategories(categoryId);
+
+        console.log('categoryDetail', categoryDetail);
+
+        // Call function to prefill modal inputs
+        if (categoryDetail?.data) {
+          hideGlobalLoader();
+          openDeleteCategoryModal(); // Show modal after data is ready
+          deleteCategoryForm(categoryDetail.data, categoryId);
+        } else {
+          hideGlobalLoader();
+          showToast('fail', '❌ Failed to fetch shop details.');
+        }
+      }
     });
 
     // Update Product Logic
@@ -1016,8 +1075,123 @@ export function updateProductForm(productDetail) {
   document.querySelector('#updateProductQuantity').value = quantity || '';
 }
 
+// Delete Product
+export function deleteProductForm(product, shopId) {
+  const form = document.querySelector('.deleteProductContainerModal');
+  if (!form) return;
+
+  form.dataset.shopId = shopId;
+  form.dataset.productId = product.id;
+
+  document.getElementById('confirmation-text').textContent = product.name;
+}
+
+export function bindDeleteProductFormListener() {
+  const form = document.querySelector('.deleteProductContainerModal');
+  if (!form) return;
+
+  const deleteProductButton = form.querySelector('.deleteProductButton');
+  const cancelButton = form.querySelector('.cancel-close');
+
+  if (!form.dataset.bound) {
+    form.dataset.bound = true;
+
+    cancelButton?.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeModal();
+    });
+
+    deleteProductButton?.addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      const shopId = form.dataset.shopId;
+      const productId = form.dataset.productId;
+
+      if (!shopId) {
+        showToast('fail', '❎ No shop ID found.');
+        return;
+      }
+      if (!shopId) {
+        showToast('fail', '❎ No Product ID found.');
+        return;
+      }
+
+      try {
+        showBtnLoader(deleteProductButton);
+        await deleteProduct(productId, shopId);
+        hideBtnLoader(deleteProductButton);
+        closeModal();
+        showToast('success', '✅ Product deleted successfully.');
+      } catch (err) {
+        hideBtnLoader(deleteProductButton);
+        showToast('fail', `❎ ${err.message}`);
+      }
+    });
+  }
+}
+
+// Delete Category
+export function deleteCategoryForm(category, categoryId) {
+  const form = document.querySelector('.deleteCategoryContainerModal');
+  if (!form) return;
+
+  form.dataset.categoryId = category.id;
+
+  console.log(category);
+
+  category.forEach((cat) => {
+    if (cat.id === Number(categoryId)) {
+      console.log(cat.name);
+      document.getElementById('confirmation-text-2').textContent = cat.name;
+    }
+  });
+}
+
+export function bindDeleteCategoryFormListener() {
+  const form = document.querySelector('.deleteCategoryContainer');
+  if (!form) return;
+
+  const deleteCategoryButton = form.querySelector('.deleteCategoryButton');
+  const cancelButton = form.querySelector('.cancel-close');
+
+  if (!form.dataset.bound) {
+    form.dataset.bound = true;
+
+    cancelButton?.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeModal();
+    });
+
+    deleteCategoryButton?.addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      const categoryId = form.dataset.categoryId;
+
+      console.log(categoryId);
+
+      if (!categoryId) {
+        showToast('fail', '❎ No Categpry ID found.');
+        return;
+      }
+
+      try {
+        showBtnLoader(deleteCategoryButton);
+        await deleteCategory(categoryId);
+        hideBtnLoader(deleteCategoryButton);
+        closeModal();
+        showToast('success', '✅ Category deleted successfully.');
+      } catch (err) {
+        hideBtnLoader(deleteCategoryButton);
+        showToast('fail', `❎ ${err.message}`);
+      }
+    });
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   bindUpdateProductFormListener(); // Only once
+  bindDeleteProductFormListener();
+  bindDeleteCategoryFormListener();
 });
 
 //  Update Category
@@ -1360,7 +1534,7 @@ function renderFilteredProducts(shopId, productList) {
                   </button>
                   <button
                     class="hero-btn-outline deleteProductBtn"
-                    id="deleteProductBtn" data-product-id="${product_id}"
+                    id="deleteProductModalBtn" data-product-id="${product_id}"
                   >
                     <i class="fa-solid fa-trash-can"></i>
                   </button>
@@ -1369,12 +1543,35 @@ function renderFilteredProducts(shopId, productList) {
              `;
     inventoryTableBody.appendChild(row);
 
-    const deleteProductBtn = row.querySelector(`.deleteProductBtn`);
+    const deleteProductModalBtn = row.querySelector(`#deleteProductModalBtn`);
 
-    deleteProductBtn.addEventListener('click', async () => {
-      const productId = deleteProductBtn.dataset.productId;
-      //   console.log('deleteProductBtn clicked', productId);
-      await deleteProduct(productId, shopId);
+    deleteProductModalBtn?.addEventListener('click', async () => {
+      showGlobalLoader();
+      const productId = deleteProductModalBtn.dataset.productId;
+
+      const deleteProductContainer = document.querySelector(
+        '.deleteProductContainer'
+      );
+
+      if (deleteProductContainer) {
+        // Store productId in modal container for reference
+        deleteProductContainer.dataset.productId = productId;
+
+        // Fetch Shop detail
+        const productDetail = await getProductDetail(productId);
+
+        //   console.log('productDetail', productDetail);
+
+        // Call function to prefill modal inputs
+        if (productDetail?.data) {
+          hideGlobalLoader();
+          openDeleteProductModal(); // Show modal after data is ready
+          deleteProductForm(productDetail.data, shopId);
+        } else {
+          hideGlobalLoader();
+          showToast('fail', '❌ Failed to fetch shop details.');
+        }
+      }
     });
 
     // Update Product Logic
@@ -1482,7 +1679,7 @@ export async function renderProductInventoryTable(shopId) {
                   </button>
                   <button
                     class="hero-btn-outline deleteProductBtn"
-                    id="deleteProductBtn" data-product-id="${product_id}"
+                    id="deleteProductModalBtn" data-product-id="${product_id}"
                   >
                     <i class="fa-solid fa-trash-can"></i>
                   </button>
@@ -1491,12 +1688,43 @@ export async function renderProductInventoryTable(shopId) {
              `;
       inventoryTableBody.appendChild(row);
 
-      const deleteProductBtn = row.querySelector(`.deleteProductBtn`);
+      // const deleteProductBtn = row.querySelector(`.deleteProductBtn`);
 
-      deleteProductBtn.addEventListener('click', async () => {
-        const productId = deleteProductBtn.dataset.productId;
-        //   console.log('deleteProductBtn clicked', productId);
-        await deleteProduct(productId, shopId);
+      // deleteProductBtn.addEventListener('click', async () => {
+      //   const productId = deleteProductBtn.dataset.productId;
+      //   //   console.log('deleteProductBtn clicked', productId);
+      //   await deleteProduct(productId, shopId);
+      // });
+
+      const deleteProductModalBtn = row.querySelector(`#deleteProductModalBtn`);
+
+      deleteProductModalBtn?.addEventListener('click', async () => {
+        showGlobalLoader();
+        const productId = deleteProductModalBtn.dataset.productId;
+
+        const deleteProductContainer = document.querySelector(
+          '.deleteProductContainer'
+        );
+
+        if (deleteProductContainer) {
+          // Store productId in modal container for reference
+          deleteProductContainer.dataset.productId = productId;
+
+          // Fetch Shop detail
+          const productDetail = await getProductDetail(productId);
+
+          //   console.log('productDetail', productDetail);
+
+          // Call function to prefill modal inputs
+          if (productDetail?.data) {
+            hideGlobalLoader();
+            openDeleteProductModal(); // Show modal after data is ready
+            deleteProductForm(productDetail.data, shopId);
+          } else {
+            hideGlobalLoader();
+            showToast('fail', '❌ Failed to fetch shop details.');
+          }
+        }
       });
 
       // Update Product Logic

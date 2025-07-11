@@ -358,8 +358,15 @@ document.addEventListener('DOMContentLoaded', function () {
   const posTransactionAmountInput = document.getElementById(
     'posTransactionAmount'
   );
+  const posTransferAmountInput = document.getElementById('posTransferAmount');
   const adminPosTransactionAmountInput = document.getElementById(
     'adminPosTransactionAmount'
+  );
+  const adminPosTransferAmountInput = document.getElementById(
+    'adminPosTransferAmount'
+  );
+  const adminWithdrawalAmountInput = document.getElementById(
+    'adminWithdrawalAmount'
   );
   const addPosChargeMinAmountInput = document.getElementById(
     'addPosChargeMinAmount'
@@ -412,9 +419,24 @@ document.addEventListener('DOMContentLoaded', function () {
       formatAmountWithCommasOnInput(posTransactionAmountInput);
     });
 
+  if (posTransferAmountInput)
+    posTransferAmountInput.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(posTransferAmountInput);
+    });
+
   if (adminPosTransactionAmountInput)
     adminPosTransactionAmountInput.addEventListener('input', function () {
       formatAmountWithCommasOnInput(adminPosTransactionAmountInput);
+    });
+
+  if (adminPosTransferAmountInput)
+    adminPosTransferAmountInput.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(adminPosTransferAmountInput);
+    });
+
+  if (adminWithdrawalAmountInput)
+    adminWithdrawalAmountInput.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(adminWithdrawalAmountInput);
     });
 
   if (addPosChargeMinAmountInput)
@@ -637,7 +659,7 @@ export function populateBusinessStaffDropdown(
 
 export async function ensureBusinessDayOpen(shopId) {
   const response = await getCurrentBusinessDay(shopId);
-  console.log(shopId, response);
+  //   console.log(shopId, response);
 
   // Make sure response and response.data exist
   //   if (!response?.success || !response.data) {

@@ -18,13 +18,17 @@ const isStaff = parsedUserData?.accountType === 'STAFF';
 
 export async function initAccountOverview() {
   const posShopDropdown = document.getElementById('posShopDropdown')?.value;
+  const posShopDropdownwithdrawal =
+    document.getElementById('posShopDropdown-2')?.value;
 
   const adminDepositposCapitalShopDropdown = document.querySelector(
     '#adminDepositposCapitalShopDropdown'
   )?.value;
 
   const adminShopSelection =
-    posShopDropdown || adminDepositposCapitalShopDropdown;
+    posShopDropdown ||
+    adminDepositposCapitalShopDropdown ||
+    posShopDropdownwithdrawal;
   //   if (isStaff) {
   showGlobalLoader();
   //   }
@@ -39,7 +43,7 @@ export async function initAccountOverview() {
     const posCapitalData = await getPosCapital(
       isStaff ? shopId : adminShopSelection
     );
-    console.log(posCapitalData, 'posCapitalData');
+    //  console.log(posCapitalData, 'posCapitalData');
 
     updatePosCapitalUI(posCapitalData);
   } catch (error) {

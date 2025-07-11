@@ -1,7 +1,10 @@
 import './script.js';
 import config from '../config';
 import { fetchBusinessDetails } from './apiServices/business/businessResource';
-import { checkAndPromptCreateShop } from './apiServices/shop/shopResource';
+import {
+  checkAndPromptCreateShop,
+  openDeleteShopModal,
+} from './apiServices/shop/shopResource';
 import {
   assignStaffToShop,
   assignUserToShop,
@@ -10,6 +13,7 @@ import {
   deleteUser,
   fetchStaffDetail,
   openCreateStaffModal,
+  openDeleteStaffModal,
   openManageStaffModal,
   openUpdateStaffModal,
   removeStaffFromShop,
@@ -343,7 +347,7 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
           }">
             <i class="fa-solid fa-pen-to-square"></i>
           </button>
-          <button class="hero-btn-outline deleteStaffButton" data-staff-id="${
+          <button class="hero-btn-outline deleteStaffButtonModal" data-staff-id="${
             staff.id
           }">
             <i class="fa-solid fa-trash-can"></i>
@@ -373,7 +377,7 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
       }">
         <i class="fa-solid fa-pen-to-square"></i>
       </button>
-      <button class="hero-btn-outline deleteStaffButton" disabled data-staff-id="${
+      <button class="hero-btn-outline adminDeleteStaffButtonModal" disabled data-staff-id="${
         staff.id
       }">
         <i class="fa-solid fa-trash-can"></i>
@@ -389,11 +393,40 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
 
     if (tbody) tbody.appendChild(row);
 
-    const deleteBtn = row.querySelector('.deleteStaffButton');
+    const deleteBtnModal =
+      staff.accountType === 'STAFF'
+        ? row.querySelector('.deleteStaffButtonModal')
+        : row.querySelector('.adminDeleteStaffButtonModal');
 
-    deleteBtn.addEventListener('click', async () => {
-      const staffId = deleteBtn.dataset.staffId;
-      await deleteUser(staffId);
+    //  console.log(deleteBtnModal);
+
+    deleteBtnModal.addEventListener('click', async () => {
+      showGlobalLoader();
+      const staffId = deleteBtnModal.dataset.staffId;
+
+      const deleteStaffContainer = document.querySelector(
+        '.deleteStaffContainer'
+      );
+
+      if (deleteStaffContainer) {
+        // Store staffId in modal container for reference
+        deleteStaffContainer.dataset.staffId = staffId;
+
+        // Fetch Staff detail
+        const staffDetail = await fetchStaffDetail(staffId);
+
+        //   console.log('staffDetail', staffDetail);
+
+        // Call function to prefill modal inputs
+        if (staffDetail?.data) {
+          hideGlobalLoader();
+          openDeleteStaffModal(); // Show modal after data is ready
+          deleteStaffForm(staffDetail.data);
+        } else {
+          hideGlobalLoader();
+          showToast('fail', '❌ Failed to fetch Staff details.');
+        }
+      }
     });
 
     const updateStaffBtn = row.querySelector('.editStaffButton');
@@ -647,8 +680,60 @@ export function setupUpdateStaffForm(user) {
   document.getElementById('update-end-time').value = user.accessTimeEnd || '';
 }
 
+export function bindDeleteStaffFormListener() {
+  const form = document.querySelector('.deleteStaffContainerModal');
+  if (!form) return;
+
+  const deleteStaffButton = form.querySelector('.deleteStaffButton');
+  const cancelButton = form.querySelector('.cancel-close');
+
+  // Avoid multiple bindings by using a flag
+  if (!form.dataset.bound) {
+    // Mark as bound
+    form.dataset.bound = true;
+
+    cancelButton?.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeModal();
+    });
+
+    deleteStaffButton?.addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      const staffId = form.dataset.staffId;
+      if (!staffId) {
+        showToast('fail', '❎ No staff ID found.');
+        return;
+      }
+
+      try {
+        showBtnLoader(deleteStaffButton);
+        await deleteUser(staffId);
+        hideBtnLoader(deleteStaffButton);
+        closeModal();
+        showToast('success', '✅ Staff deleted successfully.');
+      } catch (err) {
+        hideBtnLoader(deleteStaffButton);
+        showToast('fail', `❎ ${err.message}`);
+      }
+    });
+  }
+}
+
+export function deleteStaffForm(staff) {
+  const form = document.querySelector('.deleteStaffContainerModal');
+  if (!form) return;
+
+  form.dataset.staffId = staff.user.id;
+
+  document.getElementById(
+    'confirmation-text'
+  ).textContent = ` ${staff.user.firstName} ${staff.user.lastName}`;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  bindUpdateStaffFormListener(); // Only once
+  bindUpdateStaffFormListener();
+  bindDeleteStaffFormListener();
 });
 
 // ⚠️ Old version retained for comparison and reuse across other modals

@@ -1357,7 +1357,7 @@ body.authentication {
   max-height: 85vh;
   height: 100%; }
   .authentication-container.login {
-    max-height: 60vh; }
+    max-height: 80vh; }
   @media only screen and (max-width: 45.7em) {
     .authentication-container {
       width: 90%; } }
