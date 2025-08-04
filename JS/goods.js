@@ -1389,6 +1389,7 @@ if (isAdmin && adminAccordionContainer && container) {
                           <th class="py-1">Product Name</th>
                           <th class="py-1">Product Description</th>
                           <th class="py-1">Product Category</th>
+                          <th class="py-1">Product ID</th>
                           <th class="py-1">Buying Price</th>
                           <th class="py-1">Quantity</th>
                           <th class="py-1">Selling Price</th>
@@ -1417,9 +1418,11 @@ if (isAdmin && adminAccordionContainer && container) {
 
         const filteredProducts = products.filter((item) => {
           const product = item.Product;
+
           return (
             product.name.toLowerCase().includes(query) ||
-            product.description.toLowerCase().includes(query)
+            product.description.toLowerCase().includes(query) ||
+            product.id.toString().includes(query)
           );
         });
 
@@ -1518,6 +1521,7 @@ function renderFilteredProducts(shopId, productList) {
                 <td class="py-1 productName">${productName}</td>
                 <td class="py-1 productDescription">${description}</td>
                 <td class="py-1 producCategory">${categoryName}</td>
+                <td class="py-1 producCategory">${product_id}</td>
                 <td class="py-1 productAmountBought">&#x20A6;${formatAmountWithCommas(
                   purchase_price
                 )}</td>
@@ -1634,6 +1638,8 @@ export async function renderProductInventoryTable(shopId) {
 
     shopProductMap[shopId] = productInventories;
 
+    console.log(productInventories);
+
     if (productInventories.length === 0) {
       const searchSection = document.querySelector(`.search-section_${shopId}`);
 
@@ -1663,6 +1669,7 @@ export async function renderProductInventoryTable(shopId) {
                 <td class="py-1 productName">${productName}</td>
                 <td class="py-1 productDescription">${description}</td>
                 <td class="py-1 producCategory">${categoryName}</td>
+                <td class="py-1 producCategory">${product_id}</td>
                 <td class="py-1 productAmountBought">&#x20A6;${formatAmountWithCommas(
                   purchase_price
                 )}</td>

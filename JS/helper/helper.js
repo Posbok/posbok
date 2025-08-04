@@ -753,3 +753,54 @@ export function truncateProductNames(namesArray, options) {
 
   return finalString;
 }
+export function truncateProductUnitPrice(priceArray, options) {
+  const {
+    maxItems = Infinity,
+    maxLength = Infinity,
+    separator = ', ',
+  } = options;
+
+  let resultPrices = [];
+  let currentLength = 0;
+  let truncated = false;
+
+  for (let i = 0; i < priceArray.length; i++) {
+    const price = priceArray[i];
+    const priceWithSeparatorLength =
+      price.length + (i > 0 ? separator.length : 0);
+
+    if (
+      currentLength + priceWithSeparatorLength > maxLength &&
+      resultPrices.length > 0
+    ) {
+      truncated = true;
+      break;
+    }
+    if (resultPrices.length >= maxItems) {
+      truncated = true;
+      break;
+    }
+
+    resultPrices.push(price);
+    currentLength += priceWithSeparatorLength;
+  }
+
+  let finalString = resultPrices.join(separator);
+
+  if (finalString.length > maxLength && maxLength !== Infinity) {
+    finalString = finalString.substring(0, maxLength).trim();
+    truncated = true;
+  }
+
+  if (truncated && priceArray.length > resultPrices.length) {
+    return finalString + '...';
+  } else if (
+    truncated &&
+    priceArray.length === resultPrices.length &&
+    finalString.length === maxLength
+  ) {
+    return finalString + '...';
+  }
+
+  return finalString;
+}

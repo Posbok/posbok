@@ -471,6 +471,14 @@ export function getAdminSalesReportHtml(shop) {
                      <h3>Balance</h3>
                      <p class="amount" id="staffTotal-balance_admin_${shop.id}">₦0</p>
                   </div>
+                  <div class="summary-card">
+                     <h3>Total Cost</h3>
+                     <p class="amount" id="staffTotal-cost_admin_${shop.id}">₦0</p>
+                  </div>
+                  <div class="summary-card">
+                     <h3>Total Profit</h3>
+                     <p class="amount" id="staffTotal-profit_admin_${shop.id}">₦0</p>
+                  </div>
                </div>
 
                    <div class="reports-table-container">
@@ -482,8 +490,9 @@ export function getAdminSalesReportHtml(shop) {
                               <th class="py-1">Date</th>
                               <th class="py-1">Shop</th>
                               <th class="py-1">Product Name</th>
-                              <th class="py-1">Total Amount</th>
+                              <th class="py-1">Unit Price</th>
                               <th class="py-1">Amount Paid</th>
+                              <th class="py-1">Total Amount</th>
                               <th class="py-1">Balance</th>
                               <th class="py-1">Status</th>
                                   <th class="py-1">▼</th>

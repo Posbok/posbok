@@ -293,7 +293,8 @@ async function displayAllProducts() {
         filteredProducts = filteredProducts.filter(
           (product) =>
             product.Product.name.toLowerCase().includes(inputValue) ||
-            product.Product.description.toLowerCase().includes(inputValue)
+            product.Product.description.toLowerCase().includes(inputValue) ||
+            product.Product.id.toString().includes(inputValue)
         );
 
         updateAutocompleteList(filteredProducts);

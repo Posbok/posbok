@@ -450,6 +450,18 @@ export function openAdminBusinessDayModal() {
 async function renderBusinessDayButtons() {
   const businessInitBtnDiv = document.querySelector('.businessInitBtnDiv');
 
+  const openPosCapitalAmountLabel = document.querySelector(
+    '.openPosCapitalAmountLabel'
+  );
+  const adminOpenPosCapitalAmount = document.querySelector(
+    '.adminOpenPosCapitalAmount'
+  );
+
+  if (servicePermission === 'INVENTORY_SALES') {
+    openPosCapitalAmountLabel.innerText = 'Cash in Shop';
+    adminOpenPosCapitalAmount.innerText = 'Cash in Shop';
+  }
+
   //   console.log(isStaff ? shopId : '');
 
   if (isStaff) {

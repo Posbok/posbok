@@ -70,8 +70,6 @@ const staffUserId = parsedUserData?.id;
 const shopKey = `shop_${staffUserId}`;
 const servicePermission = parsedUserData?.servicePermission;
 
-console.log(servicePermission);
-
 function toTitleCase(value) {
   return value.charAt(0).toUpperCase() + value.slice(1);
 }

@@ -10,6 +10,7 @@ import {
   showBtnLoader,
   showGlobalLoader,
   truncateProductNames,
+  truncateProductUnitPrice,
 } from '../../helper/helper';
 import { openSaleDetailsModal } from '../../reports';
 import {
@@ -924,6 +925,12 @@ export function updateStaffSalesData(
   const staffTotalBalance = document.getElementById(
     `staffTotal-balance_admin_${shopId}`
   );
+  const staffTotalCost = document.getElementById(
+    `staffTotal-cost_admin_${shopId}`
+  );
+  const staffTotalProfit = document.getElementById(
+    `staffTotal-profit_admin_${shopId}`
+  );
 
   const tableBody = document.querySelector(
     `#staffSalesTable_admin_${shopId} tbody`
@@ -937,10 +944,32 @@ export function updateStaffSalesData(
   const { totalSales, totalAmount, totalPaid, totalBalance } =
     staffSalesSummary;
 
+  const totalCostPrice = staffSalesList.reduce((sum, sale) => {
+    return (
+      sum +
+      sale.SaleItems.reduce((itemSum, item) => {
+        return itemSum + (item.unit_price || 0) * (item.quantity || 0);
+      }, 0)
+    );
+  }, 0);
+
+  const totalSoldPrice = staffSalesList.reduce((sum, sale) => {
+    return (
+      sum +
+      sale.SaleItems.reduce((itemSum, item) => {
+        return itemSum + (item.selling_price || 0) * (item.quantity || 0);
+      }, 0)
+    );
+  }, 0);
+
+  const totalProfit = totalSoldPrice - totalCostPrice;
+
   staffTotalSale.textContent = totalSales;
   staffTotalAmount.textContent = `₦${formatAmountWithCommas(totalAmount)}`;
   staffTotalPaid.textContent = `₦${formatAmountWithCommas(totalPaid)}`;
   staffTotalBalance.textContent = `₦${formatAmountWithCommas(totalBalance)}`;
+  staffTotalCost.textContent = `₦${formatAmountWithCommas(totalCostPrice)}`;
+  staffTotalProfit.textContent = `₦${formatAmountWithCommas(totalProfit)}`;
 
   if (tableBody) tableBody.innerHTML = '';
 
@@ -975,14 +1004,26 @@ export function updateStaffSalesData(
 
     const productNames = salesItems.map(
       (item) => item.Product?.name || 'Unknown Product'
-    ); // Added null check for Product.name
+    );
+
     const truncatedProductNames = truncateProductNames(productNames, {
       maxItems: 3,
       maxLength: 50,
       separator: ', ',
     });
 
-    //  console.log(truncatedProductNames);
+    const productUnitPrice = salesItems.map(
+      (item) => item?.unit_price || 'Unknown Price'
+    );
+
+    const truncatedProductUnitPrice = truncateProductUnitPrice(
+      productUnitPrice,
+      {
+        maxItems: 3,
+        maxLength: 50,
+        separator: ', ',
+      }
+    );
 
     if (row)
       row.innerHTML = `
@@ -991,8 +1032,11 @@ export function updateStaffSalesData(
         <td  class="py-1">${business_day}</td>
         <td  class="py-1">${shopName}</td>
         <td  class="py-1">${truncatedProductNames}</td>
-        <td class="py-1">₦${formatAmountWithCommas(total_amount)}</td>
+        <td  class="py-1">${formatAmountWithCommas(
+          truncatedProductUnitPrice
+        )}</td>
         <td class="py-1">₦${formatAmountWithCommas(amount_paid)}</td>
+        <td class="py-1">₦${formatAmountWithCommas(total_amount)}</td>
         <td class="py-1">₦${formatAmountWithCommas(balance)}</td>
         <td class="py-1">${formatSaleStatus(status)}</td>
         <td class="py-1 soldItemDetailReport" data-sale-id="${id}"><i class="fa fa-eye"></i></td>
