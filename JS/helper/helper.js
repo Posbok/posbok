@@ -34,6 +34,9 @@ export function clearFormInputs() {
   );
   const openBusinessDayForm = document.querySelector('.openBusinessDayModal');
   const checkoutForm = document.querySelector('.checkout-form');
+  const updatePartialPaymentForm = document.querySelector(
+    '.updatePartialPaymentForm'
+  );
 
   //   Clear Search Input
   const searchProductInput = document.querySelector('.searchProductInput');
@@ -290,6 +293,30 @@ export function clearFormInputs() {
 
     //  delete checkoutForm.dataset.staffId;
   }
+
+  // Clear Checkout Form Inputs
+  if (updatePartialPaymentForm) {
+    updatePartialPaymentForm
+      .querySelectorAll('input, textarea, select')
+      .forEach((el) => {
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          el.checked = false;
+        } else if (el.type === 'select-one') {
+          el.value = 'CARD';
+        } else {
+          el.value = '';
+        }
+      });
+
+    const partialPaymentStatusText = document.querySelector(
+      '.partialPaymentStatusText'
+    );
+    if (partialPaymentStatusText)
+      partialPaymentStatusText.textContent =
+        'Partial Payment Status: ₦0 paid | ₦0 remaining';
+
+    delete updatePartialPaymentForm.dataset.saleId;
+  }
 }
 
 // function to format amounts with commas
@@ -408,6 +435,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const soldProductPrice = document.getElementById('soldProductPrice');
   const amountPaid = document.getElementById('amount-paid');
   const productBalancePrice = document.getElementById('productBalancePrice');
+  const additionalSalePayment = document.getElementById(
+    'additionalSalePayment'
+  );
 
   if (posCapitalAmountInput)
     posCapitalAmountInput.addEventListener('input', function () {
@@ -514,6 +544,11 @@ document.addEventListener('DOMContentLoaded', function () {
       formatAmountWithCommasOnInput(productBalancePrice);
     });
 
+  if (additionalSalePayment)
+    additionalSalePayment.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(additionalSalePayment);
+    });
+
   if (amountPaid)
     amountPaid.addEventListener('input', function () {
       formatAmountWithCommasOnInput(amountPaid);
@@ -560,7 +595,7 @@ export function formatDateTimeReadable(isoString) {
   };
 
   // e.g., "14 May 2025, 10:46 AM"
-  const formatted = date.toLocaleString('en-US', options);
+  const formatted = date.toLocaleString('en-UK', options);
 
   // Optional tweak to remove the comma between day and year
   const parts = formatted.split(', ');
@@ -803,4 +838,62 @@ export function truncateProductUnitPrice(priceArray, options) {
   }
 
   return finalString;
+}
+
+export function getFilterDates(timeframe, elements) {
+  const { dayInput, weekInput, monthInput, customStart, customEnd } = elements;
+  let startDate, endDate;
+
+  switch (timeframe) {
+    case 'daily':
+      startDate = endDate = dayInput.value;
+      break;
+
+    case 'weekly':
+      const [year, week] = weekInput.value.split('-W');
+      if (year && week) {
+        const simple = new Date(year, 0, 1 + (week - 1) * 7);
+        const dow = simple.getDay();
+        const monday = new Date(simple);
+        if (dow <= 4) monday.setDate(simple.getDate() - simple.getDay() + 1);
+        else monday.setDate(simple.getDate() + 8 - simple.getDay());
+
+        const sunday = new Date(monday);
+        sunday.setDate(monday.getDate() + 6);
+
+        startDate = monday.toISOString().split('T')[0];
+        endDate = sunday.toISOString().split('T')[0];
+      }
+      break;
+
+    case 'monthly':
+      const [y, m] = monthInput.value.split('-');
+      const first = new Date(y, m - 1, 1);
+      const last = new Date(y, m, 0);
+      startDate = first.toISOString().split('T')[0];
+      endDate = last.toISOString().split('T')[0];
+      break;
+
+    case 'custom':
+      startDate = customStart.value;
+      endDate = customEnd.value;
+      break;
+  }
+
+  return { startDate, endDate };
+}
+
+// Convert date object to yyyy-mm-dd string
+function formatDate(date) {
+  return date.toISOString().split('T')[0];
+}
+
+// Get Monday of a specific ISO week
+function getDateOfISOWeek(week, year) {
+  const simple = new Date(year, 0, 1 + (week - 1) * 7);
+  const day = simple.getDay();
+  const ISOweekStart = simple;
+  if (day <= 4) ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
+  else ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
+  return ISOweekStart;
 }

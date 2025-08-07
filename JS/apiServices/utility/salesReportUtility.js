@@ -4,7 +4,9 @@ import config from '../../../config';
 import {
   clearReceiptDiv,
   formatAmountWithCommas,
+  formatAmountWithCommasOnInput,
   formatSaleStatus,
+  getAmountForSubmission,
   hideBtnLoader,
   hideGlobalLoader,
   showBtnLoader,
@@ -17,7 +19,11 @@ import {
   getProductCategories,
   getProductInventory,
 } from '../inventory/inventoryResources';
-import { getSaleById, getSalesByProduct } from '../sales/salesResources';
+import {
+  getSaleById,
+  getSalesByProduct,
+  updatePartialPayment,
+} from '../sales/salesResources';
 import { closeModal, showToast } from '../../script';
 import { fetchShopDetail } from '../shop/shopResource';
 
@@ -561,6 +567,13 @@ export async function updateSalesReceipt(e, row) {
   openSaleDetailsModal();
   const saleId = row.dataset.saleId;
 
+  const updatePartialPaymentForm = document.querySelector(
+    '.updatePartialPaymentForm'
+  );
+
+  updatePartialPaymentForm.dataset.saleId = saleId;
+  updatePartialPaymentForm.classList.add('hidden');
+
   // Get Sales by ID
   try {
     showGlobalLoader();
@@ -581,6 +594,8 @@ export async function updateSalesReceipt(e, row) {
       closeModal();
       return;
     }
+
+    //  console.log(saleDetails.data);
 
     const {
       Account,
@@ -619,7 +634,7 @@ export async function updateSalesReceipt(e, row) {
       `${Account?.first_name} ${Account?.last_name}` || 'N/A';
     document.getElementById('soldDetailDate').textContent = new Date(
       sale_time
-    ).toLocaleString('en-US', {
+    ).toLocaleString('en-UK', {
       hour12: true,
       year: 'numeric',
       month: 'numeric',
@@ -667,6 +682,26 @@ export async function updateSalesReceipt(e, row) {
                      `;
       itemsTableBody.appendChild(itemRow);
     });
+
+    // Update partial payment section
+
+    // Check reports.js for the continuation of this logic - Search updatePartialPaymentForm(...)
+
+    const updatePartialPaymentForm = document.querySelector(
+      '.updatePartialPaymentForm'
+    );
+
+    if (status === 'PARTIAL_PAYMENT') {
+      updatePartialPaymentForm.classList.remove('hidden');
+
+      document.querySelector(
+        '.partialPaymentStatusText'
+      ).textContent = `Partial Payment Status: ₦${formatAmountWithCommas(
+        amount_paid
+      )} paid | ₦${formatAmountWithCommas(balance)} remaining`;
+    } else {
+      updatePartialPaymentForm.classList.add('hidden');
+    }
 
     // Print & Download
 
@@ -831,6 +866,74 @@ export async function updateSalesReceipt(e, row) {
   }
 }
 
+export function updatePartialPaymentForm(renderTableCallback, callbackArgs) {
+  const form = document.querySelector('.updatePartialPaymentForm');
+
+  if (!form || form.dataset.bound === 'true') return;
+
+  form.dataset.bound = 'true';
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const updatePartialPaymentTypeOption = document.getElementById(
+        'updatePartialPaymentTypeOption'
+      ).value;
+      const additionalSalePayment = document.getElementById(
+        'additionalSalePayment'
+      ).value;
+      const updatePaymentSubmitBtn = document.querySelector(
+        '.updatePaymentSubmitBtn'
+      );
+
+      const saleId = form.dataset.saleId;
+
+      const updatePartialPaymentDetails = {
+        additionalPayment: Number(
+          getAmountForSubmission(additionalSalePayment)
+        ),
+        paymentMethod: updatePartialPaymentTypeOption.toUpperCase(),
+      };
+
+      console.log('Update Partial Payment Data:', updatePartialPaymentDetails);
+
+      try {
+        showGlobalLoader();
+        showBtnLoader(updatePaymentSubmitBtn);
+
+        const updatePartialPaymentData = await updatePartialPayment(
+          updatePartialPaymentDetails,
+          saleId
+        );
+
+        if (updatePartialPaymentData) {
+          hideBtnLoader(updatePaymentSubmitBtn);
+          hideGlobalLoader();
+          closeModal();
+
+          showToast('success', `✅ ${updatePartialPaymentData.message}`);
+
+          // ✅ Re-render table if callback exists
+
+          if (typeof renderTableCallback === 'function') {
+            await renderTableCallback(...callbackArgs);
+          }
+        }
+
+        console.log(updatePartialPaymentData);
+      } catch (error) {
+        console.error('Error updating partial payment:', error);
+        showToast('fail', `❎ ${error.message}`);
+      } finally {
+        hideBtnLoader(updatePaymentSubmitBtn);
+        hideGlobalLoader();
+        closeModal();
+      }
+    });
+  }
+}
+
 // Display individual Sales Report
 
 export function renderReceiptPrintHTML(saleDetails, shopDetails) {
@@ -852,7 +955,7 @@ export function renderReceiptPrintHTML(saleDetails, shopDetails) {
     saleDetails.Account?.last_name
   }</p>
       <p  class="mb-1" >Date: ${new Date(saleDetails.sale_time).toLocaleString(
-        'en-US',
+        'en-UK',
         {
           hour12: true,
           year: 'numeric',
@@ -913,6 +1016,8 @@ export function updateStaffSalesData(
   staffSalesSummary,
   shopId
 ) {
+  console.log(staffSalesList, staffSalesSummary, shopId);
+
   const staffTotalSale = document.getElementById(
     `staffTotal-sales_admin_${shopId}`
   );
@@ -936,13 +1041,23 @@ export function updateStaffSalesData(
     `#staffSalesTable_admin_${shopId} tbody`
   );
 
-  if (!staffSalesSummary || !staffSalesList) {
-    console.error('staffSalesSummary/staffSalesList is undefined:');
-    return;
+  //   if (!staffSalesSummary || !staffSalesList) {
+  //     console.error('staffSalesSummary/staffSalesList is undefined:');
+  //     return;
+  //   }
+
+  let summary = staffSalesSummary;
+
+  if (!summary) {
+    summary = {
+      totalSales: staffSalesList.length,
+      totalAmount: staffSalesList.reduce((acc, s) => acc + s.total_amount, 0),
+      totalPaid: staffSalesList.reduce((acc, s) => acc + s.amount_paid, 0),
+      totalBalance: staffSalesList.reduce((acc, s) => acc + s.balance, 0),
+    };
   }
 
-  const { totalSales, totalAmount, totalPaid, totalBalance } =
-    staffSalesSummary;
+  const { totalSales, totalAmount, totalPaid, totalBalance } = summary;
 
   const totalCostPrice = staffSalesList.reduce((sum, sale) => {
     return (

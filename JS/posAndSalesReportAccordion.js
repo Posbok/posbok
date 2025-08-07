@@ -454,6 +454,58 @@ export function getAdminSalesReportHtml(shop) {
                   </select>
                </div>
 
+               <!-- Check Duration Performance -->
+               <div class="pos-method-form_input">
+                  <label for="reportStaffTimeframeDropdown_admin_${shop.id}">Select Timeframe</label>
+
+                  <select id="reportStaffTimeframeDropdown_admin_${shop.id}" class="form-control" required>
+                     <option value="none">Select Timeframe</option>
+                     <option value="daily">Daily</option>
+                     <option value="weekly">Weekly</option>
+                     <option value="monthly">Monthly</option>
+                     <option value="custom">Custom</option>
+
+                  </select>
+               </div>
+
+               <div class="timeframe-inputs" id="timeframeInputs_admin_${shop.id}">
+  <!-- Daily -->
+  <div class="timeframe-group daily-input hidden mt-2">
+    <label>Select Date</label>
+    <input type="date" class="form-control" id="dailyInput"/>
+  </div>
+
+  <!-- Weekly -->
+  <div class="timeframe-group weekly-input hidden mt-2">
+    <label>Select Week</label>
+  <input type="week" class="form-control" id="weeklyInput" />
+</div>
+
+  <!-- Monthly -->
+  <div class="timeframe-group monthly-input hidden mt-2">
+    <label>Select Month/Year</label>
+    <input type="month" class="form-control" id="monthlyInput"/>
+  </div>
+
+  <!-- Custom -->
+  <div class="timeframe-group custom-input hidden mt-2">
+    <label>Start Date</label>
+    <input type="date" class="form-control" id="customStartInput" />
+
+    <label>End Date</label>
+    <input type="date" class="form-control" id="customEndInput"/>
+  </div>
+</div>
+
+<div style="">
+   <div class="timeframe-actions mt-2">
+      <button id="applyFilterBtn_admin_${shop.id}" class="apply-filter hidden hero-btn-dark">Apply Filter</button>
+
+      <button id="resetFilterBtn_admin_${shop.id}" class="reset-filter hidden hero-btn-outline" >Reset Filter</button>
+   </div>
+
+</div>
+
                <div class="sales-summary">
                   <div class="summary-card">
                      <h3>Total Sales</h3>
@@ -846,7 +898,7 @@ export async function renderPosTable({
 
       allPosTransactions.forEach((tx) => {
         const dateObj = new Date(tx.business_day);
-        const dateKey = dateObj.toLocaleDateString('en-US', {
+        const dateKey = dateObj.toLocaleDateString('en-UK', {
           year: 'numeric',
           month: 'long',
           day: 'numeric',
@@ -1062,7 +1114,7 @@ export async function renderSalesTable({
       // Now, iterate over the enriched data to group by date and render
       enrichedSalesTransactions.forEach((sl) => {
         const dateObj = new Date(sl.business_day);
-        const dateKey = dateObj.toLocaleDateString('en-US', {
+        const dateKey = dateObj.toLocaleDateString('en-UK', {
           year: 'numeric',
           month: 'long',
           day: 'numeric',

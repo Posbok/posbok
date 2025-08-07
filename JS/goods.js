@@ -494,7 +494,10 @@ export function createProductForm() {
           const inventoryData = await addInventory(addInventoryDetails, shopId);
 
           if (inventoryData) {
-            showToast('success', `✅ ${inventoryData.message}`);
+            showToast(
+              'success',
+              `✅ ${inventoryData.message} Product ID: ${productId}`
+            );
             closeModal();
             clearFormInputs();
             await renderProductInventoryTable(shopId);
@@ -1369,6 +1372,15 @@ if (isAdmin && adminAccordionContainer && container) {
                                Shop inventory
                              </h2>
 
+                             <div>
+                             <h2 class="heading-subtext ">Total Products: <span class="totalProductsCount_${shop.id}">0</span></h2>
+
+                             <h2 class="heading-subtext ">Total Products Worth: <span class="totalProductsWorth_${shop.id}">0</span></h2>
+
+                             <h2 class="heading-subtext ">Total Estimated Profits: <span class="totalProductsProfits_${shop.id}">0</span></h2>
+
+                             </div>
+
                               <div class="search-section_${shop.id} mb-2">
 
                                  <div class="inventory-method-form_input ml-1 mr-1">
@@ -1639,6 +1651,38 @@ export async function renderProductInventoryTable(shopId) {
     shopProductMap[shopId] = productInventories;
 
     console.log(productInventories);
+
+    const totalProductsCountElement = document.querySelector(
+      `.totalProductsCount_${shopId}`
+    );
+    const totalProductsWorthElement = document.querySelector(
+      `.totalProductsWorth_${shopId}`
+    );
+    const totalProductsProfitsElement = document.querySelector(
+      `.totalProductsProfits_${shopId}`
+    );
+
+    const totalProductsCount = productInventories?.length || 0;
+
+    const totalProductsWorth = productInventories?.reduce(
+      (acc, item) => acc + item.Product.purchase_price * item.quantity,
+      0
+    );
+
+    const totalProductSellingPrice = productInventories?.reduce(
+      (acc, item) => acc + item.Product.selling_price * item.quantity,
+      0
+    );
+
+    const totalProductProfits = totalProductSellingPrice - totalProductsWorth;
+
+    totalProductsCountElement.textContent = totalProductsCount;
+    totalProductsWorthElement.textContent =
+      `₦` + formatAmountWithCommas(totalProductsWorth);
+    totalProductsProfitsElement.textContent =
+      `₦` + formatAmountWithCommas(totalProductProfits);
+
+    console.log(totalProductProfits, totalProductsWorth, totalProductsCount);
 
     if (productInventories.length === 0) {
       const searchSection = document.querySelector(`.search-section_${shopId}`);

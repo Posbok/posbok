@@ -1388,7 +1388,7 @@ async function updateSalesReceipt(soldData) {
       `${Account?.first_name} ${Account?.last_name}` || 'N/A';
     document.getElementById('soldDetailDate').textContent = new Date(
       sale_time
-    ).toLocaleString('en-US', {
+    ).toLocaleString('en-UK', {
       hour12: true,
       year: 'numeric',
       month: 'numeric',
@@ -1641,7 +1641,7 @@ function renderReceiptPrintHTML(saleDetails, shopDetails) {
     saleDetails.Account?.last_name
   }</p>
       <p  class="mb-1" >Date: ${new Date(saleDetails.sale_time).toLocaleString(
-        'en-US',
+        'en-UK',
         {
           hour12: true,
           year: 'numeric',

@@ -59,7 +59,7 @@ label {
    font-size: 1.8rem;
    font-weight: 500;
    margin-bottom: .5rem;
-   color: $color-secondary-dark;
+   // color: $color-secondary-dark;
 }
 
 .input-container {
@@ -685,6 +685,10 @@ button:disabled:hover {
 }
 
 // Margin Right
+
+.mr-0 {
+   margin-right: 0rem !important;
+}
 
 .mr-1 {
    margin-right: 1rem;

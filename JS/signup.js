@@ -77,7 +77,7 @@ if (createbusinessForm) {
         showToast('success', `✅ ${data.message}`);
 
         //   console.log(data);
-        redirectWithDelay('Admin Creation Page', 'signup.html', 500);
+        //   redirectWithDelay('Admin Creation Page', 'signup.html', 500);
         //   window.location.href = 'signup.html';
       })
       .catch((data) => {
@@ -208,7 +208,7 @@ if (signupForm) {
         'fail',
         '❎ No Business ID! Kindly create a Business before creeating an Admin'
       );
-      redirectWithDelay('Create Business Page', 'createbusiness.html', 500);
+      // redirectWithDelay('Create Business Page', 'createbusiness.html', 500);
       return;
     }
 
@@ -217,7 +217,7 @@ if (signupForm) {
         //   console.log('✅ Registered successfully:', data);
         showToast('success', `✅ ${data.message}`);
 
-        redirectWithDelay('Login Page', 'login.html', 500);
+        //   redirectWithDelay('Login Page', 'login.html', 500);
       })
       .catch((data) => {
         console.error('❎ Failed to register:', data.message);

@@ -172,23 +172,31 @@ body {
 // Toast styling
 .toast {
    visibility: hidden;
-   min-width: 25rem;
+   opacity: 0;
+   min-width: 50%;
+   min-height: 20%;
+
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+
    background-color: $color-primary-light;
    color: $color-grey-light-1;
    text-align: center;
    border-radius: 10px;
-   padding: 1.2rem;
+   padding: 1.8rem;
    position: fixed;
    z-index: 100000000000;
    left: 50%;
-   top: 3rem;
-   transform: translateX(-50%);
+   top: 50%;
+   transform: translate(-50%, -50%);
+   // top: 0;
+   // transform: translateX(-50%);
    font-size: 1.6rem;
    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
-   opacity: 0;
    transition: opacity 0.3s ease, top 0.3s ease;
-   top: 0;
 }
 
 // Success toast
@@ -218,7 +226,7 @@ body {
 
    visibility: visible;
    opacity: 1;
-   top: 3rem;
+   // top: 3rem;
 }
 
 // // Toast fade in

@@ -496,7 +496,12 @@
       </div>
    </main>
 
-   <div id="toast" class="toast">This is a toast message!</div>
+   <div id="toast" class="toast">
+      <h4 class="toast-message heading-subtext center-text mb-2">This is a toast message!</h4>
+
+      <button class="close-toast hero-btn-dark mr-0">Okay</button>
+
+   </div>
    <div id="global-loader" class="loader-overlay hidden">
       <div class="spinner"></div>
    </div>
@@ -507,7 +512,7 @@
 
 
    <!-- Sold Items Report Modals -->
-   <form class="modal-form soldDetailModal soldDetailModalContainer" name="modal">
+   <div class="modal-form soldDetailModal soldDetailModalContainer" name="modal">
       <div class="card saleDetails modal">
 
          <div class="reports  mt-4 mb-4">
@@ -577,8 +582,9 @@
 
             </div>
 
-            <div class="center-button">
-               <button class="hero-btn-dark printReceiptBtn  mt-2 mb-1  has-spinner" type="button">
+            <div class="center-button mb-2">
+               <button class="hero-btn-dark printReceiptBtn  mt-2 mb-1  has-spinner" type="button"
+                  style="margin-bottom: 1rem !important;">
                   <span class="btn-text">Generate Receipt </span>
                   <span class="btn-spinner hidden"></span>
                </button>
@@ -589,11 +595,50 @@
                </button>
 
             </div>
+
+            <form class="reports-method updatePartialPaymentForm hidden">
+               <div>
+                  <h1 class="heading-text center-text mt-2">MAKE ADDITIONAL PAYMENT</h1>
+
+                  <h2 class="heading-subtext mt-2 partialPaymentStatusText">Partial Payment Status: ₦0 paid | ₦0
+                     remaining
+                  </h2>
+
+                  <div class="modal-form_input">
+                     <label for="additionalSalePayment">Additional Payment</label>
+
+                     <div class="naira-input-container">
+                        <input id="additionalSalePayment" type="text" placeholder="Enter Additional Amount"
+                           name="additionalSalePayment" oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
+                        <span class="naira">&#x20A6;</span>
+                     </div>
+                  </div>
+
+                  <div class="modal-form_input salesPaymentType">
+                     <label for="updatePartialPaymentTypeOption">Select Payment Type:</label>
+
+                     <select id="updatePartialPaymentTypeOption" name="updatePartialPaymentTypeOption">
+                        <option value="CARD">Card</option>
+                        <option value="TRANSFER">Transfer</option>
+                        <option value="CASH">Cash</option>
+                     </select>
+                  </div>
+
+                  <div class="center-button">
+                     <button class="hero-btn-dark mb-2 updatePaymentSubmitBtn has-spinner" type="submit">
+                        <span class="btn-text">Update Payment</span>
+                        <span class="btn-spinner hidden"></span>
+                     </button>
+                     <!-- <button class="hero-btn-dark sellProductActionButton">Sell</button> -->
+                  </div>
+               </div>
+
+            </form>
          </div>
 
          <div class="close closeModal" id="">&times;</div>
       </div>
-   </form>
+   </div>
 
 
    <form class="add-user-form" name="add-user">
@@ -643,7 +688,7 @@
    </form>
 
 
-   <form class="modal-form createShopModal" name="modal" netlify>
+   <form class="modal-form createShopModal" name="modal">
       <div class="card createShop modal">
          <div>
             <h1 class="heading-text">Create Shop</h1>

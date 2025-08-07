@@ -141,8 +141,7 @@ export async function createProduct(shopId, productDetails) {
 
     if (fetchedData) {
       // console.log('Product added successfully:', fetchedData);
-      showToast('success', `✅ ${fetchedData.message}`);
-
+      // showToast('success', `✅ ${fetchedData.message}`);
       // Refresh the table list after successful configuration
       // getProductCategories();
     }

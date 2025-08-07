@@ -31,6 +31,35 @@ export async function createSale(saleDetails) {
   }
 }
 
+export async function updatePartialPayment(
+  updatePartialPaymentDetails,
+  saleId
+) {
+  try {
+    console.log('Sending POST request...');
+    const soldData = await safeFetch(`${baseUrl}/api/sales/${saleId}/payment`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatePartialPaymentDetails),
+    });
+
+    console.log('soldData received...');
+
+    //  if (soldData) {
+    //    // console.log('Sale added successfully:', soldData);
+    //    showToast('success', `✅ ${soldData.message}`);
+    //  }
+
+    //  console.log('soldData:', soldData);
+    return soldData;
+  } catch (error) {
+    console.error('Error Creating Sale:', error.message);
+  }
+}
+
 export async function getAllSales({
   shopId,
   page = 1,

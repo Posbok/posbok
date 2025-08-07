@@ -13,6 +13,8 @@ import {
   formatAmountWithCommas,
   formatSaleStatus,
   formatTransactionType,
+  getAmountForSubmission,
+  getFilterDates,
   hideBtnLoader,
   populateBusinessStaffDropdown,
   showBtnLoader,
@@ -26,6 +28,7 @@ import {
   getSaleById,
   getSalesByProduct,
   getSalesByStaff,
+  updatePartialPayment,
 } from './apiServices/sales/salesResources';
 import { closeModal, showToast } from './script';
 import html2pdf from 'html2pdf.js/dist/html2pdf.min.js';
@@ -54,6 +57,7 @@ import {
   renderReceiptPrintHTML,
   updateDailySalesData,
   updateMonthlySalesData,
+  updatePartialPaymentForm,
   updateSalesReceipt,
   updateStaffSalesData,
   updateTotalSalesAmounts,
@@ -612,7 +616,7 @@ if (isAdmin) {
       }
     }
 
-    // Sales Transactions
+    // Sales Transactions - ADMIN
     if (
       servicePermission === 'INVENTORY_SALES' ||
       servicePermission === 'BOTH'
@@ -631,6 +635,7 @@ if (isAdmin) {
             `loadMoreSaleButton_admin_${shopId}`
           ),
         });
+
         shopSalesTransactiionSection.dataset.loaded = 'true';
 
         // Render Daily sales Summary
@@ -766,29 +771,246 @@ if (isAdmin) {
 
         loadStaffDropdown();
 
+        // Staff Fiter logic
+        const dropdown = document.getElementById(
+          `reportStaffTimeframeDropdown_admin_${shopId}`
+        );
+        const container = document.getElementById(
+          `timeframeInputs_admin_${shopId}`
+        );
+
+        const applyFilterBtn = document.getElementById(
+          `applyFilterBtn_admin_${shopId}`
+        );
+
+        const resetFilterBtn = document.getElementById(
+          `resetFilterBtn_admin_${shopId}`
+        );
+
+        if (dropdown) {
+          dropdown.addEventListener('change', (e) => {
+            const selected = e.target.value;
+
+            // Hide all inputs first
+            container.querySelectorAll('.timeframe-group').forEach((div) => {
+              div.classList.add('hidden');
+            });
+
+            // Show relevant inputs
+            container
+              .querySelector(`.${selected}-input`)
+              ?.classList.remove('hidden');
+
+            applyFilterBtn?.classList.remove('hidden');
+            resetFilterBtn?.classList.remove('hidden');
+          });
+        }
+
+        applyFilterBtn?.addEventListener('click', () => {
+          if (fullStaffSalesList.length > 0) {
+            filterAndRenderStaffSales(fullStaffSalesList, null, shopId);
+          }
+        });
+
+        resetFilterBtn?.addEventListener('click', () => {
+          resetStaffSalesFilter(shopId);
+        });
+
+        function resetStaffSalesFilter(shopId) {
+          console.log('reached');
+          const timeframeDropdown = document.querySelector(
+            `#reportStaffTimeframeDropdown_admin_${shopId}`
+          );
+
+          // Reset the dropdown selection
+          //  timeframeDropdown.value = 'none'; // or use the value of your "Select timeframe" default
+
+          // Optionally clear date inputs too
+          document.querySelector('#dailyInput').value = '';
+          document.querySelector('#weeklyInput').value = '';
+          document.querySelector('#monthlyInput').value = '';
+          document.querySelector('#customStartInput').value = '';
+          document.querySelector('#customEndInput').value = '';
+
+          // Show the original full sales list again (unfiltered)
+          updateStaffSalesData(fullStaffSalesList, null, shopId);
+        }
+
+        let fullStaffSalesList = [];
+
         reportStaffDropdown.addEventListener('change', async () => {
           const staffId = reportStaffDropdown.value;
-
           const staffSalesResponse = await getSalesByStaff(staffId);
 
           if (!staffSalesResponse) {
             hideGlobalLoader();
-            console.error('Error receiveing Staff Sales Data');
+            console.error('Error receiving Staff Sales Data');
             showToast('fail', `❎ ${staffSalesResponse.message}`);
             return;
           }
 
           const staffSalesDetails = staffSalesResponse.data;
-          const staffSalesList = staffSalesDetails.sales;
+          fullStaffSalesList = staffSalesDetails.sales;
           const staffSalesSummary = staffSalesDetails.summary;
 
-          //  Staff Overview / Staff Performance
+          console.log(fullStaffSalesList); // This is currently ogging correctly
 
-          updateStaffSalesData(staffSalesList, staffSalesSummary, shopId);
+          const selectedTimeframe = document.querySelector(
+            `#reportStaffTimeframeDropdown_admin_${shopId}`
+          ).value;
+
+          if (!selectedTimeframe || selectedTimeframe === 'none') {
+            // Show all sales
+            updateStaffSalesData(fullStaffSalesList, staffSalesSummary, shopId);
+          } else {
+            // Filter based on selected timeframe
+            filterAndRenderStaffSales(
+              fullStaffSalesList,
+              staffSalesSummary,
+              shopId
+            );
+          }
         });
+
+        updatePartialPaymentForm(renderSalesTable, [
+          {
+            page: shopPageTracker[shopId],
+            limit,
+            filters,
+            shopId,
+            tableBodyId: `#sale-tbody-${shopId}`,
+            loadMoreButton: document.getElementById(
+              `loadMoreSaleButton_admin_${shopId}`
+            ),
+          },
+        ]);
       }
     }
   });
+}
+
+// function updatePartialPaymentForm(
+//   renderSalesTableCallback,
+//   shopId,
+//   limit,
+//   filters
+// ) {
+//   const form = document.querySelector('.updatePartialPaymentForm');
+
+//   if (!form || form.dataset.bound === 'true') return;
+
+//   form.dataset.bound = 'true';
+
+//   if (form) {
+//     form.addEventListener('submit', async function (e) {
+//       e.preventDefault();
+
+//       const updatePartialPaymentTypeOption = document.getElementById(
+//         'updatePartialPaymentTypeOption'
+//       ).value;
+//       const additionalSalePayment = document.getElementById(
+//         'additionalSalePayment'
+//       ).value;
+//       const updatePaymentSubmitBtn = document.querySelector(
+//         '.updatePaymentSubmitBtn'
+//       );
+
+//       const saleId = form.dataset.saleId;
+
+//       const updatePartialPaymentDetails = {
+//         additionalPayment: Number(
+//           getAmountForSubmission(additionalSalePayment)
+//         ),
+//         paymentMethod: updatePartialPaymentTypeOption.toUpperCase(),
+//       };
+
+//       console.log('Update Partial Payment Data:', updatePartialPaymentDetails);
+
+//       try {
+//         showGlobalLoader();
+//         showBtnLoader(updatePaymentSubmitBtn);
+
+//         const updatePartialPaymentData = await updatePartialPayment(
+//           updatePartialPaymentDetails,
+//           saleId
+//         );
+
+//         if (updatePartialPaymentData) {
+//           hideBtnLoader(updatePaymentSubmitBtn);
+//           hideGlobalLoader();
+//           closeModal();
+
+//           showToast('success', `✅ ${updatePartialPaymentData.message}`);
+
+//           // ✅ Re-render table if callback exists
+
+//           //  if (isAdmin) {
+//           if (typeof renderSalesTableCallback === 'function') {
+//             await renderSalesTableCallback({
+//               page: shopPageTracker[shopId],
+//               limit,
+//               filters,
+//               shopId,
+//               tableBodyId: `#sale-tbody-${shopId}`,
+//               loadMoreButton: document.getElementById(
+//                 `loadMoreSaleButton_admin_${shopId}`
+//               ),
+//             });
+//           }
+//           //  } else if (isStaff) {
+//           //  }
+//         }
+
+//         console.log(updatePartialPaymentData);
+//       } catch (error) {
+//         console.error('Error updating partial payment:', error);
+//         showToast('fail', `❎ ${error.message}`);
+//       } finally {
+//         hideBtnLoader(updatePaymentSubmitBtn);
+//         hideGlobalLoader();
+//         closeModal();
+//       }
+//     });
+//   }
+// }
+
+function filterAndRenderStaffSales(salesList, staffSalesSummary, shopId) {
+  const timeframe = document.querySelector(
+    `#reportStaffTimeframeDropdown_admin_${shopId}`
+  ).value;
+
+  console.log(timeframe);
+
+  const dates = getFilterDates(timeframe, {
+    dayInput: document.querySelector('#dailyInput'),
+    weekInput: document.querySelector('#weeklyInput'),
+    monthInput: document.querySelector('#monthlyInput'),
+    customStart: document.querySelector('#customStartInput'),
+    customEnd: document.querySelector('#customEndInput'),
+  });
+
+  if (!dates?.startDate || !dates?.endDate) {
+    console.warn('Dates are missing, skipping filter...');
+    return;
+  }
+
+  //   console.log(dates);
+
+  const start = new Date(dates.startDate);
+  start.setHours(0, 0, 0, 0); // Start of day
+
+  const end = new Date(dates.endDate);
+  end.setHours(23, 59, 59, 999); // End of day
+
+  const filteredSales = salesList.filter((sale) => {
+    const saleDate = new Date(sale.created_at);
+    //  console.log('saleDate:', saleDate);
+    //  console.log('start:', start);
+    //  console.log('end:', end);
+    return saleDate >= start && saleDate <= end;
+  });
+
+  updateStaffSalesData(filteredSales, staffSalesSummary, shopId);
 }
 
 // Open Sale Detail Modal
@@ -940,7 +1162,7 @@ if (isStaff) {
           filters,
         });
 
-        console.log(result);
+        //   console.log(result);
 
         if (!result) throw new Error(result.message || 'Failed to fetch');
 
@@ -973,7 +1195,7 @@ if (isStaff) {
 
         allPosTransactions.forEach((tx) => {
           const dateObj = new Date(tx.business_day);
-          const dateKey = dateObj.toLocaleDateString('en-US', {
+          const dateKey = dateObj.toLocaleDateString('en-UK', {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
@@ -1129,6 +1351,13 @@ if (isStaff) {
     ) {
       //  console.log('🧪 Applied Filters:', filters);
 
+      updatePartialPaymentForm(renderStaffSalesTable, [
+        1,
+        pageSize,
+        filters,
+        'staff',
+      ]);
+
       const salesTableBody = document.querySelector(
         `.soldTableDisplay_${role} tbody`
       );
@@ -1169,7 +1398,7 @@ if (isStaff) {
           filters,
         });
 
-        console.log(result);
+        //   console.log(result);
 
         if (!result) throw new Error(result.message || 'Failed to fetch');
 
@@ -1232,7 +1461,7 @@ if (isStaff) {
         // Now, iterate over the enriched data to group by date and render
         enrichedSalesTransactions.forEach((sl) => {
           const dateObj = new Date(sl.business_day);
-          const dateKey = dateObj.toLocaleDateString('en-US', {
+          const dateKey = dateObj.toLocaleDateString('en-UK', {
             year: 'numeric',
             month: 'long',
             day: 'numeric',

@@ -87,26 +87,38 @@ sideNavs.forEach((nav) => {
 
 export function showToast(type, message) {
   const toast = document.getElementById('toast');
+  const toastMessage = document.querySelector('.toast-message');
+  const closeToast = document.querySelector('.close-toast');
 
   if (!toast) {
     console.warn('⚠️ Toast element not found in DOM.');
     return;
   }
 
-  toast.textContent = message;
+  toastMessage.textContent = message;
   toast.className = 'toast'; // Reset classes
   toast.classList.add(type);
   toast.classList.add('show');
 
-  // Hide after 5 seconds
-  setTimeout(() => {
-    toast.classList.remove('show');
+  if (closeToast) {
+    closeToast.addEventListener('click', () => {
+      toast.classList.remove('show');
+      // setTimeout(() => {
+      //    toast.className = 'toast'; // Cleanup
+      //    toastMessage.textContent = '';
+      // }, 500); // Wait for transition to complete
+    });
+  }
 
-    setTimeout(() => {
-      toast.className = 'toast'; // Cleanup
-      toast.textContent = '';
-    }, 500); // Wait for transition to complete
-  }, 5000);
+  //   // Hide after 5 seconds
+  //   setTimeout(() => {
+  //     toast.classList.remove('show');
+
+  //     setTimeout(() => {
+  //       toast.className = 'toast'; // Cleanup
+  //       toast.textContent = '';
+  //     }, 500); // Wait for transition to complete
+  //   }, 5000);
 }
 
 //  Get & Update Profile
@@ -458,8 +470,10 @@ async function renderBusinessDayButtons() {
   );
 
   if (servicePermission === 'INVENTORY_SALES') {
-    openPosCapitalAmountLabel.innerText = 'Cash in Shop';
-    adminOpenPosCapitalAmount.innerText = 'Cash in Shop';
+    if (openPosCapitalAmountLabel)
+      openPosCapitalAmountLabel.innerText = 'Cash in Shop';
+    if (adminOpenPosCapitalAmount)
+      adminOpenPosCapitalAmount.innerText = 'Cash in Shop';
   }
 
   //   console.log(isStaff ? shopId : '');
