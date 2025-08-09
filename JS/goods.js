@@ -496,7 +496,7 @@ export function createProductForm() {
           if (inventoryData) {
             showToast(
               'success',
-              `✅ ${inventoryData.message} Product ID: ${productId}`
+              `✅ ${inventoryData.message} with Product ID: ${productId}`
             );
             closeModal();
             clearFormInputs();
@@ -529,6 +529,33 @@ export function bindAddExistingProductFormListener() {
   const form = document.querySelector('.addExistingProductModal');
   if (!form) return;
 
+  const newQtyInput = document.querySelector('#itemNewQuantityAvailable');
+  const prevQtyDisplay = document.querySelector(
+    '.itemPreviousQuantityAvailable'
+  );
+
+  newQtyInput.addEventListener('input', function (e) {
+    const prevQty = Number(form.dataset.previousQuantity || 0);
+    const newQty = Number(e.target.value);
+    if (!form.dataset.previousQuantity) {
+      prevQtyDisplay.innerText = 'Select a product first';
+      prevQtyDisplay.className =
+        'itemPreviousQuantityAvailable quantity-normal';
+      return;
+    }
+
+    if (!newQty || newQty <= 0) {
+      prevQtyDisplay.innerText = prevQty;
+      prevQtyDisplay.className =
+        'itemPreviousQuantityAvailable quantity-normal';
+      return;
+    }
+
+    // Show calculation
+    prevQtyDisplay.innerText = `${prevQty} + ${newQty} = ${prevQty + newQty}`;
+    prevQtyDisplay.className = 'itemPreviousQuantityAvailable quantity-preview';
+  });
+
   if (form) {
     form.addEventListener('submit', async function (e) {
       e.preventDefault();
@@ -537,6 +564,7 @@ export function bindAddExistingProductFormListener() {
 
       const productId = form.dataset.productId;
       const shopId = form.dataset.shopId;
+      const prevQty = Number(form.dataset.previousQuantity || 0);
 
       if (!productId) {
         showToast('fail', '❎ No Product selected for addExisting.');
@@ -548,16 +576,35 @@ export function bindAddExistingProductFormListener() {
         return;
       }
 
-      const itemQuantityAvailable = document.querySelector(
-        '#itemQuantityAvailable'
-      ).value;
-      const itemNewQuantityAvailable = document.querySelector(
-        '#itemNewQuantityAvailable'
+      // Subscripts
+      const itemPreviousPurchasePrice = document.querySelector(
+        '.itemPreviousPurchasePrice'
+      );
+      const itemPreviousSellingPrice = document.querySelector(
+        '.itemPreviousSellingPrice'
+      );
+      const itemPreviousQuantityAvailable = document.querySelector(
+        '.itemPreviousQuantityAvailable'
+      );
+
+      // Inputs
+
+      const itemNewPurchasePrice = document.querySelector(
+        '#itemNewPurchasePrice'
       ).value;
 
+      const itemNewSellingPrice = document.querySelector(
+        '#itemNewSellingPrice'
+      ).value;
+
+      const itemNewQuantityAvailable = document.querySelector(
+        '#itemNewQuantityAvailable'
+      );
+
       const updateItemQuantityDetails = {
-        quantity:
-          Number(itemQuantityAvailable) + Number(itemNewQuantityAvailable),
+        sellingPrice: Number(getAmountForSubmission(itemNewSellingPrice)),
+        purchasePrice: Number(getAmountForSubmission(itemNewPurchasePrice)),
+        quantity: Number(prevQty) + Number(itemNewQuantityAvailable.value),
       };
 
       // console.log(
@@ -567,39 +614,77 @@ export function bindAddExistingProductFormListener() {
       //   shopId
       // );
 
+      const updateProductDetails = {
+        //   categoryId: updateProductCategory,
+        //   name: updateProductName,
+        //   description: updateProductDescription,
+        purchasePrice: Number(getAmountForSubmission(itemNewPurchasePrice)),
+        sellingPrice: Number(getAmountForSubmission(itemNewSellingPrice)),
+      };
+
+      const updateInventoryDetails = {
+        quantity: Number(prevQty) + Number(itemNewQuantityAvailable.value),
+      };
+
       const addExistingProductModalBtn = document.querySelector(
         '.addExistingProductModalBtn'
       );
 
       try {
         showBtnLoader(addExistingProductModalBtn);
-        const updateItemQuantityData = await updateProductInventory(
-          updateItemQuantityDetails,
-          shopId,
-          productId
+        const updatedProductData = await updateProduct(
+          productId,
+          updateProductDetails,
+          shopId
         );
 
-        if (!updateItemQuantityData) {
-          console.error('fail', updateItemQuantityData.message);
+        if (!updatedProductData) {
+          console.error('fail', updatedProductData.message);
           return;
         }
 
-        if (updateItemQuantityData) {
-          showToast('success', `✅ ${updateItemQuantityData.message}`);
-          closeModal();
-          clearFormInputs();
-          await renderProductInventoryTable(shopId);
+        //   console.log('Adding Products with:', addProductDetails);
+
+        try {
+          const inventoryData = await updateProductInventory(
+            updateInventoryDetails,
+            shopId,
+            productId
+          );
+
+          if (inventoryData) {
+            showToast(
+              'success',
+              `✅ ${inventoryData.message} with Product ID: ${productId}`
+            );
+            closeModal();
+            clearFormInputs();
+            await renderProductInventoryTable(shopId);
+          }
+        } catch (inventoryDataErr) {
+          showToast(
+            'fail',
+            `❎ ${
+              inventoryDataErr.message || 'Failed to Add Existing Inventory'
+            }`
+          );
+          console.error(
+            'Error During Adding Existing Inventory:',
+            inventoryDataErr.message
+          );
         }
 
+        hideBtnLoader(addExistingProductModalBtn);
         //   hideGlobalLoader();
       } catch (err) {
         hideBtnLoader(addExistingProductModalBtn);
 
-        console.error('Error Updating product:', err);
-        showToast('fail', `❎ ${err.message}`);
+        console.error('Error During Adding Existing Product:', err);
+        showToast(
+          'fail',
+          `❎ ${err.message} || 'Failed to Add Existing Product'}`
+        );
         return;
-      } finally {
-        hideBtnLoader(addExistingProductModalBtn);
       }
     });
   }
@@ -871,9 +956,17 @@ async function fetchAllCategories() {
 // Update the autocomplete list with provided products
 function updateAutocompleteList(products) {
   adminAutocompleteList.innerHTML = '';
-  const itemQuantityAvailable = document.getElementById(
-    'itemQuantityAvailable'
+
+  const itemPreviousPurchasePrice = document.querySelector(
+    '.itemPreviousPurchasePrice'
   );
+  const itemPreviousSellingPrice = document.querySelector(
+    '.itemPreviousSellingPrice'
+  );
+  const itemPreviousQuantityAvailable = document.querySelector(
+    '.itemPreviousQuantityAvailable'
+  );
+
   const productInput = document.getElementById('productInput');
   const form = document.querySelector('.addExistingProductModal');
 
@@ -899,9 +992,20 @@ function updateAutocompleteList(products) {
         selectedProduct = product.Product; // Store selected product to later get the product ID
         //   console.log(product);
         form.dataset.productId = product.Product.id;
+        form.dataset.previousQuantity = product.quantity;
         //   form.dataset.shopId = product.Shop.id;
+
         productInput.value = product.Product.name;
-        itemQuantityAvailable.value = product.quantity;
+        itemPreviousPurchasePrice.innerText = formatAmountWithCommas(
+          product.Product.purchase_price
+        );
+        itemPreviousSellingPrice.innerText = formatAmountWithCommas(
+          product.Product.selling_price
+        );
+        itemPreviousQuantityAvailable.innerText = product.quantity;
+
+        document.querySelector('#itemNewQuantityAvailable').value = '';
+
         adminAutocompleteList.style.display = 'none';
       });
       adminAutocompleteList.appendChild(listItem);
@@ -994,7 +1098,10 @@ export function bindUpdateProductFormListener() {
           );
 
           if (inventoryData) {
-            showToast('success', `✅ ${inventoryData.message}`);
+            showToast(
+              'success',
+              `✅ ${inventoryData.message} with Product ID: ${productId}`
+            );
             closeModal();
             clearFormInputs();
             await renderProductInventoryTable(shopId);
@@ -1650,7 +1757,7 @@ export async function renderProductInventoryTable(shopId) {
 
     shopProductMap[shopId] = productInventories;
 
-    console.log(productInventories);
+    //  console.log(productInventories);
 
     const totalProductsCountElement = document.querySelector(
       `.totalProductsCount_${shopId}`
@@ -1682,7 +1789,7 @@ export async function renderProductInventoryTable(shopId) {
     totalProductsProfitsElement.textContent =
       `₦` + formatAmountWithCommas(totalProductProfits);
 
-    console.log(totalProductProfits, totalProductsWorth, totalProductsCount);
+    //  console.log(totalProductProfits, totalProductsWorth, totalProductsCount);
 
     if (productInventories.length === 0) {
       const searchSection = document.querySelector(`.search-section_${shopId}`);

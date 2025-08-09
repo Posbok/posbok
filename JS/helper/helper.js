@@ -438,6 +438,18 @@ document.addEventListener('DOMContentLoaded', function () {
   const additionalSalePayment = document.getElementById(
     'additionalSalePayment'
   );
+  const itemNewPurchasePrice = document.getElementById('itemNewPurchasePrice');
+  const itemNewSellingPrice = document.getElementById('itemNewSellingPrice');
+
+  if (itemNewSellingPrice)
+    itemNewSellingPrice.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(itemNewSellingPrice);
+    });
+
+  if (itemNewPurchasePrice)
+    itemNewPurchasePrice.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(itemNewPurchasePrice);
+    });
 
   if (posCapitalAmountInput)
     posCapitalAmountInput.addEventListener('input', function () {

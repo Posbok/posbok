@@ -99,7 +99,7 @@ select {
    font-size: 1.6rem;
    font-family: inherit;
    font-weight: 500;
-   color: $color-secondary-dark;
+   color: $color-secondary-dark ;
    border: none;
    background-color: #e9eff6;
    border-radius: 9px;
@@ -311,6 +311,7 @@ select {
          margin-top: 2rem;
          display: flex;
          align-items: center;
+         // gap: .5rem;
 
          &.sellStatus {
             display: block;
@@ -333,13 +334,41 @@ select {
             }
          }
 
+         .subscript-container {
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+            width: 100%;
+
+            #subscript-info {
+               font-size: small;
+               font-weight: bold;
+               text-align: left;
+               color: $color-grey-dark-2;
+            }
+
+            .quantity-preview {
+               font-size: 0.85em;
+               color: $color-primary-light;
+               font-style: italic;
+               transition: all 0.2s ease;
+            }
+
+            .quantity-normal {
+               font-size: 1em;
+               // color: #000;
+               font-style: normal;
+            }
+
+         }
+
          @media only screen and (max-width:$bp-small) {
             margin-top: 1.5rem;
             display: block;
          }
 
          label {
-            width: 20rem;
+            width: 19rem;
          }
 
 

@@ -612,18 +612,46 @@
             <ul class="autocomplete-list" id="addExistingAutocompleteList"></ul>
          </div>
 
-         <div class="modal-form_input">
+         <!-- Quantity Available -->
+         <!-- <div class="modal-form_input">
             <label for="itemQuantityAvailable">Quantity Available</label>
 
             <input id="itemQuantityAvailable" type="text" placeholder="Enter Current Quantity"
                name="itemQuantityAvailable" disabled required>
+         </div> -->
+
+         <!-- New Purchase Price Inout -->
+         <div class="modal-form_input">
+            <label for="newPurchasePrice">New Purchase Price</label>
+
+            <div class="subscript-container">
+               <input id="itemNewPurchasePrice" type="text" placeholder="Enter New Item Purchase Price"
+                  name="itemNewPurchasePrice" required>
+               <small id="subscript-info">Current Purchase Price: <span
+                     class="itemPreviousPurchasePrice">₦</span></small>
+            </div>
+         </div>
+
+         <!-- New Selling Price Inout -->
+         <div class="modal-form_input">
+            <label for="newSellingPrice">New Selling Price</label>
+
+            <div class="subscript-container">
+               <input id="itemNewSellingPrice" type="text" placeholder="Enter New Item Selling Price"
+                  name="itemNewSellingPrice" required>
+               <small id="subscript-info">Current Selling Price: <span class="itemPreviousSellingPrice">₦</span></small>
+            </div>
          </div>
 
          <div class="modal-form_input">
             <label for="newStockQuantity">New Stock Quantity</label>
 
-            <input id="itemNewQuantityAvailable" type="text" placeholder="Enter New Item Quantity"
-               name="itemNewQuantityAvailable" required>
+            <div class="subscript-container">
+               <input id="itemNewQuantityAvailable" type="text" placeholder="Enter New Item Quantity"
+                  name="itemNewQuantityAvailable" required>
+               <small id="subscript-info">Current Quantity Available:
+                  <span class="itemPreviousQuantityAvailable"></span> </small>
+            </div>
          </div>
 
          <div class="center-button">

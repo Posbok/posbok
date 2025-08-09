@@ -29,7 +29,7 @@ body {
     body::-webkit-scrollbar-thumb:active {
       background-color: #10AB2B; }
   body::-webkit-scrollbar-track {
-    background-color: #ebfbee; }
+    background-color: #fdfffd; }
 
 .container {
   overflow-x: hidden;
@@ -48,7 +48,7 @@ body {
         width: 100%; } }
 
 .card {
-  background-color: #ebfbee;
+  background-color: #fdfffd;
   background-size: cover;
   border: 1px solid #ddd;
   border-radius: 10px;
@@ -165,7 +165,7 @@ body.home {
   background-position: center; }
   body.home .heading-text {
     font-size: 3.5rem;
-    color: #ebfbee; }
+    color: #fdfffd; }
   body.home .account-overview {
     display: flex;
     justify-content: center;
@@ -195,7 +195,7 @@ body.home {
     body.home .account-overview .heading-subtext {
       font-weight: 600;
       font-size: 2rem;
-      color: #ebfbee; }
+      color: #fdfffd; }
     body.home .account-overview input {
       font-size: 1.7rem;
       font-weight: 600;
@@ -301,7 +301,7 @@ body.home {
             background: linear-gradient(to right bottom, rgba(41, 152, 255, 0.4), rgba(86, 67, 250, 0.2)); }
       body.home .action-group-name {
         font-size: 2rem;
-        color: #ebfbee;
+        color: #fdfffd;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -502,7 +502,7 @@ select {
       cursor: pointer; }
     .checkbox-container input:checked {
       background-color: #51cf66;
-      box-shadow: inset 0 0 0 1.5px #ebfbee; }
+      box-shadow: inset 0 0 0 1.5px #fdfffd; }
     .checkbox-container label {
       cursor: pointer; }
 
@@ -671,6 +671,72 @@ select {
     .business-form_input .password-container #password-mismatch,
     .business-form_input .password-container #same-password {
       font-size: medium; }
+  .addProduct-form_input .subscript-container,
+  .sellProduct-form_input .subscript-container,
+  .adminSellProduct-form_input .subscript-container,
+  .updateProduct-form_input .subscript-container,
+  .depositPosCapital-form_input .subscript-container,
+  .modal-form_input .subscript-container,
+  .slider-form_input .subscript-container,
+  .signup-form_input .subscript-container,
+  .addUser-form_input .subscript-container,
+  .addPosCharge-form_input .subscript-container,
+  .addMachineFee-form_input .subscript-container,
+  .inventory-form_input .subscript-container,
+  .business-form_input .subscript-container {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    width: 100%; }
+    .addProduct-form_input .subscript-container #subscript-info,
+    .sellProduct-form_input .subscript-container #subscript-info,
+    .adminSellProduct-form_input .subscript-container #subscript-info,
+    .updateProduct-form_input .subscript-container #subscript-info,
+    .depositPosCapital-form_input .subscript-container #subscript-info,
+    .modal-form_input .subscript-container #subscript-info,
+    .slider-form_input .subscript-container #subscript-info,
+    .signup-form_input .subscript-container #subscript-info,
+    .addUser-form_input .subscript-container #subscript-info,
+    .addPosCharge-form_input .subscript-container #subscript-info,
+    .addMachineFee-form_input .subscript-container #subscript-info,
+    .inventory-form_input .subscript-container #subscript-info,
+    .business-form_input .subscript-container #subscript-info {
+      font-size: small;
+      font-weight: bold;
+      text-align: left;
+      color: #15464C; }
+    .addProduct-form_input .subscript-container .quantity-preview,
+    .sellProduct-form_input .subscript-container .quantity-preview,
+    .adminSellProduct-form_input .subscript-container .quantity-preview,
+    .updateProduct-form_input .subscript-container .quantity-preview,
+    .depositPosCapital-form_input .subscript-container .quantity-preview,
+    .modal-form_input .subscript-container .quantity-preview,
+    .slider-form_input .subscript-container .quantity-preview,
+    .signup-form_input .subscript-container .quantity-preview,
+    .addUser-form_input .subscript-container .quantity-preview,
+    .addPosCharge-form_input .subscript-container .quantity-preview,
+    .addMachineFee-form_input .subscript-container .quantity-preview,
+    .inventory-form_input .subscript-container .quantity-preview,
+    .business-form_input .subscript-container .quantity-preview {
+      font-size: 0.85em;
+      color: #10AB2B;
+      font-style: italic;
+      transition: all 0.2s ease; }
+    .addProduct-form_input .subscript-container .quantity-normal,
+    .sellProduct-form_input .subscript-container .quantity-normal,
+    .adminSellProduct-form_input .subscript-container .quantity-normal,
+    .updateProduct-form_input .subscript-container .quantity-normal,
+    .depositPosCapital-form_input .subscript-container .quantity-normal,
+    .modal-form_input .subscript-container .quantity-normal,
+    .slider-form_input .subscript-container .quantity-normal,
+    .signup-form_input .subscript-container .quantity-normal,
+    .addUser-form_input .subscript-container .quantity-normal,
+    .addPosCharge-form_input .subscript-container .quantity-normal,
+    .addMachineFee-form_input .subscript-container .quantity-normal,
+    .inventory-form_input .subscript-container .quantity-normal,
+    .business-form_input .subscript-container .quantity-normal {
+      font-size: 1em;
+      font-style: normal; }
   @media only screen and (max-width: 30.5em) {
     .addProduct-form_input,
     .sellProduct-form_input,
@@ -700,7 +766,7 @@ select {
   .addMachineFee-form_input label,
   .inventory-form_input label,
   .business-form_input label {
-    width: 20rem; }
+    width: 19rem; }
   .addProduct-form_input input,
   .addProduct-form_input select,
   .sellProduct-form_input input,
@@ -1112,7 +1178,7 @@ button:disabled:hover {
   height: auto;
   width: 100%;
   background-color: #51cf66;
-  color: #ebfbee;
+  color: #fdfffd;
   padding: 2rem 0;
   display: flex;
   flex-direction: column;
@@ -1197,13 +1263,13 @@ button:disabled:hover {
             display: block;
             width: max-content; } }
       .sidebar .side-nav_item.active {
-        color: #ebfbee;
+        color: #fdfffd;
         background-color: #205329; }
     .sidebar .side-nav_item:hover {
       transition: background-size .3s .3s, background-position .3s;
       background-size: 200% 100%;
       background-position: 100% 100%;
-      color: #ebfbee; }
+      color: #fdfffd; }
     .sidebar .side-nav_link:link, .sidebar .side-nav_link:visited {
       color: white;
       text-decoration: none; }
@@ -1326,7 +1392,7 @@ body.authentication {
   justify-content: start; }
 
 .form-container {
-  background-color: #ebfbee;
+  background-color: #fdfffd;
   color: #205329;
   display: flex;
   align-items: center;
@@ -1359,10 +1425,19 @@ body.authentication {
   position: relative;
   overflow-y: auto;
   width: 80%;
-  max-height: 85vh;
-  height: 100%; }
+  width: min-content;
+  max-height: 85vh; }
   .authentication-container.login {
     max-height: 80vh; }
+    @media only screen and (min-width: 75em) {
+      .authentication-container.login {
+        width: 40%; } }
+    @media only screen and (max-width: 75em) {
+      .authentication-container.login {
+        width: 55%; } }
+    @media only screen and (max-width: 45.7em) {
+      .authentication-container.login {
+        width: 90%; } }
   @media only screen and (max-width: 45.7em) {
     .authentication-container {
       width: 90%; } }
@@ -1492,7 +1567,7 @@ body.authentication {
           .adminSellProduct-method-form_input #addExistingAutocompleteList::-webkit-scrollbar-track,
           .adminSellProduct-method-form_input .adminAutocomplete-list::-webkit-scrollbar-track,
           .adminSellProduct-method-form_input .autocomplete-list::-webkit-scrollbar-track {
-            background-color: #ebfbee; }
+            background-color: #fdfffd; }
         .sellProduct-method-form_input #addExistingAutocompleteList-item,
         .sellProduct-method-form_input .adminAutocomplete-list-item,
         .sellProduct-method-form_input .autocomplete-list-item,
@@ -1511,7 +1586,7 @@ body.authentication {
           .adminSellProduct-method-form_input .adminAutocomplete-list-item:hover,
           .adminSellProduct-method-form_input .autocomplete-list-item:hover {
             background-color: #0F7A89;
-            color: #ebfbee; }
+            color: #fdfffd; }
     .sellProduct-method-form .hero-btn-dark,
     .adminSellProduct-method-form .hero-btn-dark {
       margin-top: 3rem; }
@@ -1554,7 +1629,7 @@ body.authentication {
     #addExistingAutocompleteList::-webkit-scrollbar-track,
     .adminAutocomplete-list::-webkit-scrollbar-track,
     .autocomplete-list::-webkit-scrollbar-track {
-      background-color: #ebfbee; }
+      background-color: #fdfffd; }
   #addExistingAutocompleteList-item,
   .adminAutocomplete-list-item,
   .autocomplete-list-item {
@@ -1567,7 +1642,7 @@ body.authentication {
     .adminAutocomplete-list-item:hover,
     .autocomplete-list-item:hover {
       background-color: #0F7A89;
-      color: #ebfbee; }
+      color: #fdfffd; }
 
 .sellProductCategory-section,
 .adminSellProductCategory-section {
@@ -1699,7 +1774,7 @@ body.authentication {
   height: 100vh;
   overflow: hidden;
   color: #205329;
-  background-color: #ebfbee;
+  background-color: #fdfffd;
   z-index: 99999;
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
   transform: translateX(100%);
@@ -2457,7 +2532,7 @@ body.authentication {
         .inventory-method .inventory-table-container .reports-table thead {
           position: sticky;
           top: 0;
-          background-color: #ebfbee;
+          background-color: #fdfffd;
           z-index: 1; }
       .reports-method .reports-table-container .table-header-row,
       .reports-method .product-table-container .table-header-row,
@@ -2920,7 +2995,7 @@ body.authentication {
       .inventory-method .category-table-container .table-body-row:hover,
       .inventory-method .inventory-table-container .table-body-row:hover {
         background-color: #0F7A89;
-        color: #ebfbee; }
+        color: #fdfffd; }
         .reports-method .reports-table-container .table-body-row:hover .hero-btn-light,
         .reports-method .product-table-container .table-body-row:hover .hero-btn-light,
         .reports-method .shops-table-container .table-body-row:hover .hero-btn-light,
@@ -2977,7 +3052,7 @@ body.authentication {
         .inventory-method .machineFee-table-container .table-body-row:hover .hero-btn-light,
         .inventory-method .category-table-container .table-body-row:hover .hero-btn-light,
         .inventory-method .inventory-table-container .table-body-row:hover .hero-btn-light {
-          background-color: #ebfbee;
+          background-color: #fdfffd;
           color: #0F7A89; }
         .reports-method .reports-table-container .table-body-row:hover .hero-btn-outline,
         .reports-method .product-table-container .table-body-row:hover .hero-btn-outline,
@@ -3035,7 +3110,7 @@ body.authentication {
         .inventory-method .machineFee-table-container .table-body-row:hover .hero-btn-outline,
         .inventory-method .category-table-container .table-body-row:hover .hero-btn-outline,
         .inventory-method .inventory-table-container .table-body-row:hover .hero-btn-outline {
-          background-color: #ebfbee;
+          background-color: #fdfffd;
           color: #0F7A89; }
           .reports-method .reports-table-container .table-body-row:hover .hero-btn-outline:active,
           .reports-method .product-table-container .table-body-row:hover .hero-btn-outline:active,
@@ -3121,7 +3196,7 @@ body.authentication {
     .reports-table-container .reports-table thead {
       position: sticky;
       top: 0;
-      background-color: #ebfbee;
+      background-color: #fdfffd;
       z-index: 1; }
   .reports-table-container .table-header-row {
     color: #15464C;
@@ -3144,12 +3219,12 @@ body.authentication {
       font-size: 1.6rem; }
   .reports-table-container .table-body-row:hover {
     background-color: #0F7A89;
-    color: #ebfbee; }
+    color: #fdfffd; }
     .reports-table-container .table-body-row:hover .hero-btn-light {
-      background-color: #ebfbee;
+      background-color: #fdfffd;
       color: #0F7A89; }
     .reports-table-container .table-body-row:hover .hero-btn-outline {
-      background-color: #ebfbee;
+      background-color: #fdfffd;
       color: #0F7A89; }
       .reports-table-container .table-body-row:hover .hero-btn-outline:active {
         background-color: #eef1f6; }
@@ -3159,7 +3234,7 @@ body.authentication {
   .accordion-container .accordion-toggle {
     width: 100%;
     text-align: left;
-    background-color: #ebfbee;
+    background-color: #fdfffd;
     cursor: pointer;
     transition: background-color 0.3s;
     margin-bottom: 0.3rem;
@@ -3178,7 +3253,7 @@ body.authentication {
       transition: transform 0.3s ease; }
     .accordion-container .accordion-toggle:hover, .accordion-container .accordion-toggle:active {
       background-color: #10AB2B;
-      color: #ebfbee; }
+      color: #fdfffd; }
       .accordion-container .accordion-toggle:hover .heading-subtext, .accordion-container .accordion-toggle:active .heading-subtext {
         color: inherit; }
       .accordion-container .accordion-toggle:hover .icon, .accordion-container .accordion-toggle:active .icon {
@@ -3194,11 +3269,11 @@ body.authentication {
     .accordion-container .accordion-section.active .accordion-toggle {
       background-color: #10AB2B; }
       .accordion-container .accordion-section.active .accordion-toggle .heading-subtext {
-        color: #ebfbee; }
+        color: #fdfffd; }
       .accordion-container .accordion-section.active .accordion-toggle .icon {
         transform: rotate(180deg);
         transition: transform 0.3s ease;
-        color: #ebfbee; }
+        color: #fdfffd; }
     .accordion-container .accordion-section.active .accordion-content {
       max-height: max-content;
       /* enough to show full content */ }

@@ -171,8 +171,8 @@ export async function addInventory(inventoryDetails, shopId) {
 
     if (fetchedData) {
       // console.log('Product added successfully:', fetchedData);
-      showToast('success', `✅ ${fetchedData.message}`);
-
+      // showToast('success', `✅ ${fetchedData.message}`);
+      // console.log('this toast is from addInventory');
       // Refresh the table list after successful configuration
       // getProductCategories();
     }
@@ -331,7 +331,7 @@ export async function updateProduct(productId, updateProductDetails, shopId) {
 
     if (updateProductData) {
       // console.log('Product info Updated successfully:', updateProductData);
-      showToast('success', `✅ ${updateProductData.message}`);
+      // showToast('success', `✅ ${updateProductData.message}`);
       await renderProductInventoryTable(shopId); // Refresh list or update UI
     }
 
@@ -398,7 +398,8 @@ export async function updateProductInventory(
 
     if (updateProductData) {
       // console.log('Product info Updated successfully:', updateProductData);
-      showToast('success', `✅ ${updateProductData.message}`);
+      // showToast('success', `✅ ${updateProductData.message} `);
+      // console.log('this toast is from updateProductInventory');
       await renderProductInventoryTable(shopId); // Refresh list or update UI
     }
 
