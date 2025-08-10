@@ -72,10 +72,11 @@ body {
   z-index: 100001; }
 
 .spinner {
-  width: 45px;
-  height: 45px;
-  border: 4px solid #ccc;
-  border-top: 4px solid #10AB2B;
+  width: 6rem;
+  height: 6rem;
+  background-image: url(/img/logo-3.png);
+  background-repeat: no-repeat;
+  background-size: contain;
   border-radius: 50%;
   animation: globalLoaderSpin 0.8s linear infinite; }
 

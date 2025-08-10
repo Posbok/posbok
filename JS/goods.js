@@ -565,6 +565,8 @@ export function bindAddExistingProductFormListener() {
       const productId = form.dataset.productId;
       const shopId = form.dataset.shopId;
       const prevQty = Number(form.dataset.previousQuantity || 0);
+      const prevPurchasePrice = Number(form.dataset.previousPurchasePrice) || 0;
+      const prevSellingPrice = Number(form.dataset.previousSellingPrice) || 0;
 
       if (!productId) {
         showToast('fail', '❎ No Product selected for addExisting.');
@@ -601,30 +603,32 @@ export function bindAddExistingProductFormListener() {
         '#itemNewQuantityAvailable'
       );
 
-      const updateItemQuantityDetails = {
-        sellingPrice: Number(getAmountForSubmission(itemNewSellingPrice)),
-        purchasePrice: Number(getAmountForSubmission(itemNewPurchasePrice)),
-        quantity: Number(prevQty) + Number(itemNewQuantityAvailable.value),
-      };
-
-      // console.log(
-      //   'Updating Product Detail with:',
-      //   updateItemQuantityDetails,
-      //   productId,
-      //   shopId
-      // );
-
       const updateProductDetails = {
         //   categoryId: updateProductCategory,
         //   name: updateProductName,
         //   description: updateProductDescription,
-        purchasePrice: Number(getAmountForSubmission(itemNewPurchasePrice)),
-        sellingPrice: Number(getAmountForSubmission(itemNewSellingPrice)),
+        purchasePrice:
+          itemNewPurchasePrice === '' || Number(itemNewPurchasePrice) < 0
+            ? prevPurchasePrice
+            : Number(getAmountForSubmission(itemNewPurchasePrice)),
+
+        sellingPrice:
+          itemNewSellingPrice === '' || Number(itemNewSellingPrice) < 0
+            ? prevSellingPrice
+            : Number(getAmountForSubmission(itemNewSellingPrice)),
       };
 
       const updateInventoryDetails = {
         quantity: Number(prevQty) + Number(itemNewQuantityAvailable.value),
       };
+
+      // console.log(
+      //   'Updating Product Detail with:',
+      //   updateProductDetails,
+      //   updateInventoryDetails,
+      //   productId,
+      //   shopId
+      // );
 
       const addExistingProductModalBtn = document.querySelector(
         '.addExistingProductModalBtn'
@@ -993,6 +997,8 @@ function updateAutocompleteList(products) {
         //   console.log(product);
         form.dataset.productId = product.Product.id;
         form.dataset.previousQuantity = product.quantity;
+        form.dataset.previousPurchasePrice = product.Product.purchase_price;
+        form.dataset.previousSellingPrice = product.Product.selling_price;
         //   form.dataset.shopId = product.Shop.id;
 
         productInput.value = product.Product.name;
