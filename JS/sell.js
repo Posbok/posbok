@@ -294,8 +294,11 @@ async function displayAllProducts() {
           (product) =>
             product.Product.name.toLowerCase().includes(inputValue) ||
             product.Product.description.toLowerCase().includes(inputValue) ||
-            product.Product.id.toString().includes(inputValue)
+            product.Product.id.toString().includes(inputValue) ||
+            product.Product.barcode.toLowerCase().includes(inputValue)
         );
+
+        //   console.log(filteredProducts);
 
         updateAutocompleteList(filteredProducts);
 

@@ -658,6 +658,66 @@ export function generateBarcode() {
   return prefix + body;
 }
 
+export function generateEAN13() {
+  // Step 1: Generate first 12 random digits
+  let code = '';
+  for (let i = 0; i < 12; i++) {
+    code += Math.floor(Math.random() * 10); // 0–9
+  }
+
+  // Step 2: Calculate checksum
+  let sum = 0;
+  for (let i = 0; i < 12; i++) {
+    let digit = parseInt(code.charAt(i), 10);
+    if (i % 2 === 0) {
+      // odd position in EAN (index starts at 0)
+      sum += digit;
+    } else {
+      // even position in EAN
+      sum += digit * 3;
+    }
+  }
+  const checksum = (10 - (sum % 10)) % 10;
+
+  // Step 3: Append checksum to get full EAN-13
+  return code + checksum;
+}
+
+export function getBarcodeFormat(barcode) {
+  // If contains letters → must use CODE128
+  if (/[a-zA-Z]/.test(barcode)) {
+    return 'CODE128';
+  }
+
+  // If only digits
+  if (/^\d+$/.test(barcode)) {
+    if (barcode.length === 13) {
+      return 'EAN13'; // ideal case
+    }
+    // Still numeric but not EAN13 length → fallback
+    return 'CODE128';
+  }
+
+  // Default fallback
+  return 'CODE128';
+}
+
+// export function generateBarcode() {
+//   const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+//   const alphanumerics = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+//   const prefix = letters.charAt(Math.floor(Math.random() * letters.length));
+
+//   let body = '';
+//   for (let i = 0; i < 9; i++) {
+//     body += alphanumerics.charAt(
+//       Math.floor(Math.random() * alphanumerics.length)
+//     );
+//   }
+
+//   return prefix + body;
+// }
+
 export function populateBusinessShopDropdown(
   shopList = [],
   dropdownId = 'inventoryShopDropdown'

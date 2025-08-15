@@ -1,5 +1,6 @@
 import config from '../config';
 import './script.js';
+
 import {
   addInventory,
   createProduct,
@@ -21,7 +22,9 @@ import {
   formatAmountWithCommas,
   formatAmountWithCommasOnInput,
   generateBarcode,
+  generateEAN13,
   getAmountForSubmission,
+  getBarcodeFormat,
   hideBtnLoader,
   hideGlobalLoader,
   showBtnLoader,
@@ -56,6 +59,8 @@ const parsedUserData = userData ? JSON.parse(userData) : null;
 
 const isAdmin = parsedUserData?.accountType === 'ADMIN';
 const isStaff = parsedUserData?.accountType === 'STAFF';
+
+const searchSellProdutItem = document.getElementById('searchSellProdutItem');
 
 if (isAdmin) {
   document.addEventListener('DOMContentLoaded', () => {
@@ -111,6 +116,21 @@ export function openUpdateProductButton() {
   if (sidebar) sidebar.classList.add('blur');
 
   //   updateProductForm();
+}
+
+// Print/ Download Product Barcode
+
+export function openProductBarcodeImageModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const getBarcodeImageContainer = document.querySelector(
+    '.getBarcodeImageContainer'
+  );
+
+  if (getBarcodeImageContainer)
+    getBarcodeImageContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
 }
 
 // Delete Product
@@ -434,6 +454,9 @@ export function createProductForm() {
         '#addProductDescription'
       ).value;
 
+      const addProductBarcode =
+        document.querySelector('#addProductBarcode').value;
+
       const addProductBoughtPrice = document.querySelector(
         '#addProductBoughtPrice'
       ).value;
@@ -446,13 +469,16 @@ export function createProductForm() {
         '#addProductQuantity'
       ).value;
 
+      let finalBarcode =
+        addProductBarcode !== '' ? addProductBarcode : generateEAN13();
+
       const addProductDetails = {
         categoryId: addProductCategory,
         name: addProductName,
         description: addProductDescription,
         purchasePrice: Number(getAmountForSubmission(addProductBoughtPrice)),
         sellingPrice: Number(getAmountForSubmission(addProductSellingPrice)),
-        barcode: generateBarcode(),
+        barcode: finalBarcode,
       };
 
       const addInventoryDetails = {
@@ -461,7 +487,7 @@ export function createProductForm() {
       };
 
       const shopId = Number(inventoryShopDropdown);
-      // console.log('Adding Products with:', addProductDetails);
+      console.log('Adding Products with:', addProductDetails);
 
       const addProductModalBtn = document.querySelector('.addProductModalBtn');
 
@@ -494,10 +520,23 @@ export function createProductForm() {
           const inventoryData = await addInventory(addInventoryDetails, shopId);
 
           if (inventoryData) {
-            showToast(
-              'success',
-              `✅ ${inventoryData.message} with Product ID: ${productId}`
-            );
+            // console.log(inventoryData);
+
+            // console.log('Here?', productId);
+
+            handleBarcodeModeToast({
+              mode: 'barcodeMode',
+              finalBarcode,
+              addProductName,
+              addedProductId: productId,
+            });
+
+            // showToast(
+            //   'success',
+            //   `✅ ${inventoryData.message} with Product ID: ${productId}`
+            // );
+            showToast('success', `✅ ${inventoryData.message}`);
+
             closeModal();
             clearFormInputs();
             await renderProductInventoryTable(shopId);
@@ -521,6 +560,64 @@ export function createProductForm() {
         showToast('fail', `❎ ${err.message}`);
       }
     });
+  }
+}
+
+function handleBarcodeModeToast({
+  mode,
+  finalBarcode,
+  addProductName,
+  addedProductId,
+}) {
+  //   console.log(mode, finalBarcode, addProductName, addedProductId);
+
+  const productName = document.getElementById('productName');
+  const productId = document.getElementById('productId');
+  const productBarcode = document.getElementById('productBarcode');
+  const barcodeImg = document.getElementById('barcode');
+  const actions = document.querySelector('.toast-actions');
+  const defaultClose = document.querySelector('.default-close');
+
+  if (mode === 'barcodeMode') {
+    // Show barcode elements
+    productName.classList.remove('hidden');
+    productId.classList.remove('hidden');
+    productBarcode.classList.remove('hidden');
+    barcodeImg.classList.remove('hidden');
+    actions.style.display = 'flex';
+    defaultClose.style.display = 'none';
+
+    // Populate data
+    productName.textContent = `Product Name: ${addProductName}` || '';
+    productId.textContent = `Product ID: ${addedProductId}` || '';
+    productBarcode.textContent = `Product Barcode: ${finalBarcode}` || '';
+
+    // Generate barcode
+    const format = getBarcodeFormat(finalBarcode);
+
+    JsBarcode(barcodeImg, finalBarcode, {
+      format,
+      displayValue: true,
+      fontSize: 16,
+      width: 2,
+      height: 40,
+    });
+
+    // Download handler
+    actions.querySelector('.download-barcode').onclick = () => {
+      const link = document.createElement('a');
+      link.href = barcodeImg.src;
+      link.download = `${addProductName || 'barcode'}.png`;
+      link.click();
+    };
+  } else {
+    // Normal toast
+    productName.classList.add('hidden');
+    productId.classList.add('hidden');
+    productBarcode.classList.add('hidden');
+    barcodeImg.classList.add('hidden');
+    actions.style.display = 'none';
+    defaultClose.style.display = 'inline-block';
   }
 }
 
@@ -770,6 +867,7 @@ async function displayAllProducts(selectedShopId) {
     searchSellProdutItem.addEventListener('input', function () {
       const inputValue = searchSellProdutItem.value.toLowerCase();
 
+      // console.log(inputValue);
       if (inputValue.value === '') {
         adminSellProductName.style.display = 'none';
         adminAutocompleteList.style.display = 'none';
@@ -787,14 +885,18 @@ async function displayAllProducts(selectedShopId) {
           );
         }
 
-        // Further filter by input value
+        // Further filter by input value - Add Existing Products
         filteredProducts = filteredProducts.filter(
           (product) =>
             product.Product.name.toLowerCase().includes(inputValue) ||
-            product.Product.description.toLowerCase().includes(inputValue)
+            product.Product.description.toLowerCase().includes(inputValue) ||
+            product.product_id.toString().includes(inputValue) ||
+            product.Product.barcode.toLowerCase().includes(inputValue)
         );
 
         updateAutocompleteList(filteredProducts);
+
+        console.log(filteredProducts);
 
         return;
       } else {
@@ -1191,6 +1293,78 @@ export function updateProductForm(productDetail) {
   document.querySelector('#updateProductQuantity').value = quantity || '';
 }
 
+// Prnt/Download Product Barcode
+export function getProductBarcodeImageForm(product, shopId) {
+  const form = document.querySelector('.deleteProductContainerModal');
+  if (!form) return;
+
+  console.log(product);
+
+  form.dataset.shopId = shopId;
+  form.dataset.productId = product.id;
+  form.dataset.productBarcode = product.barcode;
+
+  const barcode = form.dataset.productBarcode;
+  const productId = form.dataset.productId;
+
+  console.log(productId, barcode);
+
+  const barcodeImg = document.getElementById('barcode-image');
+
+  // Generate barcode
+  const format = getBarcodeFormat(barcode);
+
+  if (barcodeImg) {
+    JsBarcode(barcodeImg, barcode, {
+      format,
+      displayValue: true,
+      fontSize: 16,
+      width: 2,
+      height: 40,
+    });
+  } else {
+    console.error('Barcode image element not found.');
+  }
+
+  document.querySelector('.barcode-product_name').textContent = product.name;
+  document.querySelector('.barcode-product_id').textContent = productId;
+  document.querySelector('.barcode-product_barcode').textContent = barcode;
+}
+
+export function bindGetProductBarcodeFormListener() {
+  const form = document.querySelector('.getBarcodeImageContainerModal');
+  if (!form) return;
+
+  const downloadBarcodeImageBtn = form.querySelector(
+    '.downloadBarcodeImageBtn'
+  );
+  const closeBarcodeModalBtn = form.querySelector('.closeBarcodeModalBtn');
+
+  if (!form.dataset.bound) {
+    form.dataset.bound = true;
+
+    closeBarcodeModalBtn?.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeModal();
+    });
+
+    const barcodeImg = document.getElementById('barcode-image');
+
+    downloadBarcodeImageBtn?.addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      const productName = document.querySelector(
+        '.barcode-product_name'
+      ).textContent;
+
+      const link = document.createElement('a');
+      link.href = barcodeImg.src;
+      link.download = `${productName || 'barcode'}.png`;
+      link.click();
+    });
+  }
+}
+
 // Delete Product
 export function deleteProductForm(product, shopId) {
   const form = document.querySelector('.deleteProductContainerModal');
@@ -1308,6 +1482,7 @@ document.addEventListener('DOMContentLoaded', () => {
   bindUpdateProductFormListener(); // Only once
   bindDeleteProductFormListener();
   bindDeleteCategoryFormListener();
+  bindGetProductBarcodeFormListener();
 });
 
 //  Update Category
@@ -1515,6 +1690,7 @@ if (isAdmin && adminAccordionContainer && container) {
                           <th class="py-1">Product Description</th>
                           <th class="py-1">Product Category</th>
                           <th class="py-1">Product ID</th>
+                          <th class="py-1">Barcode</th>
                           <th class="py-1">Buying Price</th>
                           <th class="py-1">Quantity</th>
                           <th class="py-1">Selling Price</th>
@@ -1541,17 +1717,22 @@ if (isAdmin && adminAccordionContainer && container) {
         const query = e.target.value.toLowerCase();
         const products = shopProductMap[shopId] || [];
 
+        //   console.log(query);
+
         const filteredProducts = products.filter((item) => {
           const product = item.Product;
 
           return (
             product.name.toLowerCase().includes(query) ||
             product.description.toLowerCase().includes(query) ||
-            product.id.toString().includes(query)
+            product.id.toString().includes(query) ||
+            product.barcode.toLowerCase().includes(query)
           );
         });
 
         renderFilteredProducts(shopId, filteredProducts);
+
+        console.log(filteredProducts);
       });
 
       // const filters = getFilters('admin', shop.id);
@@ -1632,6 +1813,7 @@ function renderFilteredProducts(shopId, productList) {
       Product: {
         name: productName,
         description,
+        barcode,
         purchase_price,
         selling_price,
         ProductCategory: { name: categoryName },
@@ -1647,6 +1829,7 @@ function renderFilteredProducts(shopId, productList) {
                 <td class="py-1 productDescription">${description}</td>
                 <td class="py-1 producCategory">${categoryName}</td>
                 <td class="py-1 producCategory">${product_id}</td>
+                <td class="py-1 producCategory">${barcode}</td>
                 <td class="py-1 productAmountBought">&#x20A6;${formatAmountWithCommas(
                   purchase_price
                 )}</td>
@@ -1654,13 +1837,21 @@ function renderFilteredProducts(shopId, productList) {
                 <td class="py-1 productSellingPrice">&#x20A6;${formatAmountWithCommas(
                   selling_price
                 )}</td>
-                <td class="py-1 action-buttons">
+                <td class="py-1 action-buttons" style="margin-top:1.1rem">
+                  <button
+                    class="hero-btn-outline openBarcodeImageBtn"
+                    id="openBarcodeImageBtn" data-product-id="${product_id}" data-product-barcode="${barcode}" 
+                     style="width: max-content;" >
+                    Print Barcode
+                  </button>
+
                   <button
                     class="hero-btn-outline openUpdateProductBtn"
                     id="openUpdateProductBtn" data-product-id="${product_id}"
                   >
                     <i class="fa-solid fa-pen-to-square"></i>
                   </button>
+
                   <button
                     class="hero-btn-outline deleteProductBtn"
                     id="deleteProductModalBtn" data-product-id="${product_id}"
@@ -1671,6 +1862,41 @@ function renderFilteredProducts(shopId, productList) {
     
              `;
     inventoryTableBody.appendChild(row);
+
+    // Handle Print Barcode Logic
+    const openBarcodeImageBtn = row.querySelector(`#openBarcodeImageBtn`);
+
+    openBarcodeImageBtn?.addEventListener('click', async () => {
+      showGlobalLoader();
+      const productId = openBarcodeImageBtn.dataset.productId;
+      const productBarcode = openBarcodeImageBtn.dataset.productBarcode;
+
+      const getBarcodeImageContainer = document.querySelector(
+        '.getBarcodeImageContainer'
+      );
+
+      if (getBarcodeImageContainer) {
+        // Store productId in modal container for reference
+        getBarcodeImageContainer.dataset.productId = productId;
+        getBarcodeImageContainer.dataset.productBarcode = productBarcode;
+
+        // Fetch Shop detail
+        const productDetail = await getProductDetail(productId);
+
+        //   console.log('productDetail', productDetail);
+
+        // Call function to prefill modal inputs
+
+        if (productDetail?.data) {
+          hideGlobalLoader();
+          openProductBarcodeImageModal(); // Show modal after data is ready
+          getProductBarcodeImageForm(productDetail.data, shopId);
+        } else {
+          hideGlobalLoader();
+          showToast('fail', '❌ Failed to fetch shop details.');
+        }
+      }
+    });
 
     const deleteProductModalBtn = row.querySelector(`#deleteProductModalBtn`);
 
@@ -1813,6 +2039,7 @@ export async function renderProductInventoryTable(shopId) {
       const {
         name: productName,
         description,
+        barcode,
         purchase_price,
         selling_price,
       } = productInventory.Product;
@@ -1827,6 +2054,7 @@ export async function renderProductInventoryTable(shopId) {
                 <td class="py-1 productDescription">${description}</td>
                 <td class="py-1 producCategory">${categoryName}</td>
                 <td class="py-1 producCategory">${product_id}</td>
+                <td class="py-1 producCategory">${barcode}</td>
                 <td class="py-1 productAmountBought">&#x20A6;${formatAmountWithCommas(
                   purchase_price
                 )}</td>
@@ -1834,13 +2062,21 @@ export async function renderProductInventoryTable(shopId) {
                 <td class="py-1 productSellingPrice">&#x20A6;${formatAmountWithCommas(
                   selling_price
                 )}</td>
-                <td class="py-1 action-buttons">
+                <td class="py-1 action-buttons" style="margin-top:1.1rem">
+                  <button
+                    class="hero-btn-outline openBarcodeImageBtn"
+                    id="openBarcodeImageBtn" data-product-id="${product_id}" data-product-barcode="${barcode}" 
+                 style="width: max-content;" >
+                    Print Barcode
+                  </button>
+
                   <button
                     class="hero-btn-outline openUpdateProductBtn"
                     id="openUpdateProductBtn" data-product-id="${product_id}"
                   >
                     <i class="fa-solid fa-pen-to-square"></i>
                   </button>
+
                   <button
                     class="hero-btn-outline deleteProductBtn"
                     id="deleteProductModalBtn" data-product-id="${product_id}"
@@ -1859,6 +2095,42 @@ export async function renderProductInventoryTable(shopId) {
       //   //   console.log('deleteProductBtn clicked', productId);
       //   await deleteProduct(productId, shopId);
       // });
+
+      // Handle Print Barcode Logic
+
+      const openBarcodeImageBtn = row.querySelector(`#openBarcodeImageBtn`);
+
+      openBarcodeImageBtn?.addEventListener('click', async () => {
+        showGlobalLoader();
+        const productId = openBarcodeImageBtn.dataset.productId;
+        const productBarcode = openBarcodeImageBtn.dataset.productBarcode;
+
+        const getBarcodeImageContainer = document.querySelector(
+          '.getBarcodeImageContainer'
+        );
+
+        if (getBarcodeImageContainer) {
+          // Store productId in modal container for reference
+          getBarcodeImageContainer.dataset.productId = productId;
+          getBarcodeImageContainer.dataset.productBarcode = productBarcode;
+
+          // Fetch Shop detail
+          const productDetail = await getProductDetail(productId);
+
+          //   console.log('productDetail', productDetail);
+
+          // Call function to prefill modal inputs
+
+          if (productDetail?.data) {
+            hideGlobalLoader();
+            openProductBarcodeImageModal(); // Show modal after data is ready
+            getProductBarcodeImageForm(productDetail.data, shopId);
+          } else {
+            hideGlobalLoader();
+            showToast('fail', '❌ Failed to fetch shop details.');
+          }
+        }
+      });
 
       const deleteProductModalBtn = row.querySelector(`#deleteProductModalBtn`);
 

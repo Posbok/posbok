@@ -89,6 +89,7 @@ export function showToast(type, message) {
   const toast = document.getElementById('toast');
   const toastMessage = document.querySelector('.toast-message');
   const closeToast = document.querySelector('.close-toast');
+  const closeBarcodeToast = document.querySelector('.close-toast_barcode');
 
   if (!toast) {
     console.warn('⚠️ Toast element not found in DOM.');
@@ -107,6 +108,31 @@ export function showToast(type, message) {
       //    toast.className = 'toast'; // Cleanup
       //    toastMessage.textContent = '';
       // }, 500); // Wait for transition to complete
+    });
+  }
+
+  if (closeBarcodeToast) {
+    closeBarcodeToast.addEventListener('click', () => {
+      toast.classList.remove('show');
+      // setTimeout(() => {
+      //    toast.className = 'toast'; // Cleanup
+      //    toastMessage.textContent = '';
+      // }, 500); // Wait for transition to complete
+
+      const productName = document.getElementById('productName');
+      const productId = document.getElementById('productId');
+      const productBarcode = document.getElementById('productBarcode');
+      const barcodeImg = document.getElementById('barcode');
+      const actions = document.querySelector('.toast-actions');
+      const defaultClose = document.querySelector('.default-close');
+
+      // Normal toast
+      productId.classList.add('hidden');
+      productBarcode.classList.add('hidden');
+      barcodeImg.classList.add('hidden');
+      productName.classList.add('hidden');
+      actions.style.display = 'none';
+      defaultClose.style.display = 'inline-block';
     });
   }
 
@@ -848,6 +874,14 @@ export function closeModal() {
     '.deleteCategoryContainer'
   );
   const saleDetails = document.querySelector('.saleDetails');
+
+  const getBarcodeImageContainer = document.querySelector(
+    '.getBarcodeImageContainer '
+  );
+
+  if (getBarcodeImageContainer) {
+    getBarcodeImageContainer.classList.remove('active');
+  }
 
   if (depositPosCapitalContainer) {
     depositPosCapitalContainer.classList.remove('active');

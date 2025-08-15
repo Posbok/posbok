@@ -24,6 +24,10 @@
 
    <script defer src="https://unpkg.com/smoothscroll-polyfill@0.4.4/dist/smoothscroll.min.js"></script>
 
+   <!-- JsBarcode CDN -->
+   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+
+
    <!-- <script defer type="module" src="JS/script.js"></script>
    <script defer type="module" src="JS/goods.js"></script> -->
 
@@ -153,7 +157,6 @@
 
          </div>
       </div>
-
 
       <!-- Product Table -->
       <div class="goods card">
@@ -310,16 +313,66 @@
 
    </main>
 
-   <div id="toast" class="toast">
+   <div id="toast" class="toast ">
       <h4 class="toast-message heading-subtext center-text mb-2">This is a toast message!</h4>
 
-      <button class="close-toast hero-btn-dark mr-0">Okay</button>
+      <p id="productName" class="hidden"></p>
+      <p id="productId" class="hidden"></p>
+      <p id="productBarcode" class="hidden"></p>
+
+      <img id="barcode" class="mt-1 hidden" />
+
+
+      <div class="toast-actions center-button mt-2 " style="display: none; align-items: center; gap: 1.5rem;">
+         <button class="hero-btn-dark download-barcode has-spinner force-m-0">
+            <span class="btn-text">Download</span>
+            <span class="btn-spinner hidden"></span>
+         </button>
+
+         <button class="hero-btn-dark close-toast_barcode has-spinner force-m-0">
+            <span class="btn-text">Close</span>
+            <span class="btn-spinner hidden"></span>
+         </button>
+      </div>
+
+      <button class="close-toast hero-btn-dark mt-2 mr-0 default-close">Okay</button>
 
    </div>
 
    <div id="global-loader" class="loader-overlay hidden">
       <div class="spinner"></div>
    </div>
+
+   <!--  Product Barcode Modal -->
+   <form class="modal-form getBarcodeImageContainerModal" name="updateCategory">
+      <div class="card getBarcodeImageContainer modal  ">
+         <div>
+            <h1 class="heading-text addItemName">Product Barcode</h1>
+         </div>
+
+         <h3 class="heading-minitext mt-2">Product Name: <span class="barcode-product_name"></span></h3>
+
+         <h3 class="heading-minitext mt-2">Product Id: <span class="barcode-product_id"></span></h3>
+
+         <h3 class="heading-minitext mt-2">Product Barcode: <span class="barcode-product_barcode"></span></h3>
+
+         <img id="barcode-image" class="mt-1 " />
+
+         <div class="toast-actions center-button mt-2 " style="display: flex; align-items: center; gap: 1.5rem;">
+            <button class="hero-btn-dark downloadBarcodeImageBtn has-spinner force-m-0" type="button">
+               <span class="btn-text">Download</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+
+            <button class="hero-btn-dark closeBarcodeModalBtn has-spinner force-m-0" type="button">
+               <span class="btn-text">Close</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
 
    <!-- Delete Product Modal -->
    <form class="modal-form deleteProductContainerModal " name="modal">
@@ -491,7 +544,7 @@
          <div class="modal-form_input">
             <label for="inventoryShopDropdown">Select Shop</label>
 
-            <select id="inventoryShopDropdown" class="form-control">
+            <select id="inventoryShopDropdown" class="form-control" required>
                <option value="">Select a shop</option>
                <!-- <option value="1">Loading Shops...</option> -->
 
@@ -511,12 +564,14 @@
             </select>
          </div>
 
+         <!-- Product Name -->
          <div class="modal-form_input">
             <label for="addProductName">Product Name</label>
 
             <input id="addProductName" type="text" placeholder="Enter Product Name" name="addProductName" required>
          </div>
 
+         <!-- Product Description -->
          <div class="modal-form_input">
             <label for="addProductDescription">Product Description</label>
 
@@ -524,6 +579,18 @@
                name="addProductDescription" required>
          </div>
 
+         <!-- Product Barcode -->
+         <div class="modal-form_input">
+            <label for="addProductDescription">Product Barcode</label>
+
+            <div class="subscript-container">
+               <input id="addProductBarcode" type="number" placeholder="Leave blank to auto-generate"
+                  name="addProductBarcode">
+               <small id="subscript-info">If product already has a barcode, scan or type it here.</small>
+            </div>
+         </div>
+
+         <!-- Amount Bought -->
          <div class="modal-form_input">
             <label for="productBoughtPrice">Amount Bought</label>
 
@@ -534,6 +601,7 @@
             </div>
          </div>
 
+         <!-- Amount to Sell -->
          <div class="modal-form_input">
             <label for="productSellingPrice">Amount To Sell</label>
 
@@ -544,6 +612,7 @@
             </div>
          </div>
 
+         <!-- Product Quantity -->
          <div class="modal-form_input">
             <label for="productQuantity">Product Quantity</label>
 
