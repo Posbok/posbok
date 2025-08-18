@@ -1215,7 +1215,7 @@ button:disabled:hover {
       gap: 1rem;
       text-decoration: none; }
     .sidebar-header-logo {
-      width: max-content;
+      width: min-content;
       height: 6rem; }
     .sidebar-header span {
       font-size: 4rem;
