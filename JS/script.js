@@ -1054,7 +1054,7 @@ export function redirectWithDelay(message, redirectedPage, delay) {
     setTimeout(() => {
       window.location.href = `${redirectedPage}`;
     }, delay); // delay = 0000
-  }, 3000); // 3 seconds delay before showing the toast message
+  }, 1000); // 3 seconds delay before showing the toast message
 }
 
 // Functioin to check if user is logged in

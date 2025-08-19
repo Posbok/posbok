@@ -1426,7 +1426,7 @@ body.authentication {
   position: relative;
   overflow-y: auto;
   width: 80%;
-  width: min-content;
+  width: max-content;
   max-height: 85vh; }
   .authentication-container.login {
     max-height: 80vh; }
