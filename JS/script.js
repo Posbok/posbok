@@ -1047,14 +1047,24 @@ export function generateBusinessOwnerId(length = 8) {
   return id;
 }
 
+// // Redirect Helper function
+// export function redirectWithDelay(message, redirectedPage, delay) {
+//   setTimeout(() => {
+//     //  showToast('info', ` 👍Redirecting to ${message}...`);
+//     setTimeout(() => {
+//       window.location.href = `${redirectedPage}`;
+//     }, delay); // delay = 0000
+//   }, 500); // 3 seconds delay before showing the toast message
+// }
+
 // Redirect Helper function
 export function redirectWithDelay(message, redirectedPage, delay) {
-  setTimeout(() => {
-    showToast('info', ` 👍Redirecting to ${message}...`);
-    setTimeout(() => {
-      window.location.href = `${redirectedPage}`;
-    }, delay); // delay = 0000
-  }, 1000); // 3 seconds delay before showing the toast message
+  //   setTimeout(() => {
+  //     //  showToast('info', ` 👍Redirecting to ${message}...`);
+  //     setTimeout(() => {
+  window.location.href = `${redirectedPage}`;
+  //     }, delay); // delay = 0000
+  //   }, 500); // 3 seconds delay before showing the toast message
 }
 
 // Functioin to check if user is logged in
