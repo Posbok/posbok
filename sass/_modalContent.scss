@@ -286,6 +286,14 @@
          transition: color 0.3s ease;
       }
 
+      .naira-input-container {
+         width: min-content;
+
+         .unit-price-input {
+            width: 12rem;
+         }
+      }
+
       &:hover {
          background-color: $color-grey-dark-1;
          color: $color-grey-light-1;

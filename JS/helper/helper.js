@@ -441,6 +441,14 @@ document.addEventListener('DOMContentLoaded', function () {
   const itemNewPurchasePrice = document.getElementById('itemNewPurchasePrice');
   const itemNewSellingPrice = document.getElementById('itemNewSellingPrice');
 
+  //  const unitPriceInput = document.querySelector('.unit-price-input');
+
+  //  if (unitPriceInput)
+  //    unitPriceInput.addEventListener('input', function () {
+  //      console.log('object');
+  //      formatAmountWithCommasOnInput(unitPriceInput);
+  //    });
+
   if (itemNewSellingPrice)
     itemNewSellingPrice.addEventListener('input', function () {
       formatAmountWithCommasOnInput(itemNewSellingPrice);

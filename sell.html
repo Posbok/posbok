@@ -10,6 +10,8 @@
    <meta name="description"
       content="POSBOK - A powerful Inventory and POS management system designed for businesses to track stock levels, monitor POS transactions (withdrawals, deposits, transfers), and evaluate staff performance — all in one intuitive platform." />
 
+   <script src="authGuard.js"></script>
+
    <link
       href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400,400i,600|Nunito:300,300i,400,600&display=swap"
       rel="stylesheet" />
@@ -177,7 +179,7 @@
             <div class="adminSellProduct-method-form_input">
 
                <div class="input-container adminSellProductName">
-                  <input type="text" id="adminProductInput" disabled required>
+                  <input type="text" id="adminProductInput" readonly required>
                   <i class="fa fa-times clear-icon" id="adminClearIcon" aria-hidden="true"></i>
                </div>
 
@@ -221,7 +223,7 @@
 
                <div class="naira-input-container">
                   <input id="adminSoldProductPrice" type="text" placeholder="Enter Sold Price"
-                     name="adminSoldProductPrice" oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
+                     name="adminSoldProductPrice" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
                   <span class="naira">&#x20A6;</span>
                </div>
             </div>
@@ -231,7 +233,7 @@
                <label for="adminSoldProductQuantity">Quantity</label>
 
                <input id="adminSoldProductQuantity" type="text" placeholder="Enter Quantity"
-                  name="adminSoldProductQuantity" oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
+                  name="adminSoldProductQuantity" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
             </div>
 
             <div class="center-button mt-2" style="display: flex; align-items: center; gap: 1.5rem;">
@@ -578,7 +580,7 @@
                   <label for="productSoldRemark">Remarks</label>
 
                   <!-- <div class="naira-input-container"> -->
-                  <input id="soldProductRemark" type="text" placeholder="Remarks" name="soldProductRemark" required>
+                  <input id="soldProductRemark" type="text" placeholder="Remarks" name="soldProductRemark">
                   <!-- </div> -->
                </div>
 
@@ -790,7 +792,7 @@
    <div id="toast" class="toast">
       <h4 class="toast-message heading-subtext center-text mb-2">This is a toast message!</h4>
 
-      <button class="close-toast hero-btn-dark mr-0">Okay</button>
+      <!--  <button class="close-toast hero-btn-dark mr-0">Okay</button> -->
 
    </div>
 

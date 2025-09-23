@@ -13,6 +13,7 @@ import {
 import {
   clearFormInputs,
   formatAmountWithCommas,
+  formatAmountWithCommasOnInput,
   formatSaleStatus,
   getAmountForSubmission,
   hideBtnLoader,
@@ -268,9 +269,47 @@ async function displayAllProducts() {
 
     updateAutocompleteList(allProducts); // Populate the autocomplete dropdown with all products
 
+    let barcodeTimer;
     // Autocomplete filter on input
+    let isClearingInput = false;
+
+    // Your existing input listener
     searchSellProdutItem.addEventListener('input', function () {
-      const inputValue = searchSellProdutItem.value.toLowerCase();
+      if (isClearingInput) {
+        return; // Ignore the event if we are programmatically clearing the input
+      }
+
+      const inputValue = this.value.toLowerCase();
+
+      // clearTimeout(barcodeTimer);
+
+      // barcodeTimer = setTimeout(() => {
+      //   const scannedCode = this.value.trim();
+      //   console.log('object 3');
+
+      //   if (scannedCode.length < 8) {
+      //     console.log('length is less than 8');
+      //     return; // guard for partial scans
+      //   }
+
+      //   const matchedProduct = allProducts.find(
+      //     (p) => p.Product.barcode === scannedCode
+      //   );
+
+      //   if (matchedProduct) {
+      //     selectedProduct = matchedProduct.Product;
+      //     productInput.value = matchedProduct.Product.name;
+      //     productBoughtPrice.value = formatAmountWithCommas(
+      //       matchedProduct.Product.purchase_price
+      //     );
+      //     itemSellingprice.value = formatAmountWithCommas(
+      //       matchedProduct.Product.selling_price
+      //     );
+      //     itemQuantityAvailable.value = matchedProduct.quantity;
+      //     console.log('object');
+      //     handleAddToCart(matchedProduct, true);
+      //   }
+      // }, 1);
 
       if (inputValue.value === '') {
         sellProductName.style.display = 'none';
@@ -292,10 +331,12 @@ async function displayAllProducts() {
         // Further filter by input value
         filteredProducts = filteredProducts.filter(
           (product) =>
-            product.Product.name.toLowerCase().includes(inputValue) ||
-            product.Product.description.toLowerCase().includes(inputValue) ||
-            product.Product.id.toString().includes(inputValue) ||
-            product.Product.barcode.toLowerCase().includes(inputValue)
+            (product.Product.name?.toLowerCase() || '').includes(inputValue) ||
+            (product.Product.description?.toLowerCase() || '').includes(
+              inputValue
+            ) ||
+            product.Product.id?.toString().includes(inputValue) ||
+            (product.Product.barcode?.toLowerCase() || '').includes(inputValue)
         );
 
         //   console.log(filteredProducts);
@@ -310,9 +351,26 @@ async function displayAllProducts() {
       }
     });
 
-    //  searchSellProdutItem.addEventListener('click', function () {
-    //    autocompleteList.style.display = 'block';
-    //  });
+    // New change listener for barcode scanning
+    searchSellProdutItem.addEventListener('change', function () {
+      const scannedCode = this.value.trim();
+
+      // Check if the input value is a valid barcode
+      const matchedProduct = allProducts.find(
+        (p) => p.Product.barcode === scannedCode
+      );
+
+      if (matchedProduct) {
+        // Automatically add the product to the cart
+        handleAddToCart(matchedProduct, true);
+
+        // Clear the input field after a successful scan
+        this.value = '';
+
+        // Hide the autocomplete list
+        autocompleteList.style.display = 'none';
+      }
+    });
   } catch (error) {
     console.error('Error displaying products:', error);
   } finally {
@@ -565,9 +623,6 @@ const soldProductQuantity = document.getElementById(
 // const productBalancePrice = document.getElementById(
 //   isAdmin ? '' : 'productBalancePrice'
 // );
-// const soldProductRemark = document.getElementById(
-//   isAdmin ? '' : 'soldProductRemark'
-// );
 
 // Sell Product Form
 export function sellProductForm() {
@@ -585,7 +640,8 @@ export function sellProductForm() {
       const customerPhone = document.getElementById('sellCustomerPhone').value;
       const paymentMethod = document.getElementById('paymentTypeOption').value;
       const amountPaid = document.getElementById('amount-paid').value;
-      const remarks = document.getElementById('soldProductRemark').value;
+      const remarks =
+        document.getElementById('soldProductRemark').value || 'Sold';
 
       const checkoutSubmitBtn = document.querySelector('.checkoutSubmitBtn');
       const cartSliderOverlay = document.querySelector('.cart-slider-overlay');
@@ -648,7 +704,7 @@ export function sellProductForm() {
 
         clearFormInputs(); // close modal after success
       } catch (err) {
-        console.error('Error Selling Product:', err.message);
+        console.error('Error Selling Product:', err.message, err);
         hideBtnLoader(checkoutSubmitBtn);
         hideGlobalLoader();
         showToast('fail', `❎ ${err.message}`);
@@ -723,26 +779,60 @@ function updateCartCounter() {
 }
 
 // Handle adding products to the cart
-function handleAddToCart() {
-  if (!selectedProduct || !selectedProduct.id) {
-    showToast('error', 'Please select a product from the list first.');
-    return;
+
+let justScanned = false;
+
+function handleAddToCart(productOverride = null, autoMode = false) {
+  //   console.log(productOverride, autoMode);
+  //   if (autoMode === true) {
+  //     console.log('🚀 Auto mode triggered');
+  //   } else {
+  //     console.log('📝 Manual mode triggered');
+  //   }
+
+  //   const product = productOverride || selectedProduct;
+
+  let product;
+
+  if (autoMode) {
+    justScanned = true; // mark as scanned
+    setTimeout(() => (justScanned = false), 200);
+
+    product = productOverride.Product;
+
+    //  console.log('autoMode product:', product);
+    if (!product || !product.id) {
+      console.error('Barcode matched a record with invalid product data.');
+      return;
+    }
+  } else {
+    product = selectedProduct;
+    //  console.log('manualMode product:', product);
+    if (!product || !product.id) {
+      showToast('error', 'Please select a product from the list first.');
+      return;
+    }
   }
 
-  const itemQuantityAvailable = document.getElementById(
-    isAdmin ? 'adminItemQuantityAvailable' : 'itemQuantityAvailable'
-  );
-  let soldProductNameInput = soldProductName.value;
-  let soldProductPriceInput = Number(
-    getAmountForSubmission(soldProductPrice.value)
-  );
-  let soldProductQuantityInput = Number(soldProductQuantity.value);
-  let shopId = isAdmin ? sellProductShopDropdown.value : parsedUserData.shopId;
+  let soldProductNameInput;
+  let soldProductPriceInput;
+  let soldProductQuantityInput;
 
-  //   const storedData = JSON.parse(localStorage.getItem(cartKey)) || []; // This is where throws the error
+  // AutoMode → barcode scan adds 1
+  if (autoMode) {
+    soldProductNameInput = product.name;
+    soldProductPriceInput = Number(product.selling_price);
+    soldProductQuantityInput = 1;
+  } else {
+    soldProductNameInput = soldProductName.value;
+    soldProductPriceInput = Number(
+      getAmountForSubmission(soldProductPrice.value)
+    );
+    soldProductQuantityInput = Number(soldProductQuantity.value) || 1;
+  }
 
+  // Safe parse of storedData
   let storedData = [];
-
   try {
     storedData = JSON.parse(localStorage.getItem(cartKey)) || [];
   } catch (e) {
@@ -750,14 +840,23 @@ function handleAddToCart() {
     localStorage.removeItem(cartKey);
   }
 
-  if (soldProductQuantityInput <= 0) {
-    showToast('info', 'ℹ️ Quantity must be at least one');
+  // Quantity safeguard
+  if (soldProductQuantityInput <= 0) soldProductQuantityInput = 1;
 
-    return;
+  // Fallback for empty selling price (only in manual mode)
+  if (!autoMode && (soldProductPriceInput <= 0 || !soldProductPriceInput)) {
+    soldProductPriceInput = getAmountForSubmission(itemSellingprice.value);
   }
 
-  const selling = parseFloat(soldProductPrice.value.replace(/,/g, ''));
-  const purchase = parseFloat(productBoughtPrice.value.replace(/,/g, ''));
+  // ✅ Selling vs purchase check should also respect autoMode
+  let selling, purchase;
+  if (autoMode) {
+    selling = Number(product.selling_price);
+    purchase = Number(product.purchase_price);
+  } else {
+    selling = parseFloat(soldProductPrice.value.replace(/,/g, ''));
+    purchase = parseFloat(productBoughtPrice.value.replace(/,/g, ''));
+  }
 
   if (selling < purchase) {
     showToast(
@@ -767,7 +866,10 @@ function handleAddToCart() {
     return;
   }
 
-  // Ensure shopId consistency
+  // Shop guard
+  const shopId = isAdmin
+    ? sellProductShopDropdown.value
+    : parsedUserData.shopId;
   if (storedData.length > 0 && storedData[0].shopId !== shopId) {
     alert(
       'Cannot add item from a different shop. Clear cart or switch back to original shop.'
@@ -775,12 +877,27 @@ function handleAddToCart() {
     return;
   }
 
+  // Check if product already in cart
   const existingIndex = storedData.findIndex(
-    (item) => item.productId === selectedProduct.id
+    (item) => item.productId === product.id
   );
+  let availableQty;
 
-  const availableQty = Number(itemQuantityAvailable.value);
+  if (autoMode) {
+    availableQty = Number(productOverride.quantity);
+  } else {
+    availableQty = Number(itemQuantityAvailable.value || 0);
+  }
+
+  //   console.log('Available quantity:', availableQty);
+
   let totalDesiredQty = soldProductQuantityInput;
+
+  //   console.log('Adding product id:', product.id);
+  //   console.log(
+  //     'Cart contents ids:',
+  //     storedData.map((i) => i.productId)
+  //   );
 
   if (existingIndex !== -1) {
     const existingItem = storedData[existingIndex];
@@ -794,22 +911,32 @@ function handleAddToCart() {
       return;
     }
 
-    if (existingItem.soldProductPriceInput !== soldProductPriceInput) {
-      const confirmUpdate = confirm(
-        `This product is already in the cart with a different price.\n\nOld Price: ₦${existingItem.soldProductPriceInput}\nNew Price: ₦${soldProductPriceInput}\n\nDo you want to update the price?`
-      );
+    // Handle price mismatch
+    if (!autoMode) {
+      // Handle price mismatch only in manual mode
+      if (
+        Number(existingItem.soldProductPriceInput) !==
+        Number(soldProductPriceInput)
+      ) {
+        const confirmUpdate = confirm(
+          `This product is already in the cart with a different price.\n\nOld Price: ₦${existingItem.soldProductPriceInput}\nNew Price: ₦${soldProductPriceInput}\n\nDo you want to update the price?`
+        );
 
-      if (confirmUpdate) {
-        // Update both quantity and price
-        existingItem.soldProductQuantityInput += soldProductQuantityInput;
-        existingItem.soldProductPriceInput = soldProductPriceInput;
+        if (confirmUpdate) {
+          existingItem.soldProductQuantityInput += soldProductQuantityInput;
+          existingItem.soldProductPriceInput = soldProductPriceInput;
+        } else {
+          existingItem.soldProductQuantityInput = totalDesiredQty;
+        }
       } else {
         existingItem.soldProductQuantityInput = totalDesiredQty;
       }
     } else {
+      // Auto mode → skip price check, just update quantity
       existingItem.soldProductQuantityInput = totalDesiredQty;
     }
   } else {
+    // New item
     if (soldProductQuantityInput > availableQty) {
       showToast(
         'info',
@@ -819,16 +946,18 @@ function handleAddToCart() {
     }
 
     const newItem = {
-      productId: selectedProduct.id,
+      productId: product.id, // ✅ use product.id instead of selectedProduct.id
       soldProductNameInput,
       soldProductPriceInput,
       soldProductQuantityInput,
       shopId,
-      availableQty, // Store available quantity for reference
+      availableQty,
+      purchasePrice: purchase,
     };
     storedData.push(newItem);
   }
 
+  // Save back
   localStorage.setItem(cartKey, JSON.stringify(storedData));
   updateCartCounter();
   updateCartTotalUI();
@@ -838,6 +967,7 @@ function handleAddToCart() {
     `✅ ${soldProductNameInput} added to cart successfully!`
   );
 
+  // Reset inputs
   soldProductName.value = '';
   soldProductPrice.value = '';
   soldProductQuantity.value = '';
@@ -848,6 +978,7 @@ function handleAddToCart() {
 
   if (adminSellProductName) adminSellProductName.style.display = 'none';
   if (adminAutocompleteList) adminAutocompleteList.style.display = 'none';
+  hideGlobalLoader();
 }
 
 export function addProductToCart() {
@@ -860,15 +991,21 @@ export function addProductToCart() {
 
   adminAddToCartForm.dataset.bound = 'true';
 
-  //   const addToCartButton = document.querySelector(
-  //     isAdmin ? '.adminAddToCartButton' : '.addToCartButton'
-  //   );
-
   if (adminAddToCartForm) {
     adminAddToCartForm.addEventListener('submit', function (e) {
       showGlobalLoader();
       e.preventDefault();
+
+      if (justScanned) {
+        //   console.log('⏩ Skipping manual add because auto mode just ran');
+        hideGlobalLoader();
+        return;
+      }
+
       handleAddToCart();
+      updateCartCounter();
+      updateCartTotalUI();
+      renderQuickSellButton();
 
       hideGlobalLoader();
     });
@@ -886,7 +1023,7 @@ const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
 export function renderQuickSellButton() {
   const updatedCart = JSON.parse(localStorage.getItem(cartKey)) || [];
 
-  if (updatedCart.length > 1) {
+  if (updatedCart.length >= 1) {
     sellNowBtn.disabled = true;
     sellNowBtn.style.cursor = 'not-allowed';
 
@@ -900,9 +1037,9 @@ export function renderQuickSellButton() {
       clearTimeout(sellNowBtn.timeoutId);
 
       // Hide after 3 seconds
-      sellNowBtn.timeoutId = setTimeout(() => {
-        quickSellMsg.style.display = 'none';
-      }, 3000);
+      // sellNowBtn.timeoutId = setTimeout(() => {
+      //   quickSellMsg.style.display = 'none';
+      // }, 3000);
     });
   } else {
     sellNowBtn.disabled = false;
@@ -998,6 +1135,12 @@ sellNowBtn?.addEventListener('click', () => {
 
   const existingCart = JSON.parse(localStorage.getItem(cartKey)) || [];
 
+  if (!selectedProduct || !selectedProduct.id) {
+    showToast('error', '❗Please select a product first.');
+    document.querySelector('button[data-category-id="all"]')?.click();
+    return;
+  }
+
   // ✅ If already 1 item in cart, skip add and just open checkout
   if (existingCart.length === 1) {
     openCheckout();
@@ -1015,18 +1158,12 @@ sellNowBtn?.addEventListener('click', () => {
     return;
   }
 
-  // ✅ Try to add item to cart (might fail due to validations inside)
   handleAddToCart();
+  //   addProductToCart();
 
   // Wait briefly for cart update before checking again
   setTimeout(() => {
     const updatedCart = JSON.parse(localStorage.getItem(cartKey)) || [];
-
-    if (!selectedProduct || !selectedProduct.id) {
-      showToast('error', '❗Please select a product first.');
-      document.querySelector('button[data-category-id="all"]')?.click();
-      return;
-    }
 
     if (updatedCart.length !== 1) {
       showToast('error', '❗Quick sell requires exactly 1 item.');
@@ -1127,7 +1264,15 @@ function renderCartItemsFromStorage() {
         <button class="remove-item-btn" data-index="${index}">&times;</button>
       </div>
       <div class="item-details">
-        <h2 class="unit-price">₦${item.soldProductPriceInput.toLocaleString()}</h2>
+        <div class="naira-input-container">
+        <input 
+  type="text" 
+  class="unit-price-input" 
+  data-index="${index}" 
+  value="${item.soldProductPriceInput.toLocaleString()}" 
+  min="1"
+/>     <span class="naira">&#x20A6;</span>
+                  </div>
         <div class="quantity-control">
           <button class="decrease-btn" data-index="${index}">-</button>
              <span >${item.soldProductQuantityInput}</span>
@@ -1143,6 +1288,49 @@ function renderCartItemsFromStorage() {
 
   attachCartListeners(); // attach logic for +, -, remove
 }
+
+// Backup render
+// function renderCartItemsFromStorage() {
+//   const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+//   const container = document.querySelector('.cart-items-container');
+//   updateCartCounter();
+//   updateCartTotalUI();
+//   renderQuickSellButton();
+
+//   // Clear existing items
+//   container.innerHTML = '';
+
+//   if (cart.length === 0) {
+//     container.innerHTML = `<h1>Your cart is empty.</h1>`;
+//     return;
+//   }
+
+//   cart.forEach((item, index) => {
+//     const itemDiv = document.createElement('div');
+//     itemDiv.classList.add('cart-item');
+
+//     itemDiv.innerHTML = `
+//       <div class="item-header">
+//         <h2 class="item-name">${item.soldProductNameInput}</h2>
+//         <button class="remove-item-btn" data-index="${index}">&times;</button>
+//       </div>
+//       <div class="item-details">
+//         <h2 class="unit-price">₦${item.soldProductPriceInput.toLocaleString()}</h2>
+//         <div class="quantity-control">
+//           <button class="decrease-btn" data-index="${index}">-</button>
+//              <span >${item.soldProductQuantityInput}</span>
+//              <button class="increase-btn" data-index="${index}">+</button>
+//           </div>
+//            <h2 class="sum-total">₦${(
+//              item.soldProductPriceInput * item.soldProductQuantityInput
+//            ).toLocaleString()}</h2>
+//       </div>`;
+
+//     container.appendChild(itemDiv);
+//   });
+
+//   attachCartListeners(); // attach logic for +, -, remove
+// }
 
 function attachCartListeners() {
   // Remove item
@@ -1188,6 +1376,57 @@ function attachCartListeners() {
         localStorage.setItem(cartKey, JSON.stringify(cart));
         renderCartItemsFromStorage(); // re-render
       }
+    });
+  });
+
+  // Update price listener
+  document.querySelectorAll('.unit-price-input').forEach((input) => {
+    // 1. INPUT listener (for comma formatting on type) - This is correct from before
+    input.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(input);
+    });
+
+    // 2. CHANGE listener (for saving to storage) - Apply corrections here
+    input.addEventListener('change', (e) => {
+      // --- STEP 1: Get the current input value (e.g., "1,000") ---
+      const inputValueWithCommas = e.target.value;
+
+      // --- STEP 2: Clean the commas (e.g., "1000") ---
+      // getAmountForSubmission returns the comma-free string.
+      const cleanedPriceString = getAmountForSubmission(inputValueWithCommas);
+
+      // --- STEP 3: Convert the string to a floating-point number (e.g., 1000) ---
+      // This is crucial if you want to store a number, not a string.
+      const newPrice = parseFloat(cleanedPriceString);
+
+      const index = e.target.dataset.index;
+
+      // --- STEP 4: Validation ---
+      if (isNaN(newPrice) || newPrice <= 0) {
+        showToast('error', '❎ Invalid price entered.');
+        renderCartItemsFromStorage(); // reset UI
+        return;
+      }
+      // If you want to check for non-integer inputs, add logic here.
+
+      // --- STEP 5: Store the numeric value ---
+      const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+
+      if (newPrice < cart[index].purchasePrice) {
+        showToast(
+          'error',
+          `Seling price cannot be lower than purchase price (₦${cart[
+            index
+          ].purchasePrice.toLocaleString()}).`
+        );
+        renderCartItemsFromStorage(); // reset UI
+        return;
+      }
+
+      cart[index].soldProductPriceInput = newPrice; // Storing the clean NUMBER
+
+      localStorage.setItem(cartKey, JSON.stringify(cart));
+      renderCartItemsFromStorage(); // re-render to refresh totals
     });
   });
 }
@@ -1627,7 +1866,7 @@ function clearReceiptDiv() {
 }
 
 function renderReceiptPrintHTML(saleDetails, shopDetails) {
-  console.log('shopDetails', shopDetails);
+  //   console.log('shopDetails', shopDetails);
 
   return `
     <div style="font-family: monospace; font-size: 10px; width: 58mm; padding: 5px;">

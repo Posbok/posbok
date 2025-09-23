@@ -96,6 +96,13 @@ export function showToast(type, message) {
     return;
   }
 
+  // 💡 FIX IS HERE: Check if toastMessage was found!
+  if (!toastMessage) {
+    console.warn('⚠️ Toast message element (.toast-message) not found in DOM.');
+    return;
+  }
+
+  //   console.log(toastMessage);
   toastMessage.textContent = message;
   toast.className = 'toast'; // Reset classes
   toast.classList.add(type);
@@ -136,15 +143,18 @@ export function showToast(type, message) {
     });
   }
 
-  //   // Hide after 5 seconds
-  //   setTimeout(() => {
-  //     toast.classList.remove('show');
+  //   // Hide after 3 seconds
 
-  //     setTimeout(() => {
-  //       toast.className = 'toast'; // Cleanup
-  //       toast.textContent = '';
-  //     }, 500); // Wait for transition to complete
-  //   }, 5000);
+  if (!closeBarcodeToast && !closeToast) {
+    setTimeout(() => {
+      toast.classList.remove('show');
+
+      setTimeout(() => {
+        toast.className = 'toast'; // Cleanup
+        //   toast.textContent = '';
+      }, 500); // Wait for transition to complete
+    }, 3000);
+  }
 }
 
 //  Get & Update Profile

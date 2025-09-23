@@ -111,6 +111,7 @@ export function getAdminSalesReportHtml(shop) {
                         <th class="py-1">Balance</th>
                         <th class="py-1">Payment Method</th>
                         <th class="py-1">Date</th>
+                        <th class="py-1">Remarks</th>
                         <th class="py-1">Status</th>
                         <th class="py-1">▼</th>
                      </tr>
@@ -760,6 +761,7 @@ export function getAdminSalesTransactionList(
   customer_phone,
   payment_method,
   business_day,
+  remarks,
   status,
   first_name,
   last_name,
@@ -781,6 +783,7 @@ export function getAdminSalesTransactionList(
                      )}</td>
                      <td class="py-1 soldItemDateReport">${payment_method}</td>
                      <td class="py-1 soldItemDateReport">${business_day}</td>
+                     <td class="py-1 soldItemDateReport">${remarks}</td>
                       <td class="py-1 soldItemStatusReport">${formatSaleStatus(
                         status
                       )}</td>
@@ -1052,6 +1055,8 @@ export async function renderSalesTable({
         filters,
       });
 
+      // console.log(result);
+
       if (!result) throw new Error(result.message || 'Failed to fetch');
 
       const salesReports = result.data.sales;
@@ -1159,6 +1164,8 @@ export async function renderSalesTable({
         //     </td>
         //   `;
 
+        //   console.log('sales', sales);
+
         sales.forEach((salesTransaction) => {
           const {
             id,
@@ -1170,6 +1177,7 @@ export async function renderSalesTable({
             customer_phone,
             payment_method,
             business_day,
+            remarks,
             status,
             SaleItems,
           } = salesTransaction;
@@ -1207,6 +1215,7 @@ export async function renderSalesTable({
             customer_phone,
             payment_method,
             business_day,
+            remarks,
             status,
             first_name,
             last_name,

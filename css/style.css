@@ -412,9 +412,9 @@ select {
       input#productInput,
       select#productInput {
         width: 95%; } }
-  input:focus, input:valid,
+  input:focus, input:active,
   select:focus,
-  select:valid {
+  select:active {
     background-color: #eef1f6;
     box-shadow: 0 0 0.3rem 0.5rem rgba(16, 171, 43, 0.36); }
 
@@ -1893,6 +1893,16 @@ body.authentication {
     .profile-slider-content .profile-item .remove-item-btn,
     .profile-slider-content .profile-item .unit-price {
       transition: color 0.3s ease; }
+    .cart-slider-content .cart-item .naira-input-container,
+    .cart-slider-content .profile-item .naira-input-container,
+    .profile-slider-content .cart-item .naira-input-container,
+    .profile-slider-content .profile-item .naira-input-container {
+      width: min-content; }
+      .cart-slider-content .cart-item .naira-input-container .unit-price-input,
+      .cart-slider-content .profile-item .naira-input-container .unit-price-input,
+      .profile-slider-content .cart-item .naira-input-container .unit-price-input,
+      .profile-slider-content .profile-item .naira-input-container .unit-price-input {
+        width: 12rem; }
     .cart-slider-content .cart-item:hover,
     .cart-slider-content .profile-item:hover,
     .profile-slider-content .cart-item:hover,

@@ -119,7 +119,7 @@ select {
    }
 
    &:focus,
-   &:valid {
+   &:active {
       background-color: $color-grey-light-2;
       box-shadow: 0 0 0.3rem 0.5rem rgba($color-primary-light, .36);
    }
