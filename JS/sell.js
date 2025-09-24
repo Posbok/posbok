@@ -281,36 +281,6 @@ async function displayAllProducts() {
 
       const inputValue = this.value.toLowerCase();
 
-      // clearTimeout(barcodeTimer);
-
-      // barcodeTimer = setTimeout(() => {
-      //   const scannedCode = this.value.trim();
-      //   console.log('object 3');
-
-      //   if (scannedCode.length < 8) {
-      //     console.log('length is less than 8');
-      //     return; // guard for partial scans
-      //   }
-
-      //   const matchedProduct = allProducts.find(
-      //     (p) => p.Product.barcode === scannedCode
-      //   );
-
-      //   if (matchedProduct) {
-      //     selectedProduct = matchedProduct.Product;
-      //     productInput.value = matchedProduct.Product.name;
-      //     productBoughtPrice.value = formatAmountWithCommas(
-      //       matchedProduct.Product.purchase_price
-      //     );
-      //     itemSellingprice.value = formatAmountWithCommas(
-      //       matchedProduct.Product.selling_price
-      //     );
-      //     itemQuantityAvailable.value = matchedProduct.quantity;
-      //     console.log('object');
-      //     handleAddToCart(matchedProduct, true);
-      //   }
-      // }, 1);
-
       if (inputValue.value === '') {
         sellProductName.style.display = 'none';
         autocompleteList.style.display = 'none';

@@ -317,6 +317,61 @@ body.home {
     color: #15464C;
     font-size: 2.5rem; }
 
+.settings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin: auto; }
+  .settings-container .setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f9f9f9;
+    padding: 1rem 0rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05); }
+    .settings-container .setting-item .setting-info h4 {
+      margin: 0;
+      font-weight: 600; }
+    .settings-container .setting-item .setting-info .subscript-info {
+      font-size: small;
+      text-align: left;
+      color: #15464C; }
+
+.toggle {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 26px; }
+  .toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0; }
+  .toggle .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.3s;
+    border-radius: 26px; }
+    .toggle .slider::before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%; }
+  .toggle input:checked + .slider {
+    background-color: #4caf50; }
+  .toggle input:checked + .slider::before {
+    transform: translateX(22px); }
+
 .naira-input-container input {
   padding-left: 3rem; }
 

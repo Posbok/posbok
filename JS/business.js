@@ -2,6 +2,9 @@ import config from '../config';
 import './script.js';
 import {
   fetchBusinessDetails,
+  getBusinessSettings,
+  setManualFee,
+  setTransferFee,
   updateBusiness,
 } from './apiServices/business/businessResource';
 import {
@@ -21,6 +24,60 @@ const isAdmin = parsedUserData?.accountType === 'ADMIN';
 document.addEventListener('DOMContentLoaded', async function () {
   if (isAdmin) {
     await renderBusinessDetails();
+    await renderBusinessSettings();
+
+    // Update Business Settings
+
+    // Attach listeners - Manual Fee Toggle
+    document
+      .querySelector('.manual-fee_toggle input')
+      .addEventListener('change', async (e) => {
+        const newValue = e.target.checked;
+
+        const updateManualFeeData = {
+          enabled: newValue,
+        };
+
+        try {
+          const response = await setManualFee(updateManualFeeData);
+          if (response && response.success) {
+            showToast('success', `✅ ${response.message}`);
+          }
+
+          //  console.log('Update success:', response);
+        } catch (err) {
+          console.error('Update failed:', err);
+          e.target.checked = !newValue; // rollback if request fails
+        } finally {
+          hideGlobalLoader();
+        }
+      });
+
+    // Attach listeners - Transfer Fee Toggle
+    document
+      .querySelector('.transfer-fee_toggle input')
+      .addEventListener('change', async (e) => {
+        const newValue = e.target.checked;
+
+        const updateTransferFeeData = {
+          enabled: newValue,
+        };
+        //   console.log(updateTransferFeeData, newValue);
+
+        try {
+          const response = await setTransferFee(updateTransferFeeData);
+          if (response && response.success) {
+            showToast('success', `✅ ${response.message}`);
+          }
+
+          //  console.log('Update success:', response);
+        } catch (err) {
+          console.error('Update failed:', err);
+          e.target.checked = !newValue; // rollback if request fails
+        } finally {
+          hideGlobalLoader();
+        }
+      });
   }
 });
 
@@ -115,6 +172,28 @@ export async function renderBusinessDetails() {
       // openUpdateBusinessModal
     });
   //   console.log(businessData);
+}
+
+export async function renderBusinessSettings() {
+  showGlobalLoader();
+  const businessSettings = await getBusinessSettings();
+  const businessSettingsData = businessSettings?.data;
+
+  if (!businessSettings) {
+    //  showToast('error', ' ⛔ Failed to fetch business Settings');
+    console.error('Failed to fetch business Settings');
+    hideGlobalLoader();
+    return;
+  }
+
+  //   console.log('businessSettingsData', businessSettingsData);
+
+  document.getElementById('manual_machine_fee_mode').checked =
+    businessSettingsData.manual_machine_fee_mode;
+  document.getElementById('transfer_fee_for_incoming').checked =
+    businessSettingsData.transfer_fee_for_incoming;
+
+  hideGlobalLoader();
 }
 
 export function openUpdateBusinessModal() {
