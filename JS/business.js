@@ -29,9 +29,10 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Update Business Settings
 
     // Attach listeners - Manual Fee Toggle
-    document
-      .querySelector('.manual-fee_toggle input')
-      .addEventListener('change', async (e) => {
+    const manualMachineFee = document.querySelector('.manual-fee_toggle input');
+
+    if (manualMachineFee)
+      manualMachineFee.addEventListener('change', async (e) => {
         const newValue = e.target.checked;
 
         const updateManualFeeData = {
@@ -54,9 +55,10 @@ document.addEventListener('DOMContentLoaded', async function () {
       });
 
     // Attach listeners - Transfer Fee Toggle
-    document
-      .querySelector('.transfer-fee_toggle input')
-      .addEventListener('change', async (e) => {
+    const transferFee = document.querySelector('.transfer-fee_toggle input');
+
+    if (transferFee)
+      transferFee.addEventListener('change', async (e) => {
         const newValue = e.target.checked;
 
         const updateTransferFeeData = {
@@ -188,10 +190,15 @@ export async function renderBusinessSettings() {
 
   //   console.log('businessSettingsData', businessSettingsData);
 
-  document.getElementById('manual_machine_fee_mode').checked =
-    businessSettingsData.manual_machine_fee_mode;
-  document.getElementById('transfer_fee_for_incoming').checked =
-    businessSettingsData.transfer_fee_for_incoming;
+  // Update the UI buttons based on fetched settings
+  const manualMachineFee = document.getElementById('manual_machine_fee_mode');
+  const transferFee = document.getElementById('transfer_fee_for_incoming');
+
+  if (manualMachineFee)
+    manualMachineFee.checked = businessSettingsData.manual_machine_fee_mode;
+
+  if (transferFee)
+    transferFee.checked = businessSettingsData.transfer_fee_for_incoming;
 
   hideGlobalLoader();
 }
