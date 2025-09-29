@@ -8,10 +8,12 @@ import {
   openAddMachineFeeModal,
   configurePosMachineFees,
   getPosChargeSettings,
-  getPosMachineFeesettings,
+  getFeeSettings,
   getCurrentBusinessDay,
   openDepositPosCapitalModal,
   openAdminDepositPosCapitalModal,
+  deleteFeeSettings,
+  updateFeeSetting,
 } from './apiServices/pos/posResources';
 import { closeModal, setupModalCloseButtons, showToast } from './script';
 import config from '../config.js';
@@ -21,6 +23,7 @@ import {
   formatAmountWithCommas,
   formatAmountWithCommasOnInput,
   formatDateTimeReadable,
+  formatFeeType,
   formatTransactionType,
   getAmountForSubmission,
   hideBtnLoader,
@@ -35,6 +38,7 @@ import {
   initAccountOverview,
   updateCashInMachineUI,
 } from './apiServices/account/accountOverview.js';
+import { getBusinessSettings } from './apiServices/business/businessResource.js';
 
 const userData = config.userData;
 const dummyShopId = config.dummyShopId;
@@ -47,7 +51,7 @@ const staffShopId = parsedUserData?.shopId;
 if (isAdmin) {
   document.addEventListener('DOMContentLoaded', () => {
     getPosChargeSettings();
-    getPosMachineFeesettings();
+    getFeeSettings();
   });
 }
 
@@ -197,6 +201,34 @@ document.addEventListener('DOMContentLoaded', () => {
     );
 
   bindDepositPosCapitalFormListener(); // Only once
+});
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const businessSettings = await getBusinessSettings();
+  const businessSettingsData = businessSettings?.data;
+
+  if (!businessSettings) return;
+
+  //   console.log(businessSettingsData);
+
+  const posTransactionChargesDiv = document.querySelector(
+    isAdmin ? '.adminPosTransactionChargesDiv' : '.posTransactionChargesDiv'
+  );
+
+  const posTransactionChargesInput = document.getElementById(
+    isAdmin ? 'adminPosTransactionCharges' : 'posTransactionCharges'
+  );
+
+  if (posTransactionChargesDiv) {
+    if (businessSettingsData.manual_machine_fee_mode === true) {
+      posTransactionChargesDiv.classList.remove('hidden');
+      posTransactionChargesInput.setAttribute('required', 'true');
+    } else {
+      posTransactionChargesDiv.classList.add('hidden');
+      posTransactionChargesInput.removeAttribute('required');
+      posTransactionChargesInput.value = '';
+    }
+  }
 });
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -846,6 +878,10 @@ export function addMachineFeeForm() {
       //    '#addMachineFeesPercentageType'
       //  );
 
+      const feeType = document.querySelector('#addFeeType').value;
+      const feeTransactionType = document.querySelector(
+        '#addFeeTransactionType'
+      ).value;
       const machineFeesMinAmount = document.querySelector(
         '#addMachineFeesMinAmount'
       ).value;
@@ -863,28 +899,31 @@ export function addMachineFeeForm() {
 
       const isPercentage = percentageTypeSelect.value === 'true';
 
-      const addMachineFeesDetails = {
-        isPercentage,
-        minAmount: Number(getAmountForSubmission(machineFeesMinAmount)),
-        maxAmount: Number(getAmountForSubmission(machineFeesMaxAmount)),
-        ...(isPercentage
-          ? {
-              percentageRate: Number(
-                getAmountForSubmission(machineFeesPercentageRate)
-              ),
-            }
-          : {
-              feeAmount: Number(getAmountForSubmission(machineFeesAmount)),
-            }),
+      const addFeesDetails = {
+        fee_type: feeType.toLowerCase(),
+        //   transaction_type: feeTransactionType.toLowerCase(),
+        amount_min: Number(getAmountForSubmission(machineFeesMinAmount)),
+        amount_max: Number(getAmountForSubmission(machineFeesMaxAmount)),
+        //   isPercentage,
+        //   ...(isPercentage
+        //     ? {
+        //         percentageRate: Number(
+        //           getAmountForSubmission(machineFeesPercentageRate)
+        //         ),
+        //       }
+        //     : {
+        //         fee_amount: Number(getAmountForSubmission(machineFeesAmount)),
+        //       }),
+        fee_amount: Number(getAmountForSubmission(machineFeesAmount)),
       };
 
-      // console.log('Configuring POS Charges with:', addMachineFeesDetails);
+      console.log('Configuring POS Charges with:', addFeesDetails);
 
       const addMachineFeeBtn = document.querySelector('.addMachineFeeBtn');
 
       try {
         showBtnLoader(addMachineFeeBtn);
-        const data = await configurePosMachineFees(addMachineFeesDetails);
+        const data = await configurePosMachineFees(addFeesDetails);
         hideBtnLoader(addMachineFeeBtn);
         if (data) {
           closeModal();
@@ -899,13 +938,11 @@ export function addMachineFeeForm() {
   }
 }
 
-export function populateMachineFeesTable(MachineFeesData) {
+export function populateFeesTable(MachineFeesData) {
   const tbody = document.querySelector('.machineFee-table tbody');
   const loadingRow = document.querySelector('.loading-row');
 
   const MachineFees = MachineFeesData.data;
-
-  //   console.log('MachineFees', MachineFees);
 
   // Remove static rows and loading
 
@@ -927,32 +964,378 @@ export function populateMachineFeesTable(MachineFeesData) {
     //  console.log('charge', charge);
 
     const {
-      min_amount,
-      max_amount,
+      id: feeId,
+      amount_min,
+      amount_max,
       is_percentage,
       fee_amount,
+      fee_type,
       percentage_rate,
+      created_at,
     } = charge;
 
     if (row)
       row.innerHTML = `
 
       <td class="py-1 MachineFeeSerialNumber">${index + 1}</td>
+      <td class="py-1 MachineFeeSerialNumber">${formatFeeType(fee_type)}</td>
       <td class="py-1 MachineFeeMinAmount">₦${formatAmountWithCommas(
-        min_amount
+        amount_min
       )}</td>
       <td class="py-1 MachineFeeMaxAmount">₦${formatAmountWithCommas(
-        max_amount
+        amount_max
       )}</td>
-      <td class="py-1 MachineFeeType">${is_percentage}
-      <td class="py-1 MachineFeeCreatedDate"> ${percentage_rate}
+      <td class="py-1 MachineFeeType">${
+        is_percentage === 'undefined'
+          ? 'N/A'
+          : is_percentage === 'true'
+          ? 'Percentage'
+          : 'N/A'
+      }</td>
+      <td class="py-1 MachineFeeCreatedDate"> ${
+        percentage_rate === 'undefined'
+          ? 'N/A'
+          : is_percentage === 'true'
+          ? 'Percentage'
+          : 'N/A'
+      }</td>
       <td class="py-1 MachineFeeAmount"><strong>₦${fee_amount}</td>
       </td>
+      <td class="py-1 MachineFeeAmount">${formatDateTimeReadable(
+        created_at
+      )}</td>
+      </td>
+       <td class="py-1 action-buttons" style="margin-top:1.1rem">
+                             <button
+                    class="hero-btn-outline openUpdateFeeBtn"
+                    id="openUpdateFeeBtn" data-fee-id="${feeId}"
+                  >
+                    <i class="fa-solid fa-pen-to-square"></i>
+                  </button>
+
+                  <button
+                    class="hero-btn-outline deleteFeeBtn"
+                    id="deleteFeeModalBtn" data-fee-id="${feeId}"
+                  >
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </td>
        `;
 
     if (tbody) tbody.appendChild(row);
+
+    // Handle Delete Fees Logic
+    const deleteFeeModalBtn = row.querySelector(`#deleteFeeModalBtn`);
+
+    deleteFeeModalBtn?.addEventListener('click', async () => {
+      showGlobalLoader();
+      const feeId = deleteFeeModalBtn.dataset.feeId;
+
+      const deleteFeeContainer = document.querySelector('.deleteFeeContainer');
+
+      if (!feeId) return;
+
+      if (deleteFeeContainer) {
+        // Store feeId in modal container for reference
+        deleteFeeContainer.dataset.feeId = feeId;
+
+        hideGlobalLoader();
+        openDeleteFeeModal(); // Show modal after data is ready
+        deleteFeeForm(feeId);
+      } else {
+        hideGlobalLoader();
+        showToast('fail', '❌ Failed to fetch Delete Fee.');
+      }
+    });
+
+    // Update Fee Logic
+
+    const updateFeeBtn = row.querySelector('.openUpdateFeeBtn');
+
+    updateFeeBtn?.addEventListener('click', async () => {
+      showGlobalLoader();
+      const feeId = updateFeeBtn.dataset.feeId;
+      const updateFeeModalContainer = document.querySelector('.updateFeeModal');
+
+      if (updateFeeModalContainer) {
+        updateFeeModalContainer.dataset.feeId = feeId;
+
+        // Fetch fee detail
+        //   const feeDetails = await getFeeSettings();
+        const feeDetails = MachineFees;
+
+        if (feeDetails.length > 0) {
+          feeDetails.map((fee) => {
+            if (fee.id === Number(feeId)) {
+              openUpdateFeeButton();
+
+              updateFeeForm(fee);
+            }
+          });
+          hideGlobalLoader();
+        } else {
+          hideGlobalLoader();
+          showToast('fail', '❌ Failed to fetch Product details.');
+        }
+      }
+    });
   });
 }
+
+export function openDeleteFeeModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const deleteFeeContainer = document.querySelector('.deleteFeeContainer');
+
+  if (deleteFeeContainer) deleteFeeContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
+// Delete Fee
+export function deleteFeeForm(feeId) {
+  const form = document.querySelector('.deleteFeeContainerModal');
+  if (!form) return;
+
+  form.dataset.feeId = feeId;
+}
+
+export function bindDeleteFeeFormListener() {
+  const form = document.querySelector('.deleteFeeContainerModal');
+  if (!form) return;
+
+  const deleteFeeButton = form.querySelector('.deleteFeeButton');
+  const cancelButton = form.querySelector('.cancel-close');
+
+  if (!form.dataset.bound) {
+    form.dataset.bound = true;
+
+    cancelButton?.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeModal();
+    });
+
+    deleteFeeButton?.addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      const feeId = form.dataset.feeId;
+
+      if (!feeId) {
+        showToast('fail', '❎ No Fee ID found.');
+        return;
+      }
+
+      try {
+        showBtnLoader(deleteFeeButton);
+        const deletedFeeData = await deleteFeeSettings(feeId);
+
+        if (deletedFeeData) {
+          showToast('success', `✅ ${deletedFeeData?.message}`);
+          hideBtnLoader(deleteFeeButton);
+          closeModal();
+        }
+      } catch (err) {
+        hideBtnLoader(deleteFeeButton);
+        showToast('fail', `❎ ${err.message}`);
+      } finally {
+        hideBtnLoader(deleteFeeButton);
+      }
+    });
+  }
+}
+
+// Update Fee
+export function openUpdateFeeButton() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const updateFeeContainer = document.querySelector('.updateFee');
+
+  if (updateFeeContainer) updateFeeContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  //   updateFeeForm();
+}
+
+export function bindUpdateFeeFormListener() {
+  const form = document.querySelector('.updateFeeModal');
+  if (!form) return;
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const feeId = form.dataset.feeId;
+
+      if (!feeId) {
+        showToast('fail', '❎ No Product selected for update.');
+        return;
+      }
+
+      const feeTransactionType = document.querySelector(
+        '#updateFeeTransactionType'
+      ).value;
+      const machineFeesMinAmount = document.querySelector(
+        '#updateMachineFeesMinAmount'
+      ).value;
+      const machineFeesMaxAmount = document.querySelector(
+        '#updateMachineFeesMaxAmount'
+      ).value;
+
+      const machineFeesPercentageRate = document.querySelector(
+        '#updateMachineFeesPercentageRate'
+      ).value;
+
+      const machineFeesAmount = document.querySelector(
+        '#updateMachineFeesAmount'
+      ).value;
+
+      // const percentageTypeSelect = document.querySelector(
+      //   '#updateMachineFeesPercentageType'
+      // );
+
+      // const isPercentage = percentageTypeSelect.value === 'true';
+
+      const updateFeesDetails = {
+        //   transaction_type: feeTransactionType.toLowerCase(),
+        amount_min: Number(getAmountForSubmission(machineFeesMinAmount)),
+        amount_max: Number(getAmountForSubmission(machineFeesMaxAmount)),
+        //   isPercentage,
+        //   ...(isPercentage
+        //     ? {
+        //         percentageRate: Number(
+        //           getAmountForSubmission(machineFeesPercentageRate)
+        //         ),
+        //       }
+        //     : {
+        //         fee_amount: Number(getAmountForSubmission(machineFeesAmount)),
+        //       }),
+        fee_amount: Number(getAmountForSubmission(machineFeesAmount)),
+      };
+
+      const updateFeeModalBtn = document.querySelector('.updateFeeModalBtn');
+
+      try {
+        showBtnLoader(updateFeeModalBtn);
+        const updatedFeeData = await updateFeeSetting(feeId, updateFeesDetails);
+
+        if (!updatedFeeData) {
+          console.error('fail', updatedFeeData.message);
+          return;
+        }
+
+        hideBtnLoader(updateFeeModalBtn);
+        hideGlobalLoader();
+      } catch (err) {
+        hideBtnLoader(updateFeeModalBtn);
+
+        console.error('Error Updating Fee:', err);
+        showToast('fail', `❎ ${err.message}`);
+        return;
+      } finally {
+        hideBtnLoader(updateFeeModalBtn);
+        hideGlobalLoader();
+        closeModal();
+      }
+    });
+  }
+}
+
+export function updateFeeForm(feeDetail) {
+  const {
+    id: feeId,
+    amount_min,
+    amount_max,
+    is_percentage,
+    fee_amount,
+    fee_type,
+    percentage_rate,
+    created_at,
+  } = feeDetail;
+
+  const form = document.querySelector('.updateFeeModal');
+  if (!form) return;
+
+  //   if (!form || form.dataset.bound === 'true') return;
+  //   form.dataset.bound = 'true';
+  form.dataset.feeId = feeId;
+
+  //   document.querySelector('#updateFeeType').value = fee_type;
+  //   document.querySelector('#updateFeeTransactionType').value = ;
+  document.querySelector('#updateMachineFeesMinAmount').value =
+    formatAmountWithCommas(amount_min);
+  document.querySelector('#updateMachineFeesMaxAmount').value =
+    formatAmountWithCommas(amount_max);
+
+  document.querySelector('#updateMachineFeesPercentageRate').value = 0;
+
+  document.querySelector('#updateMachineFeesAmount').value =
+    formatAmountWithCommas(fee_amount);
+
+  const percentageRateDiv = document.querySelector('.updatePercentageRateDiv');
+
+  const percentageTypeSelect = document.querySelector(
+    '#updateMachineFeesPercentageType'
+  );
+
+  const machineFeesAmountDiv = document.querySelector(
+    '.updateMachineFeesAmountDiv'
+  );
+
+  const machineFeesPercentageRateInput = document.querySelector(
+    '#updateMachineFeesPercentageRate'
+  );
+
+  const machineFeesAmountInput = document.querySelector(
+    '#updateMachineFeesAmount'
+  );
+
+  //   const isPercentage = percentageTypeSelect.value === 'true';
+
+  // Default setup
+  percentageTypeSelect.value = 'false';
+  percentageRateDiv.style.display = 'none';
+  machineFeesAmountDiv.style.display = '';
+
+  machineFeesPercentageRateInput.value = '';
+  //   machineFeesAmountInput.value = 0;
+
+  // Ensure proper required attributes
+  machineFeesPercentageRateInput.removeAttribute('required');
+  machineFeesAmountInput.setAttribute('required', 'true');
+
+  percentageTypeSelect.addEventListener('change', () => {
+    const selected = percentageTypeSelect.value;
+    console.log('Selected:', selected);
+
+    if (selected === 'true') {
+      // Show percentage input, hide fixed amount
+      percentageRateDiv.style.display = '';
+      machineFeesAmountDiv.style.display = 'none';
+
+      machineFeesAmountInput.value = '';
+
+      // Validation
+      machineFeesPercentageRateInput.setAttribute('required', 'true');
+      machineFeesAmountInput.removeAttribute('required');
+    } else {
+      // Show fixed amount input, hide percentage
+      percentageRateDiv.style.display = 'none';
+      machineFeesAmountDiv.style.display = '';
+
+      machineFeesPercentageRateInput.value = '';
+
+      // Validation
+      machineFeesPercentageRateInput.removeAttribute('required');
+      machineFeesAmountInput.setAttribute('required', 'true');
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  bindDeleteFeeFormListener();
+  bindUpdateFeeFormListener();
+});
 
 // POS FORM MANIPUATION - LEAVE AS IT IS
 // document.addEventListener('DOMContentLoaded', function () {

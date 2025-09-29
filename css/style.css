@@ -34,8 +34,12 @@ body {
 .container {
   overflow-x: hidden;
   display: grid;
-  grid-template-columns: [sidebar-start] 23% [sidebar-end main-start] 77% [main-end];
-  grid-template-rows: [rowOne-start] 100vh [rowOne-end rowTwo-start] min-content [rowTwo-end]; }
+  grid-template-columns: [sidebar-start] 6rem [sidebar-end main-start] auto [main-end];
+  grid-template-rows: [rowOne-start] 100vh [rowOne-end rowTwo-start] min-content [rowTwo-end];
+  transition: width 0.3s ease; }
+  .container.collapsed {
+    grid-template-columns: [sidebar-start] 23% [sidebar-end main-start] 77% [main-end];
+    transition: width 0.3s ease; }
   @media only screen and (max-width: 50.3em) {
     .container {
       grid-template-columns: [main-start] 100% [main-end];
@@ -1240,7 +1244,8 @@ button:disabled:hover {
   flex-direction: column;
   position: relative;
   box-shadow: rgba(81, 207, 102, 0.5) 2px 0px 7px;
-  z-index: 9999; }
+  z-index: 9999;
+  transition: width 0.3s ease; }
   @media only screen and (max-width: 50.3em) {
     .sidebar {
       padding: 0 0 2rem 0;
@@ -1254,6 +1259,37 @@ button:disabled:hover {
         position: relative;
         display: flex;
         justify-content: space-evenly; } }
+  .sidebar.collapsed {
+    width: 6rem; }
+    @media only screen and (max-width: 50.3em) {
+      .sidebar.collapsed {
+        width: 100%; } }
+    .sidebar.collapsed .sidebar-fixed {
+      width: 6rem; }
+      @media only screen and (max-width: 50.3em) {
+        .sidebar.collapsed .sidebar-fixed {
+          width: 100%; } }
+    .sidebar.collapsed .side-nav_item {
+      justify-content: center; }
+    .sidebar.collapsed span {
+      display: none; }
+      @media only screen and (max-width: 50.3em) {
+        .sidebar.collapsed span {
+          display: block; } }
+    .sidebar.collapsed .sidebar-header-logo {
+      display: none; }
+    .sidebar.collapsed .sidebar-toggle {
+      margin: 0; }
+  .sidebar .sidebar-toggle {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2.5rem;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: 1rem; }
+    .sidebar .sidebar-toggle:hover {
+      color: #205329; }
   .sidebar-header {
     display: flex;
     justify-content: center;
@@ -1271,7 +1307,7 @@ button:disabled:hover {
       text-decoration: none; }
     .sidebar-header-logo {
       width: min-content;
-      height: 6rem; }
+      height: 4.5rem; }
     .sidebar-header span {
       font-size: 4rem;
       font-weight: 600;
@@ -1340,7 +1376,8 @@ button:disabled:hover {
   grid-row: rowOne-start / rowTwo-end;
   padding: 1.6rem;
   position: relative;
-  color: #15464C; }
+  color: #15464C;
+  transition: width 0.3s ease; }
   .main.home {
     grid-column: 1/-1; }
   @media only screen and (max-width: 50.3em) {

@@ -43,7 +43,7 @@
 
 <body class="container">
 
-   <nav class="sidebar">
+   <nav class="sidebar collapsed">
       <div class="sidebar-fixed">
 
          <div class="sidebar-header">
@@ -51,6 +51,11 @@
                <img src="img/logo.png" alt="Logo" class="sidebar-header-logo" />
 
             </a>
+
+            <!-- Collapse/Expand Button -->
+            <button class="sidebar-toggle" id="sidebarToggle">
+               <i class="fas fa-bars"></i>
+            </button>
          </div>
 
          <ul class="side-nav">
@@ -141,10 +146,12 @@
             <div class="adminHeader">
                <h2 class="heading-subtext" style=""> Quick Actions </h2>
 
-               <button class="hero-btn-dark"> <a href="pos-management.html" class="button-link"></a>POS
+               <button class="hero-btn-dark posManagementBtn hidden"> <a href="pos-management.html"
+                     class="button-link"></a>POS
                   Management</button>
 
-               <button class="hero-btn-dark"> <a href="inventory.html" class="button-link"></a>Inventory</button>
+               <button class="hero-btn-dark inventoryBtn hidden"> <a href="inventory.html"
+                     class="button-link"></a>Inventory</button>
 
 
                <button class="hero-btn-dark"> <a href="staff-profile.html" class="button-link"></a>Staff

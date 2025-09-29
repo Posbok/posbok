@@ -30,7 +30,7 @@ import {
   closeBusinessDay,
   getCurrentBusinessDay,
   getPosChargeSettings,
-  getPosMachineFeesettings,
+  getFeeSettings,
   openAdminCloseBusinessDayModal,
   openAdminDepositPosCapitalModal,
   openBusinessDay,
@@ -79,6 +79,35 @@ sideNavs.forEach((nav) => {
       }
     });
   });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const sidebar = document.querySelector('.sidebar');
+  const container = document.querySelector('.container');
+  const toggleBtn = document.getElementById('sidebarToggle');
+
+  toggleBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
+    container.classList.toggle('collapsed');
+  });
+
+  // Load saved state
+  //   if (localStorage.getItem('sidebar') === 'collapsed') {
+  //     sidebar.classList.add('collapsed');
+  //     container.classList.add('collapsed');
+  //   }
+
+  //   toggleBtn.addEventListener('click', () => {
+  //     sidebar.classList.toggle('collapsed');
+  //     container.classList.toggle('collapsed');
+
+  //     // Save state
+  //     if (sidebar.classList.contains('collapsed')) {
+  //       localStorage.setItem('sidebar', 'collapsed');
+  //     } else {
+  //       localStorage.setItem('sidebar', 'expanded');
+  //     }
+  //   });
 });
 
 // Toast notification
@@ -889,6 +918,18 @@ export function closeModal() {
     '.getBarcodeImageContainer '
   );
 
+  const deleteFeeContainer = document.querySelector('.deleteFeeContainer');
+
+  const updateFee = document.querySelector('.updateFee');
+
+  if (updateFee) {
+    updateFee.classList.remove('active');
+  }
+
+  if (deleteFeeContainer) {
+    deleteFeeContainer.classList.remove('active');
+  }
+
   if (getBarcodeImageContainer) {
     getBarcodeImageContainer.classList.remove('active');
   }
@@ -1191,6 +1232,9 @@ const posNav = document.getElementById('posNav');
 const reportsNav = document.getElementById('reportsNav');
 const manageNav = document.getElementById('manageNav');
 
+const invetoryNav = document.querySelector('.inventoryBtn');
+const posManagementNav = document.querySelector('.posManagementBtn');
+
 // Stop everything if no user is logged in
 if (!userData) {
   //   console.log('❎❎❎❎ No user data found');
@@ -1251,6 +1295,7 @@ if (!userData) {
     ) {
       if (posIndexTab) posIndexTab.style.display = 'block';
       if (posNav) posNav.style.display = 'block';
+
       // if (posDepositButton) posDepositButton.style.display = 'block';
     }
 
@@ -1297,6 +1342,9 @@ if (!userData) {
     if (reportIndexTab) reportIndexTab.style.display = 'block';
     if (reportsNav) reportsNav.style.display = 'block';
 
+    //  if (posManagementNav) posManagementNav.style.display = 'none';
+    //  if (invetoryNav) invetoryNav.style.display = 'none';
+
     // Conditionally show POS tab
     if (
       servicePermission === 'POS_TRANSACTIONS' ||
@@ -1304,9 +1352,11 @@ if (!userData) {
     ) {
       if (posIndexTab) posIndexTab.style.display = 'block';
       if (posNav) posNav.style.display = 'block';
+      if (posManagementNav) posManagementNav.classList.remove('hidden');
     } else {
       if (posIndexTab) posIndexTab.style.display = 'none';
       if (posNav) posNav.style.display = 'none';
+      if (posManagementNav) posManagementNav.classList.add('hidden');
     }
 
     // Conditionally show Sell tab
@@ -1316,9 +1366,16 @@ if (!userData) {
     ) {
       if (sellIndexTab) sellIndexTab.style.display = 'block';
       if (sellNav) sellNav.style.display = 'block';
+      if (invetoryNav) invetoryNav.classList.remove('hidden');
     } else {
       if (sellIndexTab) sellIndexTab.style.display = 'none';
       if (sellNav) sellNav.style.display = 'none';
+      if (invetoryNav) invetoryNav.classList.add('hidden');
+    }
+
+    if (servicePermission === 'BOTH') {
+      if (posManagementNav) posManagementNav.classList.remove('hidden');
+      if (invetoryNav) invetoryNav.classList.remove('hidden');
     }
   }
 }
@@ -1348,7 +1405,7 @@ if (isAdmin) {
 
     //Admin api calls
     //  getPosChargeSettings();
-    //  getPosMachineFeesettings();
+    //  getFeeSettings();
     //  getProductCategories();
     //  getProductInventory();
   });

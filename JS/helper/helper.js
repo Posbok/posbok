@@ -338,6 +338,20 @@ export function formatAmountWithCommasOnInput(input) {
   input.value = formatAmountWithCommas(value);
 }
 
+// Format Fee type
+export function formatFeeType(value) {
+  switch (value.toLowerCase()) {
+    case 'machine_fee':
+      return 'Machine Fee';
+    case 'transfer_fee':
+      return 'Transfer Fee';
+    case 'tax_fee':
+      return 'Tax Fee';
+    default:
+      return value;
+  }
+}
+
 // Format transaction type
 export function formatTransactionType(value) {
   switch (value.toLowerCase()) {
@@ -441,6 +455,18 @@ document.addEventListener('DOMContentLoaded', function () {
   const itemNewPurchasePrice = document.getElementById('itemNewPurchasePrice');
   const itemNewSellingPrice = document.getElementById('itemNewSellingPrice');
 
+  const updateMachineFeesMinAmount = document.getElementById(
+    'updateMachineFeesMinAmount'
+  );
+
+  const updateMachineFeesMaxAmount = document.getElementById(
+    'updateMachineFeesMaxAmount'
+  );
+
+  const updateMachineFeesAmount = document.getElementById(
+    'updateMachineFeesAmount'
+  );
+
   //  const unitPriceInput = document.querySelector('.unit-price-input');
 
   //  if (unitPriceInput)
@@ -448,6 +474,21 @@ document.addEventListener('DOMContentLoaded', function () {
   //      console.log('object');
   //      formatAmountWithCommasOnInput(unitPriceInput);
   //    });
+
+  if (updateMachineFeesAmount)
+    updateMachineFeesAmount.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(updateMachineFeesAmount);
+    });
+
+  if (updateMachineFeesMaxAmount)
+    updateMachineFeesMaxAmount.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(updateMachineFeesMaxAmount);
+    });
+
+  if (updateMachineFeesMinAmount)
+    updateMachineFeesMinAmount.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(updateMachineFeesMinAmount);
+    });
 
   if (itemNewSellingPrice)
     itemNewSellingPrice.addEventListener('input', function () {

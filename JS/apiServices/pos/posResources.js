@@ -4,7 +4,7 @@ import {
   addMachineFeeForm,
   addPosChargeForm,
   depositPosCapitalForm,
-  populateMachineFeesTable,
+  populateFeesTable,
   populatePosChargesTable,
 } from '../../pos.js';
 import {
@@ -462,17 +462,14 @@ export async function configurePosMachineFees(posMachineFeesDetails) {
   try {
     //  console.log('Sending POST request...');
 
-    const posMachineFeesData = await safeFetch(
-      `${baseUrl}/api/pos/settings/fees`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(posMachineFeesDetails),
-      }
-    );
+    const posMachineFeesData = await safeFetch(`${baseUrl}/api/fees/settings`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(posMachineFeesDetails),
+    });
 
     //  console.log('Response received...');
 
@@ -484,7 +481,7 @@ export async function configurePosMachineFees(posMachineFeesDetails) {
       showToast('success', `✅ ${posMachineFeesData.message}`);
 
       // Refresh the table list after successful configuration
-      getPosMachineFeesettings();
+      getFeeSettings();
     }
 
     return posMachineFeesData;
@@ -494,7 +491,7 @@ export async function configurePosMachineFees(posMachineFeesDetails) {
   }
 }
 
-export async function getPosMachineFeesettings() {
+export async function getFeeSettings() {
   const tbody = document.querySelector('.machineFee-table tbody');
   function showLoadingRow() {
     if (tbody)
@@ -511,7 +508,7 @@ export async function getPosMachineFeesettings() {
     //  console.log('Sending GET request...');
 
     const posMachineFeeSettingsData = await safeFetch(
-      `${baseUrl}/api/pos/settings/fees`,
+      `${baseUrl}/api/fees/settings`,
       {
         method: 'GET',
         headers: {
@@ -527,7 +524,7 @@ export async function getPosMachineFeesettings() {
     //  }
 
     //  console.log(posMachineFeeSettingsData);
-    populateMachineFeesTable(posMachineFeeSettingsData);
+    populateFeesTable(posMachineFeeSettingsData);
 
     return posMachineFeeSettingsData;
   } catch (error) {
@@ -538,6 +535,85 @@ export async function getPosMachineFeesettings() {
     </tr>
   `;
     console.error('Error receiving POS COnfiguration settings:', error);
+    throw error;
+  }
+}
+
+export async function updateFeeSetting(feeId, updateFeesDetails) {
+  const tbody = document.querySelector('.machineFee-table tbody');
+  //
+  try {
+    showGlobalLoader();
+    //  console.log('Sending Update request...');
+
+    const fetchedData = await safeFetch(
+      `${baseUrl}/api/fees/settings/${feeId}`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updateFeesDetails),
+      }
+    );
+
+    //  console.log('Response received...');
+
+    if (fetchedData) {
+      // console.log('Fee Setting Updated successfully:', fetchedData);
+      showToast('success', `✅ ${fetchedData.message}`);
+      await getFeeSettings();
+
+      hideGlobalLoader();
+    }
+
+    //  console.log('fetchedData', fetchedData);
+
+    return fetchedData;
+  } catch (error) {
+    hideGlobalLoader();
+    showToast('error', '❌ Failed to delete Setting');
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function deleteFeeSettings(feeId) {
+  const tbody = document.querySelector('.machineFee-table tbody');
+  //
+  try {
+    showGlobalLoader();
+    //  console.log('Sending DELETE request...');
+
+    const fetchedData = await safeFetch(
+      `${baseUrl}/api/fees/settings/${feeId}`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          //  'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    //  console.log('Response received...');
+
+    if (fetchedData) {
+      // console.log('Staff deleted successfully:', fetchedData);
+      showToast('success', `✅ ${fetchedData.message}`);
+      await getFeeSettings();
+
+      hideGlobalLoader();
+    }
+
+    //  console.log('fetchedData', fetchedData);
+
+    return fetchedData;
+  } catch (error) {
+    hideGlobalLoader();
+    showToast('error', '❌ Failed to delete Setting');
+    console.log(error);
     throw error;
   }
 }

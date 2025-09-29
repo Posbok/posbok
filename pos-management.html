@@ -46,7 +46,7 @@
 
 <body class="container">
 
-   <nav class="sidebar">
+   <nav class="sidebar collapsed">
       <div class="sidebar-fixed">
 
          <div class="sidebar-header">
@@ -54,6 +54,11 @@
                <img src="img/logo.png" alt="Logo" class="sidebar-header-logo" />
 
             </a>
+
+            <!-- Collapse/Expand Button -->
+            <button class="sidebar-toggle" id="sidebarToggle">
+               <i class="fas fa-bars"></i>
+            </button>
          </div>
 
          <ul class="side-nav">
@@ -144,7 +149,8 @@
             <div class="adminHeader">
                <h2 class="heading-subtext" style=""> Quick Actions </h2>
 
-               <button class="hero-btn-dark"> <a href="inventory.html" class="button-link"></a>Inventory</button>
+               <button class="hero-btn-dark inventoryBtn hidden"> <a href="inventory.html"
+                     class="button-link"></a>Inventory</button>
 
 
                <button class="hero-btn-dark"> <a href="staff-profile.html" class="button-link"></a>Staff
@@ -218,12 +224,12 @@
       <section class="machineFee card">
          <div class="machineFee-method">
             <h2 class="heading-text" style="margin-bottom: 1.5rem;">
-               Machine Fees
+               Transaction Fees
             </h2>
 
             <div class="adminHeader">
 
-               <button class="hero-btn-dark openAddMachineFeeModalBtn" id="openAddMachineFeeModal">Add Machine
+               <button class="hero-btn-dark openAddMachineFeeModalBtn" id="openAddMachineFeeModal">Add
                   Fees</button>
 
             </div>
@@ -233,11 +239,13 @@
                   <thead>
                      <tr class="table-header-row">
                         <th class="py-1">S/N</th>
+                        <th class="py-1">Fee Type</th>
                         <th class="py-1">Min (₦)</th>
                         <th class="py-1">Max (₦)</th>
                         <th class="py-1">Percentage</th>
                         <th class="py-1">Percentage Rate</th>
                         <th class="py-1">Fee Amount</th>
+                        <th class="py-1">Created At</th>
                      </tr>
                   </thead>
 
@@ -277,7 +285,7 @@
 
          <!-- POS Charges Transaction Type -->
          <div class="modal-form_input">
-            <label for="addPosChargeTransactionType">TransactionType:</label>
+            <label for="addPosChargeTransactionType">Transaction Type:</label>
 
             <select id="addPosChargeTransactionType" class="form-control" required>
                <option value="">Select Transaction Type</option>
@@ -327,7 +335,32 @@
    <form class="modal-form addMachineFees-form addMachineFeesModal" id="addMachineFeesModal" name="addMachineFees">
       <div class="card addMachineFees modal">
          <div>
-            <h1 class="heading-text">Configure POS Machine Fees</h1>
+            <h1 class="heading-text">Configure Fees</h1>
+         </div>
+
+         <!-- Fee Type -->
+         <div class="modal-form_input">
+            <label for="addFeeType">Fee Type:</label>
+
+            <select id="addFeeType" class="form-control" required>
+               <option value="">Select Fee Type</option>
+               <option value="machine_fee">Machine Fee</option>
+               <option value="transfer_fee">Transfer Fee</option>
+               <option value="tax_fee">Tax Fee</option>
+            </select>
+         </div>
+
+         <!-- Fee Transaction Type -->
+         <div class="modal-form_input">
+            <label for="addFeeTransactionType">Transaction Type:</label>
+
+            <select id="addFeeTransactionType" class="form-control" required>
+               <option value="">Select Transaction Type</option>
+               <option value="withdrawal">Withdraw</option>
+               <option value="deposit">Deposit</option>
+               <option value="withdrawal_transfer">Withdrawal/Transfer</option>
+               <option value="bill_Payment">Bill Payment</option>
+            </select>
          </div>
 
          <!-- POS Machine Fees MIN Amount -->
@@ -352,7 +385,7 @@
 
             <select id="addMachineFeesPercentageType" class="form-control" required>
                <option value="">Select Percentage</option>
-               <option value="true">True</option>
+               <!-- <option value="true">True</option> -->
                <option value="false">False</option>
             </select>
          </div>
@@ -375,7 +408,7 @@
 
          <div class="center-button">
             <button class="hero-btn-dark addMachineFeeBtn has-spinner">
-               <span class="btn-text">Add Machine Fee</span>
+               <span class="btn-text">Add Fee</span>
                <span class="btn-spinner hidden"></span>
             </button>
          </div>
@@ -384,7 +417,7 @@
       </div>
    </form>
 
-   <form class="modal-form createShopModal" name="modal" netlify>
+   <form class="modal-form createShopModal" name="modal">
       <div class="card createShop modal">
          <div>
             <h1 class="heading-text">Create Shop</h1>
@@ -458,7 +491,7 @@
       </div>
    </form>
 
-   <form class="modal-form adminUpdateShopDataModal" name="modal" netlify>
+   <form class="modal-form adminUpdateShopDataModal" name="modal">
       <div class="card adminUpdateShopData modal">
          <div>
             <h1 class="heading-text">Update Shop Data</h1>
@@ -708,6 +741,104 @@
       <!-- <button class="close-toast hero-btn-dark mr-0">Okay</button> -->
 
    </div>
+
+   <!-- Delete Fee Modal -->
+   <form class="modal-form deleteFeeContainerModal " name="modal">
+
+      <div class="card confirmation deleteFeeContainer modal ">
+         <h1 class="confirmation-text">Are you sure you want to Delete this Fee Setting?
+         </h1>
+
+         <div class="confirmation-btn_container">
+
+            <button class="hero-btn-dark cancel-close">Cancel</button>
+
+            <button class="hero-btn-danger deleteFeeButton  mt-2 has-spinner" type="submit">
+               <span class="btn-text">Delete Fee</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+
+
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <!-- Update Fee Modal -->
+   <form class="updateFee-form updateFeeModal" name="updateFee">
+      <div class="card updateFee modal ">
+
+         <div>
+            <h1 class="heading-text">Configure Fees</h1>
+         </div>
+
+         <!-- Fee Transaction Type -->
+         <div class="modal-form_input">
+            <label for="updateFeeTransactionType">Transaction Type:</label>
+
+            <select id="updateFeeTransactionType" class="form-control" required>
+               <option value="">Select Transaction Type</option>
+               <option value="withdrawal">Withdraw</option>
+               <option value="deposit">Deposit</option>
+               <option value="withdrawal_transfer">Withdrawal/Transfer</option>
+               <option value="bill_Payment">Bill Payment</option>
+            </select>
+         </div>
+
+         <!-- POS Machine Fees MIN Amount -->
+         <div class="modal-form_input">
+            <label for="updateMachineFeesMinAmount">Minimum Amount: </label>
+
+            <input id="updateMachineFeesMinAmount" type="text" placeholder="Enter Minimum Amount"
+               name="updateMachineFeesMinAmount" required>
+         </div>
+
+         <!-- POS Machine Fees MAX Amount -->
+         <div class="modal-form_input">
+            <label for="updateMachineFeesMaxAmount">Maximum Amount: </label>
+
+            <input id="updateMachineFeesMaxAmount" type="text" placeholder="Enter Maximum Amount"
+               name="updateMachineFeesMaxAmount" required>
+         </div>
+
+         <!-- POS Machine Fees isPercentage -->
+         <div class="modal-form_input">
+            <label for="updateMachineFeesPercentageType">Percentage:</label>
+
+            <select id="updateMachineFeesPercentageType" class="form-control" required>
+               <option value="">Select Percentage</option>
+               <!-- <option value="true">True</option> -->
+               <option value="false">False</option>
+            </select>
+         </div>
+
+         <!-- POS Machine Fees Percentage -->
+         <div class="modal-form_input updatePercentageRateDiv">
+            <label for="updateMachineFeesPercentageRate">Percentage Rate: </label>
+
+            <input id="updateMachineFeesPercentageRate" type="number" step="any" placeholder="Enter Percentage Rate"
+               name="updateMachineFeesPercentageRate" required>
+         </div>
+
+         <!-- POS Machine Fees Amount -->
+         <div class="modal-form_input updateMachineFeesAmountDiv">
+            <label for="updateMachineFeesAmount">Fee Amount: </label>
+
+            <input id="updateMachineFeesAmount" type="number" placeholder="Enter Fee Amount"
+               name="updateMachineFeesAmount" required>
+         </div>
+
+         <div class="center-button">
+            <button class="hero-btn-dark updateFeeModalBtn has-spinner">
+               <span class="btn-text">Update Fee</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
 
 
    <div id="global-loader" class="loader-overlay hidden">

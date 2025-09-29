@@ -42,7 +42,7 @@
 
 <body class="container">
 
-   <nav class="sidebar">
+   <nav class="sidebar collapsed">
       <div class="sidebar-fixed">
 
          <div class="sidebar-header">
@@ -50,6 +50,11 @@
                <img src="img/logo.png" alt="Logo" class="sidebar-header-logo" />
 
             </a>
+
+            <!-- Collapse/Expand Button -->
+            <button class="sidebar-toggle" id="sidebarToggle">
+               <i class="fas fa-bars"></i>
+            </button>
          </div>
 
          <ul class="side-nav">
@@ -250,15 +255,15 @@
                </div> -->
 
                <!-- POS FEES -->
-               <!-- <div class="pos-method-form_input">
-                  <label for="fee">Set Fee</label>
+               <div class="pos-method-form_input adminPosTransactionChargesDiv hidden">
+                  <label for="fee">Transaction Charges</label>
 
                   <div class="naira-input-container">
-                     <input id="posTransactionFee" type="text" placeholder="Enter Fee"
-                        oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="posTransactionFee" required>
+                     <input id="adminPosTransactionCharges" type="text" placeholder="Enter Charges Amount"
+                        name="adminPosTransactionCharges">
                      <span class="naira">&#x20A6;</span>
                   </div>
-               </div> -->
+               </div>
 
                <!-- FEE/CHARGE PAYMENT METHOD -->
                <div class="pos-method-form_input feePaymentType">

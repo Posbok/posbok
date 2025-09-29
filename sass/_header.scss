@@ -5,6 +5,8 @@
    position: relative;
    color: $color-grey-dark-2;
 
+   transition: width 0.3s ease;
+
    &.home {
       grid-column: 1/-1;
    }

@@ -1401,7 +1401,7 @@ export function bindDeleteProductFormListener() {
         showToast('fail', '❎ No shop ID found.');
         return;
       }
-      if (!shopId) {
+      if (!productId) {
         showToast('fail', '❎ No Product ID found.');
         return;
       }
@@ -1898,6 +1898,7 @@ function renderFilteredProducts(shopId, productList) {
       }
     });
 
+    // Handle Delete Product Logic
     const deleteProductModalBtn = row.querySelector(`#deleteProductModalBtn`);
 
     deleteProductModalBtn?.addEventListener('click', async () => {
