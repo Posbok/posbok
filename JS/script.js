@@ -86,10 +86,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const container = document.querySelector('.container');
   const toggleBtn = document.getElementById('sidebarToggle');
 
-  toggleBtn.addEventListener('click', () => {
-    sidebar.classList.toggle('collapsed');
-    container.classList.toggle('collapsed');
-  });
+  if (toggleBtn)
+    toggleBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+      container.classList.toggle('collapsed');
+    });
 
   // Load saved state
   //   if (localStorage.getItem('sidebar') === 'collapsed') {
@@ -545,7 +546,7 @@ async function renderBusinessDayButtons() {
 
   if (isStaff) {
     const businessDay = await getCurrentBusinessDay(isStaff ? shopId : '');
-    console.log('new Business Day:', businessDay.data);
+    //  console.log('new Business Day:', businessDay.data);
 
     //  console.log(openingCash);
 

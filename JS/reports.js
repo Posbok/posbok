@@ -1230,7 +1230,7 @@ if (isStaff) {
             const {
               transaction_type,
               amount,
-              fee_payment_type,
+              transaction_mode,
               customer_name,
               customer_phone,
               payment_method,
@@ -1240,37 +1240,46 @@ if (isStaff) {
               business_day,
               transaction_time,
               charges,
+              manual_charges,
               fees,
               transaction_fee,
+              transaction_ref,
             } = posTransaction;
 
-            const machineFee = fees?.fee_amount || '-';
-            const transactionCharges = charges?.charge_amount || '-';
+            const machineFee = fees?.fee_amount || '0';
+            //  const transactionCharges = charges?.charge_amount || '0';
+
+            const chargeToDisplay = manual_charges ?? charges;
 
             const row = document.createElement('tr');
             row.classList.add('table-body-row');
             row.innerHTML = `
-       <td class="py-1">${serialNumber++}.</td>
-       <td class="py-1">${business_day}</td>
-       <td class="py-1 posTransTypeReport">${formatTransactionType(
-         transaction_type
-       )}</td>
-       <td class="py-1 posCustomerInfo">${`${
-         customer_phone === '' ? '-' : customer_phone
-       }`}</td>
-       <td class="py-1 posAmountReport">&#x20A6;${formatAmountWithCommas(
-         amount
-       )}</td>
-       <td class="py-1 posChargesReport">&#x20A6;${formatAmountWithCommas(
-         transactionCharges
-       )}</td>
-       <td class="py-1 posMachineFeeReport">&#x20A6;${formatAmountWithCommas(
-         machineFee
-       )}</td>
-       <td class="py-1 posFeePaymentMethodReport">${fee_payment_type}</td>
-       <td class="py-1 posPaymentMethodReport">${payment_method}</td>
-       <td class="py-1 posPaymentMethodRemark">${remarks}</td>
-       <td class="py-1 posPaymentMethodRemark">${receipt_id}</td>
+    <td class="py-1">${serialNumber++}.</td>
+               <td class="py-1">${business_day}</td>
+               <td class="py-1 posTransTypeReport">${formatTransactionType(
+                 transaction_type
+               )}</td>
+               <td class="py-1 posCustomerInfo">${`${
+                 customer_phone === '' ? '-' : customer_phone
+               }`}</td>
+               <td class="py-1 posAmountReport">&#x20A6;${formatAmountWithCommas(
+                 amount
+               )}</td>
+               <td class="py-1 posChargesReport">&#x20A6;${formatAmountWithCommas(
+                 chargeToDisplay ? chargeToDisplay : 0
+               )}</td>
+               <td class="py-1 posMachineFeeReport">&#x20A6;${formatAmountWithCommas(
+                 machineFee
+               )}</td>
+               <td class="py-1 posFeePaymentMethodReport">${
+                 transaction_mode !== null
+                   ? transaction_mode.toUpperCase()
+                   : 'N/A'
+               }</td>
+               <td class="py-1 posPaymentMethodReport">${payment_method}</td>
+               <td class="py-1 posPaymentMethodRef">${transaction_ref}</td> 
+               <td class="py-1 posPaymentMethodRemark">${remarks}</td>
+               <td class="py-1 posPaymentMethodReceiptId">${receipt_id}</td>
      `;
             posTableBody.appendChild(row);
           });
@@ -1429,7 +1438,7 @@ if (isStaff) {
 
         const groupedByDate = {};
 
-        console.log(allSalesReport);
+        //   console.log(allSalesReport);
         // --- SALES ITEM FETCH & TRUNCATE: Start ---
         // Prepare an array of promises for fetching sale details for *all* sales in allSalesReport
         const salesWithDetailsPromises = allSalesReport.map(

@@ -50,15 +50,36 @@ export function updateTotalPosAmounts(transactions, totalRow, date) {
   //   console.log('object', billPaymentTransactions);
   //   console.log('Total Bill Payment amount:', billPaymentAmount);
 
-  //   POS charges Amount Sum
-  const posChargesItems = transactions.filter(
-    (item) => item.charges && item.charges.charge_amount
-  );
+  //   POS charges Amount Sum - Total POS Charges
+
+  // Logic One
+
+  //   const posChargesItems = transactions.filter(
+  //     (item) => item.charges && item.charges.charge_amount
+  //   );
+
+  //   const posChargesAmount = posChargesItems.reduce(
+  //     (sum, item) => sum + Number(item.charges.charge_amount),
+  //     0
+  //   );
+
+  // Logic Two
+
+  //   const posChargesItems = transactions.filter(
+  //     (item) => item.manual_charges != null || item.charges != null
+  //   );
+
+  //   const posChargesAmount = posChargesItems.reduce((sum, item) => {
+  //     const chargeValue = Number(item.manual_charges ?? item.charges) || 0;
+  //     return sum + chargeValue;
+  //   }, 0);
 
   //   console.log('total pos Charge', posChargesItems);
 
-  const posChargesAmount = posChargesItems.reduce(
-    (sum, item) => sum + Number(item.charges.charge_amount),
+  // Logic Three - Final
+
+  const posChargesAmount = transactions.reduce(
+    (sum, item) => sum + (Number(item.manual_charges ?? item.charges) || 0),
     0
   );
 

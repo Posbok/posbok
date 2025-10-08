@@ -646,6 +646,7 @@ export function getAdminPosReportHtml(shop) {
                                     <th class="py-1">Machine Fee</th>
                                     <th class="py-1">Charge Payment Method</th>
                                     <th class="py-1">Payment Method</th>
+                                    <th class="py-1">Transaction Ref.</th>
                                     <th class="py-1">Remarks</th>
                                     <th class="py-1">Receipt ID</th>
                                  </tr>
@@ -712,7 +713,7 @@ export function getAdminPosReportHtml(shop) {
 export function getAdminPosTransactionList(
   transaction_type,
   amount,
-  fee_payment_type,
+  transaction_mode,
   customer_name,
   customer_phone,
   payment_method,
@@ -722,8 +723,11 @@ export function getAdminPosTransactionList(
   business_day,
   transaction_time,
   machineFee,
-  transactionCharges,
+  //   transactionCharges,
+  //   manual_charges,
+  chargeToDisplay,
   transaction_fee,
+  transaction_ref,
   serialNumber
 ) {
   return `
@@ -739,15 +743,21 @@ export function getAdminPosTransactionList(
                  amount
                )}</td>
                <td class="py-1 posChargesReport">&#x20A6;${formatAmountWithCommas(
-                 transactionCharges
+                 chargeToDisplay ? chargeToDisplay : 0
                )}</td>
                <td class="py-1 posMachineFeeReport">&#x20A6;${formatAmountWithCommas(
                  machineFee
                )}</td>
-               <td class="py-1 posFeePaymentMethodReport">${fee_payment_type}</td>
+               <td class="py-1 posFeePaymentMethodReport">${
+                 transaction_mode !== null
+                   ? transaction_mode.toUpperCase()
+                   : 'N/A'
+               }</td>
                <td class="py-1 posPaymentMethodReport">${payment_method}</td>
+               <td class="py-1 posPaymentMethodRef">${transaction_ref}</td> 
                <td class="py-1 posPaymentMethodRemark">${remarks}</td>
-               <td class="py-1 posPaymentMethodRemark">${receipt_id}</td>`;
+               <td class="py-1 posPaymentMethodReceiptId">${receipt_id}</td>
+              `;
 }
 
 export function getAdminSalesTransactionList(
@@ -830,7 +840,7 @@ export async function renderPosTable({
       if (!loadingRow) {
         loadingRow = document.createElement('tr');
         loadingRow.className = 'loading-row';
-        loadingRow.innerHTML = `<td colspan="11" class="table-loading-text">Loading transactions...</td>`;
+        loadingRow.innerHTML = `<td colspan="12" class="table-loading-text">Loading transactions...</td>`;
         posTableBody.appendChild(loadingRow);
       }
 
@@ -857,7 +867,7 @@ export async function renderPosTable({
         filters,
       });
 
-      // console.log(result);
+      console.log(result);
 
       if (!result) throw new Error(result.message || 'Failed to fetch');
 
@@ -879,7 +889,7 @@ export async function renderPosTable({
 
       if (posTransactions.length === 0 && currentPage === 1) {
         posTableBody.innerHTML =
-          '<tr class="loading-row"><td colspan="11" class="table-error-text ">No Transactions Available.</td></tr>';
+          '<tr class="loading-row"><td colspan="12" class="table-error-text ">No Transactions Available.</td></tr>';
         return;
       }
 
@@ -920,7 +930,7 @@ export async function renderPosTable({
         groupRow.className = 'date-group-row table-body-row ';
 
         groupRow.innerHTML = `
-    <td colspan="11" class="date-header py-1 mt-1 mb-1">
+    <td colspan="12" class="date-header py-1 mt-1 mb-1">
       <strong>${date}</strong>     </td>
 
    `;
@@ -937,7 +947,7 @@ export async function renderPosTable({
           const {
             transaction_type,
             amount,
-            fee_payment_type,
+            transaction_mode,
             customer_name,
             customer_phone,
             payment_method,
@@ -947,19 +957,23 @@ export async function renderPosTable({
             business_day,
             transaction_time,
             charges,
+            manual_charges,
             fees,
             transaction_fee,
+            transaction_ref,
           } = posTransaction;
 
-          const machineFee = fees?.fee_amount || '-';
-          const transactionCharges = charges?.charge_amount || '-';
+          const machineFee = fees?.fee_amount || '0';
+          //  const transactionCharges = charges?.charge_amount || '0';
+
+          const chargeToDisplay = manual_charges ?? charges;
 
           const row = document.createElement('tr');
           row.classList.add('table-body-row');
           row.innerHTML = getAdminPosTransactionList(
             transaction_type,
             amount,
-            fee_payment_type,
+            transaction_mode,
             customer_name,
             customer_phone,
             payment_method,
@@ -969,8 +983,11 @@ export async function renderPosTable({
             business_day,
             transaction_time,
             machineFee,
-            transactionCharges,
+            // transactionCharges,
+            // manual_charges,
+            chargeToDisplay,
             transaction_fee,
+            transaction_ref,
             serialNumber++
           );
 
@@ -1001,7 +1018,7 @@ export async function renderPosTable({
     } catch (error) {
       console.error('Error rendering transactions:', error);
       posTableBody.innerHTML =
-        '<tr><td colspan="6" class="table-error-text">Error loading transactions.</td></tr>';
+        '<tr><td colspan="12" class="table-error-text">Error loading transactions.</td></tr>';
     }
   }
 }

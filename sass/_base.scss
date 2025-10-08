@@ -81,7 +81,8 @@ body {
 .container {
    overflow-x: hidden;
    display: grid;
-   grid-template-columns: [sidebar-start]6rem [sidebar-end main-start] auto [main-end];
+   //   grid-template-columns: [sidebar-start]6rem [sidebar-end main-start] 96.5% [main-end];
+   grid-template-columns: [sidebar-start]6rem [sidebar-end main-start] 93.5% [main-end];
    grid-template-rows: [rowOne-start] 100vh [rowOne-end rowTwo-start] min-content [rowTwo-end];
 
    transition: width 0.3s ease;

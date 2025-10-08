@@ -11,7 +11,7 @@
    flex-direction: column;
    position: relative;
    box-shadow: rgba($color-primary, 0.5) 2px 0px 7px;
-   z-index: 9999;
+   z-index: 1000011; // This is higher than the global loader for possible navigation whenever the platform is stuck on Global loader page - Previously 9999
 
    transition: width 0.3s ease;
 

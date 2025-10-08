@@ -5,6 +5,7 @@ module.exports = {
   entry: {
     charging: './JS/charging.js',
     goods: './JS/goods.js',
+    stock: './JS/stock.js',
     login: './JS/login.js',
     pos: './JS/pos.js',
     reports: './JS/reports.js',

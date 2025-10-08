@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+
+   <meta name="description"
+      content="POSBOK - A powerful Inventory and POS management system designed for businesses to track stock levels, monitor POS transactions (withdrawals, deposits, transfers), and evaluate staff performance — all in one intuitive platform." />
+
+   <script src="authGuard.js"></script>
+
+   <link
+      href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400,400i,600|Nunito:300,300i,400,600&display=swap"
+      rel="stylesheet" />
+
+   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="css/style.css" />
+
+   <script src="https://kit.fontawesome.com/d0cbf0cdf0.js" crossorigin="anonymous"></script>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+   <script defer src="https://unpkg.com/smoothscroll-polyfill@0.4.4/dist/smoothscroll.min.js"></script>
+
+   <!-- JsBarcode CDN -->
+   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+
+
+   <!-- <script defer type="module" src="JS/script.js"></script>
+   <script defer type="module" src="JS/goods.js"></script> -->
+
+   <!-- <script src="dist/main.bundle.js" defer></script> -->
+   <script src="dist/stock.bundle.js" defer></script>
+
+   <title>POSBOK &mdash; Inventory Management</title>
+   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+   <link rel="manifest" href="/site.webmanifest">
+</head>
+
+<body class="container">
+
+
+   <nav class="sidebar collapsed">
+      <div class="sidebar-fixed">
+
+         <div class="sidebar-header">
+            <a href="/index.html" class="sidebar-header-link">
+               <img src="img/logo.png" alt="Logo" class="sidebar-header-logo" />
+
+            </a>
+
+            <!-- Collapse/Expand Button -->
+            <button class="sidebar-toggle" id="sidebarToggle">
+               <i class="fas fa-bars"></i>
+            </button>
+         </div>
+
+         <ul class="side-nav">
+            <a href="/pos.html" class="side-nav_link" id="posNav">
+               <li class="side-nav_item ">
+                  <i class="fas fa-exchange-alt icon"></i>
+                  <span>POS</span>
+               </li>
+            </a>
+         </ul>
+
+         <ul class="side-nav">
+            <a href="/sell.html" class="side-nav_link" id="sellNav">
+               <li class="side-nav_item ">
+                  <i class="fas fa-cart-shopping icon"></i>
+                  <span>SELL</span>
+               </li>
+            </a>
+         </ul>
+
+         <!-- <ul class="side-nav">
+            <a href="/charging.html" class="side-nav_link">
+               <li class="side-nav_item">
+                  <i class="fas fa-bolt icon"></i>
+                  <span>CHARGING</span>
+               </li>
+            </a>
+         </ul>
+
+         <ul class="side-nav">
+            <a href="/simRegistration.html" class="side-nav_link">
+               <li class="side-nav_item ">
+                  <i class="fas fa-sim-card icon"></i>
+                  <span class="simReg-long">SIM REGISTRATION</span>
+                  <span class="simReg-short">SIM REG.</span>
+               </li>
+            </a>
+         </ul> -->
+
+         <ul class="side-nav">
+            <a href="/reports.html" class="side-nav_link" id="reportsNav">
+               <li class="side-nav_item ">
+                  <i class="fas fa-chart-pie icon"></i>
+                  <span>REPORTS</span>
+               </li>
+            </a>
+         </ul>
+
+         <ul class="side-nav">
+            <a href="/manage.html" class="side-nav_link" id="manageNav">
+               <li class="side-nav_item active">
+                  <i class="fa-solid fa-users-gear icon"></i>
+                  <span>MANAGE</span>
+               </li>
+            </a>
+         </ul>
+      </div>
+   </nav>
+
+   <main class="main">
+      <header class="main-heading card">
+         <div class="main-heading_intro">
+
+            <div>
+               <a href="/index.html">
+                  <img src="img/logo-mini.png" alt="Logo" class="main-heading_logo" />
+               </a>
+            </div>
+
+            <h2 class="main-welcome">Welcome Back, <span class="user-name"> </span></h2>
+         </div>
+
+         <div class="main-heading_left">
+            <button class="hero-btn-dark logoutButton">LOGOUT</button>
+
+            <div class="profileIconDiv mr-2">
+
+               <i class="fa-solid fa-circle-user main-heading-profile--image"></i>
+            </div>
+         </div>
+      </header>
+
+
+      <div class="reports card">
+         <div class="reports-method">
+
+            <div class="adminHeader">
+               <h2 class="heading-subtext" style=""> Quick Actions </h2>
+
+               <button class="hero-btn-dark posManagementBtn hidden"> <a href="pos-management.html"
+                     class="button-link"></a>Pos
+                  Management</button>
+
+               <button class="hero-btn-dark"> <a href="staff-profile.html" class="button-link"></a>Staff
+                  Profile</button>
+
+
+               <button class="hero-btn-dark"> <a href="shop-management.html" class="button-link"></a>Shop
+                  Management</button>
+
+               <button class="hero-btn-dark"> <a href="manage.html" class="button-link"></a>Manage</button>
+
+            </div>
+
+         </div>
+      </div>
+
+      <!-- Stock Table -->
+      <div class="goods card">
+         <div class="goods-method">
+            <h2 class="heading-text" style="margin-bottom: 1.5rem;">
+               Stock Management
+            </h2>
+
+            <!-- <div class="table-header" style="display: flex; flex-direction: column; width: max-content;"> -->
+
+            <div class="adminHeader" style="display: flex; flex-direction: row; gap: 1rem; align-items: center;">
+               <button class="hero-btn-dark openAddStockModalBtn mr-0 force-mb-0 " id="openAddStockModalBtn">
+                  <span class="btn-text">Add New Stock</span>
+                  <span class="btn-spinner hidden"></span>
+               </button>
+
+               <button class="hero-btn-dark openAddExistingStockModalBtn mr-0 " id="openAddExistingStockModalBtn">
+                  <span class="btn-text">Add Existing Stock</span>
+                  <span class="btn-spinner hidden"></span>
+               </button>
+            </div>
+
+            <div class="adminAccordionContainer admin-view">
+
+
+               <!-- This is the placeholder for accordion shops -->
+               <div id="accordionStockInventory" class="accordion-container">
+
+               </div>
+
+            </div>
+
+            <!-- <h2 class="heading-subtext"> Available Stocks</h2> -->
+            <!-- </div> -->
+
+            <!-- <div class="Stock-table-container">
+               <table class="Stock-table">
+                  <thead>
+                     <tr class="table-header-row">
+                        <th class="py-1">S/N</th>
+                        <th class="py-1">Stocks</th>
+                        <th class="py-1">Buying Price</th>
+                        <th class="py-1">Quantity</th>
+                        <th class="py-1">Selling Price</th>
+                        <th class="py-1">Action</th>
+                     </tr>
+                  </thead>
+
+                  <tbody>
+
+                     <tr class="table-body-row" id="item-list">
+                        <td class="py-1 StockSerialNumber">1</td>
+                        <td class="py-1 StockName">New Age Powerbank</td>
+                        <td class="py-1 StockAmountBought">&#x20A6;13,500</td>
+                        <td class="py-1 StockQuantity">14</td>
+                        <td class="py-1 StockSellingPrice">&#x20A6;16,000</td>
+
+                        <td class="py-1 action-buttons">
+
+                           <button class="hero-btn-outline openUpdateStockBtn" id="openUpdateStockBtn">
+                              <i class="fa-solid fa-pen-to-square"></i>
+                           </button>
+
+                           <button class="hero-btn-outline deleteStockBtn" id="deleteStockBtn">
+                              <i class="fa-solid fa-trash-can"></i>
+                           </button>
+                        </td>
+                     </tr>
+
+
+
+                  </tbody>
+               </table>
+
+               <div class="center-button mt-2">
+                  <button id="loadMoreButton" class="hero-btn-dark">Load More</button>
+               </div>
+
+            </div> -->
+         </div>
+      </div>
+
+      <!-- Categories Table -->
+      <div class="goods card">
+         <div class="goods-method">
+            <h2 class="heading-text" style="margin-bottom: 1.5rem;">
+               Stock Category
+            </h2>
+
+            <!-- <div class="table-header" style="display: flex; flex-direction: column; width: max-content;"> -->
+
+            <div class="adminHeader">
+
+               <button class="hero-btn-dark openAddStockCategoryModalBtn" id="openAddStockCategoryModalBtn">
+                  <span class="btn-text">Add Stock Category</span>
+                  <span class="btn-spinner hidden"></span>
+               </button>
+
+               <!-- <button class="hero-btn-dark openAddStockModalBtn mr-0 " id="openAddStockModalBtn">
+                  <span class="btn-text">Add Stock</span>
+                  <span class="btn-spinner hidden"></span>
+               </button> -->
+
+            </div>
+
+            <!-- <h2 class="heading-subtext"> Available Stocks</h2> -->
+            <!-- </div> -->
+
+            <div class="category-table-container">
+               <table class="stock-category-table">
+                  <thead>
+                     <tr class="table-header-row">
+                        <th class="py-1">S/N</th>
+                        <th class="py-1">Category</th>
+                        <th class="py-1">Category Description</th>
+                        <th class="py-1">Action</th>
+                     </tr>
+                  </thead>
+
+                  <tbody>
+
+                     <!-- <tr class="loading-row">
+                        <td colspan="6" class="table-error-text">Loading Categorys...</td>
+                     </tr> -->
+
+                     <!-- <tr class="table-body-row" id="item-list">
+                        <td class="py-1 categorySerialNumber">1</td>
+                        <td class="py-1 categoryName">Oraimo Earbuds </td>
+                        <td class="py-1 categoryDescription">Oraimo Earbuds Description </td>
+
+                        <td class="py-1 action-buttons">
+
+                           <button class="hero-btn-outline openUpdateCategoryBtn" id="openUpdateCategoryBtn">
+                              <i class="fa-solid fa-pen-to-square"></i>
+                           </button>
+
+                           <button class="hero-btn-outline deleteCategoryBtn" id="deleteStockBtn">
+                              <i class="fa-solid fa-trash-can"></i>
+                           </button>
+                        </td>
+
+                     </tr> -->
+
+                  </tbody>
+               </table>
+
+               <!-- <div class="center-button mt-2">
+                  <button id="loadMoreButton" class="hero-btn-dark">Load More</button>
+               </div> -->
+
+            </div>
+         </div>
+      </div>
+
+   </main>
+
+   <div id="toast" class="toast ">
+      <h4 class="toast-message heading-subtext center-text mb-2">This is a toast message!</h4>
+
+      <p id="stockName" class="hidden"></p>
+      <p id="stockId" class="hidden"></p>
+      <p id="stockBarcode" class="hidden"></p>
+
+      <img id="barcode" class="mt-1 hidden" />
+
+
+      <div class="toast-actions center-button mt-2 " style="display: none; align-items: center; gap: 1.5rem;">
+         <button class="hero-btn-dark download-barcode has-spinner force-m-0">
+            <span class="btn-text">Download</span>
+            <span class="btn-spinner hidden"></span>
+         </button>
+
+         <button class="hero-btn-dark close-toast_barcode has-spinner force-m-0">
+            <span class="btn-text">Close</span>
+            <span class="btn-spinner hidden"></span>
+         </button>
+      </div>
+
+      <button class="close-toast hero-btn-dark mt-2 mr-0 default-close">Okay</button>
+
+   </div>
+
+   <div id="global-loader" class="loader-overlay hidden">
+      <div class="spinner"></div>
+   </div>
+
+   <!--  Stock Barcode Modal -->
+   <form class="modal-form getBarcodeImageContainerModal" name="updateCategory">
+      <div class="card getBarcodeImageContainer modal  ">
+         <div>
+            <h1 class="heading-text addItemName">Stock Barcode</h1>
+         </div>
+
+         <h3 class="heading-minitext mt-2">Stock Name: <span class="barcode-Stock_name"></span></h3>
+
+         <h3 class="heading-minitext mt-2">Stock Id: <span class="barcode-Stock_id"></span></h3>
+
+         <h3 class="heading-minitext mt-2">Stock Barcode: <span class="barcode-Stock_barcode"></span></h3>
+
+         <img id="barcode-image" class="mt-1 " />
+
+         <div class="toast-actions center-button mt-2 " style="display: flex; align-items: center; gap: 1.5rem;">
+            <button class="hero-btn-dark downloadBarcodeImageBtn has-spinner force-m-0" type="button">
+               <span class="btn-text">Download</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+
+            <button class="hero-btn-dark closeBarcodeModalBtn has-spinner force-m-0" type="button">
+               <span class="btn-text">Close</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <!-- Delete Stock Modal -->
+   <form class="modal-form deleteStockContainerModal " name="modal">
+
+      <div class="card confirmation deleteStockContainer modal ">
+         <h1 class="confirmation-text">Are you sure you want to Delete <span id="confirmation-text"
+               style="color: red;"></span>?
+         </h1>
+
+         <div class="confirmation-btn_container">
+
+            <button class="hero-btn-dark cancel-close">Cancel</button>
+
+            <button class="hero-btn-danger deleteStockButton  mt-2 has-spinner" type="submit">
+               <span class="btn-text">Delete Stock</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+
+
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <!-- Delete Category Modal -->
+   <form class="modal-form deleteCategoryContainerModal " name="modal">
+
+      <div class="card confirmation deleteCategoryContainer modal ">
+         <h1 class="confirmation-text">Are you sure you want to Delete <span id="confirmation-text-2"
+               style="color: red;"></span> Category?
+         </h1>
+
+         <div class="confirmation-btn_container">
+
+            <button class="hero-btn-dark cancel-close">Cancel</button>
+
+            <button class="hero-btn-danger deleteCategoryButton  mt-2 has-spinner" type="submit">
+               <span class="btn-text">Delete Category</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+
+
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <form class="modal-form updateCategoryModal" name="updateCategory">
+      <div class="card updateCategory modal ">
+         <div>
+            <h1 class="heading-text addItemName">Update Category</h1>
+         </div>
+
+         <div class="modal-form_input">
+            <label for="updateCategoryName">Category Name</label>
+
+            <input id="updateCategoryName" type="text" placeholder="Category Name" name="updateCategoryName" required>
+         </div>
+
+         <div class="modal-form_input">
+            <label for="updateCategoryDescription">Category Description</label>
+
+            <input id="updateCategoryDescription" type="text" placeholder="Category Description"
+               name="updateCategoryDescription" required>
+         </div>
+
+         <div class="center-button">
+            <button class="hero-btn-dark updateCategoryModalBtn" id="updateCategoryModalBtn">
+               <span class="btn-text">update Category</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <!-- Updatee Stock Category -->
+   <form class="updateStock-form updateStockModal" name="updateStock">
+      <div class="card updateStock modal ">
+         <div>
+            <h1 class="heading-text addItemName">Update Stock</h1>
+         </div>
+
+
+         <div class="modal-form_input">
+            <label for="updateStockCategory">Stock Category</label>
+
+            <select id="updateStockCategory" class="form-control" required>
+               <option value="">Select a Category</option>
+               <option value="01">Category 1</option>
+               <option value="02">Category 2</option>
+               <option value="03">Category 3</option>
+            </select>
+         </div>
+
+         <div class="updateStock-form_input">
+            <label for="updateStockName">Stock Name</label>
+
+            <input id="updateStockName" type="text" placeholder="Stock Name" name="updateStockName" required>
+         </div>
+
+         <div class="updateStock-form_input">
+            <label for="updateStockDescription">Stock Description</label>
+
+            <input id="updateStockDescription" type="text" placeholder="Stock Description" name="updateStockDescription"
+               required>
+         </div>
+
+         <div class="updateStock-form_input">
+            <label for="updateStockBoughtPrice">Amount Bought</label>
+
+            <div class="naira-input-container">
+               <input id="updateStockBoughtPrice" type="text" placeholder="Bought Price" name="updateStockBoughtPrice"
+                  required>
+               <span class="naira">&#x20A6;</span>
+            </div>
+         </div>
+
+         <div class="updateStock-form_input">
+            <label for="updateStockSellingPrice">Previous Selling Price</label>
+
+            <div class="naira-input-container">
+               <input id="updateStockSellingPrice" type="text" placeholder="Current Selling Price"
+                  name="updateStockSellingPrice" required>
+               <span class="naira">&#x20A6;</span>
+            </div>
+         </div>
+
+         <div class="updateStock-form_input">
+            <label for="updateStockQuantity">Stock Quantity</label>
+
+            <input id="updateStockQuantity" type="text" placeholder="Stock Quantity" name="updateStockQuantity"
+               required>
+         </div>
+
+
+         <!-- <div class="updateStock-form_input">
+            <label for="newItemQuantity">New Item Quantity</label>
+
+            <input id="newItemQuantity" type="text" placeholder="Enter New Quantity" name="newItemQuantity">
+
+         </div> -->
+
+
+
+         <div class="center-button">
+
+            <button class="hero-btn-dark updateStockModalBtn" id="updateStockModalBtn">
+               <span class="btn-text">update Stock</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <!-- Add New Stock -->
+   <form class="modal-form addStockModal" name="modal">
+      <div class="card addStock modal ">
+         <div>
+            <h1 class="heading-text  addItemName">Add New Stock</h1>
+         </div>
+
+         <!-- Assign Add Inventory to shop -->
+         <div class="modal-form_input">
+            <label for="inventoryShopDropdown">Select Shop</label>
+
+            <select id="inventoryShopDropdown" class="form-control" required>
+               <option value="">Select a shop</option>
+               <!-- <option value="1">Loading Shops...</option> -->
+
+               <!-- Add Main shops dynamically -->
+            </select>
+         </div>
+
+         <!-- Stock Category -->
+         <div class="modal-form_input">
+            <label for="addStockCategory">Stock Category</label>
+
+            <select id="addStockCategory" class="form-control" required>
+               <option value="">Select a Category</option>
+               <option value="01">Category 1</option>
+               <option value="02">Category 2</option>
+               <option value="03">Category 3</option>
+            </select>
+         </div>
+
+         <!-- Stock Name -->
+         <div class="modal-form_input">
+            <label for="addStockName">Stock Name</label>
+
+            <input id="addStockName" type="text" placeholder="Enter Stock Name" name="addStockName" required>
+         </div>
+
+         <!-- Stock Description -->
+         <div class="modal-form_input">
+            <label for="addStockDescription">Stock Description</label>
+
+            <input id="addStockDescription" type="text" placeholder="Enter Stock Description" name="addStockDescription"
+               required>
+         </div>
+
+         <!-- Stock Barcode -->
+         <div class="modal-form_input">
+            <label for="addStockDescription">Stock Barcode</label>
+
+            <div class="subscript-container">
+               <input id="addStockBarcode" type="number" placeholder="Leave blank to auto-generate"
+                  name="addStockBarcode">
+               <small id="subscript-info">If Stock already has a barcode, scan or type it here.</small>
+            </div>
+         </div>
+
+         <!-- Amount Bought -->
+         <div class="modal-form_input">
+            <label for="StockBoughtPrice">Amount Bought</label>
+
+            <div class="naira-input-container">
+               <input id="addStockBoughtPrice" type="text" placeholder="Enter Buying Price" name="addStockBoughtPrice"
+                  required>
+               <span class="naira">&#x20A6;</span>
+            </div>
+         </div>
+
+         <!-- Amount to Sell -->
+         <div class="modal-form_input">
+            <label for="StockSellingPrice">Amount To Sell</label>
+
+            <div class="naira-input-container">
+               <input id="addStockSellingPrice" type="text" placeholder="Enter Selling Price"
+                  name="addStockSellingPrice" required>
+               <span class="naira">&#x20A6;</span>
+            </div>
+         </div>
+
+         <!-- Stock Quantity -->
+         <div class="modal-form_input">
+            <label for="StockQuantity">Stock Quantity</label>
+
+            <!-- <div class="naira-input-container"> -->
+            <input id="addStockQuantity" type="text" placeholder="Enter Stock Quantity" name="addStockQuantity"
+               required>
+            <!-- </div> -->
+         </div>
+
+         <div class="center-button">
+
+            <button class="hero-btn-dark addStockModalBtn" id="addStockModalBtn">
+               <span class="btn-text">Add New Stock</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <!-- Add Existing Stock -->
+   <form class="modal-form addExistingStockModal" name="modal">
+      <div class="card addExistingStock modal ">
+         <div>
+            <h1 class="heading-text  addItemName">Add Existing Stock</h1>
+         </div>
+
+         <!-- Assign Add Existing Inventory to shop -->
+         <div class="modal-form_input">
+            <label for="addExistingStockShopDropdown">Select Shop</label>
+
+            <select id="addExistingStockShopDropdown" class="form-control">
+               <option value="">Select a shop</option>
+               <!-- <option value="1">Loading Shops...</option> -->
+
+               <!-- Add Main shops dynamically -->
+            </select>
+         </div>
+
+         <div class="addExistingSellStockSearch-section mb-2">
+
+            <div class="sellStock-method-form_input ">
+               <div class="search-input-container">
+                  <input type="search" id="searchSellProdutItem" class="searchSellProdutItem"
+                     placeholder="Search Stock Name or Description ">
+                  <span class="searchIcon"><i class="fa-solid fa-magnifying-glass mr-2"></i></span>
+               </div>
+            </div>
+         </div>
+
+         <div class=" addExistingSellStockCategory-section">
+            <!-- <button class="sellStockCategoryBtn active" type="button">
+                  All
+               </button> -->
+
+         </div>
+
+         <div class="addExistingSellStock-method-form_input mt-2">
+
+            <div class="input-container addExistingSellStockName">
+               <input type="text" id="stockInput" disabled required>
+               <i class="fa fa-times clear-icon" id="clearIcon" aria-hidden="true"></i>
+            </div>
+
+            <ul class="autocomplete-list" id="addExistingAutocompleteList"></ul>
+         </div>
+
+         <!-- Quantity Available -->
+         <!-- <div class="modal-form_input">
+            <label for="itemQuantityAvailable">Quantity Available</label>
+
+            <input id="itemQuantityAvailable" type="text" placeholder="Enter Current Quantity"
+               name="itemQuantityAvailable" disabled required>
+         </div> -->
+
+         <!-- New Purchase Price Inout -->
+         <div class="modal-form_input">
+            <label for="newPurchasePrice">New Purchase Price</label>
+
+            <div class="subscript-container">
+               <input id="itemNewPurchasePrice" type="text" placeholder="Enter New Item Purchase Price"
+                  name="itemNewPurchasePrice">
+               <small id="subscript-info">Current Purchase Price: <span
+                     class="itemPreviousPurchasePrice">₦</span></small>
+            </div>
+         </div>
+
+         <!-- New Selling Price Inout -->
+         <div class="modal-form_input">
+            <label for="newSellingPrice">New Selling Price</label>
+
+            <div class="subscript-container">
+               <input id="itemNewSellingPrice" type="text" placeholder="Enter New Item Selling Price"
+                  name="itemNewSellingPrice">
+               <small id="subscript-info">Current Selling Price: <span class="itemPreviousSellingPrice">₦</span></small>
+            </div>
+         </div>
+
+         <div class="modal-form_input">
+            <label for="newStockQuantity">New Stock Quantity</label>
+
+            <div class="subscript-container">
+               <input id="itemNewQuantityAvailable" type="text" placeholder="Enter New Item Quantity"
+                  name="itemNewQuantityAvailable" required>
+               <small id="subscript-info">Current Quantity Available:
+                  <span class="itemPreviousQuantityAvailable"></span> </small>
+            </div>
+         </div>
+
+         <div class="center-button">
+
+            <button class="hero-btn-dark addExistingStockModalBtn" id="addExistingStockModalBtn">
+               <span class="btn-text">Add Existing Stock</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <!-- Add Category Modal -->
+   <form class="modal-form addCategoryModal" name="modal">
+      <div class="card addCategory modal">
+         <div>
+            <h1 class="heading-text  addItemName">Add Stock Category</h1>
+         </div>
+
+         <!-- Category Name -->
+         <div class="modal-form_input">
+            <label for="addCategoryName">Category Name</label>
+
+            <input id="addCategoryName" type="text" placeholder="Enter Category Name" name="addCategoryName" required>
+         </div>
+
+         <!-- Category Description -->
+         <div class="modal-form_input">
+            <label for="addCategoryDescription">Category Description</label>
+
+            <input id="addCategoryDescription" type="text" placeholder="Enter Category Description"
+               name="addCategoryDescription" required>
+         </div>
+
+         <div class="center-button">
+
+            <button class="hero-btn-dark addStockCategorySubmitBtn" id="addStockCategorySubmitBtn">
+               <span class="btn-text">Add Stock Category</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <form class="modal-form createShopModal" name="modal">
+      <div class="card createShop modal">
+         <div>
+            <h1 class="heading-text">Create Shop</h1>
+         </div>
+
+         <!-- Use my Business Info -->
+         <div class="modal-form_input mb-1">
+            <div class="checkbox">
+               <div class="checkbox-container">
+                  <input id="useBusinessInfo" type="checkbox" name="useBusinessInfo">
+                  <label for="useBusinessInfo">Use my Business Info</label>
+               </div>
+            </div>
+         </div>
+
+
+         <!-- Shop Name -->
+         <div class="modal-form_input">
+            <label for="shopName">Shop Name</label>
+
+            <input id="shopName" type="text" placeholder="Enter Shop Name" name="shopName" required>
+         </div>
+
+         <!-- Shop Address -->
+         <div class="modal-form_input">
+            <label for="shopAddress">Shop Address</label>
+
+            <input id="shopAddress" type="text" placeholder="Enter Shop Address" name="shopAddress" required>
+         </div>
+
+         <!-- Service Type -->
+         <div class="modal-form_input mb-1">
+            <label for="serviceType" class="heading-subtext">Service Type</label>
+
+            <div class="checkbox">
+               <div class="checkbox-container">
+                  <input id="posShopCheckbox" type="radio" name="serviceType" value="POS_TRANSACTIONS">
+                  <label for="posShopCheckbox">POS</label>
+               </div>
+
+               <div class="checkbox-container">
+                  <input id="sellShopCheckbox" type="radio" name="serviceType" value="INVENTORY_SALES">
+                  <label for="sellShopCheckbox">SELL</label>
+               </div>
+
+               <div class="checkbox-container">
+                  <input id="posAndSellShopCheckbox" type="radio" name="serviceType" value="BOTH">
+                  <label for="posAndSellShopCheckbox">POS & SELL</label>
+               </div>
+            </div>
+         </div>
+
+         <!-- Assign Staff Checkbox -->
+         <div class="modal-form_input mb-1">
+            <div class="checkbox">
+               <div class="checkbox-container">
+                  <input id="assignStaffCheckbox" type="checkbox" name="assignStaff">
+                  <label for="assignStaffCheckbox">Assign a staff to this shop after creation</label>
+               </div>
+            </div>
+         </div>
+
+         <div class="center-button">
+            <button class="hero-btn-dark" type="submit">Create SHop</button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+
+   <!-- profile Slider -->
+   <div class="profile-slider-overlay "></div>
+
+   <div class="profile-slider-content ">
+      <div class="slider-wrapper">
+
+         <!-- profile View -->
+         <div class="profile-view ">
+            <div class="profile-slider-header">
+               <h2 class="heading-text">Your profile</h2>
+               <div class="close closeModal close-profile-btn" id="">&times;</div>
+            </div>
+
+            <form id="profile-form">
+               <!-- First  NAME -->
+               <div class="slider-form_input">
+                  <label for="userProfileFirstName">First Name</label>
+
+                  <div class="penEdit-input-container">
+                     <input class="userProfileFirstName" id="userProfileFirstName" type="text"
+                        name="userProfileFirstName" placeholder="Enter First Name" required>
+                     <i class="fa-solid penEditIcon fa-pen-to-square"></i>
+
+                  </div>
+
+
+               </div>
+
+               <!-- Last Name -->
+               <div class="slider-form_input">
+                  <label for="userProfileLastName">Last Name</label>
+
+                  <div class="penEdit-input-container">
+                     <input class="userProfileLastName" id="userProfileLastName" type="text" name="userProfileLastName"
+                        placeholder="Enter Last Name" required>
+                     <i class="fa-solid penEditIcon fa-pen-to-square"></i>
+
+                  </div>
+
+               </div>
+
+               <!-- USer Address -->
+               <div class="slider-form_input">
+                  <label for="userProfileAddress">Address</label>
+
+                  <div class="penEdit-input-container">
+                     <input class="userProfileAddress" id="userProfileAddress" type="text" placeholder="Enter Address"
+                        name="userProfileAddress" required>
+                     <i class="fa-solid penEditIcon fa-pen-to-square"></i>
+
+                  </div>
+               </div>
+
+               <!-- PHONE NUMBER -->
+               <div class="slider-form_input">
+                  <label for="userProfilePhoneNumber">Phone Number</label>
+
+                  <div class="penEdit-input-container">
+                     <input class="userProfilePhoneNumber" id="userProfilePhoneNumber" type="number"
+                        placeholder="Enter Phone Number" name="userProfilePhoneNumber" required>
+                     <i class="fa-solid penEditIcon fa-pen-to-square"></i>
+
+                  </div>
+               </div>
+
+               <!-- USer Email -->
+               <div class="slider-form_input">
+                  <label for="userProfileEmail">Email</label>
+
+                  <input class="userProfileEmail" id="userProfileEmail" type="text" placeholder="Enter Email"
+                     name="userProfileEmail" disabled>
+               </div>
+
+               <!-- USer Date Of Birth -->
+               <div class="slider-form_input">
+                  <label for="userProfileDateOfBirth">Date Of Birth</label>
+
+                  <input class="userProfileDateOfBirth" id="userProfileDate Of Birth" type="text"
+                     placeholder="Enter DateOfBirth" name="userProfileDateOfBirth" disabled>
+               </div>
+
+               <!-- USer State Of Origin -->
+               <div class="slider-form_input">
+                  <label for="userProfileStateOfOrigin">State Of Origin</label>
+
+                  <input class="userProfileStateOfOrigin" id="userProfileStateOfOrigin" type="text"
+                     placeholder="Enter State Of Origin" name="userProfileStateOfOrigin" disabled>
+               </div>
+
+               <!-- USer lga -->
+               <div class="slider-form_input">
+                  <label for="userProfilelga">LGA</label>
+
+                  <input class="userProfilelga" id="userProfilelga" type="text" placeholder="Enter LGA"
+                     name="userProfilelga" disabled>
+               </div>
+
+               <!-- USer Account Type -->
+               <div class="slider-form_input">
+                  <label for="userProfileAccountType">Account Type</label>
+
+                  <input class="userProfileAccountType" id="userProfileAccountType" type="text"
+                     placeholder="Enter Account Type" name="userProfileAccountType" disabled>
+               </div>
+
+               <!-- USer  Service Permission -->
+               <div class="slider-form_input">
+                  <label for="userProfileServicePermission">Service Permission</label>
+
+                  <input class="userProfileServicePermission" id="userProfileServicePermission" type="text"
+                     placeholder="Enter Service Permission" name="userProfileServicePermission" disabled>
+               </div>
+
+               <!-- USer  Business Name -->
+               <div class="slider-form_input">
+                  <label for="userProfileBusinessName">Business Name</label>
+
+                  <input class="userProfileBusinessName" id="userProfileBusinessName" type="text"
+                     placeholder="Enter Business Name" name="userProfileBusinessName" disabled>
+               </div>
+
+               <!-- Update Button -->
+               <div class="center-button">
+                  <button class="hero-btn-dark mb-2 updateProfileModalBtn has-spinner" type="submit">
+                     <span class="btn-text">Update Profile</span>
+                     <span class="btn-spinner hidden"></span>
+                  </button>
+                  <!-- <button class="hero-btn-dark sellStockActionButton">Sell</button> -->
+               </div>
+
+
+            </form>
+
+            <form id="updatePassword-form">
+
+               <!-- Current Password -->
+               <div class="slider-form_input">
+                  <label for="currentPassword">Current Password</label>
+
+                  <div class="password-container">
+
+                     <input class="" id="currentPassword" type="password" placeholder="Enter Current Password"
+                        name="currentPassword" required>
+
+                     <small id="same-password" class="error-text" style="color: red; display: none;"> </small>
+
+                  </div>
+               </div>
+
+               <!-- New Password -->
+               <div class="slider-form_input">
+                  <label for="newPassword">New Password</label>
+
+                  <div class="password-container">
+
+                     <input class="" id="newPassword" type="password" placeholder="Enter New Password"
+                        name="newPassword" required>
+
+                     <small id="password-length" class="error-text" style="color: red; display: none;"> </small>
+                  </div>
+               </div>
+
+               <!-- Confirm New Password -->
+               <div class="slider-form_input">
+                  <label for="confirmNewPassword"> Confirm New Password</label>
+
+                  <div class="password-container">
+
+                     <input class="" id="confirmNewPassword" type="password" placeholder=" Confirm New Password"
+                        name="confirmNewPassword" required>
+
+                     <small id="password-mismatch" class="error-text" style="color: red; display: none;"> </small>
+
+
+                  </div>
+               </div>
+
+               <div class="center-button">
+                  <button class="hero-btn-dark mb-2 updatePasswordSubmitBtn has-spinner" type="submit">
+                     <span class="btn-text">Update Password</span>
+                     <span class="btn-spinner hidden"></span>
+                  </button>
+               </div>
+            </form>
+         </div>
+
+      </div>
+
+   </div>
+
+</body>
+
+</html>

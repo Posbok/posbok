@@ -150,7 +150,7 @@ export async function getCurrentBusinessDay(shopId) {
     //    currentBusinessDayData?.data?.shop_id
     //  );
 
-    console.log('currentBusinessDayData', currentBusinessDayData);
+    //  console.log('currentBusinessDayData', currentBusinessDayData);
 
     return currentBusinessDayData;
   } catch (err) {
@@ -307,7 +307,7 @@ export async function createPosTransaction(transactionDetail) {
   try {
     //  console.log('Sending POST request...');
     const posTransactionData = await safeFetch(
-      `${baseUrl}/api/pos/transactions`,
+      `${baseUrl}/api/pos/transaction`,
       {
         method: 'POST',
         headers: {

@@ -533,11 +533,17 @@ export async function handlePosFormSubmit() {
       const posFeePaymentType = document.getElementById(
         isAdmin ? 'adminPosFeePaymentType' : 'posFeePaymentType'
       ).value;
+      const adminPosTransactionCharges = document.querySelector(
+        isAdmin ? '#adminPosTransactionCharges' : '#posTransactionCharges'
+      ).value;
       const transactionType = document.getElementById(
         isAdmin ? 'adminTransactionType' : 'transactionType'
       ).value;
       const paymentMethod = document.getElementById(
         isAdmin ? 'adminPaymentMethod' : 'paymentMethod'
+      ).value;
+      const posTransactionReference = document.getElementById(
+        isAdmin ? 'adminPosTransactionReference' : 'posTransactionReference'
       ).value;
       const posTransactionRemark = document.getElementById(
         isAdmin ? 'adminPosTransactionRemark' : 'posTransactionRemark'
@@ -546,15 +552,32 @@ export async function handlePosFormSubmit() {
       // "transactionType" must be one of [WITHDRAWAL, DEPOSIT, WITHDRAWAL_TRANSFER, BILL_PAYMENT]
       const shopId = isAdmin ? Number(posShopDropdown) : Number(staffShopId);
 
+      // const posFormData = {
+      //   shopId,
+      //   transactionType: transactionType.toUpperCase(),
+      //   amount: Number(getAmountForSubmission(amount)),
+      //   //   customerName: customerName,
+      //   customerPhone: customerPhone,
+      //   paymentMethod: paymentMethod.toUpperCase(),
+      //   chargePaymentMethod: posFeePaymentType.toUpperCase(),
+      //   remarks: posTransactionRemark,
+      //   //   transaction_fee: Number(fee),
+      //   //   machine_fee: Number(machineFeeInput),
+      // };
+
       const posFormData = {
         shopId,
-        transactionType: transactionType.toUpperCase(),
+        transaction_type: transactionType.toLowerCase(),
         amount: Number(getAmountForSubmission(amount)),
-        //   customerName: customerName,
-        customerPhone: customerPhone,
-        paymentMethod: paymentMethod.toUpperCase(),
-        chargePaymentMethod: posFeePaymentType.toUpperCase(),
+        manual_charges: adminPosTransactionCharges
+          ? Number(getAmountForSubmission(adminPosTransactionCharges))
+          : null,
+        //   customer_name: customerName,
+        customer_phone: customerPhone,
+        payment_method: paymentMethod.toUpperCase(),
+        transaction_mode: posFeePaymentType.toLowerCase(),
         remarks: posTransactionRemark,
+        transaction_reference: posTransactionReference,
         //   transaction_fee: Number(fee),
         //   machine_fee: Number(machineFeeInput),
       };
