@@ -53,13 +53,14 @@ export function openDeleteTransactionModal() {
   if (sidebar) sidebar.classList.add('blur');
 }
 
-export function deleteTransactionForm(transaction) {
+export function deleteTransactionForm(transaction, shop_id) {
   const form = document.querySelector('.deleteTransactionContainerModal');
   if (!form) return;
 
   //   console.log('transaction ', transaction);
 
   form.dataset.transactionId = transaction.id;
+  form.dataset.shopId = shop_id;
 
   document.getElementById('confirmation-text').textContent =
     transaction.transaction_type;
@@ -86,6 +87,7 @@ export function bindDeleteTransactionFormListener() {
       e.preventDefault();
 
       const transactionId = form.dataset.transactionId;
+      const shopId = form.dataset.shopId;
 
       if (!transactionId) {
         showToast('fail', '❎ No Transaction ID found.');
@@ -96,20 +98,23 @@ export function bindDeleteTransactionFormListener() {
         showBtnLoader(deleteTransactionButton);
         await deletePosTransaction(transactionId);
         hideBtnLoader(deleteTransactionButton);
-        //   await renderPosTable({
-        //     page: shopPageTracker[shopId],
-        //     limit,
-        //     filters,
-        //     shopId,
-        //     tableBodyId: `#pos-tbody-${shopId}`,
-        //     loadMoreButton: document.getElementById(
-        //       `loadMoreButton_admin_${shopId}`
-        //     ),
-        //   });
+        allPosTransactions = []; // reset to avoid duplication
+        await renderPosTable({
+          page: 1,
+          limit: pageSize,
+          filters: currentFilters, // reuse existing filters if available
+          shopId,
+          tableBodyId: `#pos-tbody-${shopId}`,
+          loadMoreButton: document.getElementById(
+            `loadMoreButton_admin_${shopId}`
+          ),
+          append: false,
+        });
         closeModal();
         showToast('success', '✅ Transaction deleted successfully.');
       } catch (err) {
         hideBtnLoader(deleteTransactionButton);
+        console.error(err);
         showToast('fail', `❎ ${err.message}`);
       }
     });
@@ -822,6 +827,7 @@ export function getAdminPosTransactionList(
   transaction_ref,
   deleted_at,
   deleted_by,
+  shop_id,
   serialNumber
 ) {
   return `
@@ -855,8 +861,8 @@ export function getAdminPosTransactionList(
                  ${
                    deleted_at || deleted_by
                      ? `  <h2 class="heading-minitext">
-               Deleted By: Admin <br />
-               Deleted At: ${formatDateTimeReadable(deleted_at)}</h2>
+               ADMIN <br />
+               ${formatDateTimeReadable(deleted_at)}</h2>
             </h2>`
                      : `       <button
                            class="hero-btn-outline openUpdateTransactionBtn"
@@ -1082,6 +1088,7 @@ export async function renderPosTable({
             transaction_ref,
             deleted_at,
             deleted_by,
+            shop_id,
           } = posTransaction;
 
           const machineFee = fees?.fee_amount || '0';
@@ -1119,6 +1126,7 @@ export async function renderPosTable({
             transaction_ref,
             deleted_at,
             deleted_by,
+            shop_id,
             serialNumber++
           );
 
@@ -1152,11 +1160,11 @@ export async function renderPosTable({
               // Call function to prefill modal inputs
               if (transactionDetail?.data) {
                 hideGlobalLoader();
-                openDeleteTransactionModal(); // Show modal after data is ready
-                deleteTransactionForm(transactionDetail.data);
+                openDeleteTransactionModal();
+                deleteTransactionForm(transactionDetail.data, shop_id);
               } else {
                 hideGlobalLoader();
-                showToast('fail', '❌ Failed to fetch shop details.');
+                showToast('fail', '❌ Failed to fetch Transaction details.');
               }
             }
           });

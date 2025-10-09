@@ -616,7 +616,7 @@ export async function handlePosFormSubmit() {
       function resetFormInputs() {
         document.getElementById(
           isAdmin ? 'adminTransactionType' : 'transactionType'
-        ).value = 'withdrawal';
+        ).value = 'withdraw';
         document.getElementById(
           isAdmin ? 'adminPaymentMethod' : 'paymentMethod'
         ).value = 'card';
@@ -629,6 +629,12 @@ export async function handlePosFormSubmit() {
         //   document.getElementById(
         //     isAdmin ? 'adminPosCustomerName' : 'posCustomerName'
         //   ).value = '';
+        document.getElementById(
+          isAdmin ? 'adminPosTransactionCharges' : 'posTransactionCharges'
+        ).value = '';
+        document.getElementById(
+          isAdmin ? 'adminPosTransactionReference' : 'posTransactionReference'
+        ).value = '';
         document.getElementById(
           isAdmin ? 'adminPosCustomerPhone' : 'posCustomerPhone'
         ).value = '';

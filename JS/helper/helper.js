@@ -1,5 +1,6 @@
 // isUserLoggedIn() - Used to make sure that a user is loggedin before running functions that needs to run automatically so that they don rn on Authenyication pages
 
+import config from '../../config';
 import { getCurrentBusinessDay } from '../apiServices/pos/posResources';
 import { showToast } from '../script';
 
@@ -8,6 +9,11 @@ export function isUserLoggedIn() {
   const user = localStorage.getItem('userData');
   return Boolean(token && user);
 }
+
+const userData = config.userData;
+
+const parsedUserData = userData ? JSON.parse(userData) : null;
+const isAdmin = parsedUserData?.accountType === 'ADMIN';
 
 // export function isUserLoggedIn() {
 //    return !!localStorage.getItem('accessToken') && !!localStorage.getItem('userData');
@@ -467,6 +473,14 @@ document.addEventListener('DOMContentLoaded', function () {
     'updateMachineFeesAmount'
   );
 
+  const posTransactionCharges = document.getElementById(
+    isAdmin ? 'adminPosTransactionCharges' : 'posTransactionCharges'
+  );
+
+  const posMachineFee = document.getElementById(
+    isAdmin ? 'adminPosMachineFee' : 'posMachineFee'
+  );
+
   //  const unitPriceInput = document.querySelector('.unit-price-input');
 
   //  if (unitPriceInput)
@@ -474,6 +488,16 @@ document.addEventListener('DOMContentLoaded', function () {
   //      console.log('object');
   //      formatAmountWithCommasOnInput(unitPriceInput);
   //    });
+
+  if (posMachineFee)
+    posMachineFee.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(posMachineFee);
+    });
+
+  if (posTransactionCharges)
+    posTransactionCharges.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(posTransactionCharges);
+    });
 
   if (updateMachineFeesAmount)
     updateMachineFeesAmount.addEventListener('input', function () {
