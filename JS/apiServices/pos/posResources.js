@@ -7,12 +7,16 @@ import {
   populateFeesTable,
   populatePosChargesTable,
 } from '../../pos.js';
+// import { renderPosTable } from '../../posAndSalesReportAccordion.js';
 import {
   closeBusinessDayForm,
   //   depositPosCapitalForm,
   showToast,
 } from '../../script.js';
 import { initAccountOverview } from '../account/accountOverview.js';
+import //   populateFeesTable,
+//   populatePosChargesTable,
+'../utility/feesTableUtility.js';
 import { safeFetch } from '../utility/safeFetch.js';
 // import { safeFetch } from '../utility/safeFetch.js';
 
@@ -371,6 +375,65 @@ export async function getPosTransactions({
   } catch (error) {
     hideGlobalLoader();
     console.error('Error receiving POS Transaction:', error);
+    throw error;
+  }
+}
+
+export async function getPosTransactionsById(transactionId) {
+  try {
+    showGlobalLoader();
+    const posTransactionsData = await safeFetch(
+      `${baseUrl}/api/pos/transactions/${transactionId}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    if (posTransactionsData) {
+      // showToast('success', `✅ ${posTransactionsData.message}`);
+      // console.log('posTransactionsData', posTransactionsData);
+      hideGlobalLoader();
+    }
+
+    return posTransactionsData;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error receiving POS Transaction:', error);
+    throw error;
+  }
+}
+
+export async function deletePosTransaction(transactionId) {
+  try {
+    //  console.log('Sending POST request...');
+
+    showGlobalLoader();
+
+    const fetchedData = await safeFetch(
+      `${baseUrl}/api/pos/transaction/${transactionId}`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    if (fetchedData) {
+      console.log('POS Transaction deleted successfully:', fetchedData);
+      showToast('success', `✅ ${fetchedData.message}`);
+      // await renderPosTable();
+      hideGlobalLoader();
+    }
+
+    return fetchedData;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error deleting Product', error);
+    showToast('error', '❌ Failed to delete Product');
     throw error;
   }
 }

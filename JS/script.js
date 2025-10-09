@@ -923,6 +923,16 @@ export function closeModal() {
 
   const updateFee = document.querySelector('.updateFee');
 
+  const deleteTransactionContainer = document.querySelector(
+    '.deleteTransactionContainer'
+  );
+
+  //
+
+  if (deleteTransactionContainer) {
+    deleteTransactionContainer.classList.remove('active');
+  }
+
   if (updateFee) {
     updateFee.classList.remove('active');
   }

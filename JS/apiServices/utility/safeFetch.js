@@ -5,6 +5,8 @@ export async function safeFetch(url, options) {
   try {
     const response = await fetch(url, options);
 
+    //  console.log(url, options, response);
+
     if (!response.ok) {
       const data = await response.json();
       // hideGlobalLoader();

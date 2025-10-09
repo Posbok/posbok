@@ -188,7 +188,7 @@ export async function renderBusinessSettings() {
     return;
   }
 
-  console.log('businessSettingsData', businessSettingsData);
+  //   console.log('businessSettingsData', businessSettingsData);
 
   // Update the UI buttons based on fetched settings
   const manualMachineFee = document.getElementById('manual_machine_fee_mode');

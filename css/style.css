@@ -3272,6 +3272,23 @@ body.authentication {
           .inventory-method .category-table-container .table-body-row:hover .hero-btn-outline:active,
           .inventory-method .inventory-table-container .table-body-row:hover .hero-btn-outline:active {
             background-color: #eef1f6; }
+  .reports .deletedTransationRow,
+  .goods .deletedTransationRow,
+  .shops .deletedTransationRow,
+  .staff .deletedTransationRow,
+  .posCharge .deletedTransationRow,
+  .machineFee .deletedTransationRow,
+  .inventory .deletedTransationRow {
+    background-color: #f8d7da;
+    color: #842029 !important; }
+    .reports .deletedTransationRow:hover,
+    .goods .deletedTransationRow:hover,
+    .shops .deletedTransationRow:hover,
+    .staff .deletedTransationRow:hover,
+    .posCharge .deletedTransationRow:hover,
+    .machineFee .deletedTransationRow:hover,
+    .inventory .deletedTransationRow:hover {
+      background-color: #f1aeb5 !important; }
 
 .reports-table-container {
   overflow-x: auto;

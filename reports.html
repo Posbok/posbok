@@ -649,6 +649,31 @@
    </div>
 
 
+   <!-- Delete POS Transaction Modal -->
+   <form class="modal-form deleteTransactionContainerModal " name="modal">
+
+      <div class="card confirmation deleteTransactionContainer modal ">
+         <h1 class="confirmation-text">Are you sure you want to Delete this <span id="confirmation-text"
+               style="color: red;"></span> transaction?
+         </h1>
+
+         <div class="confirmation-btn_container">
+
+            <button class="hero-btn-dark cancel-close">Cancel</button>
+
+            <button class="hero-btn-danger deleteTransactionButton  mt-2 has-spinner" type="submit">
+               <span class="btn-text">Delete Transaction</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+
+
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+
    <form class="add-user-form" name="add-user">
       <div class="card addUser modal ">
          <div>

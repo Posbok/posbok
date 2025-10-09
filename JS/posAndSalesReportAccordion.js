@@ -1,5 +1,9 @@
 import config from '../config';
-import { getPosTransactions } from './apiServices/pos/posResources';
+import {
+  deletePosTransaction,
+  getPosTransactions,
+  getPosTransactionsById,
+} from './apiServices/pos/posResources';
 import {
   getAllSales,
   getDailySalesSummary,
@@ -15,10 +19,16 @@ import {
 } from './apiServices/utility/salesReportUtility';
 import {
   formatAmountWithCommas,
+  formatDateTimeReadable,
   formatSaleStatus,
   formatTransactionType,
+  hideBtnLoader,
+  hideGlobalLoader,
+  showBtnLoader,
+  showGlobalLoader,
   truncateProductNames,
 } from './helper/helper';
+import { closeModal, showToast } from './script';
 
 const userData = config.userData;
 const parsedUserData = userData ? JSON.parse(userData) : null;
@@ -29,6 +39,86 @@ const staffShopId = parsedUserData?.shopId;
 const staffUserId = parsedUserData?.id;
 const shopKey = `shop_${staffUserId}`;
 const servicePermission = parsedUserData?.servicePermission;
+
+export function openDeleteTransactionModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const deleteTransactionContainer = document.querySelector(
+    '.deleteTransactionContainer'
+  );
+
+  if (deleteTransactionContainer)
+    deleteTransactionContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
+export function deleteTransactionForm(transaction) {
+  const form = document.querySelector('.deleteTransactionContainerModal');
+  if (!form) return;
+
+  //   console.log('transaction ', transaction);
+
+  form.dataset.transactionId = transaction.id;
+
+  document.getElementById('confirmation-text').textContent =
+    transaction.transaction_type;
+}
+
+export function bindDeleteTransactionFormListener() {
+  const form = document.querySelector('.deleteTransactionContainerModal');
+  if (!form) return;
+
+  const deleteTransactionButton = form.querySelector(
+    '.deleteTransactionButton'
+  );
+  const cancelButton = form.querySelector('.cancel-close');
+
+  if (!form.dataset.bound) {
+    form.dataset.bound = true;
+
+    cancelButton?.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeModal();
+    });
+
+    deleteTransactionButton?.addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      const transactionId = form.dataset.transactionId;
+
+      if (!transactionId) {
+        showToast('fail', '❎ No Transaction ID found.');
+        return;
+      }
+
+      try {
+        showBtnLoader(deleteTransactionButton);
+        await deletePosTransaction(transactionId);
+        hideBtnLoader(deleteTransactionButton);
+        //   await renderPosTable({
+        //     page: shopPageTracker[shopId],
+        //     limit,
+        //     filters,
+        //     shopId,
+        //     tableBodyId: `#pos-tbody-${shopId}`,
+        //     loadMoreButton: document.getElementById(
+        //       `loadMoreButton_admin_${shopId}`
+        //     ),
+        //   });
+        closeModal();
+        showToast('success', '✅ Transaction deleted successfully.');
+      } catch (err) {
+        hideBtnLoader(deleteTransactionButton);
+        showToast('fail', `❎ ${err.message}`);
+      }
+    });
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  bindDeleteTransactionFormListener();
+});
 
 export function getAdminSalesReportHtml(shop) {
   //   console.log('Sales Report');
@@ -649,6 +739,7 @@ export function getAdminPosReportHtml(shop) {
                                     <th class="py-1">Transaction Ref.</th>
                                     <th class="py-1">Remarks</th>
                                     <th class="py-1">Receipt ID</th>
+                                    <th class="py-1">Actions</th>
                                  </tr>
                               </thead>
 
@@ -711,6 +802,7 @@ export function getAdminPosReportHtml(shop) {
 }
 
 export function getAdminPosTransactionList(
+  transactionId,
   transaction_type,
   amount,
   transaction_mode,
@@ -728,6 +820,8 @@ export function getAdminPosTransactionList(
   chargeToDisplay,
   transaction_fee,
   transaction_ref,
+  deleted_at,
+  deleted_by,
   serialNumber
 ) {
   return `
@@ -757,6 +851,29 @@ export function getAdminPosTransactionList(
                <td class="py-1 posPaymentMethodRef">${transaction_ref}</td> 
                <td class="py-1 posPaymentMethodRemark">${remarks}</td>
                <td class="py-1 posPaymentMethodReceiptId">${receipt_id}</td>
+               <td class="py-1 action-buttons" style="margin-top:1.1rem">
+                 ${
+                   deleted_at || deleted_by
+                     ? `  <h2 class="heading-minitext">
+               Deleted By: Admin <br />
+               Deleted At: ${formatDateTimeReadable(deleted_at)}</h2>
+            </h2>`
+                     : `       <button
+                           class="hero-btn-outline openUpdateTransactionBtn"
+                           id="openUpdateTransactionBtn" data-transaction-id="${transactionId}"
+                         >
+                           <i class="fa-solid fa-pen-to-square"></i>
+                         </button>
+             
+                         <button
+                           class="hero-btn-outline deleteTransactionBtn"
+                           id="deleteTransactionModalBtn" data-transaction-id="${transactionId}"
+                         >
+                           <i class="fa-solid fa-trash-can"></i>
+                         </button>`
+                 }
+                       </td>
+               
               `;
 }
 
@@ -798,6 +915,7 @@ export function getAdminSalesTransactionList(
                         status
                       )}</td>
                        <td class="py-1 soldItemDetailReport" data-sale-id="${id}"><i class="fa fa-eye"></i></td>
+                       
    `;
 }
 
@@ -930,7 +1048,7 @@ export async function renderPosTable({
         groupRow.className = 'date-group-row table-body-row ';
 
         groupRow.innerHTML = `
-    <td colspan="12" class="date-header py-1 mt-1 mb-1">
+    <td colspan="13" class="date-header py-1 mt-1 mb-1">
       <strong>${date}</strong>     </td>
 
    `;
@@ -945,6 +1063,7 @@ export async function renderPosTable({
         transactions.forEach((posTransaction) => {
           //  console.log(posTransaction);
           const {
+            id: transactionId,
             transaction_type,
             amount,
             transaction_mode,
@@ -961,6 +1080,8 @@ export async function renderPosTable({
             fees,
             transaction_fee,
             transaction_ref,
+            deleted_at,
+            deleted_by,
           } = posTransaction;
 
           const machineFee = fees?.fee_amount || '0';
@@ -969,8 +1090,16 @@ export async function renderPosTable({
           const chargeToDisplay = manual_charges ?? charges;
 
           const row = document.createElement('tr');
+          row.classList.add(
+            `${
+              deleted_at || deleted_by
+                ? 'deletedTransationRow'
+                : 'posTransactionRow'
+            }`
+          );
           row.classList.add('table-body-row');
           row.innerHTML = getAdminPosTransactionList(
+            transactionId,
             transaction_type,
             amount,
             transaction_mode,
@@ -988,10 +1117,49 @@ export async function renderPosTable({
             chargeToDisplay,
             transaction_fee,
             transaction_ref,
+            deleted_at,
+            deleted_by,
             serialNumber++
           );
 
           posTableBody.appendChild(row);
+
+          //  Handle Delete POS Transaction Logic
+          const deleteTransactionModalBtn = row.querySelector(
+            `#deleteTransactionModalBtn`
+          );
+
+          deleteTransactionModalBtn?.addEventListener('click', async () => {
+            showGlobalLoader();
+            const transactionId =
+              deleteTransactionModalBtn.dataset.transactionId;
+
+            const deleteTransactionContainer = document.querySelector(
+              '.deleteTransactionContainer'
+            );
+
+            if (deleteTransactionContainer) {
+              // Store transactionId in modal container for reference
+              deleteTransactionContainer.dataset.transactionId = transactionId;
+
+              // Fetch Shop detail
+              const transactionDetail = await getPosTransactionsById(
+                transactionId
+              );
+
+              console.log('transactionDetail', transactionDetail.data);
+
+              // Call function to prefill modal inputs
+              if (transactionDetail?.data) {
+                hideGlobalLoader();
+                openDeleteTransactionModal(); // Show modal after data is ready
+                deleteTransactionForm(transactionDetail.data);
+              } else {
+                hideGlobalLoader();
+                showToast('fail', '❌ Failed to fetch shop details.');
+              }
+            }
+          });
         });
 
         // Insert total row (Footer for Daily Totals))

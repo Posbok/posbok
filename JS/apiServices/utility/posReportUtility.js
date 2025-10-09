@@ -148,5 +148,13 @@ export function updateTotalPosAmounts(transactions, totalRow, date) {
          billPaymentAmount
        )}
      </td>
+ 
+     <td  class="date-header py-1 px-2 mt-1 mb-1">
+       <strong></strong>
+     </td>
+ 
+     <td  class="date-header py-1 px-2 mt-1 mb-1">
+       <strong></strong>
+     </td>
    `;
 }

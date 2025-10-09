@@ -54,11 +54,11 @@ const adminAccordionContainer = document.querySelector(
 const staffContainer = document.querySelector('.staffContainer');
 
 if (isAdmin) {
-  adminAccordionContainer.style.display = 'block';
-  staffContainer.style.display = 'none';
+  if (adminAccordionContainer) adminAccordionContainer.style.display = 'block';
+  if (staffContainer) staffContainer.style.display = 'none';
 } else {
-  adminAccordionContainer.style.display = 'none';
-  staffContainer.style.display = 'block';
+  if (adminAccordionContainer) adminAccordionContainer.style.display = 'none';
+  if (staffContainer) staffContainer.style.display = 'block';
 }
 
 // Update Product Sales Report - Monthly

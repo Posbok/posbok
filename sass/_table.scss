@@ -128,6 +128,15 @@
          // }
       }
    }
+
+   .deletedTransationRow {
+      background-color: #f8d7da; // light red (Bootstrap danger-light)
+      color: #842029 !important; // darker text for contrast
+
+      &:hover {
+         background-color: #f1aeb5 !important; // slightly deeper red
+      }
+   }
 }
 
 .reports-table-container {
