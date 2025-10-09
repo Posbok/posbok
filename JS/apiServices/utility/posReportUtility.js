@@ -2,8 +2,12 @@ import { formatAmountWithCommas } from '../../helper/helper';
 
 export function updateTotalPosAmounts(transactions, totalRow, date) {
   //   Deposit Amount Sum
+
+  const isDeleted = (item) =>
+    item.deleted_by != null || item.deleted_at != null;
+
   const depositTransactions = transactions.filter(
-    (item) => item.transaction_type === 'DEPOSIT'
+    (item) => item.transaction_type === 'DEPOSIT' && !isDeleted(item)
   );
 
   const depositAmount = depositTransactions.reduce(
@@ -11,12 +15,12 @@ export function updateTotalPosAmounts(transactions, totalRow, date) {
     0
   );
 
-  //   console.log('object', depositTransactions);
+  //  console.log('object', depositTransactions);
   //   console.log('Total deposit amount:', depositAmount);
 
   //   Withdrawal Amount Sum
   const withdrawalTransactions = transactions.filter(
-    (item) => item.transaction_type === 'WITHDRAWAL'
+    (item) => item.transaction_type === 'WITHDRAWAL' && !isDeleted(item)
   );
 
   const withdrawalAmount = withdrawalTransactions.reduce(
@@ -29,7 +33,8 @@ export function updateTotalPosAmounts(transactions, totalRow, date) {
 
   //   Withdrawal_Transfer Amount Sum
   const withdrawalTransferTransactions = transactions.filter(
-    (item) => item.transaction_type === 'WITHDRAWAL_TRANSFER'
+    (item) =>
+      item.transaction_type === 'WITHDRAWAL_TRANSFER' && !isDeleted(item)
   );
 
   const withdrawalTransferAmount = withdrawalTransferTransactions.reduce(
@@ -39,7 +44,7 @@ export function updateTotalPosAmounts(transactions, totalRow, date) {
 
   //   Bill Payment Amount Sum
   const billPaymentTransactions = transactions.filter(
-    (item) => item.transaction_type === 'BILL_PAYMENT'
+    (item) => item.transaction_type === 'BILL_PAYMENT' && !isDeleted(item)
   );
 
   const billPaymentAmount = billPaymentTransactions.reduce(
@@ -47,21 +52,7 @@ export function updateTotalPosAmounts(transactions, totalRow, date) {
     0
   );
 
-  //   console.log('object', billPaymentTransactions);
-  //   console.log('Total Bill Payment amount:', billPaymentAmount);
-
-  //   POS charges Amount Sum - Total POS Charges
-
-  // Logic One
-
-  //   const posChargesItems = transactions.filter(
-  //     (item) => item.charges && item.charges.charge_amount
-  //   );
-
-  //   const posChargesAmount = posChargesItems.reduce(
-  //     (sum, item) => sum + Number(item.charges.charge_amount),
-  //     0
-  //   );
+  //   console.log('Total withdrawal amount:', billPaymentAmount);
 
   // Logic Two
 
@@ -78,21 +69,24 @@ export function updateTotalPosAmounts(transactions, totalRow, date) {
 
   // Logic Three - Final
 
-  const posChargesAmount = transactions.reduce(
-    (sum, item) => sum + (Number(item.manual_charges ?? item.charges) || 0),
-    0
-  );
+  const posChargesAmount = transactions.reduce((sum, item) => {
+    if (!isDeleted(item)) {
+      const charge = item.manual_charges ?? item.charges;
+      return sum + Number(charge || 0);
+    }
+    return sum;
+  }, 0);
 
   //   console.log('object', posCharges);
   //   console.log('Total POS Charges amount:', posChargesAmount);
 
   //   Total Machine
   const machineFeeItems = transactions.filter(
-    (item) => item.fees && item.fees.fee_amount
+    (item) => item.fees && !isDeleted(item)
   );
 
   const totalMachineFeeAmount = machineFeeItems.reduce(
-    (sum, item) => sum + Number(item.fees.fee_amount),
+    (sum, item) => sum + Number(item.fees || 0),
     0
   );
 
