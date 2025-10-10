@@ -1,4 +1,10 @@
+import config from '../../../config';
 import { formatAmountWithCommas } from '../../helper/helper';
+
+const userData = config.userData;
+const parsedUserData = userData ? JSON.parse(userData) : null;
+
+const isAdmin = parsedUserData?.accountType === 'ADMIN';
 
 export function updateTotalPosAmounts(transactions, totalRow, date) {
   //   Deposit Amount Sum
@@ -147,8 +153,13 @@ export function updateTotalPosAmounts(transactions, totalRow, date) {
        <strong></strong>
      </td>
  
-     <td  class="date-header py-1 px-2 mt-1 mb-1">
-       <strong></strong>
-     </td>
+
+    ${
+      isAdmin
+        ? `        <td class="date-header py-1 px-2 mt-1 mb-1">
+          <strong></strong>
+        </td>`
+        : ''
+    }
    `;
 }

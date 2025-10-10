@@ -864,13 +864,7 @@ export function getAdminPosTransactionList(
                ADMIN <br />
                ${formatDateTimeReadable(deleted_at)}</h2>
             </h2>`
-                     : `       <button
-                           class="hero-btn-outline openUpdateTransactionBtn"
-                           id="openUpdateTransactionBtn" data-transaction-id="${transactionId}"
-                         >
-                           <i class="fa-solid fa-pen-to-square"></i>
-                         </button>
-             
+                     : `                    
                          <button
                            class="hero-btn-outline deleteTransactionBtn"
                            id="deleteTransactionModalBtn" data-transaction-id="${transactionId}"
@@ -1067,7 +1061,7 @@ export async function renderPosTable({
         //   `;
 
         transactions.forEach((posTransaction) => {
-          //  console.log(posTransaction);
+          console.log(posTransaction);
           const {
             id: transactionId,
             transaction_type,
@@ -1091,7 +1085,7 @@ export async function renderPosTable({
             shop_id,
           } = posTransaction;
 
-          const machineFee = fees?.fee_amount || '0';
+          const machineFee = fees || 0;
           //  const transactionCharges = charges?.charge_amount || '0';
 
           const chargeToDisplay = manual_charges ?? charges;

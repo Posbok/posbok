@@ -1221,7 +1221,7 @@ if (isStaff) {
           groupRow.className = 'date-group-row table-body-row ';
 
           groupRow.innerHTML = `
-      <td colspan="11" class="date-header py-1 mt-1 mb-1">
+      <td colspan="12" class="date-header py-1 mt-1 mb-1">
         <strong>${date}</strong>     </td>
 
      `;
@@ -1251,14 +1251,24 @@ if (isStaff) {
               fees,
               transaction_fee,
               transaction_ref,
+              deleted_at,
+              deleted_by,
             } = posTransaction;
 
-            const machineFee = fees?.fee_amount || '0';
+            const machineFee = fees || 0;
             //  const transactionCharges = charges?.charge_amount || '0';
 
             const chargeToDisplay = manual_charges ?? charges;
 
             const row = document.createElement('tr');
+            row.classList.add(
+              `${
+                deleted_at || deleted_by
+                  ? 'deletedTransationRow'
+                  : 'posTransactionRow'
+              }`
+            );
+            row.classList.add('table-body-row');
             row.classList.add('table-body-row');
             row.innerHTML = `
     <td class="py-1">${serialNumber++}.</td>
