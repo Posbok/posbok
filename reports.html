@@ -673,6 +673,69 @@
       </div>
    </form>
 
+   <!-- Delete Sale Transaction Modal -->
+   <form class="modal-form deleteSaleContainerModal " name="modal">
+
+      <div class="card confirmation deleteSaleContainer modal ">
+         <h1 class="confirmation-text">Are you sure you want to Delete this <span id="confirmation-text"
+               style="color: red;"></span> transaction?
+         </h1>
+
+         <div class="confirmation-btn_container">
+
+            <button class="hero-btn-dark cancel-close">Cancel</button>
+
+            <button class="hero-btn-danger deleteSaleButton  mt-2 has-spinner" type="submit">
+               <span class="btn-text">Delete Transaction</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+
+
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <!-- Update Sale Transcaion Details -->
+
+   <form class="modal-form updateSaleModal" name="updateSale">
+      <div class="card updateSale modal ">
+         <div>
+            <h1 class="heading-text addItemName">Update Sale</h1>
+         </div>
+
+         <div class="modal-form_input">
+            <label for="updateSaleCustomerName">Sale Name</label>
+
+            <input id="updateSaleCustomerName" type="text" placeholder="Customer Name" name="updateSaleCustomerName"
+               required>
+         </div>
+
+         <div class="modal-form_input">
+            <label for="updateSaleCustomerPhone">Customer Phone</label>
+
+            <input id="updateSaleCustomerPhone" type="number" placeholder="Customer Phone Number"
+               name="updateSaleCustomerPhone" required>
+         </div>
+
+         <div class="modal-form_input">
+            <label for="updateSaleRemark">Sale Remark</label>
+
+            <input id="updateSaleRemark" type="text" placeholder="Sale Remark" name="updateSaleRemark" required>
+         </div>
+
+         <div class="center-button">
+            <button class="hero-btn-dark updateSaleModalBtn" id="updateSaleModalBtn">
+               <span class="btn-text">update Sale</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
 
    <form class="add-user-form" name="add-user">
       <div class="card addUser modal ">

@@ -432,8 +432,8 @@ export async function deletePosTransaction(transactionId) {
     return fetchedData;
   } catch (error) {
     hideGlobalLoader();
-    console.error('Error deleting Product', error);
-    showToast('error', '❌ Failed to delete Product');
+    console.error('Error deleting POS Transaction', error);
+    showToast('error', '❌ Failed to delete POS Transaction');
     throw error;
   }
 }

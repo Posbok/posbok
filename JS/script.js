@@ -927,7 +927,19 @@ export function closeModal() {
     '.deleteTransactionContainer'
   );
 
+  const deleteSaleContainer = document.querySelector('.deleteSaleContainer');
+
+  const updateSale = document.querySelector('.updateSale');
+
   //
+
+  if (updateSale) {
+    updateSale.classList.remove('active');
+  }
+
+  if (deleteSaleContainer) {
+    deleteSaleContainer.classList.remove('active');
+  }
 
   if (deleteTransactionContainer) {
     deleteTransactionContainer.classList.remove('active');

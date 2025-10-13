@@ -1,5 +1,6 @@
 import config from '../../../config';
 import { hideGlobalLoader, showGlobalLoader } from '../../helper/helper';
+import { closeModal } from '../../script';
 import { safeFetch } from '../utility/safeFetch';
 
 const baseUrl = config.baseUrl;
@@ -36,7 +37,7 @@ export async function updatePartialPayment(
   saleId
 ) {
   try {
-    console.log('Sending POST request...');
+    //  console.log('Sending POST request...');
     const soldData = await safeFetch(`${baseUrl}/api/sales/${saleId}/payment`, {
       method: 'PUT',
       headers: {
@@ -46,7 +47,7 @@ export async function updatePartialPayment(
       body: JSON.stringify(updatePartialPaymentDetails),
     });
 
-    console.log('soldData received...');
+    //  console.log('soldData received...');
 
     //  if (soldData) {
     //    // console.log('Sale added successfully:', soldData);
@@ -57,6 +58,64 @@ export async function updatePartialPayment(
     return soldData;
   } catch (error) {
     console.error('Error Creating Sale:', error.message);
+  }
+}
+
+export async function updateSale(saleId, updateSaleDetails) {
+  //   console.log('From API Request:', saleId, updateSaleDetails);
+
+  try {
+    //  console.log('Sending POST request...', saleId);
+
+    const updateSaleData = await safeFetch(`${baseUrl}/api/sales/${saleId}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updateSaleDetails),
+    });
+
+    if (updateSaleData) {
+      // console.log('Sale info Updated successfully:', updateSaleData);
+      // showToast('success', `✅ ${updateSaleData.message}`);
+      closeModal();
+    }
+
+    return updateSaleData;
+  } catch (error) {
+    console.error('Error Updating Sale Info', error);
+    //  showToast('error', '❌ Failed to Update Sale info');
+    throw error;
+  }
+}
+
+export async function deleteSaleTransaction(saleId) {
+  try {
+    //  console.log('Sending POST request...');
+
+    showGlobalLoader();
+
+    const fetchedData = await safeFetch(`${baseUrl}/api/sales/${saleId}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
+
+    if (fetchedData) {
+      // console.log('Sale Transaction deleted successfully:', fetchedData);
+      // showToast('success', `✅ ${fetchedData.message}`);
+      // await renderSaleTable();
+      hideGlobalLoader();
+    }
+
+    return fetchedData;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error deleting Sale Transaction', error);
+    //  showToast('error', '❌ Failed to delete Sale Transaction');
+    throw error;
   }
 }
 

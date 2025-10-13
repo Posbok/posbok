@@ -5,10 +5,12 @@ import {
   getPosTransactionsById,
 } from './apiServices/pos/posResources';
 import {
+  deleteSaleTransaction,
   getAllSales,
   getDailySalesSummary,
   getMonthlySalesSummary,
   getSaleById,
+  updateSale,
 } from './apiServices/sales/salesResources';
 import { updateTotalPosAmounts } from './apiServices/utility/posReportUtility';
 import {
@@ -53,6 +55,26 @@ export function openDeleteTransactionModal() {
   if (sidebar) sidebar.classList.add('blur');
 }
 
+export function openDeleteSaleModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const deleteSaleContainer = document.querySelector('.deleteSaleContainer');
+
+  if (deleteSaleContainer) deleteSaleContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
+export function openUpdateSaleButton() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const updateSaleContainer = document.querySelector('.updateSale');
+
+  if (updateSaleContainer) updateSaleContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
 export function deleteTransactionForm(transaction, shop_id) {
   const form = document.querySelector('.deleteTransactionContainerModal');
   if (!form) return;
@@ -64,6 +86,51 @@ export function deleteTransactionForm(transaction, shop_id) {
 
   document.getElementById('confirmation-text').textContent =
     transaction.transaction_type;
+}
+
+export function deleteSaleForm(saleId, shop_id) {
+  const form = document.querySelector('.deleteSaleContainerModal');
+  if (!form) return;
+
+  //   console.log('saleId ', saleId);
+
+  form.dataset.saleId = saleId;
+  form.dataset.shopId = shop_id;
+
+  //   console.log(transaction);
+  //   document.getElementById('confirmation-text').textContent =
+  //     transaction.transaction_type;
+}
+
+export function updateSaleForm(saleDetail) {
+  //   console.log('Sale Detail:', saleDetail);
+
+  const form = document.querySelector('.updateSaleModal');
+  if (!form) return;
+
+  //   form.dataset.saleId = saleId;
+
+  //   if (!form || form.dataset.bound === 'true') return;
+  //   form.dataset.bound = 'true';
+
+  //   console.log(saleDetail.data);
+
+  const sale = saleDetail.data;
+
+  const {
+    customer_name,
+    customer_phone,
+    id: saleId,
+    remarks,
+    shop_id: shopId,
+  } = sale;
+
+  form.dataset.shopId = shopId;
+
+  document.querySelector('#updateSaleCustomerName').value = customer_name;
+  document.querySelector('#updateSaleCustomerPhone').value =
+    Number(customer_phone) || '';
+  document.querySelector('#updateSaleRemark').value = remarks;
 }
 
 export function bindDeleteTransactionFormListener() {
@@ -121,8 +188,143 @@ export function bindDeleteTransactionFormListener() {
   }
 }
 
+export function bindDeleteSaleFormListener() {
+  const form = document.querySelector('.deleteSaleContainerModal');
+  if (!form) return;
+
+  const deleteSaleButton = form.querySelector('.deleteSaleButton');
+  const cancelButton = form.querySelector('.cancel-close');
+
+  if (!form.dataset.bound) {
+    form.dataset.bound = true;
+
+    cancelButton?.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeModal();
+    });
+
+    deleteSaleButton?.addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      const saleId = form.dataset.saleId;
+      const shopId = form.dataset.shopId;
+
+      if (!saleId) {
+        showToast('fail', '❎ No Sale ID found.');
+        return;
+      }
+
+      try {
+        showBtnLoader(deleteSaleButton);
+        await deleteSaleTransaction(saleId);
+        hideBtnLoader(deleteSaleButton);
+        allSalesReport = []; // reset to avoid duplication
+        await renderSalesTable({
+          page: 1,
+          limit: pageSize,
+          filters: currentFilters, // reuse existing filters if available
+          shopId,
+          tableBodyId: `#sale-tbody-${shopId}`,
+          loadMoreButton: document.getElementById(
+            `loadMoreSaleButton_admin_${shopId}`
+          ),
+          // append: false,
+        });
+        closeModal();
+        showToast('success', '✅ Sale Transaction deleted successfully.');
+      } catch (err) {
+        hideBtnLoader(deleteSaleButton);
+        console.error(err);
+        showToast('fail', `❎ ${err.message}`);
+      }
+    });
+  }
+}
+
+export function bindUpdateSaleFormListener() {
+  const form = document.querySelector('.updateSaleModal');
+  if (!form) return;
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const saleId = form.dataset.saleId;
+      const shopId = form.dataset.shopId;
+
+      if (!saleId) {
+        showToast('fail', '❎ No sale selected for update.');
+        return;
+      }
+
+      if (!shopId) {
+        showToast('fail', '❎ No Shop selected for update.');
+        return;
+      }
+
+      const updateSaleCustomerName = document.querySelector(
+        '#updateSaleCustomerName'
+      ).value;
+      const updateSaleCustomerPhone = document.querySelector(
+        '#updateSaleCustomerPhone'
+      ).value;
+      const updateSaleRemark =
+        document.querySelector('#updateSaleRemark').value;
+
+      const updateSaleDetails = {
+        customerName: updateSaleCustomerName,
+        customerPhone: updateSaleCustomerPhone,
+        remarks: updateSaleRemark,
+      };
+
+      // console.log('Updating sale Detail with:', updateSaleDetails, saleId);
+
+      const updateSaleModalBtn = document.querySelector('.updateSaleModalBtn');
+
+      try {
+        showBtnLoader(updateSaleModalBtn);
+        const updatedSaleData = await updateSale(saleId, updateSaleDetails);
+
+        if (!updatedSaleData) {
+          console.error('fail', updatedSaleData.message);
+          return;
+        }
+
+        showToast('success', `✅ ${updatedSaleData.message}`);
+        closeModal();
+        hideBtnLoader(updateSaleModalBtn);
+
+        allSalesReport = []; // reset to avoid duplication
+        await renderSalesTable({
+          page: 1,
+          limit: pageSize,
+          filters: currentFilters, // reuse existing filters if available
+          shopId,
+          tableBodyId: `#sale-tbody-${shopId}`,
+          loadMoreButton: document.getElementById(
+            `loadMoreSaleButton_admin_${shopId}`
+          ),
+          // append: false,
+        });
+      } catch (err) {
+        hideBtnLoader(updateSaleModalBtn);
+
+        console.error('Error Updating Sale:', err);
+        showToast('fail', `❎ ${err.message}`);
+        return;
+      } finally {
+        closeModal();
+        hideBtnLoader(updateSaleModalBtn);
+        hideGlobalLoader();
+      }
+    });
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   bindDeleteTransactionFormListener();
+  bindDeleteSaleFormListener();
+  bindUpdateSaleFormListener();
 });
 
 export function getAdminSalesReportHtml(shop) {
@@ -892,7 +1094,8 @@ export function getAdminSalesTransactionList(
   status,
   first_name,
   last_name,
-  truncatedProductNames
+  truncatedProductNames,
+  shop_id
 ) {
   return `
     <td class="py-1">${serialNumber++}.</td>
@@ -914,7 +1117,16 @@ export function getAdminSalesTransactionList(
                       <td class="py-1 soldItemStatusReport">${formatSaleStatus(
                         status
                       )}</td>
-                       <td class="py-1 soldItemDetailReport" data-sale-id="${id}"><i class="fa fa-eye"></i></td>
+                      <td class="py-1 action-buttons">
+                      <button class="hero-btn-outline class=" soldItemDetailReport" data-sale-id="${id}" data-shop-id="${shop_id}"><i class="fa fa-eye"></i></button>
+          <button class="hero-btn-outline editSaleButton" id="editSaleButton" data-sale-id="${id}" data-shop-id="${shop_id}">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </button>
+
+          <button class="hero-btn-outline deleteSaleModalBtn" id="deleteSaleModalBtn" data-sale-id="${id}" data-shop-id="${shop_id}">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        </td>
                        
    `;
 }
@@ -985,7 +1197,7 @@ export async function renderPosTable({
         filters,
       });
 
-      console.log(result);
+      // console.log(result);
 
       if (!result) throw new Error(result.message || 'Failed to fetch');
 
@@ -1061,7 +1273,7 @@ export async function renderPosTable({
         //   `;
 
         transactions.forEach((posTransaction) => {
-          console.log(posTransaction);
+          //  console.log(posTransaction);
           const {
             id: transactionId,
             transaction_type,
@@ -1367,6 +1579,7 @@ export async function renderSalesTable({
             remarks,
             status,
             SaleItems,
+            shop_id,
           } = salesTransaction;
 
           const { first_name, last_name } = salesTransaction.Account;
@@ -1406,14 +1619,89 @@ export async function renderSalesTable({
             status,
             first_name,
             last_name,
-            truncatedProductNames
+            truncatedProductNames,
+            shop_id
           );
 
           row.addEventListener('click', async (e) => {
             updateSalesReceipt(e, row);
+            console.log('Row Clicked');
           });
 
           salesTableBody.appendChild(row);
+
+          //  Handle Delete Sale Transaction Logic
+          const deleteSaleModalBtn = row.querySelector(`#deleteSaleModalBtn`);
+
+          deleteSaleModalBtn?.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            showGlobalLoader();
+            const saleId = deleteSaleModalBtn.dataset.saleId;
+            const shopId = deleteSaleModalBtn.dataset.shopId;
+
+            // console.log('saleId', saleId);
+            // console.log('shopId', shopId);
+
+            const deleteSaleContainer = document.querySelector(
+              '.deleteSaleContainer'
+            );
+
+            if (deleteSaleContainer) {
+              // Store saleId in modal container for reference
+              deleteSaleContainer.dataset.saleId = saleId;
+
+              // Fetch Shop detail
+              const transactionDetail = await getSaleById(saleId);
+
+              //   console.log('transactionDetail', transactionDetail.data);
+
+              // Call function to prefill modal inputs
+              if (transactionDetail?.data) {
+                hideGlobalLoader();
+                openDeleteSaleModal();
+                deleteSaleForm(saleId, shopId);
+              } else {
+                hideGlobalLoader();
+                showToast('fail', '❌ Failed to fetch Transaction details.');
+              }
+            }
+          });
+
+          // Handle Update Sale Logic
+
+          const updateSaleBtn = row.querySelector('#editSaleButton');
+
+          updateSaleBtn?.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            // console.log('Edit Button  Clicked');
+            showGlobalLoader();
+            const saleId = updateSaleBtn.dataset.saleId;
+
+            const updateSaleModalContainer =
+              document.querySelector('.updateSaleModal');
+
+            if (updateSaleModalContainer) {
+              // Store saleId in modal container for reference
+              updateSaleModalContainer.dataset.saleId = saleId;
+
+              //   console.log(updateSaleModalContainer.dataset.saleId);
+              // Fetch staff detail
+              const saleDetail = await getSaleById(saleId);
+
+              //   console.log('Sale detail received successfully:', saleDetail);
+
+              // Call function to prefill modal inputs
+              if (saleDetail?.success === true) {
+                hideGlobalLoader();
+                openUpdateSaleButton(); // Show modal after data is ready
+
+                updateSaleForm(saleDetail);
+              } else {
+                hideGlobalLoader();
+                showToast('fail', '❌ Failed to fetch Sale details.');
+              }
+            }
+          });
         });
 
         // Insert total row (Footer for Daily Totals))
