@@ -506,6 +506,7 @@ export function createProductForm() {
         //   console.log(productData);
 
         const productId = productData?.data.id;
+        const productSku = productData?.data.sku;
 
         if (!productId) {
           hideBtnLoader(addProductModalBtn);
@@ -531,7 +532,7 @@ export function createProductForm() {
               mode: 'barcodeMode',
               finalBarcode,
               addProductName,
-              addedProductId: productId,
+              addedProductSku: productSku,
             });
 
             // showToast(
@@ -570,12 +571,12 @@ function handleBarcodeModeToast({
   mode,
   finalBarcode,
   addProductName,
-  addedProductId,
+  addedProductSku,
 }) {
   //   console.log(mode, finalBarcode, addProductName, addedProductId);
 
   const productName = document.getElementById('productName');
-  const productId = document.getElementById('productId');
+  const productSku = document.getElementById('productSku');
   const productBarcode = document.getElementById('productBarcode');
   const barcodeImg = document.getElementById('barcode');
   const actions = document.querySelector('.toast-actions');
@@ -584,7 +585,7 @@ function handleBarcodeModeToast({
   if (mode === 'barcodeMode') {
     // Show barcode elements
     productName.classList.remove('hidden');
-    productId.classList.remove('hidden');
+    productSku.classList.remove('hidden');
     productBarcode.classList.remove('hidden');
     barcodeImg.classList.remove('hidden');
     actions.style.display = 'flex';
@@ -592,7 +593,7 @@ function handleBarcodeModeToast({
 
     // Populate data
     productName.textContent = `Product Name: ${addProductName}` || '';
-    productId.textContent = `Product ID: ${addedProductId}` || '';
+    productSku.textContent = `SKU: ${addedProductSku}` || '';
     productBarcode.textContent = `Product Barcode: ${finalBarcode}` || '';
 
     // Generate barcode
@@ -616,7 +617,7 @@ function handleBarcodeModeToast({
   } else {
     // Normal toast
     productName.classList.add('hidden');
-    productId.classList.add('hidden');
+    productSku.classList.add('hidden');
     productBarcode.classList.add('hidden');
     barcodeImg.classList.add('hidden');
     actions.style.display = 'none';
@@ -759,7 +760,7 @@ export function bindAddExistingProductFormListener() {
           if (inventoryData) {
             showToast(
               'success',
-              `✅ ${inventoryData.message} with Product ID: ${productId}`
+              `✅ ${inventoryData.message} with SKU: ${updatedProductData.data.sku}`
             );
             closeModal();
             clearFormInputs();
@@ -1214,7 +1215,7 @@ export function bindUpdateProductFormListener() {
           if (inventoryData) {
             showToast(
               'success',
-              `✅ ${inventoryData.message} with Product ID: ${productId}`
+              `✅ ${inventoryData.message} with SKU: ${updatedProductData.data.sku}`
             );
             closeModal();
             clearFormInputs();
@@ -1697,7 +1698,7 @@ if (isAdmin && adminAccordionContainer && container) {
                           <th class="py-1">Product Name</th>
                           <th class="py-1">Product Description</th>
                           <th class="py-1">Product Category</th>
-                          <th class="py-1">Product ID</th>
+                          <th class="py-1">SKU</th>
                           <th class="py-1">Barcode</th>
                           <th class="py-1">Buying Price</th>
                           <th class="py-1">Quantity</th>
