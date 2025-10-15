@@ -454,6 +454,8 @@ export function createProductForm() {
         '#addProductDescription'
       ).value;
 
+      const addProductSku = document.querySelector('#addProductSku').value;
+
       const addProductBarcode =
         document.querySelector('#addProductBarcode').value;
 
@@ -473,9 +475,10 @@ export function createProductForm() {
         addProductBarcode !== '' ? addProductBarcode : generateEAN13();
 
       const addProductDetails = {
-        categoryId: addProductCategory,
+        categoryId: Number(addProductCategory),
         name: addProductName,
         description: addProductDescription,
+        sku: addProductSku,
         purchasePrice: Number(getAmountForSubmission(addProductBoughtPrice)),
         sellingPrice: Number(getAmountForSubmission(addProductSellingPrice)),
         barcode: finalBarcode,
@@ -1151,6 +1154,8 @@ export function bindUpdateProductFormListener() {
       const updateProductDescription = document.querySelector(
         '#updateProductDescription'
       ).value;
+      const updateProductSku =
+        document.querySelector('#updateProductSku').value;
       const updateProductBoughtPrice = document.querySelector(
         '#updateProductBoughtPrice'
       ).value;
@@ -1165,6 +1170,7 @@ export function bindUpdateProductFormListener() {
         categoryId: updateProductCategory,
         name: updateProductName,
         description: updateProductDescription,
+        sku: updateProductSku,
         purchasePrice: Number(getAmountForSubmission(updateProductBoughtPrice)),
         sellingPrice: Number(getAmountForSubmission(updateProductSellingPrice)),
       };
@@ -1173,11 +1179,11 @@ export function bindUpdateProductFormListener() {
         quantity: Number(updateProductQuantity),
       };
 
-      // console.log(
-      //   'Updating Product Detail with:',
-      //   updateProductDetails,
-      //   productId
-      // );
+      console.log(
+        'Updating Product Detail with:',
+        updateProductDetails,
+        productId
+      );
 
       const updateProductModalBtn = document.querySelector(
         '.updateProductModalBtn'
@@ -1238,7 +1244,7 @@ export function bindUpdateProductFormListener() {
 }
 
 export function updateProductForm(productDetail) {
-  //   console.log('Product Detail:', productDetail);
+  console.log('Product Detail:', productDetail);
 
   const form = document.querySelector('.updateProductModal');
   if (!form) return;
@@ -1265,6 +1271,7 @@ export function updateProductForm(productDetail) {
     description: productDescription,
     purchase_price,
     selling_price,
+    sku,
   } = product;
 
   const { name: categoryName, id: categoryId } = productCategory;
@@ -1286,6 +1293,7 @@ export function updateProductForm(productDetail) {
   document.querySelector('#updateProductName').value = productName;
   document.querySelector('#updateProductDescription').value =
     productDescription;
+  document.querySelector('#updateProductSku').value = sku;
   document.querySelector('#updateProductBoughtPrice').value =
     formatAmountWithCommas(purchase_price) || '';
   document.querySelector('#updateProductSellingPrice').value =
@@ -1990,7 +1998,7 @@ export async function renderProductInventoryTable(shopId) {
 
     shopProductMap[shopId] = productInventories;
 
-    //  console.log(productInventories);
+    console.log(productInventories);
 
     const totalProductsCountElement = document.querySelector(
       `.totalProductsCount_${shopId}`

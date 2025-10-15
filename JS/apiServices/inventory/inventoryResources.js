@@ -140,7 +140,7 @@ export async function createProduct(shopId, productDetails) {
     //  console.log('fetchedData received...');
 
     if (fetchedData) {
-      // console.log('Product added successfully:', fetchedData);
+      console.log('Product added successfully:', fetchedData);
       // showToast('success', `✅ ${fetchedData.message}`);
       // Refresh the table list after successful configuration
       // getProductCategories();
@@ -330,7 +330,7 @@ export async function updateProduct(productId, updateProductDetails, shopId) {
     );
 
     if (updateProductData) {
-      // console.log('Product info Updated successfully:', updateProductData);
+      console.log('Product info Updated successfully:', updateProductData);
       // showToast('success', `✅ ${updateProductData.message}`);
       await renderProductInventoryTable(shopId); // Refresh list or update UI
     }
