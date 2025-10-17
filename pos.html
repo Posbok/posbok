@@ -131,6 +131,8 @@
             <button class="hero-btn-dark depositPosCapitalBtn force-mb-0" id="depositPosCapitalBtn">Deposit Pos
                Capital</button>
 
+            <button class="hero-btn-dark fundMachineBtn hidden force-mb-0" id="fundMachineBtn">Fund Machine</button>
+
             <button class="hero-btn-dark logoutButton">LOGOUT</button>
 
             <div class="profileIconDiv mr-2">
@@ -860,6 +862,7 @@
       </div>
    </form>
 
+   <!--  Deposit POS Capital Modals - Admin -->
    <form class="depositPosCapital-form depositPosCapitalModal adminDepositPosCapitalModal" name="depositPosCapital">
       <div class="card adminDepositPosCapital modal ">
          <div>
@@ -893,6 +896,76 @@
 
             <button class="hero-btn-dark submitPosCapital  mt-2 mb-1  has-spinner" type="submit">
                <span class="btn-text">DEPOSIT </span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <!-- Fund Machine Modals -->
+   <form class="fundMachine-form fundMachineModal staffFundMachineModal" name="fundMachine">
+      <div class="card fundMachine modal ">
+         <div>
+            <h1 class="heading-text addItemName">Fund Machine</h1>
+         </div>
+
+         <div class="fundMachine-form_input">
+            <label for="fundMachineAmount">Enter Amount</label>
+
+            <div class="naira-input-container">
+               <input id="fundMachineAmount" type="text" placeholder="Enter Amount" name="fundMachineAmount" required>
+               <span class="naira">&#x20A6;</span>
+            </div>
+         </div>
+
+         <div class="center-button">
+
+            <button class="hero-btn-dark submitFundMachine  mt-2 mb-1  has-spinner" type="submit">
+               <span class="btn-text">Fund Machine </span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <!-- Fund Machine Modals - Admin -->
+   <form class="depositFundMachine-form depositFundMachineModal adminFundMachineModal" name="FundMachine">
+      <div class="card adminFundMachine modal ">
+         <div>
+            <h1 class="heading-text addItemName">Fund Machine</h1>
+         </div>
+
+
+         <!-- Assign Pos Capital  to shop -->
+         <div class="modal-form_input">
+            <label for="adminFundMachineShopDropdown">Select Shop</label>
+
+            <select id="adminFundMachineShopDropdown" class="form-control" required>
+               <option value="">Select a shop</option>
+               <!-- <option value="1">Loading Shops...</option> -->
+
+               <!-- Add Main shops dynamically -->
+            </select>
+         </div>
+
+         <div class="fundMachine-form_input">
+            <label for="adminFundMachineAmount">Enter Amount</label>
+
+            <div class="naira-input-container">
+               <input id="adminFundMachineAmount" type="text" placeholder="Enter Amount" name="adminFundMachineAmount"
+                  required>
+               <span class="naira">&#x20A6;</span>
+            </div>
+         </div>
+
+         <div class="center-button">
+
+            <button class="hero-btn-dark submitFundMachine  mt-2 mb-1  has-spinner" type="submit">
+               <span class="btn-text">Fund Machine </span>
                <span class="btn-spinner hidden"></span>
             </button>
          </div>

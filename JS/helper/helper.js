@@ -402,6 +402,7 @@ export function formatSaleStatus(value) {
 
 document.addEventListener('DOMContentLoaded', function () {
   const posCapitalAmountInput = document.getElementById('posCapitalAmount');
+  const fundMachineAmountInput = document.getElementById('fundMachineAmount');
   const posTransactionAmountInput = document.getElementById(
     'posTransactionAmount'
   );
@@ -448,6 +449,9 @@ document.addEventListener('DOMContentLoaded', function () {
   );
   const adminPosCapitalAmount = document.getElementById(
     'adminPosCapitalAmount'
+  );
+  const adminFundMachineAmount = document.getElementById(
+    'adminFundMachineAmount'
   );
   const adminSoldProductPrice = document.getElementById(
     'adminSoldProductPrice'
@@ -527,6 +531,11 @@ document.addEventListener('DOMContentLoaded', function () {
   if (posCapitalAmountInput)
     posCapitalAmountInput.addEventListener('input', function () {
       formatAmountWithCommasOnInput(posCapitalAmountInput);
+    });
+
+  if (fundMachineAmountInput)
+    fundMachineAmountInput.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(fundMachineAmountInput);
     });
 
   if (posTransactionAmountInput)
@@ -612,6 +621,11 @@ document.addEventListener('DOMContentLoaded', function () {
   if (adminPosCapitalAmount)
     adminPosCapitalAmount.addEventListener('input', function () {
       formatAmountWithCommasOnInput(adminPosCapitalAmount);
+    });
+
+  if (adminFundMachineAmount)
+    adminFundMachineAmount.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(adminFundMachineAmount);
     });
 
   if (adminSoldProductPrice)

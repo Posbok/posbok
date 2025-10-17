@@ -4,6 +4,7 @@ import {
   addMachineFeeForm,
   addPosChargeForm,
   depositPosCapitalForm,
+  fundMachineForm,
   populateFeesTable,
   populatePosChargesTable,
 } from '../../pos.js';
@@ -72,6 +73,32 @@ export function openAdminDepositPosCapitalModal() {
   if (sidebar) sidebar.classList.add('blur');
 
   depositPosCapitalForm();
+}
+
+// Fund Machine FOrm
+export function openFundMachineModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const fundMachineContainer = document.querySelector('.fundMachine');
+
+  if (fundMachineContainer) fundMachineContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  fundMachineForm();
+}
+
+export function openAdminFundMachineModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const adminFundMachineContainer = document.querySelector('.adminFundMachine');
+
+  if (adminFundMachineContainer)
+    adminFundMachineContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  fundMachineForm();
 }
 
 // Close Business Modal FOrm
@@ -274,6 +301,42 @@ export async function addPosCapital(posCapitalDetails) {
   } catch (error) {
     //  hideGlobalLoader();
     console.error('Error Add POS Capital:', error);
+    throw error;
+  }
+}
+
+export async function addFundMachine(fundMachineDetails) {
+  //   console.log(posCapitalDetails);
+  try {
+    showGlobalLoader();
+    //  console.log('Sending POST request...');
+
+    const fundMachinelData = await safeFetch(
+      `${baseUrl}/api/admin/fund-machine`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(fundMachineDetails),
+      }
+    );
+
+    //  console.log('Response received...');
+
+    if (fundMachinelData) {
+      // console.log('Machine Funded successfully:', fundMachinelData);
+      // showToast('success', `✅ ${fundMachineDetails.message}`);
+      // hideGlobalLoader();
+    }
+
+    //  isStaff ? initAccountOverview() : '';
+
+    return fundMachinelData;
+  } catch (error) {
+    //  hideGlobalLoader();
+    console.error('Error Funding Machine :', error);
     throw error;
   }
 }

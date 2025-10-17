@@ -14,6 +14,9 @@ import {
   openAdminDepositPosCapitalModal,
   deleteFeeSettings,
   updateFeeSetting,
+  openAdminFundMachineModal,
+  openFundMachineModal,
+  addFundMachine,
 } from './apiServices/pos/posResources';
 import { closeModal, setupModalCloseButtons, showToast } from './script';
 import config from '../config.js';
@@ -116,14 +119,22 @@ if (isAdmin) {
       showGlobalLoader();
       const { enrichedShopData } = await checkAndPromptCreateShop();
       populateBusinessShopDropdown(enrichedShopData, 'businessDayShopDropdown');
+
       populateBusinessShopDropdown(
         enrichedShopData,
         'adminDepositposCapitalShopDropdown'
       );
+
+      populateBusinessShopDropdown(
+        enrichedShopData,
+        'adminFundMachineShopDropdown'
+      );
+
       populateBusinessShopDropdown(
         enrichedShopData,
         'closeBusinessDayShopDropdown'
       );
+
       hideGlobalLoader();
     } catch (err) {
       hideGlobalLoader();
@@ -184,10 +195,68 @@ export function bindDepositPosCapitalFormListener() {
   }
 }
 
+export function bindFundMachineFormListener() {
+  const form = isAdmin
+    ? document.querySelector('.adminFundMachineModal')
+    : document.querySelector('.staffFundMachineModal');
+
+  if (!form) return;
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const adminFundMachineShopDropdown = document.querySelector(
+        '#adminFundMachineShopDropdown'
+      ).value;
+
+      const fundMachineAmount = isAdmin
+        ? document.querySelector('#adminFundMachineAmount')
+        : document.querySelector('#fundMachineAmount');
+
+      const fundMachineDetails = {
+        shopId: isAdmin ? adminFundMachineShopDropdown : staffShopId,
+        amount: Number(getAmountForSubmission(fundMachineAmount)),
+      };
+
+      // console.log('Sending POS Capital with:', fundMachineDetails);
+      const submitFundMachine = document.querySelector('.submitFundMachine');
+
+      try {
+        showBtnLoader(submitFundMachine);
+        showGlobalLoader();
+        const addFundMachineData = await addFundMachine(fundMachineDetails);
+
+        if (addFundMachineData) {
+          //  initAccountOverview();
+          showToast('success', `✅ ${addFundMachineData.message}`);
+          closeModal();
+        }
+
+        // closeModal(); // close modal after success
+      } catch (err) {
+        console.error('Error adding POS Capital:', err.message);
+        showToast('fail', `❎ ${err.message}`);
+      } finally {
+        hideBtnLoader(submitFundMachine);
+        hideGlobalLoader();
+      }
+    });
+  }
+}
+
 export function depositPosCapitalForm() {
   const form = isAdmin
     ? document.querySelector('.adminDepositPosCapitalModal')
     : document.querySelector('.staffDepositPosCapitalModal');
+
+  if (!form) return;
+}
+
+export function fundMachineForm() {
+  const form = isAdmin
+    ? document.querySelector('.adminFundMachineModal')
+    : document.querySelector('.staffFundMachineModal');
 
   if (!form) return;
 }
@@ -200,7 +269,17 @@ document.addEventListener('DOMContentLoaded', () => {
       isAdmin ? openAdminDepositPosCapitalModal : openDepositPosCapitalModal
     );
 
+  const fundMachineBtn = document.querySelector('#fundMachineBtn');
+
+  isAdmin ? fundMachineBtn?.classList.remove('hidden') : '';
+
+  fundMachineBtn?.addEventListener(
+    'click',
+    isAdmin ? openAdminFundMachineModal : openFundMachineModal
+  );
+
   bindDepositPosCapitalFormListener(); // Only once
+  bindFundMachineFormListener(); // Only once
 });
 
 document.addEventListener('DOMContentLoaded', async () => {

@@ -931,7 +931,15 @@ export function closeModal() {
 
   const updateSale = document.querySelector('.updateSale');
 
+  const fundMachine = document.querySelector(
+    isAdmin ? '.adminFundMachine' : '.fundMachine'
+  );
+
   //
+
+  if (fundMachine) {
+    fundMachine.classList.remove('active');
+  }
 
   if (updateSale) {
     updateSale.classList.remove('active');
