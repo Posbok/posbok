@@ -451,6 +451,8 @@ function setupSalesFilters({
 if (isAdmin) {
   showGlobalLoader();
 
+  let isLoading = true;
+
   let enrichedShopData = [];
   const currentFiltersByShop = {};
   const currentSalesFiltersByShop = {};
@@ -458,19 +460,31 @@ if (isAdmin) {
   const currentMonthlySalesFiltersByShop = {};
 
   const container = document.getElementById('accordionShops');
+
+  console.log(container);
+  isLoading
+    ? (container.innerHTML = `<p class="heading-minitext center-text mb-4">Loading Shop Report...</p>`)
+    : '';
+
   const { enrichedShopData: loadedShops } = await checkAndPromptCreateShop();
   hideGlobalLoader();
   enrichedShopData = loadedShops;
+
+  container.innerHTML = '';
 
   //   console.log('enrichedShopData', enrichedShopData);
 
   if (enrichedShopData.length === 0) {
     container.innerHTML = `<h1 class="heading-text">No shop Available for Reports Display</h1>`;
+  } else {
+    isLoading = false;
   }
 
   enrichedShopData.forEach((shop, index) => {
     //  console.log(shop.length);
+
     const accordion = document.createElement('section');
+    console.log('object');
     shopPageTracker[shop.id] = 1;
 
     const shopId = shop.id;
@@ -895,91 +909,6 @@ if (isAdmin) {
       }
     });
 }
-
-// function updatePartialPaymentForm(
-//   renderSalesTableCallback,
-//   shopId,
-//   limit,
-//   filters
-// ) {
-//   const form = document.querySelector('.updatePartialPaymentForm');
-
-//   if (!form || form.dataset.bound === 'true') return;
-
-//   form.dataset.bound = 'true';
-
-//   if (form) {
-//     form.addEventListener('submit', async function (e) {
-//       e.preventDefault();
-
-//       const updatePartialPaymentTypeOption = document.getElementById(
-//         'updatePartialPaymentTypeOption'
-//       ).value;
-//       const additionalSalePayment = document.getElementById(
-//         'additionalSalePayment'
-//       ).value;
-//       const updatePaymentSubmitBtn = document.querySelector(
-//         '.updatePaymentSubmitBtn'
-//       );
-
-//       const saleId = form.dataset.saleId;
-
-//       const updatePartialPaymentDetails = {
-//         additionalPayment: Number(
-//           getAmountForSubmission(additionalSalePayment)
-//         ),
-//         paymentMethod: updatePartialPaymentTypeOption.toUpperCase(),
-//       };
-
-//       console.log('Update Partial Payment Data:', updatePartialPaymentDetails);
-
-//       try {
-//         showGlobalLoader();
-//         showBtnLoader(updatePaymentSubmitBtn);
-
-//         const updatePartialPaymentData = await updatePartialPayment(
-//           updatePartialPaymentDetails,
-//           saleId
-//         );
-
-//         if (updatePartialPaymentData) {
-//           hideBtnLoader(updatePaymentSubmitBtn);
-//           hideGlobalLoader();
-//           closeModal();
-
-//           showToast('success', `✅ ${updatePartialPaymentData.message}`);
-
-//           // ✅ Re-render table if callback exists
-
-//           //  if (isAdmin) {
-//           if (typeof renderSalesTableCallback === 'function') {
-//             await renderSalesTableCallback({
-//               page: shopPageTracker[shopId],
-//               limit,
-//               filters,
-//               shopId,
-//               tableBodyId: `#sale-tbody-${shopId}`,
-//               loadMoreButton: document.getElementById(
-//                 `loadMoreSaleButton_admin_${shopId}`
-//               ),
-//             });
-//           }
-//           //  } else if (isStaff) {
-//           //  }
-//         }
-
-//         console.log(updatePartialPaymentData);
-//       } catch (error) {
-//         console.error('Error updating partial payment:', error);
-//         showToast('fail', `❎ ${error.message}`);
-//       } finally {
-//         hideBtnLoader(updatePaymentSubmitBtn);
-//         hideGlobalLoader();
-//         closeModal();
-//       }
-//     });
-//   }
-// }
 
 function filterAndRenderStaffSales(salesList, staffSalesSummary, shopId) {
   const timeframe = document.querySelector(

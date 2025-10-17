@@ -3,6 +3,7 @@ import {
   renderBusinessDetails,
   renderBusinessSettings,
 } from '../../business.js';
+import { hideGlobalLoader, showGlobalLoader } from '../../helper/helper.js';
 import { showToast } from '../../script.js';
 import { safeFetch } from '../utility/safeFetch.js';
 
@@ -175,5 +176,29 @@ export async function setTransferFee(updateTransferFeeData) {
   } catch (error) {
     console.error('Error Updating Transfer Fee:', error.message);
     throw error;
+  }
+}
+
+export async function getStaffOverview() {
+  try {
+    showGlobalLoader();
+    const staffOverviewData = await safeFetch(
+      `${baseUrl}/api/reports/staff-overview`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    //  console.log('staffOverviewData received...');
+
+    //  console.log('staffOverviewData:', staffOverviewData);
+    hideGlobalLoader();
+    return staffOverviewData;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error fetching Staffs:', error.message);
   }
 }

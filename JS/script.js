@@ -47,6 +47,7 @@ import {
   getProductCategories,
   getProductInventory,
 } from './apiServices/inventory/inventoryResources.js';
+import { renderStaffPerformanceTable } from './apiServices/utility/businessReport.js';
 
 const userData = config.userData;
 const dummyShopId = config.dummyShopId;
@@ -1518,3 +1519,5 @@ if (useBusinessInfoCheckbox) {
     }
   });
 }
+
+// renderStaffPerformanceTable();

@@ -1,0 +1,134 @@
+import config from '../../../config';
+import {
+  formatAmountWithCommas,
+  formatTransactionType,
+  hideGlobalLoader,
+  showGlobalLoader,
+} from '../../helper/helper';
+import {
+  deleteTransactionForm,
+  openDeleteTransactionModal,
+} from '../../posAndSalesReportAccordion';
+
+import { closeModal, showToast } from '../../script';
+import { getStaffOverview } from '../business/businessResource';
+import { updateTotalPosAmounts } from './posReportUtility';
+
+const userData = config.userData;
+const parsedUserData = userData ? JSON.parse(userData) : null;
+
+const isAdmin = parsedUserData?.accountType === 'ADMIN';
+const isStaff = parsedUserData?.accountType === 'STAFF';
+const staffShopId = parsedUserData?.shopId;
+const staffUserId = parsedUserData?.id;
+const shopKey = `shop_${staffUserId}`;
+const servicePermission = parsedUserData?.servicePermission;
+
+let allPosTransactions = [];
+let allSalesReport = [];
+
+// Pagination control for load more
+let currentPage;
+let shopPageTracker = {};
+// let shopPageTracker = {};
+let totalItems;
+let totalPages;
+let pageSize = 10;
+let limit = pageSize;
+let currentFilters = {};
+
+export async function renderStaffPerformanceTable() {
+  if (
+    servicePermission === 'POS_TRANSACTIONS' ||
+    servicePermission === 'BOTH'
+  ) {
+    const staffOverviewTable = document.querySelector('.staffOverviewTable');
+
+    const staffOverviewTableBody = staffOverviewTable.querySelector('tbody');
+
+    if (!staffOverviewTableBody) {
+      console.error('Error: Table body not found');
+      return;
+    }
+
+    try {
+      let loadingRow = document.querySelector('.loading-row');
+      // console.log('loading', loadingRow);
+      if (!loadingRow) {
+        loadingRow = document.createElement('tr');
+        loadingRow.className = 'loading-row';
+        loadingRow.innerHTML = `<td colspan="8" class="table-loading-text">Loading Report...</td>`;
+        staffOverviewTableBody.appendChild(loadingRow);
+      }
+
+      const result = await getStaffOverview();
+
+      if (!result) throw new Error(result.message || 'Failed to fetch');
+
+      const staffOverviewData = result.data.overview;
+      staffOverviewTableBody.innerHTML = '';
+
+      console.log('staffOverviewData:', staffOverviewData);
+
+      if (!staffOverviewData.length) {
+        staffOverviewTableBody.innerHTML =
+          '<tr class="loading-row"><td colspan="8" class="table-error-text ">No Staff Overview Available.</td></tr>';
+        return;
+      }
+
+      let serialNumber = 1;
+
+      staffOverviewData.forEach((staffOverview) => {
+        const { staff, transactions, sales } = staffOverview;
+        const { total_count, total_amount, average_per_transaction, by_type } =
+          transactions;
+
+        const {
+          total_sales,
+          total_sales_amount,
+          profit,
+          profit_margin,
+          total_cost,
+        } = sales;
+
+        const { name } = staff;
+
+        function renderByType(byType) {
+          if (!byType || Object.keys(byType).length === 0) return '—'; // handle empty
+
+          // Convert object entries to an array and map
+          return Object.entries(byType)
+            .map(([key, value]) => `${formatTransactionType(key)}: ${value}`)
+            .join('<br>');
+        }
+
+        const byTypeHTML = renderByType(by_type);
+
+        const row = document.createElement('tr');
+        row.classList.add('table-body-row');
+        row.innerHTML = `
+      <tr>
+        <td class="py-1">${serialNumber++}</td>
+        <td class="py-1">${name}</td>
+        <td class="py-1">${total_count}</td>
+        <td class="py-1">₦${formatAmountWithCommas(total_amount)}</td>
+        <td class="py-1">${formatAmountWithCommas(average_per_transaction)}</td>
+        <td class="py-1">${byTypeHTML}</td>
+        <td class="py-1">${total_sales}</td>
+        <td class="py-1">₦${formatAmountWithCommas(total_sales_amount)}</td>
+        <td class="py-1">₦${formatAmountWithCommas(total_cost)}</td>
+        <td class="py-1">₦${formatAmountWithCommas(profit)}</td>
+        <td class="py-1">${profit_margin}%</td>
+      </tr>
+    `;
+        staffOverviewTableBody.appendChild(row);
+      });
+    } catch (error) {
+      console.error('Error rendering transactions:', error);
+      staffOverviewTableBody.innerHTML =
+        '<tr><td colspan="12" class="table-error-text">Error loading transactions.</td></tr>';
+    }
+  }
+}
+
+renderStaffPerformanceTable();
