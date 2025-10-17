@@ -17,6 +17,7 @@ import {
   openAdminFundMachineModal,
   openFundMachineModal,
   addFundMachine,
+  createAdminWithdrawal,
 } from './apiServices/pos/posResources';
 import { closeModal, setupModalCloseButtons, showToast } from './script';
 import config from '../config.js';
@@ -787,6 +788,102 @@ export async function handlePosFormSubmit() {
 }
 
 handlePosFormSubmit();
+
+// Admin Withdrawal
+export async function handleAdminWithdrawalFormSubmit() {
+  const adminWithdrawalForm = document.querySelector('#adminWithdrawalForm');
+
+  if (!adminWithdrawalForm || adminWithdrawalForm.dataset.bound === 'true')
+    return;
+
+  adminWithdrawalForm.dataset.bound = 'true';
+
+  if (adminWithdrawalForm) {
+    adminWithdrawalForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const posShopDropdown =
+        document.getElementById('posShopDropdown-2')?.value;
+
+      const adminWithdrawalTransactionType = document.getElementById(
+        'adminTransactionType-2'
+      )?.value;
+
+      const adminWithdrawalMethod = document.getElementById(
+        'adminWithdrawalMethod'
+      )?.value;
+
+      const adminWithdrawalAmount = document.getElementById(
+        'adminWithdrawalAmount'
+      )?.value;
+
+      //        "source": "cash_in_machine",
+      //   "shopId": {{shop_id}},
+      //   "amount": 20000.00
+
+      const adminWithdrawalDetails = {
+        shopId: posShopDropdown,
+        source: adminWithdrawalTransactionType.toLowerCase(),
+        amount: Number(getAmountForSubmission(adminWithdrawalAmount)),
+        //   withdrawalMethod: adminWithdrawalMethod.toLowerCase(),
+      };
+
+      const adminWithdrawalSubmitButton = document.querySelector(
+        '.adminWithdrawalSubmitButton'
+      );
+
+      try {
+        console.log(
+          '📦 Admin Withdrawal Transaction Details:',
+          adminWithdrawalDetails
+        );
+        showBtnLoader(adminWithdrawalSubmitButton);
+
+        const isDayOpen = await ensureBusinessDayOpen(posShopDropdown);
+        if (!isDayOpen) {
+          hideBtnLoader(adminWithdrawalSubmitButton);
+          return;
+        }
+
+        const adminWithdrawalData = await createAdminWithdrawal(
+          adminWithdrawalDetails
+        );
+
+        //   console.log(adminWithdrawalData);
+
+        console.log(
+          'Admin Withdrawal transaction sent successfully:',
+          adminWithdrawalData
+        );
+        resetFormInputs();
+        showToast('success', `✅ ${adminWithdrawalData?.message}`);
+        hideBtnLoader(adminWithdrawalSubmitButton);
+      } catch (err) {
+        console.error('Error sending Admin Withdrawal transaction:', err);
+        hideBtnLoader(adminWithdrawalSubmitButton);
+        showToast(
+          'fail',
+          `❎ Admin Withdrawal transaction not created: ${err?.message} `
+        );
+        // reset form inputs
+        resetFormInputs();
+      }
+
+      function resetFormInputs() {
+        document.getElementById('posShopDropdown-2').value = posShopDropdown;
+
+        document.getElementById('adminTransactionType-2').value =
+          'cash_in_machine';
+
+        document.getElementById('adminWithdrawalMethod').value = 'card';
+
+        document.getElementById('adminWithdrawalAmount').value = '';
+      }
+    });
+  }
+}
+
+handleAdminWithdrawalFormSubmit();
 
 document.addEventListener('DOMContentLoaded', () => {
   // Setup for Opening Pos Charges Modal

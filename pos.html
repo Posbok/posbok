@@ -369,17 +369,17 @@
                      <label for="transactionType">Select Transaction Type:</label>
 
                      <select id="adminTransactionType-2" name="transactionType">
-                        <option value="cashInMachine">Cash In Machine</option>
-                        <option value="cashAtHand">Cash At Hand</option>
+                        <option value="cash_in_machine">Cash In Machine</option>
+                        <option value="cash_at_hand">Cash At Hand</option>
                      </select>
                   </div>
 
-                  <!-- Payment Methos Type -->
-                  <div class="pos-method-form_input paymentMethodType">
+                  <!-- Payment Method Type -->
+                  <div class="pos-method-form_input ">
 
                      <label for="withdrawalMethod">Transaction withdrawal Method:</label>
 
-                     <select id="adminWithdrawalMethod-2" name="withdrawalMethod">
+                     <select id="adminWithdrawalMethod" name="withdrawalMethod">
                         <option value="card">Card</option>
                         <option value="transfer">Transfer</option>
                         <option value="cash">Cash</option>
@@ -396,10 +396,9 @@
                      </div>
                   </div>
 
-
                   <div class="center-button">
-                     <button class="hero-btn-dark mb-2 withdrawalSubmitButton has-spinner" type="button">
-                        <span class="btn-text"> Withdraw</span>
+                     <button class="hero-btn-dark mb-2 adminWithdrawalSubmitButton has-spinner" type="submit">
+                        <span class="btn-text">Process Withdrawal</span>
                         <span class="btn-spinner hidden"></span>
                      </button>
                   </div>

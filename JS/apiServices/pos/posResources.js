@@ -743,3 +743,35 @@ export async function deleteFeeSettings(feeId) {
     throw error;
   }
 }
+
+// Admin Withderrawals
+
+export async function createAdminWithdrawal(adminWithdrawalDetails) {
+  try {
+    //  console.log('Sending POST request...');
+    const adminWithdrawalData = await safeFetch(
+      `${baseUrl}/api/admin/withdraw`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(adminWithdrawalDetails),
+      }
+    );
+
+    //  console.log('Response received...');
+
+    if (adminWithdrawalData) {
+      // console.log('POS transaction added successfully:', adminWithdrawalData);
+      showToast('success', `✅ ${adminWithdrawalData.message}`);
+      // console.log(adminWithdrawalData);
+    }
+
+    return adminWithdrawalData;
+  } catch (error) {
+    console.error('Error Creating Admin Withdrawal Transaction:', error);
+    throw error;
+  }
+}
