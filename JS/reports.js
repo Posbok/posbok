@@ -461,9 +461,8 @@ if (isAdmin) {
 
   const container = document.getElementById('accordionShops');
 
-  console.log(container);
   isLoading
-    ? (container.innerHTML = `<p class="heading-minitext center-text mb-4">Loading Shop Report...</p>`)
+    ? (container.innerHTML = `<p class="heading-minitext table-loading-text center-text mb-4">Loading Shop Report...</p>`)
     : '';
 
   const { enrichedShopData: loadedShops } = await checkAndPromptCreateShop();

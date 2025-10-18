@@ -353,11 +353,13 @@
    font-weight: 500;
 }
 
+.table-loading-text,
 .table-error-text {
    font-size: 1.6rem;
    font-weight: 600;
    text-align: center;
    color: $color-grey-dark-1;
+   padding: 1rem 0 1rem 0;
 }
 
 
