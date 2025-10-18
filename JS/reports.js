@@ -1,41 +1,24 @@
 import config from '../config';
 import './script.js';
-import {
-  deleteAllTransactions,
-  getPosTransactions,
-} from './apiServices/pos/posResources';
-import {
-  checkAndPromptCreateShop,
-  fetchShopDetail,
-} from './apiServices/shop/shopResource';
+import { getPosTransactions } from './apiServices/pos/posResources';
+import { checkAndPromptCreateShop } from './apiServices/shop/shopResource';
 import {
   clearReceiptDiv,
   formatAmountWithCommas,
   formatSaleStatus,
   formatTransactionType,
-  getAmountForSubmission,
   getFilterDates,
-  hideBtnLoader,
   populateBusinessStaffDropdown,
-  showBtnLoader,
   truncateProductNames,
 } from './helper/helper';
 import { hideGlobalLoader, showGlobalLoader } from '../JS/helper/helper';
 import {
   getAllSales,
-  getDailySalesSummary,
-  getMonthlySalesSummary,
   getSaleById,
-  getSalesByProduct,
   getSalesByStaff,
-  updatePartialPayment,
 } from './apiServices/sales/salesResources';
 import { closeModal, showToast } from './script';
 import html2pdf from 'html2pdf.js/dist/html2pdf.min.js';
-import {
-  getProductCategories,
-  getProductInventory,
-} from './apiServices/inventory/inventoryResources';
 import {
   adminPosReportHtml,
   getAdminPosReportHtml,
@@ -63,6 +46,7 @@ import {
   updateTotalSalesAmounts,
 } from './apiServices/utility/salesReportUtility';
 import { updateTotalPosAmounts } from './apiServices/utility/posReportUtility';
+import { renderStaffPerformanceTable } from './apiServices/utility/businessReport.js';
 
 const userData = config.userData;
 const parsedUserData = userData ? JSON.parse(userData) : null;
@@ -461,15 +445,17 @@ if (isAdmin) {
 
   const container = document.getElementById('accordionShops');
 
-  isLoading
-    ? (container.innerHTML = `<p class="heading-minitext table-loading-text center-text mb-4">Loading Shop Report...</p>`)
-    : '';
+  if (container) {
+    isLoading
+      ? (container.innerHTML = `<p class="heading-minitext table-loading-text center-text mb-4">Loading Shop Report...</p>`)
+      : '';
+  }
 
   const { enrichedShopData: loadedShops } = await checkAndPromptCreateShop();
   hideGlobalLoader();
   enrichedShopData = loadedShops;
 
-  container.innerHTML = '';
+  if (container) container.innerHTML = '';
 
   //   console.log('enrichedShopData', enrichedShopData);
 
@@ -483,7 +469,6 @@ if (isAdmin) {
     //  console.log(shop.length);
 
     const accordion = document.createElement('section');
-    console.log('object');
     shopPageTracker[shop.id] = 1;
 
     const shopId = shop.id;
@@ -907,6 +892,8 @@ if (isAdmin) {
         }
       }
     });
+
+  //   renderStaffPerformanceTable();
 }
 
 function filterAndRenderStaffSales(salesList, staffSalesSummary, shopId) {

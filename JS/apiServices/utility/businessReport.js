@@ -2,17 +2,9 @@ import config from '../../../config';
 import {
   formatAmountWithCommas,
   formatTransactionType,
-  hideGlobalLoader,
-  showGlobalLoader,
 } from '../../helper/helper';
-import {
-  deleteTransactionForm,
-  openDeleteTransactionModal,
-} from '../../posAndSalesReportAccordion';
 
-import { closeModal, showToast } from '../../script';
 import { getStaffOverview } from '../business/businessResource';
-import { updateTotalPosAmounts } from './posReportUtility';
 
 const userData = config.userData;
 const parsedUserData = userData ? JSON.parse(userData) : null;
@@ -24,31 +16,19 @@ const staffUserId = parsedUserData?.id;
 const shopKey = `shop_${staffUserId}`;
 const servicePermission = parsedUserData?.servicePermission;
 
-let allPosTransactions = [];
-let allSalesReport = [];
-
-// Pagination control for load more
-let currentPage;
-let shopPageTracker = {};
-// let shopPageTracker = {};
-let totalItems;
-let totalPages;
-let pageSize = 10;
-let limit = pageSize;
-let currentFilters = {};
-
 export async function renderStaffPerformanceTable() {
   const staffOverviewTable = document.querySelector(
     '.staffOverviewTable tbody'
   );
 
-  if (!staffOverviewTable) {
-    console.error('Table body not found');
-    return;
-  }
+  //   if (!staffOverviewTable) {
+  //     console.error('Table body not found');
+  //     //  return;
+  //   }
 
   const tableHead = document.querySelector('.staffOverviewTable thead tr');
-  tableHead.innerHTML = `
+  if (tableHead)
+    tableHead.innerHTML = `
   <th>S/N</th>
   <th>Staff Name</th>
   ${
@@ -75,7 +55,8 @@ export async function renderStaffPerformanceTable() {
 `;
 
   try {
-    staffOverviewTable.innerHTML = `<tr><td colspan="12" class="table-loading-text">Loading Staff Overview Report...</td></tr>`;
+    if (staffOverviewTable)
+      staffOverviewTable.innerHTML = `<tr><td colspan="12" class="table-loading-text">Loading Staff Overview Report...</td></tr>`;
 
     const result = await getStaffOverview();
     if (!result?.data?.overview?.length) {
@@ -84,7 +65,7 @@ export async function renderStaffPerformanceTable() {
     }
 
     const staffOverviewData = result.data.overview;
-    staffOverviewTable.innerHTML = '';
+    if (staffOverviewTable) staffOverviewTable.innerHTML = '';
     let serialNumber = 1;
 
     staffOverviewData.forEach((staffOverview) => {
@@ -147,14 +128,17 @@ export async function renderStaffPerformanceTable() {
         ${salesColumns}
       `;
 
-      staffOverviewTable.appendChild(row);
+      if (staffOverviewTable) staffOverviewTable.appendChild(row);
     });
   } catch (error) {
     console.error('Error rendering staff performance:', error);
-    staffOverviewTable.innerHTML =
-      '<tr><td colspan="12" class="table-error-text">Error loading staff overview.</td></tr>';
+    if (staffOverviewTable)
+      staffOverviewTable.innerHTML =
+        '<tr><td colspan="12" class="table-error-text">Error loading staff overview.</td></tr>';
   }
 }
+
+renderStaffPerformanceTable();
 
 // export async function renderStaffPerformanceTable() {
 //   if (
@@ -249,5 +233,3 @@ export async function renderStaffPerformanceTable() {
 //     }
 //   }
 // }
-
-renderStaffPerformanceTable();
