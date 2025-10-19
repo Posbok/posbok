@@ -374,6 +374,24 @@ export function formatTransactionType(value) {
   }
 }
 
+// Format transaction type
+export function formatTransactionBreakdown(value) {
+  switch (value.toLowerCase()) {
+    case 'total_withdrawals':
+      return 'Total Withdrawals';
+    case 'total_deposits':
+      return 'Total Deposits';
+    case 'total_bill_payments':
+      return 'Total Bill Payment';
+    case 'total_transfers':
+      return 'Total Transfers';
+    case 'total_transactions':
+      return 'Total Transactions';
+    default:
+      return value;
+  }
+}
+
 // Format Service Permission
 export function formatServicePermission(value) {
   switch (value.toLowerCase()) {
@@ -1042,11 +1060,6 @@ export function getFilterDates(timeframe, elements) {
   return { startDate, endDate };
 }
 
-// Convert date object to yyyy-mm-dd string
-function formatDate(date) {
-  return date.toISOString().split('T')[0];
-}
-
 // Get Monday of a specific ISO week
 function getDateOfISOWeek(week, year) {
   const simple = new Date(year, 0, 1 + (week - 1) * 7);
@@ -1055,4 +1068,28 @@ function getDateOfISOWeek(week, year) {
   if (day <= 4) ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
   else ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
   return ISOweekStart;
+}
+
+export function formatCurrency(value) {
+  return new Intl.NumberFormat('en-NG', {
+    style: 'currency',
+    currency: 'NGN',
+    maximumFractionDigits: 0,
+  }).format(value || 0);
+}
+
+export function formatKey(str) {
+  return str
+    .replace(/_/g, ' ')
+    .toLowerCase()
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+export function formatDate(dateStr) {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-NG', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
 }

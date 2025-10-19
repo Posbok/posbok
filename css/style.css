@@ -3500,6 +3500,9 @@ body.authentication {
 
 .productSales-summary,
 .sales-summary,
+.financial-summary,
+.performance-highlights,
+.summary-grid,
 .posTransactions-summary {
   display: flex;
   gap: 1rem;
@@ -3507,6 +3510,9 @@ body.authentication {
   flex-wrap: wrap; }
   .productSales-summary .summary-card,
   .sales-summary .summary-card,
+  .financial-summary .summary-card,
+  .performance-highlights .summary-card,
+  .summary-grid .summary-card,
   .posTransactions-summary .summary-card {
     flex: 1 1 200px;
     background: #f8f9fa;
@@ -3517,12 +3523,24 @@ body.authentication {
     text-align: center; }
     .productSales-summary .summary-card h4,
     .sales-summary .summary-card h4,
+    .financial-summary .summary-card h4,
+    .performance-highlights .summary-card h4,
+    .summary-grid .summary-card h4,
     .posTransactions-summary .summary-card h4 {
       margin: 0 0 0.5rem;
       font-size: 1rem; }
     .productSales-summary .summary-card .amount,
+    .productSales-summary .summary-card .value,
     .sales-summary .summary-card .amount,
-    .posTransactions-summary .summary-card .amount {
+    .sales-summary .summary-card .value,
+    .financial-summary .summary-card .amount,
+    .financial-summary .summary-card .value,
+    .performance-highlights .summary-card .amount,
+    .performance-highlights .summary-card .value,
+    .summary-grid .summary-card .amount,
+    .summary-grid .summary-card .value,
+    .posTransactions-summary .summary-card .amount,
+    .posTransactions-summary .summary-card .value {
       font-size: 1.4rem;
       font-weight: 600;
       color: #1b5e20; }
@@ -3561,3 +3579,9 @@ body.authentication {
   justify-content: center;
   align-items: center;
   min-height: 300px; }
+
+.reports-section .transaction-breakdown {
+  margin-top: 1rem; }
+  .reports-section .transaction-breakdown .chart {
+    height: 260px;
+    margin-bottom: 1rem; }

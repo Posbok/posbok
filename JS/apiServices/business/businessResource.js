@@ -202,3 +202,27 @@ export async function getStaffOverview() {
     console.error('Error fetching Staffs:', error.message);
   }
 }
+
+export async function getReportDashboard() {
+  try {
+    showGlobalLoader();
+    const reportDashboardData = await safeFetch(
+      `${baseUrl}/api/reports/dashboard?period=90d`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    //  console.log('reportDashboardData received...');
+
+    //  console.log('reportDashboardData:', reportDashboardData);
+    hideGlobalLoader();
+    return reportDashboardData;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error fetching Report Dashboard:', error.message);
+  }
+}

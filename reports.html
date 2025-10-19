@@ -166,7 +166,7 @@
 
          <h1 class="heading-text ">Business Reports </h1>
 
-         <div class="">
+         <section class="">
             <h2 class="heading-subtext mb-2">Staff Overview</h2>
 
             <div class="reports-table-container">
@@ -196,7 +196,187 @@
                   </tfoot>
                </table>
             </div>
-         </div>
+         </section>
+
+         <section class="reports-section ">
+            <h2 class="heading-subtext mt-4 mb-2">Financial Summary (Last 90 Days)</h2>
+
+            <div class="financial-summary">
+               <div class="summary-card">
+                  <h3>Total Shops</h3>
+                  <p class="value" id="totalShops">--</p>
+               </div>
+
+               <div class="summary-card">
+                  <h3>Total Capital Deposits</h3>
+                  <p class="value" id="totalCapitalDeposits">--</p>
+               </div>
+
+               <div class="summary-card">
+                  <h3>Total Transactions</h3>
+                  <p class="value" id="totalTransactions">--</p>
+               </div>
+
+               <div class="summary-card">
+                  <h3>Total Transaction Amount</h3>
+                  <p class="value" id="totalTransactionAmount">--</p>
+               </div>
+
+               <div class="summary-card">
+                  <h3>Total Admin Withdrawals</h3>
+                  <p class="value" id="totalAdminWithdrawals">--</p>
+               </div>
+            </div>
+
+            <div class="transaction-breakdown">
+               <h3 class="heading-minitext mt-4 mb-2">Transaction Breakdown</h3>
+               <div id="transactionBreakdownChart" class="chart"></div>
+
+               <div class="reports-table-container">
+
+                  <table class=" reports-table breakdown-table">
+                     <thead>
+                        <tr class="table-header-row">
+                           <th class="py-1">Type</th>
+                           <th class="py-1">Amount (₦)</th>
+                        </tr>
+                     </thead>
+                     <tbody id="breakdownTableBody"></tbody>
+                  </table>
+               </div>
+            </div>
+         </section>
+
+         <section class="reports-section ">
+            <h2 class="heading-subtext mt-4 mb-2">Performance Highlights</h2>
+
+            <div class="performance-highlights">
+               <div class="summary-card">
+                  <h3>Total Active Periods</h3>
+                  <p class="value" id="totalPerformancePeriods">--</p>
+               </div>
+
+               <div class="summary-card">
+                  <h3>Peak Performance Day</h3>
+                  <p class="value" id="peakDay">--</p>
+               </div>
+
+               <div class="summary-card">
+                  <h3>Peak Day Transactions</h3>
+                  <p class="value" id="peakDayTransactionCount">--</p>
+               </div>
+
+               <div class="summary-card">
+                  <h3>Peak Day Total Amount</h3>
+                  <p class="value" id="peakDayTransactionAmount">--</p>
+               </div>
+            </div>
+
+
+            <div class="peak-day-breakdown">
+               <h3 class="heading-minitext mt-4 mb-2">Peak Day Breakdown</h3>
+               <div id="peakDayChart" class="chart"></div>
+
+               <div class="reports-table-container">
+                  <table class=" reports-table breakdown-table">
+                     <thead>
+                        <tr class="table-header-row">
+                           <th class="py-1">Transaction Type</th>
+                           <th class="py-1">Count</th>
+                           <th class="py-1">Amount (₦)</th>
+                           <th class="py-1">Average (₦)</th>
+                        </tr>
+                     </thead>
+                     <tbody id="peakDayTableBody"></tbody>
+                  </table>
+               </div>
+            </div>
+         </section>
+
+         <section class="reports-section">
+            <h2 class="heading-subtext mt-4 mb-2">Staff Highlights</h2>
+
+            <div class="summary-grid">
+               <div class="summary-card">
+                  <h3>Active Staff</h3>
+                  <p class="value" id="activeStaffCount">--</p>
+               </div>
+
+               <div class="summary-card">
+                  <h3>Top Performer</h3>
+                  <p class="value" id="topPerformerName">--</p>
+                  <p class="subtext" id="topPerformerEmail">--</p>
+               </div>
+            </div>
+
+            <div class="highlight-details">
+               <h3 class="heading-subtext mt-4 mb-2">Top Performer Overview</h3>
+
+               <div class="details-grid">
+                  <div class="details-box">
+                     <h4 class="heading-minitext mt-4 mb-2">Transaction Performance</h4>
+
+                     <div class="reports-table-container">
+                        <table class=" reports-table breakdown-table">
+                           <thead>
+                              <tr class="table-header-row">
+                                 <th class="py-1">Total Txns</th>
+                                 <th class="py-1">Total Amount (₦)</th>
+                                 <th class="py-1">Average (₦)</th>
+                              </tr>
+                           </thead>
+                           <tbody id="txnSummaryTable"></tbody>
+                        </table>
+
+                        <div id="txnTypeChart" class="chart"></div>
+                     </div>
+
+                     <div class="details-box sales-box" id="salesBox">
+                        <h4 class="heading-minitext mt-4 mb-2">Sales Performance</h4>
+                        <div class="reports-table-container">
+                           <table class=" reports-table breakdown-table">
+                              <thead>
+                                 <tr class="table-header-row">
+                                    <th>Total Sales</th>
+                                    <th>Sales Amount (₦)</th>
+                                    <th>Profit (₦)</th>
+                                    <th>Margin</th>
+                                 </tr>
+                              </thead>
+                              <tbody id="salesSummaryTable"></tbody>
+                           </table>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </section>
+
+         <section class="reports-section">
+            <h2 class="heading-subtext mt-4 mb-2">Inventory Activity</h2>
+
+            <p class="heading-minitext mb-2">Total Inventory Actions: <span class="total_inventory_actions">--</span>
+            </p>
+
+            <div class="reports-table-container">
+               <table class=" reports-table breakdown-table">
+                  <thead>
+                     <tr class="table-header-row">
+                        <th>Action</th>
+                        <th>Count</th>
+                        <th>Total Quantity</th>
+                        <th>Total Value (₦)</th>
+                     </tr>
+                  </thead>
+                  <tbody id="inventorySummaryTableBody"></tbody>
+               </table>
+
+            </div>
+
+         </section>
+
+
+
 
       </div>
 

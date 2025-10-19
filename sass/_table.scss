@@ -438,6 +438,9 @@
 
 .productSales-summary,
 .sales-summary,
+.financial-summary,
+.performance-highlights,
+.summary-grid,
 .posTransactions-summary {
    display: flex;
    gap: 1rem;
@@ -459,7 +462,8 @@
          // color: #555;
       }
 
-      .amount {
+      .amount,
+      .value {
          font-size: 1.4rem;
          font-weight: 600;
          color: #1b5e20;
@@ -519,6 +523,19 @@
    min-height: 300px;
 
 }
+
+.reports-section {
+
+   .transaction-breakdown {
+      margin-top: 1rem;
+
+      .chart {
+         height: 260px;
+         margin-bottom: 1rem;
+      }
+   }
+}
+
 
 // .filter-section input[type="date"],
 // .filter-section select {

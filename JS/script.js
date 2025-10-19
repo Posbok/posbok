@@ -158,14 +158,14 @@ export function showToast(type, message) {
       // }, 500); // Wait for transition to complete
 
       const productName = document.getElementById('productName');
-      const productId = document.getElementById('productId');
+      const productSku = document.getElementById('productSku');
       const productBarcode = document.getElementById('productBarcode');
       const barcodeImg = document.getElementById('barcode');
       const actions = document.querySelector('.toast-actions');
       const defaultClose = document.querySelector('.default-close');
 
       // Normal toast
-      productId.classList.add('hidden');
+      productSku.classList.add('hidden');
       productBarcode.classList.add('hidden');
       barcodeImg.classList.add('hidden');
       productName.classList.add('hidden');
