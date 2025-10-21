@@ -203,11 +203,12 @@ export async function getStaffOverview() {
   }
 }
 
-export async function getReportDashboard() {
+export async function getReportDashboard(filters) {
+  console.log(filters);
   try {
     showGlobalLoader();
     const reportDashboardData = await safeFetch(
-      `${baseUrl}/api/reports/dashboard?period=90d`,
+      `${baseUrl}/api/reports/dashboard?period=${filters.period}`,
       {
         method: 'GET',
         headers: {

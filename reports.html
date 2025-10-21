@@ -52,7 +52,7 @@
    <link rel="manifest" href="/site.webmanifest">
 </head>
 
-<body class="container">
+<body class="container page-report">
 
    <nav class="sidebar collapsed">
       <div class="sidebar-fixed">
@@ -166,8 +166,32 @@
 
          <h1 class="heading-text ">Business Reports </h1>
 
-         <section class="">
-            <h2 class="heading-subtext mb-2">Staff Overview</h2>
+         <h2 class="filter-heading heading-subtext mb-2">Filter Dashboard Range</h2>
+
+         <div class="filter-section mb-2">
+
+            <div class="pos-method-form_input ">
+
+               <label for="reportDashboardPeriod">Report Dashboard Period:</label>
+
+               <select id="reportDashboardPeriod" name="reportDashboardPeriod">
+                  <option value="24h">24 Hours</option>
+                  <option value="7d">7 Days</option>
+                  <option value="30d">30 Days</option>
+                  <option value="90d">90 Days</option>
+               </select>
+            </div>
+
+            <div class="filter-buttons">
+               <button id="applyReportDashboardPeriodFIlter" class="hero-btn-dark">Apply Filters</button>
+
+               <!-- <button id="resetReportDashboardPeriodFIlter" class="hero-btn-outline">Reset</button> -->
+            </div>
+
+         </div>
+
+         <section class="reports-section">
+            <h2 class="heading-subtext mb-2">Staff Overview (<span class="reportDashboardDateRange"></span>)</h2>
 
             <div class="reports-table-container">
 
@@ -198,8 +222,9 @@
             </div>
          </section>
 
-         <section class="reports-section ">
-            <h2 class="heading-subtext mt-4 mb-2">Financial Summary (Last 90 Days)</h2>
+         <section class="reports-section financialSummarySection hidden">
+            <h2 class="heading-subtext mt-4 mb-2">Financial Summary (<span class="reportDashboardDateRange"></span>)
+            </h2>
 
             <div class="financial-summary">
                <div class="summary-card">
@@ -247,8 +272,9 @@
             </div>
          </section>
 
-         <section class="reports-section ">
-            <h2 class="heading-subtext mt-4 mb-2">Performance Highlights</h2>
+         <section class="reports-section performanceHighlightsSection hidden">
+            <h2 class="heading-subtext mt-4 mb-2">Performance Highlights (<span
+                  class="reportDashboardDateRange"></span>)</h2>
 
             <div class="performance-highlights">
                <div class="summary-card">
@@ -293,8 +319,8 @@
             </div>
          </section>
 
-         <section class="reports-section">
-            <h2 class="heading-subtext mt-4 mb-2">Staff Highlights</h2>
+         <section class="reports-section staffHighlightSection hidden">
+            <h2 class="heading-subtext mt-4 mb-2">Staff Highlights (<span class="reportDashboardDateRange"></span>)</h2>
 
             <div class="summary-grid">
                <div class="summary-card">
@@ -310,11 +336,9 @@
             </div>
 
             <div class="highlight-details">
-               <h3 class="heading-subtext mt-4 mb-2">Top Performer Overview</h3>
-
                <div class="details-grid">
                   <div class="details-box">
-                     <h4 class="heading-minitext mt-4 mb-2">Transaction Performance</h4>
+                     <h4 class="heading-minitext mt-4 mb-2">Top Staff Performance</h4>
 
                      <div class="reports-table-container">
                         <table class=" reports-table breakdown-table">
@@ -352,14 +376,15 @@
             </div>
          </section>
 
-         <section class="reports-section">
-            <h2 class="heading-subtext mt-4 mb-2">Inventory Activity</h2>
+         <section class="reports-section inventoryActivity hidden">
+            <h2 class="heading-subtext mt-4 mb-2">Inventory Activity (<span class="reportDashboardDateRange"></span>)
+            </h2>
 
-            <p class="heading-minitext mb-2">Total Inventory Actions: <span class="total_inventory_actions">--</span>
+            <p class="heading-subtext mb-2">Total Inventory Actions: <span class="total_inventory_actions">--</span>
             </p>
 
             <div class="reports-table-container">
-               <table class=" reports-table breakdown-table">
+               <table class="inventorySummaryTable reports-table breakdown-table">
                   <thead>
                      <tr class="table-header-row">
                         <th>Action</th>
@@ -374,9 +399,6 @@
             </div>
 
          </section>
-
-
-
 
       </div>
 
