@@ -53,7 +53,7 @@ export async function loadReportDashboard(period = '90d') {
     const result = await getReportDashboard(filters);
     if (!result?.data) throw new Error('Invalid data format');
 
-    console.log(result);
+    //  console.log(result);
     const {
       financial_summary,
       performance_highlights,
@@ -111,7 +111,7 @@ export async function loadReportDashboard(period = '90d') {
 let transactionBreakdownChart = null;
 
 export async function renderFinancialSummary(summary) {
-  console.log(summary);
+  //   console.log(summary);
 
   const totalShopsEl = document.getElementById('totalShops');
   if (totalShopsEl) totalShopsEl.textContent = summary.total_shops;
@@ -330,7 +330,7 @@ export async function renderInventoryActivity(inventory) {
 
     const { total_inventory_actions, recent_actions } = inventory;
 
-    console.log(inventory);
+    //  console.log(inventory);
 
     // Update total count
     const totalCountElement = document.querySelector(

@@ -501,6 +501,46 @@ export async function deletePosTransaction(transactionId) {
   }
 }
 
+export async function getPosAnalytics({ shopId, filters = {} }) {
+  try {
+    const queryParams = new URLSearchParams({
+      shop_id: shopId,
+    });
+
+    if (filters.date_from) queryParams.append('date_from', filters.date_from);
+    if (filters.date_to) queryParams.append('date_to', filters.date_to);
+    if (filters.group_by) queryParams.append('group_by', filters.group_by);
+    if (filters.transaction_type)
+      queryParams.append('transaction_type', filters.transaction_type);
+
+    //  console.log(queryParams.toString());
+
+    showGlobalLoader();
+    const posAnalyticsTransactionsData = await safeFetch(
+      `${baseUrl}/api/reports/transaction-analytics?${queryParams.toString()}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    if (posAnalyticsTransactionsData) {
+      // showToast('success', `✅ ${posAnalyticsTransactionsData.message}`);
+      hideGlobalLoader();
+    }
+
+    //  console.log('posAnalyticsTransactionsData', posAnalyticsTransactionsData);
+
+    return posAnalyticsTransactionsData;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error receiving POS Transaction:', error);
+    throw error;
+  }
+}
+
 export async function configurePosCharges(posChargesDetails) {
   console.log(posChargesDetails);
   try {

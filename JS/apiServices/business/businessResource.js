@@ -204,7 +204,7 @@ export async function getStaffOverview() {
 }
 
 export async function getReportDashboard(filters) {
-  console.log(filters);
+  //   console.log(filters);
   try {
     showGlobalLoader();
     const reportDashboardData = await safeFetch(

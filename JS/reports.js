@@ -21,6 +21,7 @@ import { closeModal, showToast } from './script';
 import html2pdf from 'html2pdf.js/dist/html2pdf.min.js';
 import {
   adminPosReportHtml,
+  getAdminAnalyticsHtml,
   getAdminPosReportHtml,
   getAdminPosTransactionList,
   getAdminSalesReportHtml,
@@ -28,6 +29,7 @@ import {
   getPosAndSalesReportAccordion,
   renderDailySummary,
   renderMonthlySummary,
+  renderPosAnalyticsTable,
   renderPosTable,
   renderSalesTable,
 } from './posAndSalesReportAccordion';
@@ -98,6 +100,18 @@ function getFilters(role, shopId) {
     endDate: document.getElementById(`endDateFilter_${suffix}`)?.value || '',
     type: document.getElementById(`typeFilter_${suffix}`)?.value || '',
     status: document.getElementById(`statusFilter_${suffix}`)?.value || '',
+  };
+}
+
+function getAnalyticsFilters(role, shopId) {
+  const suffix = role === 'admin' ? `${role}_${shopId}` : role;
+
+  return {
+    date_from: document.getElementById(`dateFrom_${suffix}`)?.value || '',
+    date_to: document.getElementById(`dateTo_${suffix}`)?.value || '',
+    group_by: document.getElementById(`groupBy_${suffix}`)?.value || '',
+    transaction_type:
+      document.getElementById(`transactionType_${suffix}`)?.value || '',
   };
 }
 
@@ -253,6 +267,56 @@ function setupPosFilters({
       tableBodyId: `#pos-tbody-${shopId}`,
       loadMoreButton: loadMoreBtn,
       append: true,
+    });
+  });
+}
+
+function setupPosAnalyticsFilters({
+  shopId,
+  currentFiltersByShop,
+  renderPosAnalyticsTableFn,
+}) {
+  const applyBtn = document.getElementById(
+    `applyAnalyticsFiltersBtn_admin_${shopId}`
+  );
+  const resetBtn = document.getElementById(
+    `resetAnalyticsFiltersBtn_${shopId}`
+  );
+
+  if (!applyBtn || !resetBtn) return;
+
+  // Apply Filters
+  applyBtn.addEventListener('click', () => {
+    const filters = getAnalyticsFilters('admin', shopId);
+    currentFiltersByShop[shopId] = filters;
+
+    renderPosAnalyticsTableFn({
+      filters,
+      shopId,
+      tableBodyId: `#analyticsTableBody-${shopId}`,
+      append: false,
+    });
+  });
+
+  // Reset Filters
+  resetBtn.addEventListener('click', () => {
+    const role = 'admin';
+
+    resetFilters(role, shopId);
+    const filters = getFilters(role, shopId);
+    currentFiltersByShop[shopId] = filters;
+
+    shopPageTracker[shopId] = 1;
+    allPosTransactions = [];
+
+    renderPosTableFn({
+      page: 1,
+      limit,
+      filters,
+      shopId,
+      tableBodyId: `#pos-tbody-${shopId}`,
+      loadMoreButton: loadMoreBtn,
+      append: false,
     });
   });
 }
@@ -497,6 +561,12 @@ if (isAdmin) {
                        : ''
                    }
                    ${
+                     servicePermission === 'POS_TRANSACTIONS' ||
+                     servicePermission === 'BOTH'
+                       ? getAdminAnalyticsHtml(shop)
+                       : ''
+                   }
+                   ${
                      servicePermission === 'INVENTORY_SALES' ||
                      servicePermission === 'BOTH'
                        ? getAdminSalesReportHtml(shop)
@@ -522,6 +592,12 @@ if (isAdmin) {
         currentFiltersByShop,
         limit,
         renderPosTableFn: renderPosTable,
+      });
+
+      setupPosAnalyticsFilters({
+        shopId: shop.id,
+        currentFiltersByShop,
+        renderPosAnalyticsTableFn: renderPosAnalyticsTable,
       });
     }
     // Admin POS Filter Logic End
@@ -612,6 +688,13 @@ if (isAdmin) {
               `loadMoreButton_admin_${shopId}`
             ),
           });
+
+          await renderPosAnalyticsTable({
+            filters,
+            shopId,
+            tableBodyId: `#analyticsTableBody-${shopId}`,
+          });
+
           shopPosTransactiionSection.dataset.loaded = 'true';
         }
       }

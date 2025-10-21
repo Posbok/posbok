@@ -1,6 +1,7 @@
 import config from '../config';
 import {
   deletePosTransaction,
+  getPosAnalytics,
   getPosTransactions,
   getPosTransactionsById,
 } from './apiServices/pos/posResources';
@@ -1008,6 +1009,108 @@ export function getAdminPosReportHtml(shop) {
    `;
 }
 
+export function getAdminAnalyticsHtml(shop) {
+  //   console.log('Analytics Report');
+  return `
+     
+         <!-- Analytics Table HTML starts Here -->
+         <div id="shop-report-${shop.id}" class="reports card" data-loaded="false">
+
+            <div class="reports">
+               <div class="reports-method">
+                  <h2 class="heading-text mb-2">
+                     POS Transaction Analytics
+                  </h2>
+
+                  <h2 class="filter-heading heading-subtext mb-2">Filter POS Analytics</h2>
+
+                  <div class="filter-section mb-2">
+
+                     <div class="pos-method-form_input">
+                        <label for="dateFrom_admin_${shop.id}">Start Date:</label>
+
+                        <input type="date" id="dateFrom_admin_${shop.id}">
+                     </div>
+
+                     <div class="pos-method-form_input">
+                        <label for="dateTo_admin_${shop.id}">End Date:</label>
+
+                        <input type="date" id="dateTo_admin_${shop.id}">
+                     </div>
+
+                     <div class="pos-method-form_input ">
+
+                        <label for="groupBy_admin_${shop.id}">Group By</label>
+
+                        <select id="groupBy_admin_${shop.id}" name="groupBy_admin_${shop.id}">
+                           <!-- <option value="">All</option> -->
+                           <option value="day">Day</option>
+                           <option value="hour">Hour</option>
+                           <option value="week">Week</option>
+                           <option value="month">Month</option>
+                        </select>
+                     </div>
+
+                     <div class="pos-method-form_input ">
+
+                        <label for="transactionType_admin_${shop.id}">Status:</label>
+
+                        <select id="transactionType_admin_${shop.id}" name="transactionType_admin_${shop.id}">
+                           <option value="">All</option>
+                           <option value="DEPOSIT">Deposit</option>
+                           <option value="WITHDRAWAL">Withdrawal</option>
+                           <option value="WITHDRAWAL_TRANSFER">Withdrawal/Transfer</option>
+                           <option value="BILL_PAYMENT">Bill Payment</option>
+                        </select>
+                     </div>
+
+
+                     <div class="filter-buttons">
+                        <button id="applyAnalyticsFiltersBtn_admin_${shop.id}" class="hero-btn-dark">Apply
+                           Filters</button>
+                        <button id="resetAnalyticsFiltersBtn_${shop.id}" class="hero-btn-outline">Reset</button>
+                     </div>
+
+                  </div>
+
+                  <!-- <div id="transactionList" class="transaction-list mb-3"></div> -->
+
+                  <div class="table-header">
+                     <!-- <h2 class="heading-subtext"> POS </h2> -->
+                  </div>
+
+                  <div class="reports-table-container">
+
+                     <table class="reports-table analyticsTable_admin_${shop.id}">
+                        <thead>
+                           <tr class="table-header-row">
+                              <th class="py-1">Period</th>
+                              <th class="py-1">Transaction Type</th>
+                              <th class="py-1">Payment Method</th>
+                              <th class="py-1">Count</th>
+                              <th class="py-1">Total Amount</th>
+                              <th class="py-1">Average</th>
+                              <th class="py-1">Min Amount</th>
+                              <th class="py-1">Max Amount</th>
+                           </tr>
+                        </thead>
+
+                        <tbody id="analyticsTableBody-${shop.id}">
+
+                        </tbody>
+
+                     </table>
+
+                  </div>
+
+               </div>
+            </div>
+         </div>
+
+         <!-- Analytics Table HTML Ends Here -->
+   `;
+}
+
 export function getAdminPosTransactionList(
   transactionId,
   transaction_type,
@@ -1077,6 +1180,29 @@ export function getAdminPosTransactionList(
                        </td>
                
               `;
+}
+
+export function getAdminPosAnalyticsList(
+  period,
+  transaction_type,
+  payment_method,
+  count,
+  total_amount,
+  average_amount,
+  min_amount,
+  max_amount
+) {
+  return `
+      <td class="py-1">${period}</td>
+      <td class="py-1">${transaction_type}</td>
+      <td class="py-1">${payment_method}</td>
+      <td class="py-1">${count}</td>
+      <td class="py-1">${formatAmountWithCommas(total_amount)}</td>
+      <td class="py-1">${average_amount.toFixed(2)}</td>
+      <td class="py-1">${formatAmountWithCommas(min_amount)}</td>
+      <td class="py-1">${formatAmountWithCommas(max_amount)}</td>
+               
+   `;
 }
 
 export function getAdminSalesTransactionList(
@@ -1401,6 +1527,144 @@ export async function renderPosTable({
       console.error('Error rendering transactions:', error);
       posTableBody.innerHTML =
         '<tr><td colspan="12" class="table-error-text">Error loading transactions.</td></tr>';
+    }
+  }
+}
+
+export async function renderPosAnalyticsTable({
+  filters,
+  shopId,
+  tableBodyId,
+  append = false,
+}) {
+  if (
+    servicePermission === 'POS_TRANSACTIONS' ||
+    servicePermission === 'BOTH'
+  ) {
+    const posAnalyticsTableBody = document.querySelector(tableBodyId);
+
+    if (!posAnalyticsTableBody) {
+      console.error('Error: POS Analytics Table body not found');
+      return;
+    }
+
+    try {
+      let loadingRow = document.querySelector('.loading-row');
+      // console.log('loading', loadingRow);
+      if (!loadingRow) {
+        loadingRow = document.createElement('tr');
+        loadingRow.className = 'loading-row';
+        loadingRow.innerHTML = `<td colspan="12" class="table-loading-text">Loading POS Analytics Data...</td>`;
+        posAnalyticsTableBody.appendChild(loadingRow);
+      }
+
+      // Build query with filters
+      const queryParams = new URLSearchParams({
+        shopId: shopId,
+      });
+
+      // console.log('queryParams', queryParams);
+
+      if (filters.date_from) queryParams.append('date_from', filters.date_from);
+      if (filters.date_to) queryParams.append('date_to', filters.date_to);
+      if (filters.group_by) queryParams.append('group_by', filters.group_by);
+      if (filters.transaction_type)
+        queryParams.append('transaction_type', filters.transaction_type);
+
+      const result = await getPosAnalytics({
+        shopId,
+        filters,
+      });
+
+      // console.log(result);
+
+      if (!result) throw new Error(result.message || 'Failed to fetch');
+
+      const posAnalytics = result.data.analytics;
+
+      if (posAnalytics.length === 0 && currentPage === 1) {
+        posAnalyticsTableBody.innerHTML =
+          '<tr class="loading-row"><td colspan="12" class="table-error-text ">No POS Analytics Data Available.</td></tr>';
+        return;
+      }
+
+      // Clear the table body and render all accumulated transactions
+      if (!append) {
+        posAnalyticsTableBody.innerHTML = '';
+      }
+      posAnalyticsTableBody.innerHTML = '';
+
+      // console.log('posAnalytics', posAnalytics);
+
+      posAnalytics.forEach((posTransaction) => {
+        //  console.log(posTransaction);
+        const {
+          period,
+          transaction_type,
+          payment_method,
+          count,
+          total_amount,
+          average_amount,
+          min_amount,
+          max_amount,
+        } = posTransaction;
+
+        const row = document.createElement('tr');
+        row.classList.add('table-body-row');
+
+        row.innerHTML = getAdminPosAnalyticsList(
+          period,
+          transaction_type,
+          payment_method,
+          count,
+          total_amount,
+          average_amount,
+          min_amount,
+          max_amount
+        );
+
+        posAnalyticsTableBody.appendChild(row);
+
+        //  Handle Delete POS Transaction Logic
+        const deleteTransactionModalBtn = row.querySelector(
+          `#deleteTransactionModalBtn`
+        );
+
+        deleteTransactionModalBtn?.addEventListener('click', async () => {
+          showGlobalLoader();
+          const transactionId = deleteTransactionModalBtn.dataset.transactionId;
+
+          const deleteTransactionContainer = document.querySelector(
+            '.deleteTransactionContainer'
+          );
+
+          if (deleteTransactionContainer) {
+            // Store transactionId in modal container for reference
+            deleteTransactionContainer.dataset.transactionId = transactionId;
+
+            // Fetch Shop detail
+            const transactionDetail = await getPosTransactionsById(
+              transactionId
+            );
+
+            console.log('transactionDetail', transactionDetail.data);
+
+            // Call function to prefill modal inputs
+            if (transactionDetail?.data) {
+              hideGlobalLoader();
+              openDeleteTransactionModal();
+              deleteTransactionForm(transactionDetail.data, shop_id);
+            } else {
+              hideGlobalLoader();
+              showToast('fail', '❌ Failed to fetch Transaction details.');
+            }
+          }
+        });
+      });
+    } catch (error) {
+      console.error('Error rendering POS Analytics Data:', error);
+      posAnalyticsTableBody.innerHTML =
+        '<tr><td colspan="12" class="table-error-text">Error loading POS Analytics Data.</td></tr>';
     }
   }
 }
@@ -2133,770 +2397,3 @@ export async function renderMonthlySummary(year, month, shopId) {
     window[`monthlyPaymentMethodChartInstance_${shopId}`] = paymentChart;
   }
 }
-
-// MOD
-// Stored Here.
-
-// renderGoodsTable();
-
-// // JS for Tabs and Charts
-// const tabs = document.querySelectorAll('.tab-btn');
-// const contents = document.querySelectorAll('.tab-content');
-
-// tabs.forEach((btn) => {
-//   btn.addEventListener('click', () => {
-//     tabs.forEach((b) => b.classList.remove('active'));
-//     contents.forEach((c) => c.classList.remove('active'));
-
-//     btn.classList.add('active');
-//     document.getElementById(btn.dataset.tab).classList.add('active');
-//   });
-// });
-
-// // Dummy chart data For Daily and Monthly Sales
-// const dailyCtx = document.getElementById('dailyChart');
-// const monthlyCtx = document.getElementById('monthlyChart');
-
-// new Chart(dailyCtx, {
-//   type: 'bar',
-//   data: {
-//     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-//     datasets: [
-//       {
-//         label: 'Daily Sales (₦)',
-//         data: [1200, 1500, 1800, 900, 2000, 1700],
-//         backgroundColor: 'rgba(75, 192, 192, 0.6)',
-//       },
-//     ],
-//   },
-// });
-
-// new Chart(monthlyCtx, {
-//   type: 'line',
-//   data: {
-//     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
-//     datasets: [
-//       {
-//         label: 'Monthly Revenue (₦)',
-//         data: [10000, 12000, 9000, 14000, 16000],
-//         borderColor: 'rgba(153, 102, 255, 1)',
-//         fill: false,
-//       },
-//     ],
-//   },
-// });
-
-// Chartjs Approach - Daily
-// const dummyHourlyData = Array.from({ length: 24 }, (_, hour) => ({
-//   hour,
-//   count: Math.floor(Math.random() * 5),
-//   amount: Math.floor(Math.random() * 2000),
-// }));
-
-// function renderDailyChart(hourlyData) {
-//   const labels = hourlyData.map((entry) => `${entry.hour}:00`);
-//   const amounts = hourlyData.map((entry) => entry.amount);
-
-//   new Chart(dailyCtx, {
-//     type: 'bar',
-//     data: {
-//       labels: labels,
-//       datasets: [
-//         {
-//           label: 'Hourly Sales (₦)',
-//           data: amounts,
-//           backgroundColor: 'rgba(75, 192, 192, 0.6)',
-//         },
-//       ],
-//     },
-//     options: {
-//       responsive: true,
-//       scales: {
-//         y: {
-//           beginAtZero: true,
-//         },
-//       },
-//     },
-//   });
-// }
-
-// renderDailyChart(dummyHourlyData);
-
-// const dummyHourlyData = Array.from({ length: 24 }, (_, hour) => ({
-//   hour,
-//   count: Math.floor(Math.random() * 5),
-//   amount: Math.floor(Math.random() * 1000),
-// }));
-
-// const dailyOptions = {
-//   //   chart: {
-//   //     type: 'line',
-//   //     height: 350,
-//   //     toolbar: {
-//   //       show: true,
-//   //       tools: {
-//   //         download: false,
-//   //         selection: false,
-//   //         zoom: false,
-//   //         zoomin: false,
-//   //         zoomout: false,
-//   //         pan: false,
-//   //         reset: true, // ✅ Only this will show
-//   //       },
-//   //     },
-//   //     zoom: {
-//   //       enabled: true, // Must be true for reset to work
-//   //     },
-//   //   },
-
-//   chart: {
-//     type: 'area',
-//     stacked: false,
-//     height: 350,
-//     toolbar: {
-//       show: true,
-//       tools: {
-//         download: false,
-//         selection: false,
-//         zoom: false,
-//         zoomin: false,
-//         zoomout: false,
-//         pan: false,
-//         reset: true, // ✅ Only this will show
-//       },
-//     },
-//     zoom: {
-//       enabled: true, // Must be true for reset to work
-//     },
-//   },
-//   dataLabels: {
-//     enabled: false,
-//   },
-//   markers: {
-//     size: 0,
-//   },
-//   title: {
-//     text: 'Daily Summary of Sales',
-//     align: 'left',
-//     style: {
-//       fontSize: '16px',
-//       fontWeight: 'bold',
-//       color: '#205329',
-//     },
-//   },
-//   //   gradientToColors: ['#ec1a23'],
-//   //   colors: ['#205329', '#ec1a23'],
-//   fill: {
-//     type: 'gradient',
-//     gradient: {
-//       shadeIntensity: 1,
-//       opacityFrom: 0.5,
-//       opacityTo: 0,
-//       stops: [0, 90, 100],
-//     },
-//   },
-//   series: [
-//     {
-//       name: 'Hourly Revenue (₦)',
-//       data: dummyHourlyData.map((h) => h.amount),
-//     },
-//   ],
-//   xaxis: {
-//     categories: dummyHourlyData.map((h) => `${h.hour}:00`),
-//     title: { text: 'Hour of Day' },
-//     labels: {
-//       rotate: -45,
-//       style: { fontSize: '11px' },
-//     },
-//   },
-//   yaxis: {
-//     title: { text: 'Amount (₦)' },
-//   },
-//   tooltip: {
-//     y: {
-//       formatter: (val) => `₦${val.toLocaleString()}`,
-//     },
-//   },
-//   //   fill: {
-//   //     type: 'gradient',
-//   //     gradient: {
-//   //       shade: 'dark',
-//   //       type: 'horizontal',
-//   //       shadeIntensity: 0.5,
-//   //       gradientToColors: undefined, // optional, if not defined - uses the shades of same color in series
-//   //       inverseColors: true,
-//   //       opacityFrom: 1,
-//   //       opacityTo: 1,
-//   //       stops: [0, 50, 100],
-//   //       colorStops: [],
-//   //     },
-//   //   },
-//   responsive: [
-//     {
-//       breakpoint: 768,
-//       options: {
-//         chart: { height: 300 },
-//         xaxis: {
-//           labels: { rotate: -90 },
-//         },
-//       },
-//     },
-//   ],
-// };
-
-// const dailyChart = new ApexCharts(
-//   document.querySelector('#dailyChart'),
-//   dailyOptions
-// );
-// dailyChart.render();
-
-// Chartjs Approach - Monthly
-
-// const dummyMonthlyData = Array.from({ length: 31 }, (_, i) => ({
-//   day: i + 1,
-//   count: Math.floor(Math.random() * 10),
-//   amount: Math.floor(Math.random() * 10000),
-// }));
-
-// function renderMonthlyChart(dailyData) {
-//   const labels = dailyData.map((entry) => `Day ${entry.day}`);
-//   const amounts = dailyData.map((entry) => entry.amount);
-
-//   new Chart(monthlyCtx, {
-//     type: 'line',
-//     data: {
-//       labels: labels,
-//       datasets: [
-//         {
-//           label: 'Daily Revenue (₦)',
-//           data: amounts,
-//           borderColor: 'rgba(153, 102, 255, 1)',
-//           fill: false,
-//         },
-//       ],
-//     },
-//     options: {
-//       responsive: true,
-//       scales: {
-//         y: {
-//           beginAtZero: true,
-//         },
-//       },
-//     },
-//   });
-// }
-
-// renderMonthlyChart(dummyMonthlyData);
-
-// const dummyMonthlyData = Array.from({ length: 31 }, (_, i) => ({
-//   day: i + 1,
-//   count: Math.floor(Math.random() * 10),
-//   amount: Math.floor(Math.random() * 10000),
-// }));
-
-// const options = {
-//   //   chart: {
-//   //     type: 'line',
-//   //     height: 350,
-//   //     toolbar: {
-//   //       show: true,
-//   //       tools: {
-//   //         download: false,
-//   //         selection: false,
-//   //         zoom: false,
-//   //         zoomin: false,
-//   //         zoomout: false,
-//   //         pan: false,
-//   //         reset: true, // ✅ Only this will show
-//   //       },
-//   //     },
-//   //     zoom: {
-//   //       enabled: true, // Must be true for reset to work
-//   //     },
-//   //   },
-//   chart: {
-//     type: 'area',
-//     stacked: false,
-//     height: 350,
-//     toolbar: {
-//       show: true,
-//       tools: {
-//         download: false,
-//         selection: false,
-//         zoom: false,
-//         zoomin: false,
-//         zoomout: false,
-//         pan: false,
-//         reset: true, // ✅ Only this will show
-//       },
-//     },
-//     zoom: {
-//       enabled: true, // Must be true for reset to work
-//     },
-//   },
-//   dataLabels: {
-//     enabled: false,
-//   },
-//   markers: {
-//     size: 0,
-//   },
-//   title: {
-//     text: 'Daily Summary of Sales',
-//     align: 'left',
-//     style: {
-//       fontSize: '16px',
-//       fontWeight: 'bold',
-//       color: '#205329',
-//     },
-//   },
-//   //   gradientToColors: ['#ec1a23'],
-//   //   colors: ['#205329', '#ec1a23'],
-//   fill: {
-//     type: 'gradient',
-//     gradient: {
-//       shadeIntensity: 1,
-//       opacityFrom: 0.5,
-//       opacityTo: 0,
-//       stops: [0, 90, 100],
-//     },
-//   },
-//   series: [
-//     {
-//       name: 'Daily Revenue (₦)',
-//       data: dummyMonthlyData.map((d) => d.amount),
-//     },
-//   ],
-//   xaxis: {
-//     categories: dummyMonthlyData.map((d) => `Day ${d.day}`),
-//     labels: {
-//       rotate: -45,
-//       style: { fontSize: '12px' },
-//     },
-//   },
-//   yaxis: {
-//     title: { text: 'Amount (₦)' },
-//   },
-//   tooltip: {
-//     y: {
-//       formatter: (val) => `₦${val.toLocaleString()}`,
-//     },
-//   },
-//   responsive: [
-//     {
-//       breakpoint: 768,
-//       options: {
-//         chart: { height: 300 },
-//         xaxis: {
-//           labels: { rotate: -90 },
-//         },
-//       },
-//     },
-//   ],
-// };
-
-// const chart = new ApexCharts(document.querySelector('#monthlyChart'), options);
-// chart.render();
-
-// // Dummy product sales data
-// const productData = {
-//   Smartphone: {
-//     summary: { quantity: 6, revenue: 270000, cost: 240000, profit: 30000 },
-//     sales: [
-//       {
-//         customer: 'John Doe',
-//         qty: 2,
-//         unit: 45000,
-//         total: 90000,
-//         date: '2025-05-21',
-//       },
-//       {
-//         customer: 'Jane Roe',
-//         qty: 2,
-//         unit: 45000,
-//         total: 90000,
-//         date: '2025-05-22',
-//       },
-//       {
-//         customer: 'Mark Smith',
-//         qty: 2,
-//         unit: 45000,
-//         total: 90000,
-//         date: '2025-05-23',
-//       },
-//     ],
-//   },
-//   Tablet: {
-//     summary: { quantity: 4, revenue: 140000, cost: 120000, profit: 20000 },
-//     sales: [
-//       {
-//         customer: 'Ayo James',
-//         qty: 2,
-//         unit: 35000,
-//         total: 70000,
-//         date: '2025-05-20',
-//       },
-//       {
-//         customer: 'Linda Blue',
-//         qty: 2,
-//         unit: 35000,
-//         total: 70000,
-//         date: '2025-05-21',
-//       },
-//     ],
-//   },
-//   Laptop: {
-//     summary: { quantity: 3, revenue: 240000, cost: 210000, profit: 30000 },
-//     sales: [
-//       {
-//         customer: 'Tunde Green',
-//         qty: 1,
-//         unit: 80000,
-//         total: 80000,
-//         date: '2025-05-19',
-//       },
-//       {
-//         customer: 'Blessing B.',
-//         qty: 2,
-//         unit: 80000,
-//         total: 160000,
-//         date: '2025-05-20',
-//       },
-//     ],
-//   },
-// };
-
-// const productSelect = document.getElementById('productSelect');
-// const totalQty = document.getElementById('totalQty');
-// const totalRev = document.getElementById('totalRev');
-// const totalCostContainer = document.getElementById('totalCost');
-// const totalProfitContainer = document.getElementById('totalProfit');
-// const tableBody = document.querySelector('#productSalesTable tbody');
-
-// function updateProductData(productSalesList, productSalesSummary) {
-
-//      if (!productSalesSummary) {
-//     console.error("productSalesSummary is undefined:", productSalesSummary);
-//     return;
-//   }
-
-// console.log(productSalesList);
-// console.log(productSalesSummary);
-// const {
-//  productName,
-//     totalQuantitySold,
-//     totalRevenue,
-//     totalCost,
-//     totalProfit,
-//   } = productSalesSummary;
-
-//   console.log(totalRevenue,  totalCost,    totalProfit);
-
-//   const { name, data } = productSalesList;
-
-//   totalQty.textContent = totalQuantitySold;
-//   totalRev.textContent = `₦${formatAmountWithCommas(totalRevenue)}`;
-//   totalCostContainer.textContent = `₦${formatAmountWithCommas(totalCost)}`;
-//   totalProfitContainer.textContent = `₦${formatAmountWithCommas(totalProfit)}`;
-
-//   tableBody.innerHTML = data.sales
-//     .map(
-//       (row) => `
-//       <tr  class="table-body-row">
-//         <td  class="py-1">${row.customer}</td>
-//         <td  class="py-1">${row.qty}</td>
-//         <td class="py-1">₦${formatAmountWithCommas(row.unit)}</td>
-//         <td class="py-1">₦${formatAmountWithCommas(row.total)}</td>
-//         <td class="py-1">${row.date}</td>
-//       </tr>
-//     `
-//     )
-//     .join('');
-// }
-
-// productSelect.addEventListener('change', (e) => {
-// //   updateProductData(e.target.value);
-// });
-
-// Initialize with first product
-// updateProductData('Smartphone');
-
-/////////////////////////////////////////////////////
-
-// BACKUP POS FORM DATA, I DONT WANT TO DELETE IT>
-
-// async function renderPosTable() {
-//   const posTableBody = document.querySelector('.posTableDisplay tbody');
-//   const loadingRow = document.querySelector('.loading-row');
-//   const loadMoreButton = document.querySelector('#loadMoreButton');
-
-//   if (!posTableBody || !loadingRow) {
-//     console.error('Table or loading row not found');
-//     return;
-//   }
-
-//   try {
-//     loadingRow.style.display = 'table-row';
-
-//     const posTransactionData = await getPosTransactions(currentPage, pageSize);
-//     const posTransactions = posTransactionData.data;
-
-//     const pagination = posTransactionData.meta.pagination;
-
-//     loadingRow.style.display = 'none';
-
-//     if (posTransactions.length === 0 && currentPage === 1) {
-//       posTableBody.innerHTML =
-//         '<tr class="loading-row"><td colspan="11" class="table-error-text ">No Transactions Available.</td></tr>';
-//       return;
-//     }
-
-//     posTransactions.forEach((posTransaction, index) => {
-//       const {
-//         fee_payment_type,
-//         transaction_amount,
-//         transaction_fee,
-//         transaction_remark,
-//         transaction_type,
-//         withdrawal_type,
-//       } = posTransaction;
-
-//       function toTitleCase(value) {
-//         return value.charAt(0).toUpperCase() + value.slice(1);
-//       }
-
-//       function formatTransactionType(value) {
-//         switch (value.toLowerCase()) {
-//           case 'withdraw':
-//             return 'Withdraw';
-//           case 'withdrawal/transfer':
-//             return 'Withdrawal & Transfer';
-//           case 'bill-payment':
-//             return 'Bill Payment';
-//           case 'deposit':
-//             return 'Deposit';
-//           default:
-//             return value;
-//         }
-//       }
-
-//       const feePaymentType = toTitleCase(fee_payment_type || 'N/A');
-//       const transactionType = transaction_type?.type || 'N/A';
-//       const withdrawalType = toTitleCase(withdrawal_type?.type || 'N/A');
-
-//       const row = document.createElement('tr');
-//       row.classList.add('table-body-row');
-
-//       row.innerHTML = `
-//        <td class="py-1">${index + 1 + (currentPage - 1) * pageSize}.</td>
-//        <td class="py-1 posTransTypeReport">${formatTransactionType(
-//          transactionType
-//        )}</td>
-//        <td class="py-1 posAmountReport">&#x20A6;${formatAmountWithCommas(
-//          transaction_amount
-//        )}</td>
-//        <td class="py-1 posFeeReport">&#x20A6;${formatAmountWithCommas(
-//          transaction_fee
-//        )}</td>
-//        <td class="py-1 posFeePaymentMethodReport">${feePaymentType}</td>
-//        <td class="py-1 posPaymentMethodReport">${withdrawalType}</td>
-//        <td class="py-1 posPaymentMethodRemark">${transaction_remark}</td>
-//      `;
-
-//       posTableBody.appendChild(row);
-//     });
-
-//     updateTotalPosAmounts(posTransactions);
-
-//     // Show or hide the "Load More" button based on whether there are more pages
-//     if (currentPage < pagination.pageCount) {
-//       loadMoreButton.style.display = 'block';
-//     } else {
-//       loadMoreButton.style.display = 'none';
-//     }
-//   } catch (error) {
-//     console.error('Error rendering POS transactions:', error);
-//     posTableBody.innerHTML =
-//       '<tr class="loading-row"><td colspan="7" class="table-error-text ">Error Loading Transactions.</td></tr>';
-//   }
-
-//   //   try {
-//   //     loadingRow.style.display = 'table-row';
-
-//   //     const posTransactionData = await getPosTransactions(currentPage, pageSize);
-//   //     const posTransactions = posTransactionData.data;
-//   //     const pagination = posTransactionData.meta.pagination;
-
-//   //     posTableBody.innerHTML = '';
-
-//   //     if (posTransactions.length === 0) {
-//   //       posTableBody.innerHTML =
-//   //         '<tr class="loading-row"><td colspan="6" class="table-error-text ">No Products Available.</td></tr>';
-//   //     } else {
-//   //       posTransactions.forEach((posTransaction, index) => {
-//   //         const {
-//   //           fee_payment_type,
-//   //           transaction_amount,
-//   //           transaction_fee,
-//   //           transaction_remark,
-//   //           transaction_type,
-//   //           withdrawal_type,
-//   //         } = posTransaction;
-
-//   //         function toTitleCase(value) {
-//   //           return value.charAt(0).toUpperCase() + value.slice(1);
-//   //         }
-
-//   //         function formatTransactionType(value) {
-//   //           switch (value.toLowerCase()) {
-//   //             case 'withdraw':
-//   //               return 'Withdraw';
-//   //             case 'withdrawal/transfer':
-//   //               return 'Withdrawal & Transfer';
-//   //             case 'bill-payment':
-//   //               return 'Bill Payment';
-//   //             case 'deposit':
-//   //               return 'Deposit';
-//   //             default:
-//   //               return value;
-//   //           }
-//   //         }
-
-//   //         const feePaymentType = toTitleCase(fee_payment_type || 'N/A');
-//   //         const transactionType = transaction_type?.type || 'N/A';
-//   //         const withdrawalType = toTitleCase(withdrawal_type?.type || 'N/A');
-
-//   //         const row = document.createElement('tr');
-//   //         row.classList.add('table-body-row');
-
-//   //         row.innerHTML = `
-//   //          <td class="py-1">${index + 1}.</td>
-//   //          <td class="py-1 posTransTypeReport">${formatTransactionType(
-//   //            transactionType
-//   //          )}</td>
-//   //          <td class="py-1 posAmountReport">&#x20A6;${formatAmountWithCommas(
-//   //            transaction_amount
-//   //          )}</td>
-//   //            <td class="py-1 posFeeReport">&#x20A6;${formatAmountWithCommas(
-//   //              transaction_fee
-//   //            )}</td>
-//   //            <td class="py-1 posFeePaymentMethodReport">${feePaymentType}</td>
-//   //            <td class="py-1 posPaymentMethodReport">${withdrawalType}</td>
-//   //            <td class="py-1 posPaymentMethodRemark">${transaction_remark}</td>
-//   //               `;
-
-//   //         posTableBody.appendChild(row);
-//   //       });
-//   //     }
-
-//   //     updateTotalPosAmounts(posTransactions);
-//   //   } catch (error) {
-//   //     console.error('Error rendering products:', error);
-//   //     goodsTableBody.innerHTML =
-//   //       '<tr class="loading-row"><td colspan="6" class="table-error-text ">No Products Available.</td></tr>';
-//   //   } finally {
-//   //     loadingRow.style.display = 'none';
-//   //   }
-// }
-
-// JavaScript to Load More
-
-//  Disabled Sim Registration and Charging features
-// // JS to Render saved Charged form data
-// const storedChargedData =
-//   JSON.parse(localStorage.getItem('chargeFormData')) || [];
-
-// function renderChargingTable() {
-//   const chargingTableBody = document.querySelector(
-//     '.chargingTableDisplay tbody'
-//   );
-
-//   if (chargingTableBody) {
-//     chargingTableBody.innerHTML = '';
-
-//     storedChargedData.forEach((data, index) => {
-//       const row = document.createElement('tr');
-//       row.classList.add('table-body-row');
-
-//       row.innerHTML = `
-//     <td class="py-1">${index + 1}.</td>
-//     <td class="py-1 chargedItemNameReport">${data.selectedDeviceType}</td>
-//     <td class="py-1 chargedItemPriceReport">&#x20A6; ${
-//       data.deviceChargeFeeInput
-//     }</td>
-//     <td class="py-1 chargedItemOwnerReport ">${data.deviceOwnerNameInput}</td>
-//     <td class="py-1 chargedItemIdReport ">${data.deviceIdInput}</td>
-//     <td class="py-1 chargedItemAltNumberReport ">${
-//       data.alternativeNumberInput
-//     }</td>
-//     <td class="py-1 chargedItemStatusReport ">${data.selectedDeviceStatus}</td>
-//       `;
-
-//       chargingTableBody.appendChild(row);
-//     });
-//   }
-
-//   updateTotalChargedAmounts(storedChargedData);
-// }
-
-// // JS to give total Charged Amount
-// function updateTotalChargedAmounts(data) {
-//   const totalChargedAmount = document.getElementById('totalChargedAmount');
-
-//   const totalAmount = data.reduce(
-//     (sum, item) => sum + item.deviceChargeFeeInput,
-//     0
-//   );
-
-//   if (totalChargedAmount) {
-//     totalChargedAmount.innerHTML = `<strong>Total Amount = &nbsp;&#x20A6;${formatAmountWithCommas(
-//       totalAmount
-//     )}</strong>`;
-//   }
-// }
-// renderChargingTable();
-
-// // JS to Render saved Sim Registration form data
-// const storedSimRegData =
-//   JSON.parse(localStorage.getItem('simRegFormData')) || [];
-
-// function renderSimRegTable() {
-//   const SimRegTableBody = document.querySelector('.simRegTableDisplay tbody');
-//   if (SimRegTableBody) {
-//     SimRegTableBody.innerHTML = '';
-
-//     storedSimRegData.forEach((data, index) => {
-//       const row = document.createElement('tr');
-//       row.classList.add('table-body-row');
-
-//       row.innerHTML = `
-//     <td class="py-1">${index + 1}.</td>
-//     <td class="py-1 simNameReport">${data.selectedSimName}</td>
-//     <td class="py-1 simPriceReport">&#x20A6; ${data.simRegAmountInput}</td>
-//     <td class="py-1 PhoneNumberReport">${data.phoneNumberInput}</td>
-//     <td class="py-1 simStatusReport ">${data.checkboxStatus}</td>
-//       `;
-
-//       SimRegTableBody.appendChild(row);
-//     });
-//   }
-
-//   updateTotalSimRegAmounts(storedSimRegData);
-// }
-
-// // JS to give total SIM Reg Amount
-// function updateTotalSimRegAmounts(data) {
-//   const totalSimRegAmount = document.getElementById('totalSimRegAmount');
-
-//   const totalAmount = data.reduce(
-//     (sum, item) => sum + item.simRegAmountInput,
-//     0
-//   );
-
-//   if (totalSimRegAmount) {
-//     totalSimRegAmount.innerHTML = `<strong>Total Amount = &nbsp;&#x20A6;${formatAmountWithCommas(
-//       totalAmount
-//     )}</strong>`;
-//   }
-// }
-
-// renderSimRegTable();
