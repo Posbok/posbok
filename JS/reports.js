@@ -21,6 +21,7 @@ import { closeModal, showToast } from './script';
 import html2pdf from 'html2pdf.js/dist/html2pdf.min.js';
 import {
   adminPosReportHtml,
+  getAdminFinancialSummaryHtml,
   getAdminAnalyticsHtml,
   getAdminPosReportHtml,
   getAdminPosTransactionList,
@@ -28,6 +29,7 @@ import {
   getAdminSalesTransactionList,
   getPosAndSalesReportAccordion,
   renderDailySummary,
+  renderFinancialSummaryTable,
   renderMonthlySummary,
   renderPosAnalyticsTable,
   renderPosTable,
@@ -115,6 +117,18 @@ function getAnalyticsFilters(role, shopId) {
   };
 }
 
+function getFinancialSummaryFilters(role, shopId) {
+  const suffix = role === 'admin' ? `${role}_${shopId}` : role;
+
+  return {
+    date_from:
+      document.getElementById(`financialSummaryDateFrom_${suffix}`)?.value ||
+      '',
+    date_to:
+      document.getElementById(`financialSummaryDateTo_${suffix}`)?.value || '',
+  };
+}
+
 // Monthly Filter Function
 
 function getMonthlySummaryFilters(role, shopId) {
@@ -169,6 +183,22 @@ function resetFilters(role, shopId) {
   document.getElementById(`endDateFilter_${suffix}`).value = '';
   document.getElementById(`typeFilter_${suffix}`).value = '';
   document.getElementById(`statusFilter_${suffix}`).value = '';
+}
+
+function resetPosAnalyticsFilters(role, shopId) {
+  const suffix = role === 'admin' ? `${role}_${shopId}` : role;
+
+  document.getElementById(`dateFrom_${suffix}`).value = '';
+  document.getElementById(`dateTo_${suffix}`).value = '';
+  document.getElementById(`groupBy_${suffix}`).value = 'day';
+  document.getElementById(`transactionType_${suffix}`).value = '';
+}
+
+function resetFinancialSummaryFilters(role, shopId) {
+  const suffix = role === 'admin' ? `${role}_${shopId}` : role;
+
+  document.getElementById(`financialSummaryDateFrom_${suffix}`).value = '';
+  document.getElementById(`financialSummaryDateTo_${suffix}`).value = '';
 }
 
 function getSalesFilters(role, shopId) {
@@ -302,20 +332,58 @@ function setupPosAnalyticsFilters({
   resetBtn.addEventListener('click', () => {
     const role = 'admin';
 
-    resetFilters(role, shopId);
-    const filters = getFilters(role, shopId);
+    resetPosAnalyticsFilters(role, shopId);
+    const filters = getAnalyticsFilters(role, shopId);
     currentFiltersByShop[shopId] = filters;
 
-    shopPageTracker[shopId] = 1;
-    allPosTransactions = [];
-
-    renderPosTableFn({
-      page: 1,
-      limit,
+    renderPosAnalyticsTableFn({
       filters,
       shopId,
-      tableBodyId: `#pos-tbody-${shopId}`,
-      loadMoreButton: loadMoreBtn,
+      tableBodyId: `#analyticsTableBody-${shopId}`,
+      append: false,
+    });
+  });
+}
+
+function setupFinancialSummaryFilters({
+  shopId,
+  currentFiltersByShop,
+  renderFinancialSummaryTableFn,
+}) {
+  const applyBtn = document.getElementById(
+    `applyAnalyticsFiltersBtn_admin_${shopId}`
+  );
+  const resetBtn = document.getElementById(
+    `resetAnalyticsFiltersBtn_${shopId}`
+  );
+
+  if (!applyBtn || !resetBtn) return;
+
+  // Apply Filters
+  applyBtn.addEventListener('click', () => {
+    const filters = getFinancialSummaryFilters('admin', shopId);
+    currentFiltersByShop[shopId] = filters;
+
+    renderFinancialSummaryTableFn({
+      filters,
+      shopId,
+      tableBodyId: `#analyticsTableBody-${shopId}`,
+      append: false,
+    });
+  });
+
+  // Reset Filters
+  resetBtn.addEventListener('click', () => {
+    const role = 'admin';
+
+    resetFinancialSummaryFilters(role, shopId);
+    const filters = getFinancialSummaryFilters(role, shopId);
+    currentFiltersByShop[shopId] = filters;
+
+    renderFinancialSummaryTableFn({
+      filters,
+      shopId,
+      tableBodyId: `#analyticsTableBody-${shopId}`,
       append: false,
     });
   });
@@ -567,6 +635,12 @@ if (isAdmin) {
                        : ''
                    }
                    ${
+                     servicePermission === 'POS_TRANSACTIONS' ||
+                     servicePermission === 'BOTH'
+                       ? getAdminFinancialSummaryHtml(shop)
+                       : ''
+                   }
+                   ${
                      servicePermission === 'INVENTORY_SALES' ||
                      servicePermission === 'BOTH'
                        ? getAdminSalesReportHtml(shop)
@@ -598,6 +672,12 @@ if (isAdmin) {
         shopId: shop.id,
         currentFiltersByShop,
         renderPosAnalyticsTableFn: renderPosAnalyticsTable,
+      });
+
+      setupFinancialSummaryFilters({
+        shopId: shop.id,
+        currentFiltersByShop,
+        renderFinancialSummaryTableFn: renderFinancialSummaryTable,
       });
     }
     // Admin POS Filter Logic End

@@ -1,6 +1,7 @@
 import config from '../config';
 import {
   deletePosTransaction,
+  getFinancialSummary,
   getPosAnalytics,
   getPosTransactions,
   getPosTransactionsById,
@@ -1111,6 +1112,83 @@ export function getAdminAnalyticsHtml(shop) {
    `;
 }
 
+export function getAdminFinancialSummaryHtml(shop) {
+  //   console.log('Financial Summary Report');
+  return `
+     
+         <!-- Financial Summary  Table HTML starts Here -->
+         <div id="shop-report-${shop.id}" class="reports card" data-loaded="false">
+
+            <div class="reports">
+               <div class="reports-method">
+                  <h2 class="heading-text mb-2">
+                    Financial Summary 
+                  </h2>
+
+                  <h2 class="filter-heading heading-subtext mb-2">Filter  Financial Summary </h2>
+
+                  <div class="filter-section mb-2">
+
+                     <div class="pos-method-form_input">
+                        <label for="financialSummaryDateFrom_admin_${shop.id}">Start Date:</label>
+
+                        <input type="date" id="financialSummaryDateFrom_admin_${shop.id}">
+                     </div>
+
+                     <div class="pos-method-form_input">
+                        <label for="financialSummaryDateTo_admin_${shop.id}">End Date:</label>
+
+                        <input type="date" id="financialSummaryDateTo_admin_${shop.id}">
+                     </div>
+
+                     <div class="filter-buttons">
+                        <button id="applyAnalyticsFiltersBtn_admin_${shop.id}" class="hero-btn-dark">Apply
+                           Filters</button>
+                        <button id="resetAnalyticsFiltersBtn_${shop.id}" class="hero-btn-outline">Reset</button>
+                     </div>
+
+                  </div>
+
+                  <!-- <div id="transactionList" class="transaction-list mb-3"></div> -->
+
+                  <div class="table-header">
+                     <!-- <h2 class="heading-subtext"> POS </h2> -->
+                  </div>
+
+                   <h2 class="heading-subtext"> Financial Summary Sections Comes Here </h2> 
+
+               <!--    <div class="reports-table-container">
+
+                     <table class="reports-table analyticsTable_admin_${shop.id}">
+                        <thead>
+                           <tr class="table-header-row">
+                              <th class="py-1">Period</th>
+                              <th class="py-1">Transaction Type</th>
+                              <th class="py-1">Payment Method</th>
+                              <th class="py-1">Count</th>
+                              <th class="py-1">Total Amount</th>
+                              <th class="py-1">Average</th>
+                              <th class="py-1">Min Amount</th>
+                              <th class="py-1">Max Amount</th>
+                           </tr>
+                        </thead>
+
+                        <tbody id="analyticsTableBody-${shop.id}">
+
+                        </tbody>
+
+                     </table>
+
+                  </div> -->
+
+               </div>
+            </div>
+         </div>
+
+         <!-- Analytics Table HTML Ends Here -->
+   `;
+}
+
 export function getAdminPosTransactionList(
   transactionId,
   transaction_type,
@@ -1624,47 +1702,110 @@ export async function renderPosAnalyticsTable({
         );
 
         posAnalyticsTableBody.appendChild(row);
-
-        //  Handle Delete POS Transaction Logic
-        const deleteTransactionModalBtn = row.querySelector(
-          `#deleteTransactionModalBtn`
-        );
-
-        deleteTransactionModalBtn?.addEventListener('click', async () => {
-          showGlobalLoader();
-          const transactionId = deleteTransactionModalBtn.dataset.transactionId;
-
-          const deleteTransactionContainer = document.querySelector(
-            '.deleteTransactionContainer'
-          );
-
-          if (deleteTransactionContainer) {
-            // Store transactionId in modal container for reference
-            deleteTransactionContainer.dataset.transactionId = transactionId;
-
-            // Fetch Shop detail
-            const transactionDetail = await getPosTransactionsById(
-              transactionId
-            );
-
-            console.log('transactionDetail', transactionDetail.data);
-
-            // Call function to prefill modal inputs
-            if (transactionDetail?.data) {
-              hideGlobalLoader();
-              openDeleteTransactionModal();
-              deleteTransactionForm(transactionDetail.data, shop_id);
-            } else {
-              hideGlobalLoader();
-              showToast('fail', '❌ Failed to fetch Transaction details.');
-            }
-          }
-        });
       });
     } catch (error) {
       console.error('Error rendering POS Analytics Data:', error);
       posAnalyticsTableBody.innerHTML =
         '<tr><td colspan="12" class="table-error-text">Error loading POS Analytics Data.</td></tr>';
+    }
+  }
+}
+
+export async function renderFinancialSummaryTable({
+  filters,
+  shopId,
+  tableBodyId,
+  append = false,
+}) {
+  if (
+    servicePermission === 'POS_TRANSACTIONS' ||
+    servicePermission === 'BOTH'
+  ) {
+    const financialSummaryTableBody = document.querySelector(tableBodyId);
+
+    if (!financialSummaryTableBody) {
+      console.error('Error: Financial Summary Table body not found');
+      return;
+    }
+
+    try {
+      let loadingRow = document.querySelector('.loading-row');
+      // console.log('loading', loadingRow);
+      if (!loadingRow) {
+        loadingRow = document.createElement('tr');
+        loadingRow.className = 'loading-row';
+        loadingRow.innerHTML = `<td colspan="12" class="table-loading-text">Loading Financial Summary Data...</td>`;
+        financialSummaryTableBody.appendChild(loadingRow);
+      }
+
+      // Build query with filters
+      const queryParams = new URLSearchParams({
+        shopId: shopId,
+      });
+
+      // console.log('queryParams', queryParams);
+
+      if (filters.date_from) queryParams.append('date_from', filters.date_from);
+      if (filters.date_to) queryParams.append('date_to', filters.date_to);
+
+      const result = await getFinancialSummary({
+        shopId,
+        filters,
+      });
+
+      console.log(result);
+
+      if (!result) throw new Error(result.message || 'Failed to fetch');
+
+      const posAnalytics = result.data.analytics;
+
+      if (posAnalytics.length === 0 && currentPage === 1) {
+        financialSummaryTableBody.innerHTML =
+          '<tr class="loading-row"><td colspan="12" class="table-error-text ">No Financial Summary Data Available.</td></tr>';
+        return;
+      }
+
+      // Clear the table body and render all accumulated transactions
+      if (!append) {
+        financialSummaryTableBody.innerHTML = '';
+      }
+      financialSummaryTableBody.innerHTML = '';
+
+      // console.log('posAnalytics', posAnalytics);
+
+      posAnalytics.forEach((posTransaction) => {
+        //  console.log(posTransaction);
+        const {
+          period,
+          transaction_type,
+          payment_method,
+          count,
+          total_amount,
+          average_amount,
+          min_amount,
+          max_amount,
+        } = posTransaction;
+
+        const row = document.createElement('tr');
+        row.classList.add('table-body-row');
+
+        row.innerHTML = getAdminPosAnalyticsList(
+          period,
+          transaction_type,
+          payment_method,
+          count,
+          total_amount,
+          average_amount,
+          min_amount,
+          max_amount
+        );
+
+        financialSummaryTableBody.appendChild(row);
+      });
+    } catch (error) {
+      console.error('Error rendering Financial Summary Data:', error);
+      financialSummaryTableBody.innerHTML =
+        '<tr><td colspan="12" class="table-error-text">Error loading Financial Summary Data.</td></tr>';
     }
   }
 }

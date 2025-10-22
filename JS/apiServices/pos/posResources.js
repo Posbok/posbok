@@ -541,6 +541,43 @@ export async function getPosAnalytics({ shopId, filters = {} }) {
   }
 }
 
+export async function getFinancialSummary({ shopId, filters = {} }) {
+  try {
+    const queryParams = new URLSearchParams({
+      shop_id: shopId,
+    });
+
+    if (filters.date_from) queryParams.append('date_from', filters.date_from);
+    if (filters.date_to) queryParams.append('date_to', filters.date_to);
+
+    //  console.log(queryParams.toString());
+
+    showGlobalLoader();
+    const posFinancialSummaryData = await safeFetch(
+      `${baseUrl}/api/reports/financial-summary?${queryParams.toString()}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    if (posFinancialSummaryData) {
+      // showToast('success', `✅ ${posFinancialSummaryData.message}`);
+      hideGlobalLoader();
+    }
+
+    //  console.log('posFinancialSummaryData', posFinancialSummaryData);
+
+    return posAnalyticsTransactionsData;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error receiving POS Transaction:', error);
+    throw error;
+  }
+}
+
 export async function configurePosCharges(posChargesDetails) {
   console.log(posChargesDetails);
   try {
