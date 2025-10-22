@@ -1142,46 +1142,75 @@ export function getAdminFinancialSummaryHtml(shop) {
                      </div>
 
                      <div class="filter-buttons">
-                        <button id="applyAnalyticsFiltersBtn_admin_${shop.id}" class="hero-btn-dark">Apply
+                        <button id="applyFinancialSummaryFiltersBtn_admin_${shop.id}" class="hero-btn-dark">Apply
                            Filters</button>
-                        <button id="resetAnalyticsFiltersBtn_${shop.id}" class="hero-btn-outline">Reset</button>
+                        <button id="resetFinancialSummaryFiltersBtn_${shop.id}" class="hero-btn-outline">Reset</button>
                      </div>
 
                   </div>
 
-                  <!-- <div id="transactionList" class="transaction-list mb-3"></div> -->
+                  <h2 class="heading-subtext">Period: <span id="financialSummaryPeriod"></span></h2> 
 
-                  <div class="table-header">
-                     <!-- <h2 class="heading-subtext"> POS </h2> -->
-                  </div>
+                     <div class="transaction-breakdown">
+               <h3 class="heading-minitext mt-4 mb-2">Shop Financial Summary</h3>
+               
+               
+            <div class="financial-summary">
 
-                   <h2 class="heading-subtext"> Financial Summary Sections Comes Here </h2> 
+                 <div class="summary-card">
+                  <h3>Total Capital Deposits</h3>
+                  <p class="value" id="totalFinCapitalDeposits">--</p>
+               </div>
 
-               <!--    <div class="reports-table-container">
+               <div class="summary-card">
+                  <h3>Total Deposits</h3>
+                  <p class="value" id="totalFinDeposits">--</p>
+               </div>
 
-                     <table class="reports-table analyticsTable_admin_${shop.id}">
+               <div class="summary-card">
+                  <h3>Total Withdrawals</h3>
+                  <p class="value" id="totalWithdrawals">--</p>
+               </div>
+
+               <div class="summary-card">
+                  <h3>Total W/Transafer</h3>
+                  <p class="value" id="totalWithdrawalTransfer">--</p>
+               </div>
+
+               <div class="summary-card">
+                  <h3>Total Bill Payment</h3>
+                  <p class="value" id="totalBillPayment">--</p>
+               </div>
+
+               <div class="summary-card">
+                  <h3>Total Transactions</h3>
+                  <p class="value" id="totalTransactions">--</p>
+               </div>
+            </div>
+
+               <div class="reports-table-container mt-4">
+                     <table class="reports-table financialSummary_admin_${shop.id}">
                         <thead>
                            <tr class="table-header-row">
-                              <th class="py-1">Period</th>
-                              <th class="py-1">Transaction Type</th>
-                              <th class="py-1">Payment Method</th>
-                              <th class="py-1">Count</th>
-                              <th class="py-1">Total Amount</th>
-                              <th class="py-1">Average</th>
-                              <th class="py-1">Min Amount</th>
-                              <th class="py-1">Max Amount</th>
+                             <th class="py-1">Type</th>
+                           <th class="py-1">Count</th>
+                           <th class="py-1">Amount (₦)</th>
                            </tr>
                         </thead>
 
-                        <tbody id="analyticsTableBody-${shop.id}">
+                        <tbody id="financialSummaryBody-${shop.id}">
 
                         </tbody>
 
                      </table>
-
-                  </div> -->
-
                </div>
+
+               <h2 class="heading-subtext admin-withdrawals-note">
+                  Admin Withdrawals: <span class="pending">Pending feature</span>
+               </h2>
+            </div>
+
+                       </div>
             </div>
          </div>
 
@@ -1275,10 +1304,12 @@ export function getAdminPosAnalyticsList(
       <td class="py-1">${transaction_type}</td>
       <td class="py-1">${payment_method}</td>
       <td class="py-1">${count}</td>
-      <td class="py-1">${formatAmountWithCommas(total_amount)}</td>
-      <td class="py-1">${average_amount.toFixed(2)}</td>
-      <td class="py-1">${formatAmountWithCommas(min_amount)}</td>
-      <td class="py-1">${formatAmountWithCommas(max_amount)}</td>
+      <td class="py-1">₦${formatAmountWithCommas(total_amount)}</td>
+      <td class="py-1">₦${formatAmountWithCommas(
+        average_amount.toFixed(2)
+      )}</td>
+      <td class="py-1">₦${formatAmountWithCommas(min_amount)}</td>
+      <td class="py-1">₦${formatAmountWithCommas(max_amount)}</td>
                
    `;
 }
@@ -1753,17 +1784,40 @@ export async function renderFinancialSummaryTable({
         filters,
       });
 
-      console.log(result);
+      // console.log(result);
 
       if (!result) throw new Error(result.message || 'Failed to fetch');
 
-      const posAnalytics = result.data.analytics;
+      const adminWithdrawals = result.data.admin_withdrawals;
+      const period = result.data.period;
+      const shop = result.data.shops;
+      const transactionSummary = result.data.transaction_summary;
 
-      if (posAnalytics.length === 0 && currentPage === 1) {
-        financialSummaryTableBody.innerHTML =
-          '<tr class="loading-row"><td colspan="12" class="table-error-text ">No Financial Summary Data Available.</td></tr>';
-        return;
-      }
+      const { capital_deposits } = shop[0];
+
+      const {
+        total_deposits,
+        total_withdrawals,
+        total_transfers,
+        total_bill_payments,
+        total_transactions,
+      } = transactionSummary.totals;
+
+      const { date_from, date_to } = period;
+
+      const periodText =
+        date_from && date_to
+          ? `${formatDateTimeReadable(date_from)} - ${formatDateTimeReadable(
+              date_to
+            )}`
+          : 'All Time';
+
+      const financialSummaryPeriod = document.querySelector(
+        '#financialSummaryPeriod'
+      );
+
+      if (financialSummaryPeriod)
+        financialSummaryPeriod.textContent = periodText;
 
       // Clear the table body and render all accumulated transactions
       if (!append) {
@@ -1771,37 +1825,105 @@ export async function renderFinancialSummaryTable({
       }
       financialSummaryTableBody.innerHTML = '';
 
-      // console.log('posAnalytics', posAnalytics);
+      const totalFinCapitalDepositsEl = document.getElementById(
+        'totalFinCapitalDeposits'
+      );
 
-      posAnalytics.forEach((posTransaction) => {
-        //  console.log(posTransaction);
-        const {
-          period,
-          transaction_type,
-          payment_method,
-          count,
-          total_amount,
-          average_amount,
-          min_amount,
-          max_amount,
-        } = posTransaction;
+      if (totalFinCapitalDepositsEl)
+        totalFinCapitalDepositsEl.textContent = `₦${formatAmountWithCommas(
+          capital_deposits
+        )}`;
 
+      const totalFinDepositsEl = document.getElementById('totalFinDeposits');
+      if (totalFinDepositsEl)
+        totalFinDepositsEl.textContent = `₦${formatAmountWithCommas(
+          total_deposits
+        )}`;
+
+      const totalWithdrawalsEl = document.getElementById('totalWithdrawals');
+      if (totalWithdrawalsEl)
+        totalWithdrawalsEl.textContent = `₦${formatAmountWithCommas(
+          total_withdrawals
+        )}`;
+
+      const totalWithdrawalTransferEl = document.getElementById(
+        'totalWithdrawalTransfer'
+      );
+      if (totalWithdrawalTransferEl)
+        totalWithdrawalTransferEl.textContent = `₦${formatAmountWithCommas(
+          total_transfers
+        )}`;
+
+      const totalBillPaymentEl = document.getElementById('totalBillPayment');
+      if (totalBillPaymentEl)
+        totalBillPaymentEl.textContent = `₦${formatAmountWithCommas(
+          total_bill_payments
+        )}`;
+
+      const totalTransactionsEl = document.getElementById('totalTransactions');
+      if (totalTransactionsEl)
+        totalTransactionsEl.textContent =
+          formatAmountWithCommas(total_transactions);
+
+      // ===== Populate the summary table =====
+      const financialSummaryBody = document.getElementById(
+        `financialSummaryBody-${shopId}`
+      );
+
+      if (financialSummaryBody) financialSummaryBody.innerHTML = '';
+
+      const summaryRows = transactionSummary.by_type;
+
+      if (summaryRows && summaryRows.length > 0) {
+        summaryRows.forEach((item) => {
+          const row = document.createElement('tr');
+          row.className = 'table-body-row';
+          row.innerHTML = `
+      <td class="py-1">${formatTransactionType(item.transaction_type)}</td>
+      <td class="py-1">${item.count ?? 0}</td>
+      <td class="py-1">₦${formatAmountWithCommas(item.total_amount ?? 0)}</td>
+    `;
+          financialSummaryBody.appendChild(row);
+        });
+      } else {
+        // No data case
         const row = document.createElement('tr');
-        row.classList.add('table-body-row');
+        row.className = 'table-body-row';
+        row.innerHTML = `
+    <td colspan="3" class="table-error-text">No Financial Summary Data available</td>
+  `;
+        financialSummaryBody.appendChild(row);
+      }
 
-        row.innerHTML = getAdminPosAnalyticsList(
-          period,
-          transaction_type,
-          payment_method,
-          count,
-          total_amount,
-          average_amount,
-          min_amount,
-          max_amount
-        );
+      // posAnalytics.forEach((posTransaction) => {
+      //   //  console.log(posTransaction);
+      //   const {
+      //     period,
+      //     transaction_type,
+      //     payment_method,
+      //     count,
+      //     total_amount,
+      //     average_amount,
+      //     min_amount,
+      //     max_amount,
+      //   } = posTransaction;
 
-        financialSummaryTableBody.appendChild(row);
-      });
+      //   const row = document.createElement('tr');
+      //   row.classList.add('table-body-row');
+
+      //   row.innerHTML = getAdminPosAnalyticsList(
+      //     period,
+      //     transaction_type,
+      //     payment_method,
+      //     count,
+      //     total_amount,
+      //     average_amount,
+      //     min_amount,
+      //     max_amount
+      //   );
+
+      //   financialSummaryTableBody.appendChild(row);
+      // });
     } catch (error) {
       console.error('Error rendering Financial Summary Data:', error);
       financialSummaryTableBody.innerHTML =

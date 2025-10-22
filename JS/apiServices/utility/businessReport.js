@@ -395,26 +395,26 @@ export async function renderStaffPerformanceTable() {
   const tableHead = document.querySelector('.staffOverviewTable thead tr');
   if (tableHead)
     tableHead.innerHTML = `
-  <th>S/N</th>
-  <th>Staff Name</th>
+  <th class="py-1">S/N</th>
+  <th class="py-1">Staff Name</th>
   ${
     servicePermission === 'POS_TRANSACTIONS' || servicePermission === 'BOTH'
       ? `
-        <th>Total Txns</th>
-        <th>Total Amount (₦)</th>
-        <th>Avg/Txn (₦)</th>
-        <th>Transaction Type</th>
+        <th class="py-1">Total Txns</th>
+        <th class="py-1">Total Amount (₦)</th>
+        <th class="py-1">Avg/Txn (₦)</th>
+        <th class="py-1">Transaction Type</th>
       `
       : ''
   }
   ${
     servicePermission === 'INVENTORY_SALES' || servicePermission === 'BOTH'
       ? `
-        <th>Total Sales</th>
-        <th>Sales Amount (₦)</th>
-        <th>Total Cost (₦)</th>
-        <th>Profit (₦)</th>
-        <th>Profit Margin</th>
+        <th class="py-1">Total Sales</th>
+        <th class="py-1">Sales Amount (₦)</th>
+        <th class="py-1">Total Cost (₦)</th>
+        <th class="py-1">Profit (₦)</th>
+        <th class="py-1">Profit Margin</th>
       `
       : ''
   }

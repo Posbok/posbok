@@ -351,10 +351,10 @@ function setupFinancialSummaryFilters({
   renderFinancialSummaryTableFn,
 }) {
   const applyBtn = document.getElementById(
-    `applyAnalyticsFiltersBtn_admin_${shopId}`
+    `applyFinancialSummaryFiltersBtn_admin_${shopId}`
   );
   const resetBtn = document.getElementById(
-    `resetAnalyticsFiltersBtn_${shopId}`
+    `resetFinancialSummaryFiltersBtn_${shopId}`
   );
 
   if (!applyBtn || !resetBtn) return;
@@ -367,7 +367,7 @@ function setupFinancialSummaryFilters({
     renderFinancialSummaryTableFn({
       filters,
       shopId,
-      tableBodyId: `#analyticsTableBody-${shopId}`,
+      tableBodyId: `#financialSummaryBody-${shopId}`,
       append: false,
     });
   });
@@ -383,7 +383,7 @@ function setupFinancialSummaryFilters({
     renderFinancialSummaryTableFn({
       filters,
       shopId,
-      tableBodyId: `#analyticsTableBody-${shopId}`,
+      tableBodyId: `#financialSummaryBody-${shopId}`,
       append: false,
     });
   });
@@ -773,6 +773,12 @@ if (isAdmin) {
             filters,
             shopId,
             tableBodyId: `#analyticsTableBody-${shopId}`,
+          });
+
+          await renderFinancialSummaryTable({
+            filters,
+            shopId,
+            tableBodyId: `#financialSummaryBody-${shopId}`,
           });
 
           shopPosTransactiionSection.dataset.loaded = 'true';

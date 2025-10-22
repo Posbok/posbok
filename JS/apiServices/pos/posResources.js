@@ -570,10 +570,10 @@ export async function getFinancialSummary({ shopId, filters = {} }) {
 
     //  console.log('posFinancialSummaryData', posFinancialSummaryData);
 
-    return posAnalyticsTransactionsData;
+    return posFinancialSummaryData;
   } catch (error) {
     hideGlobalLoader();
-    console.error('Error receiving POS Transaction:', error);
+    console.error('Error receiving Financial Summary:', error);
     throw error;
   }
 }

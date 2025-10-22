@@ -676,12 +676,12 @@ export async function handlePosFormSubmit() {
 
         const posTransactionCreated = await createPosTransaction(posFormData);
 
-        //   console.log(posTransactionCreated);
+        console.log(posTransactionCreated);
 
-        //   console.log(
-        //     'POS transaction sent successfully:',
-        //     posTransactionCreated
-        //   );
+        console.log(
+          'POS transaction sent successfully:',
+          posTransactionCreated
+        );
         resetFormInputs();
         showToast('success', `✅ ${posTransactionCreated?.message}`);
         hideBtnLoader(posSubmitButton);
