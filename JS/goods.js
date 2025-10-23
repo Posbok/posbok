@@ -1627,6 +1627,14 @@ const shopProductMap = {};
 if (isAdmin && adminAccordionContainer && container) {
   adminAccordionContainer.style.display = 'block';
 
+  let isLoading = true;
+
+  if (container) {
+    isLoading
+      ? (container.innerHTML = `<p class="heading-minitext table-loading-text center-text mb-4">Loading Shop Inventory...</p>`)
+      : '';
+  }
+
   (async () => {
     if (container.dataset.accordionRendered === 'true') {
       // console.warn('Accordion already rendered. Skipping...');
@@ -1653,6 +1661,8 @@ if (isAdmin && adminAccordionContainer && container) {
       const shopId = shop.id;
 
       // console.log(shop);
+
+      let isLoading = false;
 
       accordion.className = 'accordion-section';
       accordion.innerHTML = `        <button class="accordion-toggle card heading-text" data-shop-id="${shopId}">

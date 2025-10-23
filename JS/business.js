@@ -4,6 +4,7 @@ import {
   fetchBusinessDetails,
   getBusinessSettings,
   setManualFee,
+  setManualPosCharges,
   setTransferFee,
   updateBusiness,
 } from './apiServices/business/businessResource';
@@ -27,6 +28,36 @@ document.addEventListener('DOMContentLoaded', async function () {
     await renderBusinessSettings();
 
     // Update Business Settings
+
+    // Attach listeners - Manual Fee Toggle
+    const manualPosCharges = document.querySelector(
+      '.pos_manual_charge_toggle input'
+    );
+
+    if (manualPosCharges)
+      manualPosCharges.addEventListener('change', async (e) => {
+        const newValue = e.target.checked;
+
+        const updateManualPosChargesData = {
+          enabled: newValue,
+        };
+
+        try {
+          const response = await setManualPosCharges(
+            updateManualPosChargesData
+          );
+          if (response && response.success) {
+            showToast('success', `✅ ${response.message}`);
+          }
+
+          //  console.log('Update success:', response);
+        } catch (err) {
+          console.error('Update failed:', err);
+          e.target.checked = !newValue; // rollback if request fails
+        } finally {
+          hideGlobalLoader();
+        }
+      });
 
     // Attach listeners - Manual Fee Toggle
     const manualMachineFee = document.querySelector('.manual-fee_toggle input');
@@ -177,9 +208,9 @@ export async function renderBusinessDetails() {
 }
 
 export async function renderBusinessSettings() {
-  showGlobalLoader();
   const businessSettings = await getBusinessSettings();
   const businessSettingsData = businessSettings?.data;
+  showGlobalLoader();
 
   if (!businessSettings) {
     //  showToast('error', ' ⛔ Failed to fetch business Settings');
@@ -188,11 +219,16 @@ export async function renderBusinessSettings() {
     return;
   }
 
+  showGlobalLoader();
   //   console.log('businessSettingsData', businessSettingsData);
 
   // Update the UI buttons based on fetched settings
+  const manualPosCharge = document.getElementById('pos_manual_charge');
   const manualMachineFee = document.getElementById('manual_machine_fee_mode');
   const transferFee = document.getElementById('transfer_fee_for_incoming');
+
+  if (manualPosCharge)
+    manualPosCharge.checked = businessSettingsData.pos_manual_charge;
 
   if (manualMachineFee)
     manualMachineFee.checked = businessSettingsData.manual_machine_fee_mode;

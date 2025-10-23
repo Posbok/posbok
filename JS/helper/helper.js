@@ -392,6 +392,28 @@ export function formatTransactionBreakdown(value) {
   }
 }
 
+// Format Unit Type
+export function formatUnitType(value) {
+  switch (value.toLowerCase()) {
+    case 'per_item':
+      return 'Per Item';
+    case 'dozen':
+      return 'Dozen';
+    case 'cartons':
+      return 'Carton';
+    case 'liters':
+      return 'Liters';
+    case 'yard':
+      return 'Yard';
+    case 'gram':
+      return 'Gram';
+    case 'kilogram':
+      return 'Kilogram';
+    default:
+      return value;
+  }
+}
+
 // Format Service Permission
 export function formatServicePermission(value) {
   switch (value.toLowerCase()) {
@@ -496,7 +518,7 @@ document.addEventListener('DOMContentLoaded', function () {
   );
 
   const posTransactionCharges = document.getElementById(
-    isAdmin ? 'adminPosTransactionCharges' : 'posTransactionCharges'
+    isAdmin ? 'adminPosTransactionCharges' : 'posTransactionFee'
   );
 
   const posMachineFee = document.getElementById(

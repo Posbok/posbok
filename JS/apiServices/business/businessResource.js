@@ -120,7 +120,7 @@ export async function getBusinessSettings() {
 
 // Enable/Disable Manual Fee
 export async function setManualFee(updateManualFeeData) {
-  //   console.log('object', updateManualFeeData);
+  showGlobalLoader();
 
   try {
     const updateManualFee = await safeFetch(`${baseUrl}/api/fees/manual-fee`, {
@@ -134,6 +134,7 @@ export async function setManualFee(updateManualFeeData) {
 
     if (updateManualFee) {
       // console.log('Manual Fee Updated successfully:', updateManualFee);
+      hideGlobalLoader();
       showToast('success', `✅ ${updateManualFee.message}`);
 
       // Refresh list or update UI
@@ -148,9 +149,47 @@ export async function setManualFee(updateManualFeeData) {
   }
 }
 
+// Enable/Disable Manual Fee
+export async function setManualPosCharges(updateManualPosChargesData) {
+  showGlobalLoader();
+
+  try {
+    const updateManualPosChargesFee = await safeFetch(
+      `${baseUrl}/api/fees/pos-manual-charge`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updateManualPosChargesData),
+      }
+    );
+
+    if (updateManualPosChargesFee) {
+      // console.log(
+      //   'Manual POS Charges Updated successfully:',
+      //   updateManualPosChargesFee
+      // );
+      hideGlobalLoader();
+      showToast('success', `✅ ${updateManualPosChargesFee.message}`);
+
+      // Refresh list or update UI
+      // fetchBusinessDetails();
+      renderBusinessSettings();
+    }
+
+    return updateManualPosChargesFee;
+  } catch (error) {
+    console.error('Error Updating Manual Fee:', error.message);
+    throw error;
+  }
+}
+
 // Enable/Disable Trandfer Fee
 export async function setTransferFee(updateTransferFeeData) {
-  //   console.log('Sending payload:', JSON.stringify(updateTransferFeeData));
+  showGlobalLoader();
+
   try {
     const updateTransferFee = await safeFetch(
       `${baseUrl}/api/fees/transfer-fee`,
@@ -166,6 +205,7 @@ export async function setTransferFee(updateTransferFeeData) {
 
     if (updateTransferFee) {
       // console.log('Transfer Fee Updated successfully:', updateTransferFee);
+      hideGlobalLoader();
       showToast('success', `✅ ${updateTransferFee.message}`);
 
       // Refresh list or update UI

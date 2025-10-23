@@ -238,7 +238,7 @@
 
                <!-- Transfer Amount -->
                <div class="pos-method-form_input">
-                  <label for="amount">Transfer Amount</label>
+                  <label for="adminPosTransferAmount">Transfer Amount</label>
                   <div class="naira-input-container">
                      <input id="adminPosTransferAmount" type="text" placeholder="Enter Transfer Amount"
                         name="posTransferAmount">
@@ -247,14 +247,15 @@
                </div>
 
                <!-- Machine Fee -->
-               <!-- <div class="pos-method-form_input machine-fee">
-                  <label for="Pos Machine Fee">Machine Fee</label>
+               <div class="pos-method-form_input adminPosMachineFeeDiv machine-fee hidden">
+                  <label for="adminPosMachineFee">Machine Fee</label>
 
                   <div class="naira-input-container">
-                     <input class="adminPosMachineFee" id="adminPosMachineFee" type="text" name="posMachineFee" disabled>
+                     <input class="adminPosMachineFee" id="adminPosMachineFee" placeholder="Enter Machine Fee"
+                        type="text" name="posMachineFee">
                      <span class="naira">&#x20A6;</span>
                   </div>
-               </div> -->
+               </div>
 
                <!-- POS FEES -->
                <div class="pos-method-form_input adminPosTransactionChargesDiv hidden">
@@ -560,25 +561,26 @@
 
 
                <!-- Machine Fee -->
-               <!-- <div class="pos-method-form_input machine-fee">
-                  <label for="Pos Machine Fee">Machine Fee</label>
+               <div class="pos-method-form_input posMachineFeeDiv machine-fee hidden">
+                  <label for="posMachineFee">Machine Fee</label>
 
                   <div class="naira-input-container">
-                     <input class="posMachineFee" id="posMachineFee" type="text" name="posMachineFee" disabled>
+                     <input class="posMachineFee" id="posMachineFee" placeholder="Enter Machine Fee" type="text"
+                        name="posMachineFee">
                      <span class="naira">&#x20A6;</span>
                   </div>
-               </div> -->
+               </div>
 
                <!-- POS FEES -->
-               <!-- <div class="pos-method-form_input">
-                  <label for="fee">Set Fee</label>
+               <div class="pos-method-form_input posTransactionChargesDiv hidden">
+                  <label for="fee">Transaction Charges</label>
 
                   <div class="naira-input-container">
-                     <input id="posTransactionFee" type="text" placeholder="Enter Fee"
-                        oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="posTransactionFee" required>
+                     <input id="posTransactionFee" type="text" placeholder="Enter Fee" name="posTransactionFee"
+                        required>
                      <span class="naira">&#x20A6;</span>
                   </div>
-               </div> -->
+               </div>
 
                <!-- FEE/CHARGE PAYMENT METHOD -->
                <div class="pos-method-form_input feePaymentType">

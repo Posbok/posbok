@@ -936,7 +936,18 @@ export function closeModal() {
     isAdmin ? '.adminFundMachine' : '.fundMachine'
   );
 
+  const addStock = document.querySelector('.addStock');
+  const deleteStockContainer = document.querySelector('.deleteStockContainer');
+
   //
+
+  if (deleteStockContainer) {
+    deleteStockContainer.classList.remove('active');
+  }
+
+  if (addStock) {
+    addStock.classList.remove('active');
+  }
 
   if (fundMachine) {
     fundMachine.classList.remove('active');

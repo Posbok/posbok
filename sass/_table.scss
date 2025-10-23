@@ -22,6 +22,7 @@
       .staff-table-container,
       .posCharge-table-container,
       .machineFee-table-container,
+      .stock-table-container,
       .category-table-container,
       .inventory-table-container {
          overflow-x: auto;
@@ -135,6 +136,24 @@
 
       &:hover {
          background-color: #f1aeb5 !important; // slightly deeper red
+      }
+   }
+
+   .finishedStockRow {
+      background-color: #f8d7da; // light red (Bootstrap danger-light)
+      color: #842029 !important; // darker text for contrast
+
+      &:hover {
+         background-color: #f1aeb5 !important; // slightly deeper red
+      }
+   }
+
+   .nearFinishedStockRow {
+      background-color: #fff3cd; // light yellow (Bootstrap warning-light)
+      color: #856404 !important; // darker amber text for readability
+
+      &:hover {
+         background-color: #ffe69c !important; // slightly deeper yellow
       }
    }
 }

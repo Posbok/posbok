@@ -289,24 +289,32 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (!businessSettings) return;
 
-  //   console.log(businessSettingsData);
+  console.log(businessSettingsData);
 
   const posTransactionChargesDiv = document.querySelector(
     isAdmin ? '.adminPosTransactionChargesDiv' : '.posTransactionChargesDiv'
   );
 
   const posTransactionChargesInput = document.getElementById(
-    isAdmin ? 'adminPosTransactionCharges' : 'posTransactionCharges'
+    isAdmin ? 'adminPosMachineFee' : 'posMachineFee'
   );
 
-  if (posTransactionChargesDiv) {
+  const posMachineFeeDiv = document.querySelector(
+    isAdmin ? '.adminPosMachineFeeDiv' : '.posMachineFeeDiv'
+  );
+
+  const posMachineFeeInput = document.getElementById(
+    isAdmin ? 'adminPosMachineFee' : 'posMachineFee'
+  );
+
+  if (posMachineFeeDiv) {
     if (businessSettingsData.manual_machine_fee_mode === true) {
-      posTransactionChargesDiv.classList.remove('hidden');
-      posTransactionChargesInput.setAttribute('required', 'true');
+      posMachineFeeDiv.classList.remove('hidden');
+      posMachineFeeInput.setAttribute('required', 'true');
     } else {
-      posTransactionChargesDiv.classList.add('hidden');
-      posTransactionChargesInput.removeAttribute('required');
-      posTransactionChargesInput.value = '';
+      posMachineFeeDiv.classList.add('hidden');
+      posMachineFeeInput.removeAttribute('required');
+      posMachineFeeInput.value = '';
     }
   }
 });
