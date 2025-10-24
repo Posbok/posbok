@@ -98,7 +98,7 @@ export async function getStockCategories() {
 
 export async function createStockItem(stockItemDetails) {
   try {
-    console.log('Sending POST request...');
+    //  console.log('Sending POST request...');
 
     const fetchedData = await safeFetch(`${baseUrl}/api/stock/add`, {
       method: 'POST',
@@ -109,10 +109,10 @@ export async function createStockItem(stockItemDetails) {
       body: JSON.stringify(stockItemDetails),
     });
 
-    console.log('Response received...');
+    //  console.log('Response received...');
 
     if (fetchedData) {
-      console.log('Stock Item created successfully:', fetchedData);
+      // console.log('Stock Item created successfully:', fetchedData);
       showToast('success', `✅ ${fetchedData.message}`);
 
       // Refresh the table list after successful configuration
@@ -121,7 +121,7 @@ export async function createStockItem(stockItemDetails) {
 
     return fetchedData;
   } catch (error) {
-    console.error('Error creating Stock Category:', error);
+    console.error('Error creating Stock Item:', error);
     throw error;
   }
 }
@@ -226,7 +226,7 @@ export async function deleteStockItem(stockItemId) {
       console.log('Stock item  deleted successfully:', fetchedData);
       // showToast('success', `✅ ${fetchedData.message}`);
       // await renderStock itemTable();
-      hideGlobalLoader();
+      // hideGlobalLoader();
     }
 
     return fetchedData;
@@ -234,6 +234,39 @@ export async function deleteStockItem(stockItemId) {
     hideGlobalLoader();
     console.error('Error deleting Stock item ', error);
     //  showToast('error', '❌ Failed to delete Stock item ');
+    throw error;
+  }
+}
+
+export async function updateStockItem(stockItemId, updateStockItemDetails) {
+  try {
+    //  console.log('Sending PUT request...');
+
+    const fetchedData = await safeFetch(
+      `${baseUrl}/api/stock/${stockItemId}}`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updateStockItemDetails),
+      }
+    );
+
+    //  console.log('Response received...');
+
+    if (fetchedData) {
+      // console.log('Stock Item Updated successfully:', fetchedData);
+      showToast('success', `✅ ${fetchedData.message}`);
+
+      // Refresh the table list after successful configuration
+      getStockItems();
+    }
+
+    return fetchedData;
+  } catch (error) {
+    console.error('Error Updating Stock Item:', error);
     throw error;
   }
 }

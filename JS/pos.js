@@ -307,6 +307,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     isAdmin ? 'adminPosMachineFee' : 'posMachineFee'
   );
 
+  if (posTransactionChargesDiv) {
+    if (businessSettingsData.pos_manual_charge === true) {
+      posTransactionChargesDiv.classList.remove('hidden');
+      posTransactionChargesInput.setAttribute('required', 'true');
+    } else {
+      posTransactionChargesDiv.classList.add('hidden');
+      posTransactionChargesInput.removeAttribute('required');
+      posTransactionChargesInput.value = '';
+    }
+  }
+
   if (posMachineFeeDiv) {
     if (businessSettingsData.manual_machine_fee_mode === true) {
       posMachineFeeDiv.classList.remove('hidden');

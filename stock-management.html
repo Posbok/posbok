@@ -200,8 +200,18 @@
 
             </div>
 
-            <h2 class="heading-subtext"> Available Stocks</h2>
+            <!-- <h2 class="heading-subtext"> Available Stocks</h2> -->
             <!-- </div> -->
+
+            <div class="mb-4 mt-3">
+               <h2 class="heading-subtext ">Total Items: <span class="totalItems">--</span></h2>
+
+               <h2 class="heading-subtext ">Total Quantity: <span class="totalQuantity">--</span>
+               </h2>
+
+               <h2 class="heading-subtext ">Total Value: <span class="totalValue">--</span></h2>
+
+            </div>
 
             <div class="stock-table-container">
                <table class="reports-table stock-item-table">
@@ -464,78 +474,83 @@
       </div>
    </form>
 
-   <!-- Updatee Stock Category -->
-   <form class="updateStock-form updateStockModal" name="updateStock">
-      <div class="card updateStock modal ">
+   <!-- Update Stock Product -->
+   <form class="modal-form updateStockModal" name="updateStock">
+      <div class="card updateStock modal  ">
          <div>
-            <h1 class="heading-text addItemName">Update Stock</h1>
+            <h1 class="heading-text ">Update Stock</h1>
          </div>
 
 
+         <!-- Update Name -->
          <div class="modal-form_input">
-            <label for="updateStockCategory">Stock Category</label>
+            <label for="updateStockName">Product Name</label>
 
-            <select id="updateStockCategory" class="form-control" required>
-               <option value="">Select a Category</option>
-               <option value="01">Category 1</option>
-               <option value="02">Category 2</option>
-               <option value="03">Category 3</option>
-            </select>
+            <input id="updateStockName" type="text" placeholder="Enter Product Name" name="updateStockName" required>
          </div>
 
-         <div class="updateStock-form_input">
-            <label for="updateStockName">Stock Name</label>
+         <!-- Update Description -->
+         <div class="modal-form_input">
+            <label for="updateStockDescription">Product Description</label>
 
-            <input id="updateStockName" type="text" placeholder="Stock Name" name="updateStockName" required>
+            <input id="updateStockDescription" type="text" placeholder="Enter Product Description"
+               name="updateStockDescription" required>
          </div>
 
-         <div class="updateStock-form_input">
-            <label for="updateStockDescription">Stock Description</label>
-
-            <input id="updateStockDescription" type="text" placeholder="Stock Description" name="updateStockDescription"
-               required>
-         </div>
-
-         <div class="updateStock-form_input">
-            <label for="updateStockBoughtPrice">Amount Bought</label>
+         <!-- Update Amount Bought  -->
+         <div class="modal-form_input">
+            <label for="StockBoughtPrice">Purchase Price</label>
 
             <div class="naira-input-container">
-               <input id="updateStockBoughtPrice" type="text" placeholder="Bought Price" name="updateStockBoughtPrice"
-                  required>
+               <input id="updateStockBoughtPrice" type="text" placeholder="Enter Purchase Price"
+                  name="updateStockBoughtPrice" required>
                <span class="naira">&#x20A6;</span>
             </div>
          </div>
 
-         <div class="updateStock-form_input">
-            <label for="updateStockSellingPrice">Previous Selling Price</label>
+         <!-- Update Amount to Sell  -->
+         <div class="modal-form_input">
+            <label for="StockSellingPrice">Selling Price</label>
 
             <div class="naira-input-container">
-               <input id="updateStockSellingPrice" type="text" placeholder="Current Selling Price"
+               <input id="updateStockSellingPrice" type="text" placeholder="Enter Selling  Price"
                   name="updateStockSellingPrice" required>
                <span class="naira">&#x20A6;</span>
             </div>
          </div>
 
-         <div class="updateStock-form_input">
-            <label for="updateStockQuantity">Stock Quantity</label>
 
-            <input id="updateStockQuantity" type="text" placeholder="Stock Quantity" name="updateStockQuantity"
+         <!-- Update Quantity -->
+         <div class="modal-form_input">
+            <label for="StockQuantity">Product Quantity</label>
+
+            <!-- <div class="naira-input-container"> -->
+            <input id="updateStockQuantity" type="text" placeholder="Enter Product Quantity" name="updateStockQuantity"
                required>
+            <!-- </div> -->
          </div>
 
+         <!-- Update Unit Type -->
+         <div class="modal-form_input">
+            <label for="updateStockUnitType">Unit Type</label>
 
-         <!-- <div class="updateStock-form_input">
-            <label for="newItemQuantity">New Item Quantity</label>
-
-            <input id="newItemQuantity" type="text" placeholder="Enter New Quantity" name="newItemQuantity">
-
-         </div> -->
+            <select id="updateStockUnitType" class="form-control" required>
+               <option value="">Select a Unit Type</option>
+               <option value="per_item">Per Item</option>
+               <option value="dozen">Dozen</option>
+               <option value="cartons">Cartons</option>
+               <option value="liters">Liters</option>
+               <option value="yard">Yard</option>
+               <option value="gram">Gram</option>
+               <option value="kilogram">Kilogram</option>
+            </select>
+         </div>
 
 
 
          <div class="center-button">
 
-            <button class="hero-btn-dark updateStockModalBtn" id="updateStockModalBtn">
+            <button class="hero-btn-dark updateStockModalBtn" id="updateStockModalBtn" type="submit">
                <span class="btn-text">update Stock</span>
                <span class="btn-spinner hidden"></span>
             </button>
@@ -623,7 +638,7 @@
                <span class="naira">&#x20A6;</span>
             </div>
          </div>
-
+         <!-- Date Purchased -->
          <div class="modal-form_input">
             <label for="addStockDatePurchased">Date Purchased</label>
 

@@ -111,6 +111,14 @@
             }
          }
 
+
+         .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+         }
+
          // .pagination-container {
          //    display: flex;
          //    justify-content: space-between;
@@ -245,6 +253,14 @@
       }
    }
 
+
+   .action-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      align-items: center;
+   }
+
    // .pagination-container {
    //    display: flex;
    //    justify-content: space-between;
@@ -261,6 +277,7 @@
    //    opacity: 0.5;
    //    cursor: not-allowed;
    // }
+
 }
 
 // reports.html table/accodium

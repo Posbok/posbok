@@ -1841,6 +1841,13 @@ function renderFilteredProducts(shopId, productList) {
 
     const row = document.createElement('tr');
     row.classList.add('table-body-row');
+    row.classList.add(
+      quantity < 1
+        ? 'finishedStockRow'
+        : quantity >= 1 && quantity <= 10
+        ? 'nearFinishedStockRow'
+        : 'inStockRow'
+    );
     row.innerHTML = `
        
                 <td class="py-1 productSerialNumber">${index + 1}</td>
@@ -2067,6 +2074,13 @@ export async function renderProductInventoryTable(shopId) {
 
       const row = document.createElement('tr');
       row.classList.add('table-body-row');
+      row.classList.add(
+        quantity < 1
+          ? 'finishedStockRow'
+          : quantity >= 1 && quantity <= 10
+          ? 'nearFinishedStockRow'
+          : 'inStockRow'
+      );
       row.innerHTML = `
        
                 <td class="py-1 productSerialNumber">${index + 1}</td>

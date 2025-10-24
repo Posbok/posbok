@@ -217,7 +217,6 @@
                   </div>
                </div>
 
-
                <!-- Number of Transfer -->
                <div class="pos-method-form_input">
                   <label for="adminNumberOfTransfer">Number of Transfer:</label>
@@ -246,6 +245,28 @@
                   </div>
                </div>
 
+               <!-- POS Charges / FEES -->
+               <div class="pos-method-form_input adminPosTransactionChargesDiv hidden">
+                  <label for="fee">Transaction Charges</label>
+
+                  <div class="naira-input-container">
+                     <input id="adminPosTransactionCharges" type="text" placeholder="Enter POS Charges Amount"
+                        name="adminPosTransactionCharges">
+                     <span class="naira">&#x20A6;</span>
+                  </div>
+               </div>
+
+               <!-- FEE/CHARGE PAYMENT METHOD -->
+               <div class="pos-method-form_input feePaymentType">
+                  <label for="feePaymentType">Charges Payment Method:</label>
+
+                  <select id="adminPosFeePaymentType" name="posFeePaymentType">
+                     <option value="card">Card</option>
+                     <option value="cash">Cash</option>
+                     <option value="transfer">Transfer</option>
+                  </select>
+               </div>
+
                <!-- Machine Fee -->
                <div class="pos-method-form_input adminPosMachineFeeDiv machine-fee hidden">
                   <label for="adminPosMachineFee">Machine Fee</label>
@@ -257,27 +278,7 @@
                   </div>
                </div>
 
-               <!-- POS FEES -->
-               <div class="pos-method-form_input adminPosTransactionChargesDiv hidden">
-                  <label for="fee">Transaction Charges</label>
 
-                  <div class="naira-input-container">
-                     <input id="adminPosTransactionCharges" type="text" placeholder="Enter Charges Amount"
-                        name="adminPosTransactionCharges">
-                     <span class="naira">&#x20A6;</span>
-                  </div>
-               </div>
-
-               <!-- FEE/CHARGE PAYMENT METHOD -->
-               <div class="pos-method-form_input feePaymentType">
-                  <label for="feePaymentType">Fee Payment Method:</label>
-
-                  <select id="adminPosFeePaymentType" name="posFeePaymentType">
-                     <option value="card">Card</option>
-                     <option value="cash">Cash</option>
-                     <option value="transfer">Transfer</option>
-                  </select>
-               </div>
 
                <!-- SUCCESSFUL / PENDING -->
                <!-- <div class="simReg-method-form_input">

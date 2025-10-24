@@ -937,9 +937,16 @@ export function closeModal() {
   );
 
   const addStock = document.querySelector('.addStock');
+
   const deleteStockContainer = document.querySelector('.deleteStockContainer');
 
+  const updateStock = document.querySelector('.updateStock');
+
   //
+
+  if (updateStock) {
+    updateStock.classList.remove('active');
+  }
 
   if (deleteStockContainer) {
     deleteStockContainer.classList.remove('active');

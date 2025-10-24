@@ -1201,6 +1201,9 @@ button:disabled:hover {
 .mt-2 {
   margin-top: 2rem; }
 
+.mt-3 {
+  margin-top: 3rem; }
+
 .mt-4 {
   margin-top: 4rem; }
 
@@ -3428,6 +3431,73 @@ body.authentication {
           .inventory-method .category-table-container .table-body-row:hover .hero-btn-outline:active,
           .inventory-method .inventory-table-container .table-body-row:hover .hero-btn-outline:active {
             background-color: #eef1f6; }
+      .reports-method .reports-table-container .action-buttons,
+      .reports-method .product-table-container .action-buttons,
+      .reports-method .shops-table-container .action-buttons,
+      .reports-method .staff-table-container .action-buttons,
+      .reports-method .posCharge-table-container .action-buttons,
+      .reports-method .machineFee-table-container .action-buttons,
+      .reports-method .stock-table-container .action-buttons,
+      .reports-method .category-table-container .action-buttons,
+      .reports-method .inventory-table-container .action-buttons,
+      .goods-method .reports-table-container .action-buttons,
+      .goods-method .product-table-container .action-buttons,
+      .goods-method .shops-table-container .action-buttons,
+      .goods-method .staff-table-container .action-buttons,
+      .goods-method .posCharge-table-container .action-buttons,
+      .goods-method .machineFee-table-container .action-buttons,
+      .goods-method .stock-table-container .action-buttons,
+      .goods-method .category-table-container .action-buttons,
+      .goods-method .inventory-table-container .action-buttons,
+      .shops-method .reports-table-container .action-buttons,
+      .shops-method .product-table-container .action-buttons,
+      .shops-method .shops-table-container .action-buttons,
+      .shops-method .staff-table-container .action-buttons,
+      .shops-method .posCharge-table-container .action-buttons,
+      .shops-method .machineFee-table-container .action-buttons,
+      .shops-method .stock-table-container .action-buttons,
+      .shops-method .category-table-container .action-buttons,
+      .shops-method .inventory-table-container .action-buttons,
+      .staff-method .reports-table-container .action-buttons,
+      .staff-method .product-table-container .action-buttons,
+      .staff-method .shops-table-container .action-buttons,
+      .staff-method .staff-table-container .action-buttons,
+      .staff-method .posCharge-table-container .action-buttons,
+      .staff-method .machineFee-table-container .action-buttons,
+      .staff-method .stock-table-container .action-buttons,
+      .staff-method .category-table-container .action-buttons,
+      .staff-method .inventory-table-container .action-buttons,
+      .posCharge-method .reports-table-container .action-buttons,
+      .posCharge-method .product-table-container .action-buttons,
+      .posCharge-method .shops-table-container .action-buttons,
+      .posCharge-method .staff-table-container .action-buttons,
+      .posCharge-method .posCharge-table-container .action-buttons,
+      .posCharge-method .machineFee-table-container .action-buttons,
+      .posCharge-method .stock-table-container .action-buttons,
+      .posCharge-method .category-table-container .action-buttons,
+      .posCharge-method .inventory-table-container .action-buttons,
+      .machineFee-method .reports-table-container .action-buttons,
+      .machineFee-method .product-table-container .action-buttons,
+      .machineFee-method .shops-table-container .action-buttons,
+      .machineFee-method .staff-table-container .action-buttons,
+      .machineFee-method .posCharge-table-container .action-buttons,
+      .machineFee-method .machineFee-table-container .action-buttons,
+      .machineFee-method .stock-table-container .action-buttons,
+      .machineFee-method .category-table-container .action-buttons,
+      .machineFee-method .inventory-table-container .action-buttons,
+      .inventory-method .reports-table-container .action-buttons,
+      .inventory-method .product-table-container .action-buttons,
+      .inventory-method .shops-table-container .action-buttons,
+      .inventory-method .staff-table-container .action-buttons,
+      .inventory-method .posCharge-table-container .action-buttons,
+      .inventory-method .machineFee-table-container .action-buttons,
+      .inventory-method .stock-table-container .action-buttons,
+      .inventory-method .category-table-container .action-buttons,
+      .inventory-method .inventory-table-container .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        align-items: center; }
   .reports .deletedTransationRow,
   .goods .deletedTransationRow,
   .shops .deletedTransationRow,
@@ -3538,6 +3608,11 @@ body.authentication {
       color: #0F7A89; }
       .reports-table-container .table-body-row:hover .hero-btn-outline:active {
         background-color: #eef1f6; }
+  .reports-table-container .action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center; }
 
 .accordion-container {
   width: 100%; }

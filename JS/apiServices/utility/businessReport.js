@@ -330,7 +330,7 @@ export async function renderInventoryActivity(inventory) {
 
     const { total_inventory_actions, recent_actions } = inventory;
 
-    //  console.log(inventory);
+    console.log(inventory);
 
     // Update total count
     const totalCountElement = document.querySelector(

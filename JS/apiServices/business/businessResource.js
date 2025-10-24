@@ -86,7 +86,7 @@ export async function updateBusiness(businessid, businessUpdatedDetails) {
 
 export async function getBusinessSettings() {
   if (!businessId) {
-    console.warn('⚠️ No businessId found — skipping fetchBusinessDetails.');
+    //   console.warn('⚠️ No businessId found — skipping fetchBusinessDetails.');
     return;
   }
 
