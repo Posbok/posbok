@@ -43,10 +43,58 @@ export function clearFormInputs() {
   const updatePartialPaymentForm = document.querySelector(
     '.updatePartialPaymentForm'
   );
+  const restockForm = document.querySelector('.restock');
 
   //   Clear Search Input
   const searchProductInput = document.querySelector('.searchProductInput');
   if (searchProductInput) searchProductInput.value = '';
+
+  const searchStockProdutItem = document.querySelector(
+    '.searchStockProdutItem'
+  );
+  if (searchStockProdutItem) searchStockProdutItem.value = '';
+
+  // Clear Form Implementations
+
+  if (restockForm) {
+    restockForm.querySelectorAll('input, textarea, select').forEach((el) => {
+      if (el.type === 'checkbox' || el.type === 'radio') {
+        el.checked = false;
+      } else {
+        el.value = '';
+      }
+    });
+
+    const restockSearchSection = document.querySelector(
+      '.restockSearch-section'
+    );
+    if (restockSearchSection) restockSearchSection.style.display = 'none';
+
+    // const adminSellProductCategorySection = document.querySelector(
+    //   '.addExistingSellProductCategory-section'
+    // );
+    //  if (adminSellProductCategorySection)
+    //    adminSellProductCategorySection.style.display = 'none';
+
+    const restockProductNameDiv = document.querySelector(
+      '.restockProductNameDiv'
+    );
+    if (restockProductNameDiv) restockProductNameDiv.style.display = 'none';
+
+    const restockAutocompleteList = document.getElementById(
+      'restockAutocompleteList'
+    );
+    if (restockAutocompleteList) restockAutocompleteList.style.display = 'none';
+
+    const prevStockQtyDisplay = document.querySelector(
+      '.previousStockQuantityAvailable'
+    );
+
+    if (prevStockQtyDisplay) prevStockQtyDisplay.innerText = '';
+
+    delete restockForm.dataset.shopId;
+    delete restockForm.dataset.productId;
+  }
 
   //   if (createStaffForm || updateStaffForm) {
   //     if (createStaffForm) createStaffForm.reset();

@@ -284,48 +284,50 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const businessSettings = await getBusinessSettings();
-  const businessSettingsData = businessSettings?.data;
+  if (document.body.classList.contains('pos-page')) {
+    const businessSettings = await getBusinessSettings();
+    const businessSettingsData = businessSettings?.data;
 
-  if (!businessSettings) return;
+    if (!businessSettings) return;
 
-  console.log(businessSettingsData);
+    console.log(businessSettingsData);
 
-  const posTransactionChargesDiv = document.querySelector(
-    isAdmin ? '.adminPosTransactionChargesDiv' : '.posTransactionChargesDiv'
-  );
+    const posTransactionChargesDiv = document.querySelector(
+      isAdmin ? '.adminPosTransactionChargesDiv' : '.posTransactionChargesDiv'
+    );
 
-  const posTransactionChargesInput = document.getElementById(
-    isAdmin ? 'adminPosMachineFee' : 'posMachineFee'
-  );
+    const posTransactionChargesInput = document.getElementById(
+      isAdmin ? 'adminPosMachineFee' : 'posMachineFee'
+    );
 
-  const posMachineFeeDiv = document.querySelector(
-    isAdmin ? '.adminPosMachineFeeDiv' : '.posMachineFeeDiv'
-  );
+    const posMachineFeeDiv = document.querySelector(
+      isAdmin ? '.adminPosMachineFeeDiv' : '.posMachineFeeDiv'
+    );
 
-  const posMachineFeeInput = document.getElementById(
-    isAdmin ? 'adminPosMachineFee' : 'posMachineFee'
-  );
+    const posMachineFeeInput = document.getElementById(
+      isAdmin ? 'adminPosMachineFee' : 'posMachineFee'
+    );
 
-  if (posTransactionChargesDiv) {
-    if (businessSettingsData.pos_manual_charge === true) {
-      posTransactionChargesDiv.classList.remove('hidden');
-      posTransactionChargesInput.setAttribute('required', 'true');
-    } else {
-      posTransactionChargesDiv.classList.add('hidden');
-      posTransactionChargesInput.removeAttribute('required');
-      posTransactionChargesInput.value = '';
+    if (posTransactionChargesDiv) {
+      if (businessSettingsData.pos_manual_charge === true) {
+        posTransactionChargesDiv.classList.remove('hidden');
+        posTransactionChargesInput.setAttribute('required', 'true');
+      } else {
+        posTransactionChargesDiv.classList.add('hidden');
+        posTransactionChargesInput.removeAttribute('required');
+        posTransactionChargesInput.value = '';
+      }
     }
-  }
 
-  if (posMachineFeeDiv) {
-    if (businessSettingsData.manual_machine_fee_mode === true) {
-      posMachineFeeDiv.classList.remove('hidden');
-      posMachineFeeInput.setAttribute('required', 'true');
-    } else {
-      posMachineFeeDiv.classList.add('hidden');
-      posMachineFeeInput.removeAttribute('required');
-      posMachineFeeInput.value = '';
+    if (posMachineFeeDiv) {
+      if (businessSettingsData.manual_machine_fee_mode === true) {
+        posMachineFeeDiv.classList.remove('hidden');
+        posMachineFeeInput.setAttribute('required', 'true');
+      } else {
+        posMachineFeeDiv.classList.add('hidden');
+        posMachineFeeInput.removeAttribute('required');
+        posMachineFeeInput.value = '';
+      }
     }
   }
 });
@@ -1175,7 +1177,7 @@ export function populateFeesTable(MachineFeesData) {
   if (!MachineFees.length) {
     const emptyRow = document.createElement('tr');
     emptyRow.innerHTML = `
-        <td colspan="6" class="table-error-text">No POS Machine Fee Settings found.</td>
+        <td colspan="6" class="table-error-text">No Transaction Fees added yet</td>
       `;
     if (tbody) tbody.appendChild(emptyRow);
     return;

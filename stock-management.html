@@ -184,8 +184,8 @@
                   <span class="btn-spinner hidden"></span>
                </button>
 
-               <button class="hero-btn-dark openAddExistingStockModalBtn mr-0 " id="openAddExistingStockModalBtn">
-                  <span class="btn-text">Add Existing Stock</span>
+               <button class="hero-btn-dark openRetockProductModalBtn mr-0 " id="openRetockProductModalBtn">
+                  <span class="btn-text">Restock Existing Product</span>
                   <span class="btn-spinner hidden"></span>
                </button>
             </div>
@@ -683,18 +683,18 @@
       </div>
    </form>
 
-   <!-- Add Existing Stock -->
-   <form class="modal-form addExistingStockModal" name="modal">
-      <div class="card addExistingStock modal ">
+   <!-- Restock -->
+   <form class="modal-form restockModal" name="modal">
+      <div class="card restock modal ">
          <div>
-            <h1 class="heading-text  addItemName">Add Existing Stock</h1>
+            <h1 class="heading-text  addItemName">Restock</h1>
          </div>
 
          <!-- Assign Add Existing Inventory to shop -->
          <div class="modal-form_input">
-            <label for="addExistingStockShopDropdown">Select Shop</label>
+            <label for="restockShopDropdown">Select Shop</label>
 
-            <select id="addExistingStockShopDropdown" class="form-control">
+            <select id="restockShopDropdown" class="form-control">
                <option value="">Select a shop</option>
                <!-- <option value="1">Loading Shops...</option> -->
 
@@ -702,80 +702,44 @@
             </select>
          </div>
 
-         <div class="addExistingSellStockSearch-section mb-2">
+         <div class="restockSearch-section mb-2">
 
-            <div class="sellStock-method-form_input ">
+            <div class="sellProduct-method-form_input ">
                <div class="search-input-container">
-                  <input type="search" id="searchSellProdutItem" class="searchSellProdutItem"
+                  <input type="search" id="searchStockProdutItem" class="searchStockProdutItem"
                      placeholder="Search Stock Name or Description ">
                   <span class="searchIcon"><i class="fa-solid fa-magnifying-glass mr-2"></i></span>
                </div>
             </div>
          </div>
 
-         <div class=" addExistingSellStockCategory-section">
-            <!-- <button class="sellStockCategoryBtn active" type="button">
-                  All
-               </button> -->
+         <div class="restock-method-form_input mt-2">
 
-         </div>
-
-         <div class="addExistingSellStock-method-form_input mt-2">
-
-            <div class="input-container addExistingSellStockName">
-               <input type="text" id="stockInput" disabled required>
+            <div class="input-container restockProductNameDiv">
+               <input type="text" id="stockNameInput" disabled required>
                <i class="fa fa-times clear-icon" id="clearIcon" aria-hidden="true"></i>
             </div>
 
-            <ul class="autocomplete-list" id="addExistingAutocompleteList"></ul>
+            <ul class="autocomplete-list" id="restockAutocompleteList"></ul>
          </div>
 
-         <!-- Quantity Available -->
-         <!-- <div class="modal-form_input">
-            <label for="itemQuantityAvailable">Quantity Available</label>
-
-            <input id="itemQuantityAvailable" type="text" placeholder="Enter Current Quantity"
-               name="itemQuantityAvailable" disabled required>
-         </div> -->
-
-         <!-- New Purchase Price Inout -->
-         <div class="modal-form_input">
-            <label for="newPurchasePrice">New Purchase Price</label>
-
-            <div class="subscript-container">
-               <input id="itemNewPurchasePrice" type="text" placeholder="Enter New Item Purchase Price"
-                  name="itemNewPurchasePrice">
-               <small id="subscript-info">Current Purchase Price: <span
-                     class="itemPreviousPurchasePrice">₦</span></small>
-            </div>
-         </div>
-
-         <!-- New Selling Price Inout -->
-         <div class="modal-form_input">
-            <label for="newSellingPrice">New Selling Price</label>
-
-            <div class="subscript-container">
-               <input id="itemNewSellingPrice" type="text" placeholder="Enter New Item Selling Price"
-                  name="itemNewSellingPrice">
-               <small id="subscript-info">Current Selling Price: <span class="itemPreviousSellingPrice">₦</span></small>
-            </div>
-         </div>
+         <!-- New / Restock Quantity Input -->
 
          <div class="modal-form_input">
-            <label for="newStockQuantity">New Stock Quantity</label>
+            <label for="newStockQuantity">Restock Quantity</label>
 
             <div class="subscript-container">
-               <input id="itemNewQuantityAvailable" type="text" placeholder="Enter New Item Quantity"
-                  name="itemNewQuantityAvailable" required>
+               <input id="restockQuantityAvailable" type="text" placeholder="Enter Restock Quantity"
+                  name="restockQuantityAvailable" required>
                <small id="subscript-info">Current Quantity Available:
-                  <span class="itemPreviousQuantityAvailable"></span> </small>
+                  <span class="previousStockQuantityAvailable"></span> </small>
             </div>
          </div>
 
          <div class="center-button">
 
-            <button class="hero-btn-dark addExistingStockModalBtn" id="addExistingStockModalBtn">
-               <span class="btn-text">Add Existing Stock</span>
+            <button class="hero-btn-dark restockModalBtn" id="restockModalBtn">
+               <span class="btn-text">Restock Item</span>
                <span class="btn-spinner hidden"></span>
             </button>
          </div>

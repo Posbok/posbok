@@ -110,8 +110,9 @@ select {
       width: 100%;
    }
 
-   &#productInput {
-      width: 35rem;
+   &#productInput,
+   &#stockNameInput {
+      width: 40rem;
 
       @media only screen and (max-width:$bp-small) {
          width: 95%;

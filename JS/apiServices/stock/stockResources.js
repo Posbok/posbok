@@ -270,3 +270,36 @@ export async function updateStockItem(stockItemId, updateStockItemDetails) {
     throw error;
   }
 }
+
+export async function restockProduct(restockProductDetails, productId) {
+  try {
+    //  console.log('Sending PUT request...');
+
+    const fetchedData = await safeFetch(
+      `${baseUrl}/api/stock/${productId}/restock`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(restockProductDetails),
+      }
+    );
+
+    //  console.log('Response received...');
+
+    if (fetchedData) {
+      // console.log('Stock Item Updated successfully:', fetchedData);
+      showToast('success', `✅ ${fetchedData.message}`);
+
+      // Refresh the table list after successful configuration
+      getStockItems();
+    }
+
+    return fetchedData;
+  } catch (error) {
+    console.error('Error Restocking Product:', error);
+    throw error;
+  }
+}

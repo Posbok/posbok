@@ -464,12 +464,14 @@ select {
     input,
     select {
       width: 100%; } }
-  input#productInput,
-  select#productInput {
-    width: 35rem; }
+  input#productInput, input#stockNameInput,
+  select#productInput,
+  select#stockNameInput {
+    width: 40rem; }
     @media only screen and (max-width: 30.5em) {
-      input#productInput,
-      select#productInput {
+      input#productInput, input#stockNameInput,
+      select#productInput,
+      select#stockNameInput {
         width: 95%; } }
   input:focus, input:active,
   select:focus,
@@ -1608,26 +1610,34 @@ body.authentication {
       margin-top: 3rem; }
 
 .sellProduct,
+.sellStock,
 .adminSellProduct {
   height: min-content;
   color: #205329; }
   .sellProduct-method,
+  .sellStock-method,
   .adminSellProduct-method {
     margin: 0 auto;
     padding: 1rem 2rem;
     overflow: hidden; }
     .sellProduct-method-form_input,
+    .sellStock-method-form_input,
     .adminSellProduct-method-form_input {
       margin-top: 2rem;
       font-size: 1.5rem; }
       .sellProduct-method-form_input .sellProductName,
       .sellProduct-method-form_input .adminSellProductName,
+      .sellStock-method-form_input .sellProductName,
+      .sellStock-method-form_input .adminSellProductName,
       .adminSellProduct-method-form_input .sellProductName,
       .adminSellProduct-method-form_input .adminSellProductName {
         display: none; }
       .sellProduct-method-form_input #addExistingAutocompleteList,
       .sellProduct-method-form_input .adminAutocomplete-list,
       .sellProduct-method-form_input .autocomplete-list,
+      .sellStock-method-form_input #addExistingAutocompleteList,
+      .sellStock-method-form_input .adminAutocomplete-list,
+      .sellStock-method-form_input .autocomplete-list,
       .adminSellProduct-method-form_input #addExistingAutocompleteList,
       .adminSellProduct-method-form_input .adminAutocomplete-list,
       .adminSellProduct-method-form_input .autocomplete-list {
@@ -1647,6 +1657,9 @@ body.authentication {
           .sellProduct-method-form_input #addExistingAutocompleteList,
           .sellProduct-method-form_input .adminAutocomplete-list,
           .sellProduct-method-form_input .autocomplete-list,
+          .sellStock-method-form_input #addExistingAutocompleteList,
+          .sellStock-method-form_input .adminAutocomplete-list,
+          .sellStock-method-form_input .autocomplete-list,
           .adminSellProduct-method-form_input #addExistingAutocompleteList,
           .adminSellProduct-method-form_input .adminAutocomplete-list,
           .adminSellProduct-method-form_input .autocomplete-list {
@@ -1654,6 +1667,9 @@ body.authentication {
         .sellProduct-method-form_input #addExistingAutocompleteList::-webkit-scrollbar,
         .sellProduct-method-form_input .adminAutocomplete-list::-webkit-scrollbar,
         .sellProduct-method-form_input .autocomplete-list::-webkit-scrollbar,
+        .sellStock-method-form_input #addExistingAutocompleteList::-webkit-scrollbar,
+        .sellStock-method-form_input .adminAutocomplete-list::-webkit-scrollbar,
+        .sellStock-method-form_input .autocomplete-list::-webkit-scrollbar,
         .adminSellProduct-method-form_input #addExistingAutocompleteList::-webkit-scrollbar,
         .adminSellProduct-method-form_input .adminAutocomplete-list::-webkit-scrollbar,
         .adminSellProduct-method-form_input .autocomplete-list::-webkit-scrollbar {
@@ -1661,6 +1677,9 @@ body.authentication {
           .sellProduct-method-form_input #addExistingAutocompleteList::-webkit-scrollbar-thumb,
           .sellProduct-method-form_input .adminAutocomplete-list::-webkit-scrollbar-thumb,
           .sellProduct-method-form_input .autocomplete-list::-webkit-scrollbar-thumb,
+          .sellStock-method-form_input #addExistingAutocompleteList::-webkit-scrollbar-thumb,
+          .sellStock-method-form_input .adminAutocomplete-list::-webkit-scrollbar-thumb,
+          .sellStock-method-form_input .autocomplete-list::-webkit-scrollbar-thumb,
           .adminSellProduct-method-form_input #addExistingAutocompleteList::-webkit-scrollbar-thumb,
           .adminSellProduct-method-form_input .adminAutocomplete-list::-webkit-scrollbar-thumb,
           .adminSellProduct-method-form_input .autocomplete-list::-webkit-scrollbar-thumb {
@@ -1669,6 +1688,9 @@ body.authentication {
             .sellProduct-method-form_input #addExistingAutocompleteList::-webkit-scrollbar-thumb:active,
             .sellProduct-method-form_input .adminAutocomplete-list::-webkit-scrollbar-thumb:active,
             .sellProduct-method-form_input .autocomplete-list::-webkit-scrollbar-thumb:active,
+            .sellStock-method-form_input #addExistingAutocompleteList::-webkit-scrollbar-thumb:active,
+            .sellStock-method-form_input .adminAutocomplete-list::-webkit-scrollbar-thumb:active,
+            .sellStock-method-form_input .autocomplete-list::-webkit-scrollbar-thumb:active,
             .adminSellProduct-method-form_input #addExistingAutocompleteList::-webkit-scrollbar-thumb:active,
             .adminSellProduct-method-form_input .adminAutocomplete-list::-webkit-scrollbar-thumb:active,
             .adminSellProduct-method-form_input .autocomplete-list::-webkit-scrollbar-thumb:active {
@@ -1676,6 +1698,9 @@ body.authentication {
           .sellProduct-method-form_input #addExistingAutocompleteList::-webkit-scrollbar-track,
           .sellProduct-method-form_input .adminAutocomplete-list::-webkit-scrollbar-track,
           .sellProduct-method-form_input .autocomplete-list::-webkit-scrollbar-track,
+          .sellStock-method-form_input #addExistingAutocompleteList::-webkit-scrollbar-track,
+          .sellStock-method-form_input .adminAutocomplete-list::-webkit-scrollbar-track,
+          .sellStock-method-form_input .autocomplete-list::-webkit-scrollbar-track,
           .adminSellProduct-method-form_input #addExistingAutocompleteList::-webkit-scrollbar-track,
           .adminSellProduct-method-form_input .adminAutocomplete-list::-webkit-scrollbar-track,
           .adminSellProduct-method-form_input .autocomplete-list::-webkit-scrollbar-track {
@@ -1683,6 +1708,9 @@ body.authentication {
         .sellProduct-method-form_input #addExistingAutocompleteList-item,
         .sellProduct-method-form_input .adminAutocomplete-list-item,
         .sellProduct-method-form_input .autocomplete-list-item,
+        .sellStock-method-form_input #addExistingAutocompleteList-item,
+        .sellStock-method-form_input .adminAutocomplete-list-item,
+        .sellStock-method-form_input .autocomplete-list-item,
         .adminSellProduct-method-form_input #addExistingAutocompleteList-item,
         .adminSellProduct-method-form_input .adminAutocomplete-list-item,
         .adminSellProduct-method-form_input .autocomplete-list-item {
@@ -1694,12 +1722,16 @@ body.authentication {
           .sellProduct-method-form_input #addExistingAutocompleteList-item:hover,
           .sellProduct-method-form_input .adminAutocomplete-list-item:hover,
           .sellProduct-method-form_input .autocomplete-list-item:hover,
+          .sellStock-method-form_input #addExistingAutocompleteList-item:hover,
+          .sellStock-method-form_input .adminAutocomplete-list-item:hover,
+          .sellStock-method-form_input .autocomplete-list-item:hover,
           .adminSellProduct-method-form_input #addExistingAutocompleteList-item:hover,
           .adminSellProduct-method-form_input .adminAutocomplete-list-item:hover,
           .adminSellProduct-method-form_input .autocomplete-list-item:hover {
             background-color: #0F7A89;
             color: #fff; }
     .sellProduct-method-form .hero-btn-dark,
+    .sellStock-method-form .hero-btn-dark,
     .adminSellProduct-method-form .hero-btn-dark {
       margin-top: 3rem; }
 

@@ -700,7 +700,7 @@ export async function getFeeSettings() {
     if (tbody)
       tbody.innerHTML = `
     <tr class="loading-row">
-      <td colspan="6" class="table-error-text">Loading POS Machine Fees...</td>
+      <td colspan="6" class="table-error-text">Loading Transaction Fees...</td>
     </tr>
   `;
   }
@@ -734,7 +734,7 @@ export async function getFeeSettings() {
     if (tbody)
       tbody.innerHTML = `
     <tr class="loading-row">
-      <td colspan="6" class="table-error-text">Error Loading POS Machine Fees...</td>
+      <td colspan="6" class="table-error-text">Error Loading Transaction Fees...</td>
     </tr>
   `;
     console.error('Error receiving POS COnfiguration settings:', error);

@@ -9,9 +9,11 @@ import {
   getStockInventory,
   getStockItems,
   getStockProduct,
+  restockProduct,
   updateStockItem,
 } from './apiServices/stock/stockResources';
 import {
+  clearFormInputs,
   formatAmountWithCommas,
   formatCurrency,
   formatDate,
@@ -275,6 +277,18 @@ export function openAddStockModalBtn() {
   addStockItemForm();
 }
 
+export function openRetockProductModalBtn() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const restockItemContainer = document.querySelector('.restock');
+
+  if (restockItemContainer) restockItemContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  restockProductForm();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // Setup for Opening  Modal
   setupModalCloseButtons();
@@ -287,9 +301,9 @@ document.addEventListener('DOMContentLoaded', () => {
     .querySelector('#openAddStockModalBtn')
     ?.addEventListener('click', openAddStockModalBtn);
 
-  //   document
-  //     .querySelector('#openAddExistingStockModalBtn')
-  //     ?.addEventListener('click', openAddExistingStockModalBtn);
+  document
+    .querySelector('#openRetockProductModalBtn')
+    ?.addEventListener('click', openRetockProductModalBtn);
 
   //   document
   //     .querySelector('#openUpdateStockBtn')
@@ -427,7 +441,7 @@ export function populateStockCategoryTable(stockCategoriesData) {
 export function populateStockCategoriesDropdown(categoriesData = []) {
   const categoryList = categoriesData.data;
 
-  console.log('Code got here');
+  //   console.log('Code got here');
 
   const addStockCategoryDropdown = document.getElementById('addStockCategory');
   //   const updateStockCategoryDropdown = document.getElementById(
@@ -668,11 +682,12 @@ if (isAdmin) {
         enrichedShopData,
         'stockinventoryShopDropdown'
       );
-
-      hideGlobalLoader();
+      populateBusinessShopDropdown(enrichedShopData, 'restockShopDropdown');
     } catch (err) {
       hideGlobalLoader();
       console.error('Failed to load dropdown:', err.message);
+    } finally {
+      hideGlobalLoader();
     }
   }
 
@@ -806,18 +821,343 @@ export function addStockItemForm() {
   }
 }
 
-// async function fetchAllStock() {
-//   try {
-//     const stockInventoryData = await getStockInventory(); // Fetch stocks
+//  Restock Product
+export function bindRestockProductFormListener() {
+  const form = document.querySelector('.restockModal');
+  if (!form) return;
 
-//     if (stockInventoryData) {
-//       console.log(`Fetching stock inventory:`, stockInventoryData.data);
-//       return stockInventoryData.data;
-//     }
+  const restockQtyInput = document.querySelector('#restockQuantityAvailable');
+  const prevStockQtyDisplay = document.querySelector(
+    '.previousStockQuantityAvailable'
+  );
 
-//     //  console.log('stockInventoryData', stockInventoryData);
-//   } catch (error) {
-//     console.error('Error fetching stock Inventory Data:', error);
-//     throw error;
-//   }
-// }
+  restockQtyInput.addEventListener('input', function (e) {
+    const prevQty = Number(form.dataset.previousQuantity || 0);
+    const newQty = Number(e.target.value);
+    if (!form.dataset.previousQuantity) {
+      prevStockQtyDisplay.innerText = 'Select a product first';
+      prevStockQtyDisplay.className =
+        'previousStockQuantityAvailable quantity-normal';
+      return;
+    }
+
+    if (!newQty || newQty <= 0) {
+      prevStockQtyDisplay.innerText = prevQty;
+      prevStockQtyDisplay.className =
+        'previousStockQuantityAvailable quantity-normal';
+      return;
+    }
+
+    // Show calculation
+    prevStockQtyDisplay.innerText = `${prevQty} + ${newQty} = ${
+      prevQty + newQty
+    }`;
+    prevStockQtyDisplay.className =
+      'previousStockQuantityAvailable quantity-preview';
+  });
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      // console.log('Form got here');
+
+      const productId = form.dataset.productId;
+      const shopId = form.dataset.shopId;
+      const prevQty = Number(form.dataset.previousQuantity || 0);
+
+      if (!productId) {
+        showToast('fail', '❎ No Product selected for Restock.');
+        return;
+      }
+
+      if (!shopId) {
+        showToast('fail', '❎ Stock Management Shop not Selected.');
+        return;
+      }
+
+      // Inputs
+      const restockQuantityAvailable = document.querySelector(
+        '#restockQuantityAvailable'
+      );
+
+      const restockProductDetails = {
+        quantity: Number(restockQuantityAvailable.value),
+      };
+
+      // console.log(
+      //   'Updating Product Detail with:',
+      //   restockProductDetails,
+      //   productId,
+      //   shopId
+      // );
+
+      const restockModalBtn = document.querySelector('.restockModalBtn');
+
+      try {
+        showBtnLoader(restockModalBtn);
+        const restockProductData = await restockProduct(
+          restockProductDetails,
+          productId
+        );
+
+        if (!restockProductData) {
+          console.error('fail', restockProductData.message);
+          return;
+        }
+
+        if (restockProductData) {
+          showToast(
+            'success',
+            restockProductData.message || '✅ Product Restocked Successfully'
+          );
+          closeModal();
+          clearFormInputs();
+          //  await getStockItems();
+        }
+
+        //   hideGlobalLoader();
+      } catch (err) {
+        hideBtnLoader(restockModalBtn);
+
+        console.error('Error During Adding Existing Product:', err);
+        showToast(
+          'fail',
+          `❎ ${err.message || 'Failed to Add Existing Product'}`
+        );
+        return;
+      } finally {
+        hideBtnLoader(restockModalBtn);
+        hideGlobalLoader();
+      }
+    });
+  }
+}
+
+const restockSearchSection = document.querySelector('.restockSearch-section');
+// const adminSellProductCategorySection = document.querySelector(
+//   '.addExistingSellProductCategory-section'
+// );
+const restockProductNameDiv = document.querySelector('.restockProductNameDiv');
+const restockAutocompleteList = document.getElementById(
+  'restockAutocompleteList'
+);
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (restockSearchSection) restockSearchSection.style.display = 'none';
+  //   if (adminSellProductCategorySection)
+  //     adminSellProductCategorySection.style.display = 'none';
+  if (restockProductNameDiv) restockProductNameDiv.style.display = 'none';
+  if (restockAutocompleteList) restockAutocompleteList.style.display = 'none';
+});
+
+const restockShopDropdown = document.getElementById('restockShopDropdown');
+
+const stockNameInput = document.getElementById('stockNameInput');
+
+export function restockProductForm() {
+  const form = document.querySelector('.restockModal');
+  if (!form) return;
+
+  restockShopDropdown.addEventListener('change', async (e) => {
+    //  console.log('Dropdown changed:', e.target.value);
+
+    const form = document.querySelector('.restockModal');
+
+    const selectedShopId = e.target.value;
+    if (!selectedShopId) return;
+
+    form.dataset.shopId = selectedShopId;
+
+    //  adminSellProductCategorySection.innerHTML = '';
+    restockAutocompleteList.innerHTML = '';
+    stockNameInput.value = '';
+    searchStockProdutItem.value = '';
+    //  allProducts = [];
+
+    restockSearchSection.style.display = 'block';
+    //  adminSellProductCategorySection.style.display = 'flex';
+    restockProductNameDiv.style.display = 'block';
+
+    await displayAllStocks(selectedShopId);
+  });
+}
+
+async function displayAllStocks(selectedShopId) {
+  try {
+    showGlobalLoader();
+
+    const fetchedStockData = await getStockItems();
+
+    //  console.log(`Total Stocks fetched:`, fetchedStockData);
+
+    const allStocks = fetchedStockData.data.stockItems;
+
+    updateAutocompleteList(allStocks); // Populate the autocomplete dropdown with all products
+
+    // Autocomplete filter on input
+    searchStockProdutItem.addEventListener('input', function () {
+      const inputValue = searchStockProdutItem.value.toLowerCase();
+
+      // console.log(inputValue);
+      if (inputValue.value === '') {
+        restockProductNameDiv.style.display = 'none';
+        restockAutocompleteList.style.display = 'none';
+        return;
+      } else if (inputValue.length > 0) {
+        restockProductNameDiv.style.display = 'block';
+        restockAutocompleteList.style.display = 'block';
+
+        let filteredProducts = allStocks;
+
+        // Filter by selected category (if any)
+        //   if (activeCategoryId !== null) {
+        //     filteredProducts = filteredProducts.filter(
+        //       (product) => product.Product.ProductCategory.id === activeCategoryId
+        //     );
+        //   }
+
+        // Further filter by input value - Add Existing Products
+        filteredProducts = filteredProducts.filter(
+          (product) =>
+            product.product_name.toLowerCase().includes(inputValue) ||
+            product.description.toLowerCase().includes(inputValue) ||
+            product.id.toString().includes(inputValue)
+
+          // || product.Product.barcode.toLowerCase().includes(inputValue)
+        );
+
+        updateAutocompleteList(filteredProducts);
+
+        //   console.log(filteredProducts);
+
+        return;
+      } else {
+        restockProductNameDiv.style.display = 'none';
+        restockAutocompleteList.style.display = 'none';
+        return;
+      }
+    });
+
+    //  searchStockProdutItem.addEventListener('click', function () {
+    //    autocompleteList.style.display = 'block';
+    //  });
+  } catch (error) {
+    console.error('Error displaying products:', error);
+  } finally {
+    hideGlobalLoader();
+  }
+}
+
+async function fetchAllProducts(shopId) {
+  let products = [];
+
+  //   console.log('Fetching products for shop:', shopId);
+
+  try {
+    const productInventoryData = await getProductInventory(shopId); // Fetch products
+
+    if (productInventoryData) {
+      // console.log(`Fetching product inventory:`, productInventoryData.data);
+      products = products.concat(productInventoryData.data); // Add data to all products array
+
+      if (adminSellProductSearchSection)
+        adminSellProductSearchSection.style.display = 'block';
+      if (adminSellProductCategorySection)
+        adminSellProductCategorySection.style.display = 'flex';
+    }
+
+    //  console.log('Products', products);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    throw error;
+  }
+
+  //   console.log(products);
+  return products;
+}
+
+// Update the autocomplete list with provided stocks
+function updateAutocompleteList(stocks) {
+  //   console.log(`updateAutocompleteList Stocks:`, stocks);
+
+  restockAutocompleteList.innerHTML = '';
+
+  const restockQuantityAvailable = document.querySelector(
+    '.restockQuantityAvailable'
+  );
+  const previousQuantityAvailable = document.querySelector(
+    '.previousStockQuantityAvailable'
+  );
+
+  const stockNameInput = document.getElementById('stockNameInput');
+  const form = document.querySelector('.restockModal');
+
+  if (stocks.length === 0) {
+    const listItem = document.createElement('li');
+    listItem.textContent = 'Item Not Found';
+    listItem.classList.add('autocomplete-list-item');
+    restockAutocompleteList.appendChild(listItem);
+  } else {
+    stocks.forEach((product) => {
+      const {
+        product_name,
+        id: productId,
+        quantity,
+        description,
+        unit_type,
+      } = product;
+
+      // console.log(productId);
+
+      const listItem = document.createElement('li');
+      // listItem.textContent = product.Product.name;
+      // listItem.classList.add('autocomplete-list-item');
+      listItem.innerHTML = `         
+         <li class="autocomplete-list-item">
+            <p>${`${product_name} (${formatUnitType(unit_type)})`}</p>
+            <small>${description}</span>
+         </li>
+         `;
+
+      listItem.addEventListener('click', function () {
+        //   console.log('Selected product:', product); //   console.log(product);
+
+        form.dataset.productId = productId;
+        form.dataset.previousQuantity = quantity;
+
+        //   form.dataset.shopId = product.Shop.id;
+
+        stockNameInput.value = product_name;
+
+        previousQuantityAvailable.innerText = quantity;
+
+        document.querySelector('#restockQuantityAvailable').value = '';
+
+        restockAutocompleteList.style.display = 'none';
+      });
+      restockAutocompleteList.appendChild(listItem);
+    });
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  bindRestockProductFormListener();
+  restockProductForm();
+});
+
+async function fetchAllStock() {
+  try {
+    const stockInventoryData = await getStockInventory(); // Fetch stocks
+
+    if (stockInventoryData) {
+      console.log(`Fetching stock inventory:`, stockInventoryData.data);
+      return stockInventoryData.data;
+    }
+
+    //  console.log('stockInventoryData', stockInventoryData);
+  } catch (error) {
+    console.error('Error fetching stock Inventory Data:', error);
+    throw error;
+  }
+}
