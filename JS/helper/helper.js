@@ -462,6 +462,28 @@ export function formatUnitType(value) {
   }
 }
 
+// Format Unit Type
+export function formatActionType(value) {
+  switch (value.toLowerCase()) {
+    case 'added':
+      return 'Added';
+    case 'restocked':
+      return 'Restocked';
+    case 'cartons':
+      return 'Carton';
+    case 'liters':
+      return 'Liters';
+    case 'yard':
+      return 'Yard';
+    case 'gram':
+      return 'Gram';
+    case 'kilogram':
+      return 'Kilogram';
+    default:
+      return value;
+  }
+}
+
 // Format Service Permission
 export function formatServicePermission(value) {
   switch (value.toLowerCase()) {

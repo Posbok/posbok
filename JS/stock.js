@@ -8,12 +8,14 @@ import {
   getStockCategories,
   getStockInventory,
   getStockItems,
+  getStockLogs,
   getStockProduct,
   restockProduct,
   updateStockItem,
 } from './apiServices/stock/stockResources';
 import {
   clearFormInputs,
+  formatActionType,
   formatAmountWithCommas,
   formatCurrency,
   formatDate,
@@ -43,6 +45,7 @@ if (isAdmin) {
   document.addEventListener('DOMContentLoaded', () => {
     getStockCategories();
     getStockItems();
+    getStockLogs();
   });
 }
 
@@ -149,6 +152,7 @@ export function bindDeleteStockItemFormListener() {
         await deleteStockItem(stockItemId);
         hideBtnLoader(deleteStockButton);
         await getStockItems();
+        await getStockLogs();
         showToast('success', '✅ Stock Item deleted successfully.');
         closeModal();
       } catch (err) {
@@ -644,6 +648,72 @@ export function populateStockItemsTable(stockItemsData) {
   });
 }
 
+export function populateStockLogsTable(stockLogsData) {
+  const tbody = document.querySelector('.stock-logs-table tbody');
+  const loadingRow = document.querySelector('.loading-row');
+
+  //   console.log('stockLogsData', stockLogsData);
+
+  if (tbody) tbody.innerHTML = '';
+
+  if (!stockLogsData.length) {
+    const emptyRow = document.createElement('tr');
+    emptyRow.innerHTML = `
+        <td colspan="10" class="table-error-text">No Stock Logs Actions found.</td>
+      `;
+    if (tbody) tbody.appendChild(emptyRow);
+    return;
+  }
+
+  stockLogsData.forEach((stockLog, index) => {
+    const { item_name, quantity, action_type, price, created_at } = stockLog;
+
+    const { first_name, last_name } = stockLog.performer;
+
+    console.log(first_name, last_name);
+
+    const row = document.createElement('tr');
+    row.classList.add('table-body-row');
+    //  row.classList.add(
+    //    item.quantity < 1
+    //      ? 'finishedStockRow'
+    //      : item.quantity >= 1 && item.quantity <= 10
+    //      ? 'nearFinishedStockRow'
+    //      : 'inStockRow'
+    //  );
+
+    //  console.log(item);
+
+    if (row)
+      row.innerHTML = `
+        <td class="py-1 itemSerialNumber">${index + 1}</td>
+        <td class="py-1 itemName">${item_name}</td>
+         <td class="py-1 itemQuantity">${quantity}</td>
+         <td class="py-1 itemPurchasePrice">₦${formatAmountWithCommas(
+           price
+         )}</td>
+          <td class="py-1 itemActionType">${formatActionType(action_type)}</td>
+
+          <td class="py-1 itemDatePurchases">${`${first_name} ${last_name}`}</td>
+
+          <td class="py-1 itemDatePurchases">${formatDateTimeReadable(
+            created_at
+          )}</td>
+
+      `;
+
+    //     <td class="py-1 itemStatus">${
+    //    item.quantity === 0
+    //      ? (item.status = 'Out of Stock')
+    //      : item.quantity >= 1 && item.quantity <= 10
+    //      ? 'Low Stock'
+    //      : 'In Stock'
+    //  }</td>
+
+    if (tbody) tbody.appendChild(row);
+  });
+}
+
 // export function populateStockItemsDropdown(categoriesData = []) {
 //   const categoryList = categoriesData.data;
 
@@ -914,6 +984,7 @@ export function bindRestockProductFormListener() {
           closeModal();
           clearFormInputs();
           //  await getStockItems();
+          //  await getStockLogs();
         }
 
         //   hideGlobalLoader();
@@ -1161,3 +1232,20 @@ async function fetchAllStock() {
     throw error;
   }
 }
+
+//   {
+//       "id": 35,
+//       "business_id": 96,
+//       "item_name": "Carton Of Apple Charger",
+//       "quantity": 3,
+//       "price": 12000,
+//       "action_type": "restocked",
+//       "performed_by": 85,
+//       "created_at": "2025-10-27T20:22:03.000Z",
+//       "performer": {
+//           "id": 85,
+//           "first_name": "Praises",
+//           "last_name": "Amaiyo",
+//           "email": "development@example.com"
+//       }
+//   },

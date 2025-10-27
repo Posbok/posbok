@@ -7,6 +7,7 @@ import {
   populateStockCategoryTable,
   populateStockItemsDropdown,
   populateStockItemsTable,
+  populateStockLogsTable,
 } from '../../stock.js';
 import { safeFetch } from '../utility/safeFetch.js';
 
@@ -117,6 +118,7 @@ export async function createStockItem(stockItemDetails) {
 
       // Refresh the table list after successful configuration
       getStockItems();
+      getStockLogs();
     }
 
     return fetchedData;
@@ -172,6 +174,59 @@ export async function getStockItems() {
     </tr>
   `;
     console.error('Error receiving Stock Items:', error);
+    throw error;
+  }
+}
+
+export async function getStockLogs() {
+  const tbody = document.querySelector('.stock-logs-table tbody');
+  function showLoadingRow() {
+    if (tbody)
+      tbody.innerHTML = `
+    <tr class="loading-row">
+      <td colspan="10" class="table-error-text">Loading Stock Logs...</td>
+    </tr>
+  `;
+  }
+
+  showLoadingRow();
+
+  try {
+    //  showGlobalLoader();
+    //  console.log('Sending getStockItems request...');
+
+    const stockLogsData = await safeFetch(
+      `${baseUrl}/api/stock/logs/inventory`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          //  'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    //  console.log('Response received...');
+
+    if (stockLogsData) {
+      // console.log(stockLogsData);
+      // hideGlobalLoader();
+    }
+
+    populateStockLogsTable(stockLogsData.data);
+    //  populateStockItemsDropdown(stockLogsData.data);
+
+    return stockLogsData;
+  } catch (error) {
+    //  hideGlobalLoader();
+    //  console.log(tbody);
+    if (tbody)
+      tbody.innerHTML = `
+    <tr class="loading-row">
+      <td colspan="10" class="table-error-text">Error loading Stock Logs...</td>
+    </tr>
+  `;
+    console.error('Error receiving Stock Logs:', error);
     throw error;
   }
 }
@@ -262,6 +317,7 @@ export async function updateStockItem(stockItemId, updateStockItemDetails) {
 
       // Refresh the table list after successful configuration
       getStockItems();
+      getStockLogs();
     }
 
     return fetchedData;
@@ -295,6 +351,7 @@ export async function restockProduct(restockProductDetails, productId) {
 
       // Refresh the table list after successful configuration
       getStockItems();
+      getStockLogs();
     }
 
     return fetchedData;
