@@ -8,7 +8,7 @@
 
 
    <meta name="description"
-      content="POSBOK - A powerful Inventory and POS management system designed for businesses to track stock levels, monitor POS transactions (withdrawals, deposits, transfers), and evaluate staff performance — all in one intuitive platform." />
+      content="POSBOK - A powerful Inventory and POS management system designed for businesses to track Warehouse levels, monitor POS transactions (withdrawals, deposits, transfers), and evaluate staff performance — all in one intuitive platform." />
 
    <script src="authGuard.js"></script>
 
@@ -34,9 +34,9 @@
    <script defer type="module" src="JS/goods.js"></script> -->
 
    <!-- <script src="dist/main.bundle.js" defer></script> -->
-   <script src="dist/goods.bundle.js" defer></script>
+   <script src="dist/stock.bundle.js" defer></script>
 
-   <title>POSBOK &mdash; Inventory Management</title>
+   <title>POSBOK &mdash; Warehouse Management</title>
    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -152,14 +152,14 @@
                      class="button-link"></a>Pos
                   Management</button>
 
+               <button class="hero-btn-dark inventoryBtn hidden"> <a href="inventory.html"
+                     class="button-link"></a>Inventory</button>
+
                <button class="hero-btn-dark"> <a href="staff-profile.html" class="button-link"></a>Staff
                   Profile</button>
 
 
                <button class="hero-btn-dark"> <a href="shop-management.html" class="button-link"></a>Shop
-                  Management</button>
-
-               <button class="hero-btn-dark"> <a href="warehouse-management.html" class="button-link"></a>Warehouse
                   Management</button>
 
                <button class="hero-btn-dark"> <a href="manage.html" class="button-link"></a>Manage</button>
@@ -169,23 +169,23 @@
          </div>
       </div>
 
-      <!-- Product Table -->
+      <!-- Stock Table -->
       <div class="goods card">
          <div class="goods-method">
             <h2 class="heading-text" style="margin-bottom: 1.5rem;">
-               INVENtory
+               Warehouse Management
             </h2>
 
             <!-- <div class="table-header" style="display: flex; flex-direction: column; width: max-content;"> -->
 
             <div class="adminHeader" style="display: flex; flex-direction: row; gap: 1rem; align-items: center;">
-               <button class="hero-btn-dark openAddProductModalBtn mr-0 force-mb-0 " id="openAddProductModalBtn">
-                  <span class="btn-text">Add New Product</span>
+               <button class="hero-btn-dark openAddStockModalBtn mr-0 force-mb-0 " id="openAddStockModalBtn">
+                  <span class="btn-text">Add New Stock</span>
                   <span class="btn-spinner hidden"></span>
                </button>
 
-               <button class="hero-btn-dark openAddExistingProductModalBtn mr-0 " id="openAddExistingProductModalBtn">
-                  <span class="btn-text">Add Existing Product</span>
+               <button class="hero-btn-dark openRetockProductModalBtn mr-0 " id="openRetockProductModalBtn">
+                  <span class="btn-text">Restock Existing Product</span>
                   <span class="btn-spinner hidden"></span>
                </button>
             </div>
@@ -194,47 +194,48 @@
 
 
                <!-- This is the placeholder for accordion shops -->
-               <div id="accordionProductInventory" class="accordion-container">
+               <div id="accordionStockInventory" class="accordion-container">
 
                </div>
 
             </div>
 
-            <!-- <h2 class="heading-subtext"> Available Products</h2> -->
+            <!-- <h2 class="heading-subtext"> Available Stocks</h2> -->
             <!-- </div> -->
 
-            <!-- <div class="product-table-container">
-               <table class="product-table">
+            <div class="mb-4 mt-3">
+               <h2 class="heading-subtext ">Total Items: <span class="totalItems">--</span></h2>
+
+               <h2 class="heading-subtext ">Total Quantity: <span class="totalQuantity">--</span>
+               </h2>
+
+               <h2 class="heading-subtext ">Total Value: <span class="totalValue">--</span></h2>
+
+            </div>
+
+            <div class="stock-table-container">
+               <table class="reports-table stock-item-table">
                   <thead>
                      <tr class="table-header-row">
                         <th class="py-1">S/N</th>
-                        <th class="py-1">Products</th>
-                        <th class="py-1">Buying Price</th>
-                        <th class="py-1">Quantity</th>
+                        <th class="py-1">Product Name</th>
+                        <th class="py-1">Product Description</th>
+                        <th class="py-1">Stock Category</th>
+                        <th class="py-1">Purchase Price</th>
                         <th class="py-1">Selling Price</th>
+                        <th class="py-1">Quantity</th>
+                        <th class="py-1">Unit Type</th>
+                        <th class="py-1">Status</th>
+                        <th class="py-1">Date Purchased</th>
                         <th class="py-1">Action</th>
                      </tr>
                   </thead>
 
                   <tbody>
 
-                     <tr class="table-body-row" id="item-list">
-                        <td class="py-1 productSerialNumber">1</td>
-                        <td class="py-1 productName">New Age Powerbank</td>
-                        <td class="py-1 productAmountBought">&#x20A6;13,500</td>
-                        <td class="py-1 productQuantity">14</td>
-                        <td class="py-1 productSellingPrice">&#x20A6;16,000</td>
+                     <tr class="table-body-row loading-row" id="item-list">
+                        <td class="py-1 " colspan="10">Loading Stock items...</td>
 
-                        <td class="py-1 action-buttons">
-
-                           <button class="hero-btn-outline openUpdateProductBtn" id="openUpdateProductBtn">
-                              <i class="fa-solid fa-pen-to-square"></i>
-                           </button>
-
-                           <button class="hero-btn-outline deleteProductBtn" id="deleteProductBtn">
-                              <i class="fa-solid fa-trash-can"></i>
-                           </button>
-                        </td>
                      </tr>
 
 
@@ -242,11 +243,39 @@
                   </tbody>
                </table>
 
-               <div class="center-button mt-2">
-                  <button id="loadMoreButton" class="hero-btn-dark">Load More</button>
-               </div>
+            </div>
+         </div>
+      </div>
 
-            </div> -->
+      <!-- Stock Logs Table -->
+      <div class="goods card">
+         <div class="goods-method">
+            <h2 class="heading-text" style="margin-bottom: 1.5rem;">
+               Warehouse Activity Log
+            </h2>
+
+            <div class="stock-table-container">
+               <table class="reports-table stock-logs-table">
+                  <thead>
+                     <tr class="table-header-row">
+                        <th class="py-1">S/N</th>
+                        <th class="py-1">Item Name</th>
+                        <th class="py-1">Quantity</th>
+                        <th class="py-1">Purchase Price</th>
+                        <th class="py-1">Action Type</th>
+                        <th class="py-1">Performed By</th>
+                        <th class="py-1">Date/Time</th>
+                     </tr>
+                  </thead>
+
+                  <tbody>
+                     <tr class="table-body-row loading-row" id="item-list">
+                        <td class="py-1 " colspan="10">Loading Stock Logs...</td>
+                     </tr>
+                  </tbody>
+               </table>
+
+            </div>
          </div>
       </div>
 
@@ -254,30 +283,30 @@
       <div class="goods card">
          <div class="goods-method">
             <h2 class="heading-text" style="margin-bottom: 1.5rem;">
-               Product Category
+               Stock Category
             </h2>
 
             <!-- <div class="table-header" style="display: flex; flex-direction: column; width: max-content;"> -->
 
             <div class="adminHeader">
 
-               <button class="hero-btn-dark openAddCategoryModalBtn" id="openAddCategoryModalBtn">
-                  <span class="btn-text">Add Category</span>
+               <button class="hero-btn-dark openAddStockCategoryModalBtn" id="openAddStockCategoryModalBtn">
+                  <span class="btn-text">Add Stock Category</span>
                   <span class="btn-spinner hidden"></span>
                </button>
 
-               <!-- <button class="hero-btn-dark openAddProductModalBtn mr-0 " id="openAddProductModalBtn">
-                  <span class="btn-text">Add Product</span>
+               <!-- <button class="hero-btn-dark openAddStockModalBtn mr-0 " id="openAddStockModalBtn">
+                  <span class="btn-text">Add Stock</span>
                   <span class="btn-spinner hidden"></span>
                </button> -->
 
             </div>
 
-            <!-- <h2 class="heading-subtext"> Available Products</h2> -->
+            <!-- <h2 class="heading-subtext"> Available Stocks</h2> -->
             <!-- </div> -->
 
             <div class="category-table-container">
-               <table class="category-table">
+               <table class="reports-table stock-category-table">
                   <thead>
                      <tr class="table-header-row">
                         <th class="py-1">S/N</th>
@@ -304,7 +333,7 @@
                               <i class="fa-solid fa-pen-to-square"></i>
                            </button>
 
-                           <button class="hero-btn-outline deleteCategoryBtn" id="deleteProductBtn">
+                           <button class="hero-btn-outline deleteCategoryBtn" id="deleteStockBtn">
                               <i class="fa-solid fa-trash-can"></i>
                            </button>
                         </td>
@@ -327,9 +356,9 @@
    <div id="toast" class="toast ">
       <h4 class="toast-message heading-subtext center-text mb-2">This is a toast message!</h4>
 
-      <p id="productName" class="hidden"></p>
-      <p id="productSku" class="hidden"></p>
-      <p id="productBarcode" class="hidden"></p>
+      <!-- <p id="stockName" class="hidden"></p>
+      <p id="stockId" class="hidden"></p>
+      <p id="stockBarcode" class="hidden"></p>
 
       <img id="barcode" class="mt-1 hidden" />
 
@@ -346,7 +375,7 @@
          </button>
       </div>
 
-      <button class="close-toast hero-btn-dark mt-2 mr-0 default-close">Okay</button>
+      <button class="close-toast hero-btn-dark mt-2 mr-0 default-close">Okay</button> -->
 
    </div>
 
@@ -354,18 +383,18 @@
       <div class="spinner"></div>
    </div>
 
-   <!--  Product Barcode Modal -->
+   <!--  Stock Barcode Modal -->
    <form class="modal-form getBarcodeImageContainerModal" name="updateCategory">
       <div class="card getBarcodeImageContainer modal  ">
          <div>
-            <h1 class="heading-text addItemName">Product Barcode</h1>
+            <h1 class="heading-text addItemName">Stock Barcode</h1>
          </div>
 
-         <h3 class="heading-minitext mt-2">Product Name: <span class="barcode-product_name"></span></h3>
+         <h3 class="heading-minitext mt-2">Stock Name: <span class="barcode-Stock_name"></span></h3>
 
-         <h3 class="heading-minitext mt-2">Product Id: <span class="barcode-product_id"></span></h3>
+         <h3 class="heading-minitext mt-2">Stock Id: <span class="barcode-Stock_id"></span></h3>
 
-         <h3 class="heading-minitext mt-2">Product Barcode: <span class="barcode-product_barcode"></span></h3>
+         <h3 class="heading-minitext mt-2">Stock Barcode: <span class="barcode-Stock_barcode"></span></h3>
 
          <img id="barcode-image" class="mt-1 " />
 
@@ -385,20 +414,20 @@
       </div>
    </form>
 
-   <!-- Delete Product Modal -->
-   <form class="modal-form deleteProductContainerModal " name="modal">
+   <!-- Delete Stock Modal -->
+   <form class="modal-form deleteStockContainerModal " name="modal">
 
-      <div class="card confirmation deleteProductContainer modal ">
+      <div class="card confirmation deleteStockContainer modal ">
          <h1 class="confirmation-text">Are you sure you want to Delete <span id="confirmation-text"
-               style="color: red;"></span>?
+               style="color: red;"></span> from Stock Inventory?
          </h1>
 
          <div class="confirmation-btn_container">
 
             <button class="hero-btn-dark cancel-close">Cancel</button>
 
-            <button class="hero-btn-danger deleteProductButton  mt-2 has-spinner" type="submit">
-               <span class="btn-text">Delete Product</span>
+            <button class="hero-btn-danger deleteStockButton  mt-2 has-spinner" type="submit">
+               <span class="btn-text">Delete Stock</span>
                <span class="btn-spinner hidden"></span>
             </button>
 
@@ -433,7 +462,6 @@
       </div>
    </form>
 
-   <!-- Update Category Modal -->
    <form class="modal-form updateCategoryModal" name="updateCategory">
       <div class="card updateCategory modal ">
          <div>
@@ -464,86 +492,84 @@
       </div>
    </form>
 
-   <!-- Update Stock Product Modal -->
-   <form class="updateProduct-form updateProductModal" name="updateProduct">
-      <div class="card updateProduct modal ">
+   <!-- Update Stock Product -->
+   <form class="modal-form updateStockModal" name="updateStock">
+      <div class="card updateStock modal  ">
          <div>
-            <h1 class="heading-text addItemName">Update product</h1>
+            <h1 class="heading-text ">Update Stock</h1>
          </div>
 
 
-         <!-- Update Product Category -->
+         <!-- Update Name -->
          <div class="modal-form_input">
-            <label for="updateProductCategory">Product Category</label>
+            <label for="updateStockName">Product Name</label>
 
-            <select id="updateProductCategory" class="form-control" required>
-               <option value="">Select a Category</option>
-               <option value="01">Category 1</option>
-               <option value="02">Category 2</option>
-               <option value="03">Category 3</option>
+            <input id="updateStockName" type="text" placeholder="Enter Product Name" name="updateStockName" required>
+         </div>
+
+         <!-- Update Description -->
+         <div class="modal-form_input">
+            <label for="updateStockDescription">Product Description</label>
+
+            <input id="updateStockDescription" type="text" placeholder="Enter Product Description"
+               name="updateStockDescription" required>
+         </div>
+
+         <!-- Update Amount Bought  -->
+         <div class="modal-form_input">
+            <label for="StockBoughtPrice">Purchase Price</label>
+
+            <div class="naira-input-container">
+               <input id="updateStockBoughtPrice" type="text" placeholder="Enter Purchase Price"
+                  name="updateStockBoughtPrice" required>
+               <span class="naira">&#x20A6;</span>
+            </div>
+         </div>
+
+         <!-- Update Amount to Sell  -->
+         <div class="modal-form_input">
+            <label for="StockSellingPrice">Selling Price</label>
+
+            <div class="naira-input-container">
+               <input id="updateStockSellingPrice" type="text" placeholder="Enter Selling  Price"
+                  name="updateStockSellingPrice" required>
+               <span class="naira">&#x20A6;</span>
+            </div>
+         </div>
+
+
+         <!-- Update Quantity -->
+         <div class="modal-form_input">
+            <label for="StockQuantity">Product Quantity</label>
+
+            <!-- <div class="naira-input-container"> -->
+            <input id="updateStockQuantity" type="text" placeholder="Enter Product Quantity" name="updateStockQuantity"
+               required>
+            <!-- </div> -->
+         </div>
+
+         <!-- Update Unit Type -->
+         <div class="modal-form_input">
+            <label for="updateStockUnitType">Unit Type</label>
+
+            <select id="updateStockUnitType" class="form-control" required>
+               <option value="">Select a Unit Type</option>
+               <option value="per_item">Per Item</option>
+               <option value="dozen">Dozen</option>
+               <option value="cartons">Cartons</option>
+               <option value="liters">Liters</option>
+               <option value="yard">Yard</option>
+               <option value="gram">Gram</option>
+               <option value="kilogram">Kilogram</option>
             </select>
          </div>
-
-         <div class="updateProduct-form_input">
-            <label for="updateProductName">Product Name</label>
-
-            <input id="updateProductName" type="text" placeholder="Product Name" name="updateProductName" required>
-         </div>
-
-         <div class="updateProduct-form_input">
-            <label for="updateProductDescription">Product Description</label>
-
-            <input id="updateProductDescription" type="text" placeholder="Product Description"
-               name="updateProductDescription" required>
-         </div>
-
-         <div class="updateProduct-form_input">
-            <label for="updateProductSku">Product SKU</label>
-
-            <input id="updateProductSku" type="text" placeholder="Product SKU" name="updateProductSku" required>
-         </div>
-
-         <div class="updateProduct-form_input">
-            <label for="updateProductBoughtPrice">Amount Bought</label>
-
-            <div class="naira-input-container">
-               <input id="updateProductBoughtPrice" type="text" placeholder="Bought Price"
-                  name="updateProductBoughtPrice" required>
-               <span class="naira">&#x20A6;</span>
-            </div>
-         </div>
-
-         <div class="updateProduct-form_input">
-            <label for="updateProductSellingPrice">Previous Selling Price</label>
-
-            <div class="naira-input-container">
-               <input id="updateProductSellingPrice" type="text" placeholder="Current Selling Price"
-                  name="updateProductSellingPrice" required>
-               <span class="naira">&#x20A6;</span>
-            </div>
-         </div>
-
-         <div class="updateProduct-form_input">
-            <label for="updateProductQuantity">Product Quantity</label>
-
-            <input id="updateProductQuantity" type="text" placeholder="Product Quantity" name="updateProductQuantity"
-               required>
-         </div>
-
-
-         <!-- <div class="updateProduct-form_input">
-            <label for="newItemQuantity">New Item Quantity</label>
-
-            <input id="newItemQuantity" type="text" placeholder="Enter New Quantity" name="newItemQuantity">
-
-         </div> -->
 
 
 
          <div class="center-button">
 
-            <button class="hero-btn-dark updateProductModalBtn" id="updateProductModalBtn">
-               <span class="btn-text">update Product</span>
+            <button class="hero-btn-dark updateStockModalBtn" id="updateStockModalBtn" type="submit">
+               <span class="btn-text">update Stock</span>
                <span class="btn-spinner hidden"></span>
             </button>
          </div>
@@ -552,18 +578,18 @@
       </div>
    </form>
 
-   <!-- Add New Product -->
-   <form class="modal-form addProductModal" name="modal">
-      <div class="card addProduct modal ">
+   <!-- Add New Stock -->
+   <form class="modal-form addStockModal" name="modal">
+      <div class="card addStock modal ">
          <div>
-            <h1 class="heading-text  addItemName">Add New Product</h1>
+            <h1 class="heading-text  addItemName">Add New Stock</h1>
          </div>
 
-         <!-- Assign Add Inventory to shop -->
+         <!-- Assign Add Stock Inventory to shop -->
          <div class="modal-form_input">
-            <label for="inventoryShopDropdown">Select Shop</label>
+            <label for="stockinventoryShopDropdown">Select Shop</label>
 
-            <select id="inventoryShopDropdown" class="form-control" required>
+            <select id="stockinventoryShopDropdown" class="form-control" required>
                <option value="">Select a shop</option>
                <!-- <option value="1">Loading Shops...</option> -->
 
@@ -571,11 +597,11 @@
             </select>
          </div>
 
-         <!-- Product Category -->
+         <!-- Stock Category -->
          <div class="modal-form_input">
-            <label for="addProductCategory">Product Category</label>
+            <label for="addStockCategory">Stock Category</label>
 
-            <select id="addProductCategory" class="form-control" required>
+            <select id="addStockCategory" class="form-control" required>
                <option value="">Select a Category</option>
                <option value="01">Category 1</option>
                <option value="02">Category 2</option>
@@ -583,75 +609,90 @@
             </select>
          </div>
 
-         <!-- Product Name -->
+         <!-- Stock Name -->
          <div class="modal-form_input">
-            <label for="addProductName">Product Name</label>
+            <label for="addStockName">Product Name</label>
 
-            <input id="addProductName" type="text" placeholder="Enter Product Name" name="addProductName" required>
+            <input id="addStockName" type="text" placeholder="Enter Product Name" name="addStockName" required>
          </div>
 
-         <!-- Product Description -->
+         <!-- Stock Description -->
          <div class="modal-form_input">
-            <label for="addProductDescription">Product Description</label>
+            <label for="addStockDescription">Product Description</label>
 
-            <input id="addProductDescription" type="text" placeholder="Enter Product Description"
-               name="addProductDescription" required>
+            <input id="addStockDescription" type="text" placeholder="Enter Product Description"
+               name="addStockDescription" required>
          </div>
 
-         <!-- Product Sku -->
-         <div class="modal-form_input">
-            <label for="addProductSku">Product SKU</label>
-
-            <input id="addProductSku" type="text" placeholder="Enter Product SKU" name="addProductSku" required>
-         </div>
-
-         <!-- Product Barcode -->
-         <div class="modal-form_input">
-            <label for="addProductDescription">Product Barcode</label>
+         <!-- Stock Barcode -->
+         <!-- <div class="modal-form_input">
+            <label for="addStockDescription">Stock Barcode</label>
 
             <div class="subscript-container">
-               <input id="addProductBarcode" type="number" placeholder="Leave blank to auto-generate"
-                  name="addProductBarcode">
-               <small id="subscript-info">If product already has a barcode, scan or type it here.</small>
+               <input id="addStockBarcode" type="number" placeholder="Leave blank to auto-generate"
+                  name="addStockBarcode">
+               <small id="subscript-info">If Stock already has a barcode, scan or type it here.</small>
             </div>
-         </div>
+         </div> -->
 
          <!-- Amount Bought -->
          <div class="modal-form_input">
-            <label for="productBoughtPrice">Amount Bought</label>
+            <label for="StockBoughtPrice">Purchase Price</label>
 
             <div class="naira-input-container">
-               <input id="addProductBoughtPrice" type="text" placeholder="Enter Buying Price"
-                  name="addProductBoughtPrice" required>
+               <input id="addStockBoughtPrice" type="text" placeholder="Enter Purchase Price" name="addStockBoughtPrice"
+                  required>
                <span class="naira">&#x20A6;</span>
             </div>
          </div>
 
          <!-- Amount to Sell -->
          <div class="modal-form_input">
-            <label for="productSellingPrice">Amount To Sell</label>
+            <label for="StockSellingPrice">Selling Price</label>
 
             <div class="naira-input-container">
-               <input id="addProductSellingPrice" type="text" placeholder="Enter Selling Price"
-                  name="addProductSellingPrice" required>
+               <input id="addStockSellingPrice" type="text" placeholder="Enter Selling  Price"
+                  name="addStockSellingPrice" required>
                <span class="naira">&#x20A6;</span>
             </div>
          </div>
-
-         <!-- Product Quantity -->
+         <!-- Date Purchased -->
          <div class="modal-form_input">
-            <label for="productQuantity">Product Quantity</label>
+            <label for="addStockDatePurchased">Date Purchased</label>
+
+            <input type="date" id="addStockDatePurchased" required>
+         </div>
+
+         <!-- Stock Quantity -->
+         <div class="modal-form_input">
+            <label for="StockQuantity">Product Quantity</label>
 
             <!-- <div class="naira-input-container"> -->
-            <input id="addProductQuantity" type="text" placeholder="Enter Product Quantity" name="addProductQuantity"
+            <input id="addStockQuantity" type="text" placeholder="Enter Product Quantity" name="addStockQuantity"
                required>
             <!-- </div> -->
          </div>
 
+         <!-- Stock Unit Type -->
+         <div class="modal-form_input">
+            <label for="addStockUnitType">Unit Type</label>
+
+            <select id="addStockUnitType" class="form-control" required>
+               <option value="">Select a Unit Type</option>
+               <option value="per_item">Per Item</option>
+               <option value="dozen">Dozen</option>
+               <option value="cartons">Cartons</option>
+               <option value="liters">Liters</option>
+               <option value="yard">Yard</option>
+               <option value="gram">Gram</option>
+               <option value="kilogram">Kilogram</option>
+            </select>
+         </div>
+
          <div class="center-button">
 
-            <button class="hero-btn-dark addProductModalBtn" id="addProductModalBtn">
-               <span class="btn-text">Add New Product</span>
+            <button class="hero-btn-dark addStockItemSubmitBtn" id="addStockItemSubmitBtn">
+               <span class="btn-text">Add New Stock</span>
                <span class="btn-spinner hidden"></span>
             </button>
          </div>
@@ -660,18 +701,18 @@
       </div>
    </form>
 
-   <!-- Add Existing Product -->
-   <form class="modal-form addExistingProductModal" name="modal">
-      <div class="card addExistingProduct modal ">
+   <!-- Restock -->
+   <form class="modal-form restockModal" name="modal">
+      <div class="card restock modal ">
          <div>
-            <h1 class="heading-text  addItemName">Add Existing Product</h1>
+            <h1 class="heading-text  addItemName">Restock</h1>
          </div>
 
          <!-- Assign Add Existing Inventory to shop -->
          <div class="modal-form_input">
-            <label for="addExistingProductShopDropdown">Select Shop</label>
+            <label for="restockShopDropdown">Select Shop</label>
 
-            <select id="addExistingProductShopDropdown" class="form-control">
+            <select id="restockShopDropdown" class="form-control">
                <option value="">Select a shop</option>
                <!-- <option value="1">Loading Shops...</option> -->
 
@@ -679,80 +720,44 @@
             </select>
          </div>
 
-         <div class="addExistingSellProductSearch-section mb-2">
+         <div class="restockSearch-section mb-2">
 
             <div class="sellProduct-method-form_input ">
                <div class="search-input-container">
-                  <input type="search" id="searchSellProdutItem" class="searchSellProdutItem"
-                     placeholder="Search Product Name or Description ">
+                  <input type="search" id="searchStockProdutItem" class="searchStockProdutItem"
+                     placeholder="Search Stock Name or Description ">
                   <span class="searchIcon"><i class="fa-solid fa-magnifying-glass mr-2"></i></span>
                </div>
             </div>
          </div>
 
-         <div class=" addExistingSellProductCategory-section">
-            <!-- <button class="sellProductCategoryBtn active" type="button">
-                  All
-               </button> -->
+         <div class="restock-method-form_input mt-2">
 
-         </div>
-
-         <div class="addExistingSellProduct-method-form_input mt-2">
-
-            <div class="input-container addExistingSellProductName">
-               <input type="text" id="productInput" disabled required>
+            <div class="input-container restockProductNameDiv">
+               <input type="text" id="stockNameInput" disabled required>
                <i class="fa fa-times clear-icon" id="clearIcon" aria-hidden="true"></i>
             </div>
 
-            <ul class="autocomplete-list" id="addExistingAutocompleteList"></ul>
+            <ul class="autocomplete-list" id="restockAutocompleteList"></ul>
          </div>
 
-         <!-- Quantity Available -->
-         <!-- <div class="modal-form_input">
-            <label for="itemQuantityAvailable">Quantity Available</label>
-
-            <input id="itemQuantityAvailable" type="text" placeholder="Enter Current Quantity"
-               name="itemQuantityAvailable" disabled required>
-         </div> -->
-
-         <!-- New Purchase Price Inout -->
-         <div class="modal-form_input">
-            <label for="newPurchasePrice">New Purchase Price</label>
-
-            <div class="subscript-container">
-               <input id="itemNewPurchasePrice" type="text" placeholder="Enter New Item Purchase Price"
-                  name="itemNewPurchasePrice">
-               <small id="subscript-info">Current Purchase Price: <span
-                     class="itemPreviousPurchasePrice">₦</span></small>
-            </div>
-         </div>
-
-         <!-- New Selling Price Inout -->
-         <div class="modal-form_input">
-            <label for="newSellingPrice">New Selling Price</label>
-
-            <div class="subscript-container">
-               <input id="itemNewSellingPrice" type="text" placeholder="Enter New Item Selling Price"
-                  name="itemNewSellingPrice">
-               <small id="subscript-info">Current Selling Price: <span class="itemPreviousSellingPrice">₦</span></small>
-            </div>
-         </div>
+         <!-- New / Restock Quantity Input -->
 
          <div class="modal-form_input">
-            <label for="newStockQuantity">New Stock Quantity</label>
+            <label for="newStockQuantity">Restock Quantity</label>
 
             <div class="subscript-container">
-               <input id="itemNewQuantityAvailable" type="text" placeholder="Enter New Item Quantity"
-                  name="itemNewQuantityAvailable" required>
+               <input id="restockQuantityAvailable" type="text" placeholder="Enter Restock Quantity"
+                  name="restockQuantityAvailable" required>
                <small id="subscript-info">Current Quantity Available:
-                  <span class="itemPreviousQuantityAvailable"></span> </small>
+                  <span class="previousStockQuantityAvailable"></span> </small>
             </div>
          </div>
 
          <div class="center-button">
 
-            <button class="hero-btn-dark addExistingProductModalBtn" id="addExistingProductModalBtn">
-               <span class="btn-text">Add Existing Product</span>
+            <button class="hero-btn-dark restockModalBtn" id="restockModalBtn">
+               <span class="btn-text">Restock Item</span>
                <span class="btn-spinner hidden"></span>
             </button>
          </div>
@@ -761,10 +766,11 @@
       </div>
    </form>
 
+   <!-- Add Category Modal -->
    <form class="modal-form addCategoryModal" name="modal">
       <div class="card addCategory modal">
          <div>
-            <h1 class="heading-text  addItemName">Add Product Category</h1>
+            <h1 class="heading-text  addItemName">Add Stock Category</h1>
          </div>
 
          <!-- Category Name -->
@@ -784,8 +790,8 @@
 
          <div class="center-button">
 
-            <button class="hero-btn-dark addCategorySubmitBtn" id="addCategorySubmitBtn">
-               <span class="btn-text">Add Category</span>
+            <button class="hero-btn-dark addStockCategorySubmitBtn" id="addStockCategorySubmitBtn">
+               <span class="btn-text">Add Stock Category</span>
                <span class="btn-spinner hidden"></span>
             </button>
          </div>
@@ -993,7 +999,7 @@
                      <span class="btn-text">Update Profile</span>
                      <span class="btn-spinner hidden"></span>
                   </button>
-                  <!-- <button class="hero-btn-dark sellProductActionButton">Sell</button> -->
+                  <!-- <button class="hero-btn-dark sellStockActionButton">Sell</button> -->
                </div>
 
 

@@ -6,7 +6,6 @@ import {
   createStockItem,
   deleteStockItem,
   getStockCategories,
-  getStockInventory,
   getStockItems,
   getStockLogs,
   getStockProduct,
@@ -670,7 +669,7 @@ export function populateStockLogsTable(stockLogsData) {
 
     const { first_name, last_name } = stockLog.performer;
 
-    console.log(first_name, last_name);
+    //  console.log(first_name, last_name);
 
     const row = document.createElement('tr');
     row.classList.add('table-body-row');
@@ -935,7 +934,7 @@ export function bindRestockProductFormListener() {
       const productId = form.dataset.productId;
       const shopId = form.dataset.shopId;
       const prevQty = Number(form.dataset.previousQuantity || 0);
-
+      getStockLogspopulategggggggg;
       if (!productId) {
         showToast('fail', '❎ No Product selected for Restock.');
         return;
@@ -1216,36 +1215,3 @@ document.addEventListener('DOMContentLoaded', () => {
   bindRestockProductFormListener();
   restockProductForm();
 });
-
-async function fetchAllStock() {
-  try {
-    const stockInventoryData = await getStockInventory(); // Fetch stocks
-
-    if (stockInventoryData) {
-      console.log(`Fetching stock inventory:`, stockInventoryData.data);
-      return stockInventoryData.data;
-    }
-
-    //  console.log('stockInventoryData', stockInventoryData);
-  } catch (error) {
-    console.error('Error fetching stock Inventory Data:', error);
-    throw error;
-  }
-}
-
-//   {
-//       "id": 35,
-//       "business_id": 96,
-//       "item_name": "Carton Of Apple Charger",
-//       "quantity": 3,
-//       "price": 12000,
-//       "action_type": "restocked",
-//       "performed_by": 85,
-//       "created_at": "2025-10-27T20:22:03.000Z",
-//       "performer": {
-//           "id": 85,
-//           "first_name": "Praises",
-//           "last_name": "Amaiyo",
-//           "email": "development@example.com"
-//       }
-//   },

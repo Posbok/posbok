@@ -1,5 +1,6 @@
 .reports,
 .goods,
+.superAdmin,
 .shops,
 .staff,
 .posCharge,
@@ -23,10 +24,11 @@
       .posCharge-table-container,
       .machineFee-table-container,
       .stock-table-container,
+      .superAdmin-table-container,
       .category-table-container,
       .inventory-table-container {
          overflow-x: auto;
-         max-height: 40rem;
+         max-height: 60rem;
          height: 100%;
          padding-bottom: 2rem;
          padding-right: 1rem;

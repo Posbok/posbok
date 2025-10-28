@@ -58,6 +58,8 @@ parsedUserData = userData ? JSON.parse(userData) : null;
 
 const isAdmin = parsedUserData?.accountType === 'ADMIN';
 const isStaff = parsedUserData?.accountType === 'STAFF';
+const isSuperAdmin = parsedUserData?.accountType === 'SUPER_ADMIN';
+
 const shopId = parsedUserData?.shopId;
 const staffUserId = parsedUserData?.id;
 const servicePermission = parsedUserData?.servicePermission;
@@ -346,7 +348,7 @@ export function bindUpdateProfileFormListener() {
 
         if (userNameDisplay) {
           if (userNameDisplay)
-            userNameDisplay.textContent = updatedUser.firstName;
+            userNameDisplay.textContent = `${updatedUser.firstName} ${updatedUser.lastName}`;
         }
 
         if (!updatedProfileData) {
@@ -368,7 +370,7 @@ export function bindUpdateProfileFormListener() {
   }
 }
 
-// Change Passeord (Profile) Logic
+// Change Password (Profile) Logic
 
 export function bindChangePasswordFormListener() {
   const form = document.querySelector('#updatePassword-form');
@@ -648,7 +650,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
-  if (isStaff || isAdmin) {
+  if (isStaff || (isAdmin && !isSuperAdmin)) {
     await renderBusinessDayButtons();
   }
 });
@@ -1294,9 +1296,22 @@ const posManagementNav = document.querySelector('.posManagementBtn');
 if (!userData) {
   //   console.log('❎❎❎❎ No user data found');
 } else {
+  const businessView = document.querySelector('#businessView');
+  const superAdminView = document.querySelector('#superAdminView');
+
+  if (isSuperAdmin) {
+    if (businessView) businessView.classList.add('hidden');
+    if (superAdminView) superAdminView.classList.remove('hidden');
+  } else {
+    if (superAdminView) superAdminView.classList.add('hidden');
+    if (businessView) businessView.classList.remove('hidden');
+  }
+
   //    User Name
   if (userNameDisplay) {
-    if (userNameDisplay) userNameDisplay.textContent = parsedUserData.firstName;
+    //  if (userNameDisplay) userNameDisplay.textContent = parsedUserData.firstName;
+    if (userNameDisplay)
+      userNameDisplay.textContent = `${parsedUserData.firstName} ${parsedUserData.lastName}`;
   }
 
   // Business Name display
@@ -1318,6 +1333,7 @@ if (!userData) {
   const permissionRestrictedPages = {
     pos: ['POS_TRANSACTIONS', 'BOTH'],
     sell: ['INVENTORY_SALES', 'BOTH'],
+    superAdmin: ['SUPER_ADMIN', 'BOTH'],
   };
 
   // Step 3: Apply logic separately for both staff and admin
@@ -1382,6 +1398,8 @@ if (!userData) {
       'staff-profile',
       'pos-management',
       'shop-management',
+      'stock-management',
+      'super-admin',
       'inventory',
     ];
     if (restrictedStaffPages.includes(currentPageName)) {
@@ -1431,6 +1449,45 @@ if (!userData) {
     if (servicePermission === 'BOTH') {
       if (posManagementNav) posManagementNav.classList.remove('hidden');
       if (invetoryNav) invetoryNav.classList.remove('hidden');
+    }
+
+    const restrictedAdminPages = ['super-admin'];
+    if (restrictedAdminPages.includes(currentPageName)) {
+      window.location.href = 'index.html';
+    }
+  }
+
+  if (isSuperAdmin) {
+    // First, hide all tabs by default
+    if (sellIndexTab) sellIndexTab.style.display = 'none';
+    if (posIndexTab) posIndexTab.style.display = 'none';
+    if (reportIndexTab) reportIndexTab.style.display = 'none';
+    if (manageIndexTab) manageIndexTab.style.display = 'none';
+
+    if (sellNav) sellNav.style.display = 'none';
+    if (posNav) posNav.style.display = 'none';
+    if (reportsNav) reportsNav.style.display = 'none';
+    if (manageNav) manageNav.style.display = 'none';
+
+    // Show report tab only if either service is active
+    if (
+      servicePermission === 'POS_TRANSACTIONS' ||
+      servicePermission === 'INVENTORY_SALES' ||
+      servicePermission === 'BOTH'
+    ) {
+    }
+
+    // Prevent Super Admin from opening restricted pages directly
+    const restrictedStaffPages = [
+      'manage',
+      'staff-profile',
+      'pos-management',
+      'shop-management',
+      'stock-management',
+      'inventory',
+    ];
+    if (restrictedStaffPages.includes(currentPageName)) {
+      window.location.href = 'index.html';
     }
   }
 }

@@ -19,6 +19,7 @@ const parsedUserData = userData ? JSON.parse(userData) : null;
 
 const isAdmin = parsedUserData?.accountType === 'ADMIN';
 const isStaff = parsedUserData?.accountType === 'STAFF';
+const isSuperAdmin = parsedUserData?.accountType === 'SUPER_ADMIN';
 const userId = parsedUserData?.id;
 
 const shopKey = `shop_${userId}`;
@@ -108,7 +109,7 @@ export async function fetchShopDetail(shopId) {
   }
 }
 
-// The functions below are used to check if the user has a shop and prompt them to creat one if they don't - checkAndPromptCreateShop, openCreateShopModal, setupCreateShopForm, and setupModalCloseButtons
+// The functions below are used to check if the user has a shop and prompt them to create one if they don't - checkAndPromptCreateShop, openCreateShopModal, setupCreateShopForm, and setupModalCloseButtons
 
 export async function checkAndPromptCreateShop() {
   const tbody = document.querySelector('.shops-table tbody');
@@ -215,7 +216,7 @@ export async function checkAndPromptCreateShop() {
 
       //  console.log('checkAndPromptCreateShop data', enrichedShopData);
 
-      if (enrichedShopData.length === 0) {
+      if (enrichedShopData.length === 0 && !isSuperAdmin) {
         openCreateShopModal();
       }
     }
