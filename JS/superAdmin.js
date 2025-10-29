@@ -423,12 +423,10 @@ export async function renderBusinessDetailsById(e, row) {
     document.getElementById('businessDetailStatus').textContent = is_active
       ? 'Active'
       : 'Inactive';
-    document.getElementById('businessDetailCreatedAt').textContent = new Date(
-      created_at
-    ).toLocaleDateString();
-    document.getElementById('businessDetailUpdatedAt').textContent = new Date(
-      updated_at
-    ).toLocaleDateString();
+    document.getElementById('businessDetailCreatedAt').textContent =
+      formatDateTimeReadable(created_at);
+    document.getElementById('businessDetailUpdatedAt').textContent =
+      formatDateTimeReadable(updated_at);
     document.getElementById('businessDetailShopCount').textContent = shop_count
       ? shop_count
       : '-';
@@ -439,11 +437,9 @@ export async function renderBusinessDetailsById(e, row) {
     document.getElementById('businessDetailSubDays').textContent =
       days_remaining ?? '—';
     document.getElementById('businessDetailSubStart').textContent =
-      subscription_start
-        ? new Date(subscription_start).toLocaleDateString()
-        : '—';
+      subscription_start ? formatDateTimeReadable(subscription_start) : '—';
     document.getElementById('businessDetailSubEnd').textContent =
-      subscription_end ? new Date(subscription_end).toLocaleDateString() : '—';
+      subscription_end ? formatDateTimeReadable(subscription_end) : '—';
     document.getElementById('businessDetailSubActivatedBy').textContent =
       activated_by || '—';
 
