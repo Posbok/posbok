@@ -934,7 +934,7 @@ export function bindRestockProductFormListener() {
       const productId = form.dataset.productId;
       const shopId = form.dataset.shopId;
       const prevQty = Number(form.dataset.previousQuantity || 0);
-      getStockLogspopulategggggggg;
+
       if (!productId) {
         showToast('fail', '❎ No Product selected for Restock.');
         return;
