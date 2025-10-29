@@ -2,9 +2,15 @@ import config from '../config.js';
 import {
   formatDateTimeReadable,
   formatServicePermission,
+  hideGlobalLoader,
+  showGlobalLoader,
 } from './helper/helper.js';
 import './script.js';
-import { getAllBusinesses } from './superAdmin/superAdminResources.js';
+import { closeModal, showToast } from './script.js';
+import {
+  getAllBusinesses,
+  getBusinessDetailById,
+} from './superAdmin/superAdminResources.js';
 
 const userData = config.userData;
 const dummyShopId = config.dummyShopId; // Dummy user data for testing
@@ -111,6 +117,41 @@ function resetBusinessStatusFilter() {
   document.getElementById(`businessStatusFilter`).value = '';
 }
 
+// Open Sale Detail Modal
+export function openBusinessDetailsModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const businessDetailsContainer = document.querySelector('.businessDetails');
+
+  if (businessDetailsContainer)
+    businessDetailsContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  saleDetailModalForm();
+}
+
+export function saleDetailModalForm() {
+  const form = document.querySelector('.businessDetails');
+  if (!form) return;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  bindRenderBusinessDetailById(); // Only once
+});
+
+export function bindRenderBusinessDetailById() {
+  const form = document.querySelector('.businessDetails');
+
+  if (!form) return;
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+    });
+  }
+}
+
 let businessesArray = [];
 let currentPage = 1;
 let totalPages = 1;
@@ -165,8 +206,6 @@ export async function populateAllBusinessesTable({
 
     if (page === 1) {
       businessesArray = [];
-
-      console.log('Page is in page 1');
     }
 
     if (!allBusinesses.length && currentPage === 1) {
@@ -194,6 +233,7 @@ export async function populateAllBusinessesTable({
     businessesArray.forEach((businessData, index) => {
       const {
         address,
+        id: businessId,
         business_name,
         business_type,
         created_at,
@@ -231,28 +271,53 @@ export async function populateAllBusinessesTable({
       //      ? 'nearFinishedStockRow'
       //      : 'inStockRow'
       //  );
+      row.dataset.businessId = businessId;
 
       if (row)
         row.innerHTML = `
-        <td class="py-1 itemSerialNumber">${index + 1}</td>
-        <td class="py-1 itemName">${business_name}</td>
-         <td class="py-1 itemQuantity">${formatServicePermission(
+        <td class="py-1 businessSerialNumber">${index + 1}</td>
+        <td class="py-1 businessName">${business_name}</td>
+         <td class="py-1 businessType">${formatServicePermission(
            business_type
          )}</td>
-         <td class="py-1 itemPurchasePrice">${subscriptionStatus}</td>
-          <td class="py-1 itemActionType">${shop_count}</td>
+         <td class="py-1 businessSubscriptionStatus">${subscriptionStatus}</td>
+          <td class="py-1 businessShopCount">${shop_count}</td>
 
-          <td class="py-1 itemDatePurchases">${staff_size}</td>
+          <td class="py-1 businessStaffSize">${staff_size}</td>
 
-          <td class="py-1 itemDatePurchases">${phone_number}</td>
-          <td class="py-1 itemDatePurchases">${state_of_operation}</td>
-          <td class="py-1 itemDatePurchases">${address}</td>
-          <td class="py-1 itemDatePurchases">${formatDateTimeReadable(
+          <td class="py-1 businessPhoneNumber">${phone_number}</td>
+          <td class="py-1 businessStateofOperation">${state_of_operation}</td>
+          <td class="py-1 businessaddress">${address}</td>
+          <td class="py-1 businessDateCreated">${formatDateTimeReadable(
             created_at
           )}</td>
-          <td class="py-1 itemDatePurchases"></td>
 
-      `;
+                               <td class="py-1 action-buttons">
+                        <button class="hero-btn-outline openBusinessDetailsButton" data-business-id="${businessId}" title="View Business">
+                           <i class="fa-solid fa-eye"></i>
+                        </button>
+
+                        <button class="hero-btn-outline activateBusinessButton" data-business-id="${businessId}" title="Activate Subscription">
+                           <i class="fa-solid fa-toggle-on"></i>
+                        </button>
+
+                        <button class="hero-btn-outline restrictBusinessButton" data-business-id="${businessId}" title="Restrict Account">
+                           <i class="fa-solid fa-user-lock"></i>
+                        </button>
+
+                        <button class="hero-btn-outline messageBusinessButton" data-business-id="${businessId}" title="Send Message">
+                           <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+
+                        <button class="hero-btn-outline deleteBusinessButton" data-business-id="${businessId}" title="Delete Business">
+                           <i class="fa-solid fa-trash"></i>
+                        </button>
+                     </td>
+         `;
+
+      row.addEventListener('click', async (e) => {
+        renderBusinessDetailsById(e, row, businessId);
+      });
 
       //     <td class="py-1 itemStatus">${
       //    item.quantity === 0
@@ -279,5 +344,141 @@ export async function populateAllBusinessesTable({
     console.error('Error rendering All Businesses:', error);
     allBusinessesTableBody.innerHTML =
       '<tr><td colspan="12" class="table-error-text">Error loading All Businesses.</td></tr>';
+  }
+}
+
+export async function renderBusinessDetailsById(e, row) {
+  e.preventDefault();
+  showGlobalLoader();
+
+  const businessId = row.dataset.businessId;
+
+  // Get business by ID
+  try {
+    showGlobalLoader();
+    const businessDetails = await getBusinessDetailById(businessId);
+    //  console.log('businessDetails when Row', businessDetails);
+
+    if (!businessDetails || !businessDetails.data) {
+      console.log('No businessDetails');
+      showToast('error', '❎  Cannot get business Details');
+      closeModal();
+      return;
+    }
+
+    console.log(businessDetails.data);
+
+    const {
+      id,
+      business_name,
+      address,
+      phone_number,
+      state_of_operation,
+      cac_reg_no,
+      tax_id,
+      nin,
+      business_type,
+      staff_size,
+      version_preference,
+      is_active,
+      created_at,
+      updated_at,
+      manager,
+      shop_count,
+      shops,
+    } = businessDetails.data;
+
+    const {
+      status: subscriptionStatus,
+      days_remaining,
+      subscription_start,
+      subscription_end,
+      activated_by,
+      last_updated,
+    } = businessDetails.data.subscription;
+
+    // Populate Business Detail to UI
+
+    // Finally open the modal
+    openBusinessDetailsModal();
+
+    // Sales Items - Middle Part Below
+    const itemsTableBody = document.querySelector('.itemsTable tbody');
+    itemsTableBody.innerHTML = ''; // clear previous rows
+
+    document.getElementById('businessDetailName').textContent = business_name;
+    document.getElementById('businessDetailAddress').textContent = address;
+    document.getElementById('businessDetailId').textContent = businessId;
+    document.getElementById('businessDetailPhone').textContent = phone_number;
+    document.getElementById('businessDetailState').textContent =
+      state_of_operation;
+    document.getElementById('businessDetailCac').textContent =
+      cac_reg_no || '—';
+    document.getElementById('businessDetailTin').textContent = tax_id || '—';
+    document.getElementById('businessDetailNin').textContent = nin || '—';
+    document.getElementById('businessDetailType').textContent = business_type;
+    document.getElementById('businessDetailStaffSize').textContent = staff_size;
+    document.getElementById('businessDetailVersion').textContent =
+      version_preference;
+    document.getElementById('businessDetailStatus').textContent = is_active
+      ? 'Active'
+      : 'Inactive';
+    document.getElementById('businessDetailCreatedAt').textContent = new Date(
+      created_at
+    ).toLocaleDateString();
+    document.getElementById('businessDetailUpdatedAt').textContent = new Date(
+      updated_at
+    ).toLocaleDateString();
+    document.getElementById('businessDetailShopCount').textContent = shop_count
+      ? shop_count
+      : '-';
+
+    // 🧾 Populate Subscription Info
+    document.getElementById('businessDetailSubStatus').textContent =
+      subscriptionStatus || 'none';
+    document.getElementById('businessDetailSubDays').textContent =
+      days_remaining ?? '—';
+    document.getElementById('businessDetailSubStart').textContent =
+      subscription_start
+        ? new Date(subscription_start).toLocaleDateString()
+        : '—';
+    document.getElementById('businessDetailSubEnd').textContent =
+      subscription_end ? new Date(subscription_end).toLocaleDateString() : '—';
+    document.getElementById('businessDetailSubActivatedBy').textContent =
+      activated_by || '—';
+
+    // 🏪 Populate Shops Table
+    const shopsTableBody = document.getElementById('businessDetailShopsBody');
+
+    if (shops && shops.length > 0) {
+      shopsTableBody.innerHTML = shops
+        .map(
+          (shop) => `
+      <tr class="table-body-row">
+        <td class="py-1">${shop.id}</td>
+        <td class="py-1">${shop.name}</td>
+        <td class="py-1">${shop.location}</td>
+        <td class="py-1">${formatDateTimeReadable(shop.created_at)}</td>
+      </tr>
+    `
+        )
+        .join('');
+    } else {
+      shopsTableBody.innerHTML = `
+    <tr  class="table-body-row">
+      <td colspan="4" class="py-2 center-text">No shops registered</td>
+    </tr>
+  `;
+    }
+
+    hideGlobalLoader();
+    //   openBusinessDetailsModal();
+  } catch (err) {
+    hideGlobalLoader();
+    console.error('Error fetching sale details:', err.message);
+    showToast('fail', `❎ Failed to load sale details`);
+    closeModal();
+  } finally {
+    hideGlobalLoader();
   }
 }

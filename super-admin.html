@@ -148,8 +148,10 @@
 
                   <tbody class="allBusinessesTableBody">
 
+
+
                      <tr class="table-body-row loading-row" id="item-list">
-                        <td class="py-1 " colspan="10">Loading All Businesses...</td>
+                        <td class="py-1 " colspan="11">Loading All Businesses...</td>
 
                      </tr>
 
@@ -205,37 +207,6 @@
       <div class="spinner"></div>
    </div>
 
-   <!--  Stock Barcode Modal -->
-   <form class="modal-form getBarcodeImageContainerModal" name="updateCategory">
-      <div class="card getBarcodeImageContainer modal  ">
-         <div>
-            <h1 class="heading-text addItemName">Stock Barcode</h1>
-         </div>
-
-         <h3 class="heading-minitext mt-2">Stock Name: <span class="barcode-Stock_name"></span></h3>
-
-         <h3 class="heading-minitext mt-2">Stock Id: <span class="barcode-Stock_id"></span></h3>
-
-         <h3 class="heading-minitext mt-2">Stock Barcode: <span class="barcode-Stock_barcode"></span></h3>
-
-         <img id="barcode-image" class="mt-1 " />
-
-         <div class="toast-actions center-button mt-2 " style="display: flex; align-items: center; gap: 1.5rem;">
-            <button class="hero-btn-dark downloadBarcodeImageBtn has-spinner force-m-0" type="button">
-               <span class="btn-text">Download</span>
-               <span class="btn-spinner hidden"></span>
-            </button>
-
-            <button class="hero-btn-dark closeBarcodeModalBtn has-spinner force-m-0" type="button">
-               <span class="btn-text">Close</span>
-               <span class="btn-spinner hidden"></span>
-            </button>
-         </div>
-
-         <div class="close closeModal" id="">&times;</div>
-      </div>
-   </form>
-
    <!-- Delete Stock Modal -->
    <form class="modal-form deleteStockContainerModal " name="modal">
 
@@ -284,414 +255,91 @@
       </div>
    </form>
 
-   <form class="modal-form updateCategoryModal" name="updateCategory">
-      <div class="card updateCategory modal ">
-         <div>
-            <h1 class="heading-text addItemName">Update Category</h1>
-         </div>
-
-         <div class="modal-form_input">
-            <label for="updateCategoryName">Category Name</label>
-
-            <input id="updateCategoryName" type="text" placeholder="Category Name" name="updateCategoryName" required>
-         </div>
-
-         <div class="modal-form_input">
-            <label for="updateCategoryDescription">Category Description</label>
-
-            <input id="updateCategoryDescription" type="text" placeholder="Category Description"
-               name="updateCategoryDescription" required>
-         </div>
-
-         <div class="center-button">
-            <button class="hero-btn-dark updateCategoryModalBtn" id="updateCategoryModalBtn">
-               <span class="btn-text">update Category</span>
-               <span class="btn-spinner hidden"></span>
-            </button>
-         </div>
-
-         <div class="close closeModal" id="">&times;</div>
-      </div>
-   </form>
-
-   <!-- Update Stock Product -->
-   <form class="modal-form updateStockModal" name="updateStock">
-      <div class="card updateStock modal  ">
-         <div>
-            <h1 class="heading-text ">Update Stock</h1>
-         </div>
-
-
-         <!-- Update Name -->
-         <div class="modal-form_input">
-            <label for="updateStockName">Product Name</label>
-
-            <input id="updateStockName" type="text" placeholder="Enter Product Name" name="updateStockName" required>
-         </div>
-
-         <!-- Update Description -->
-         <div class="modal-form_input">
-            <label for="updateStockDescription">Product Description</label>
-
-            <input id="updateStockDescription" type="text" placeholder="Enter Product Description"
-               name="updateStockDescription" required>
-         </div>
-
-         <!-- Update Amount Bought  -->
-         <div class="modal-form_input">
-            <label for="StockBoughtPrice">Purchase Price</label>
-
-            <div class="naira-input-container">
-               <input id="updateStockBoughtPrice" type="text" placeholder="Enter Purchase Price"
-                  name="updateStockBoughtPrice" required>
-               <span class="naira">&#x20A6;</span>
-            </div>
-         </div>
-
-         <!-- Update Amount to Sell  -->
-         <div class="modal-form_input">
-            <label for="StockSellingPrice">Selling Price</label>
-
-            <div class="naira-input-container">
-               <input id="updateStockSellingPrice" type="text" placeholder="Enter Selling  Price"
-                  name="updateStockSellingPrice" required>
-               <span class="naira">&#x20A6;</span>
-            </div>
-         </div>
-
-
-         <!-- Update Quantity -->
-         <div class="modal-form_input">
-            <label for="StockQuantity">Product Quantity</label>
-
-            <!-- <div class="naira-input-container"> -->
-            <input id="updateStockQuantity" type="text" placeholder="Enter Product Quantity" name="updateStockQuantity"
-               required>
-            <!-- </div> -->
-         </div>
-
-         <!-- Update Unit Type -->
-         <div class="modal-form_input">
-            <label for="updateStockUnitType">Unit Type</label>
-
-            <select id="updateStockUnitType" class="form-control" required>
-               <option value="">Select a Unit Type</option>
-               <option value="per_item">Per Item</option>
-               <option value="dozen">Dozen</option>
-               <option value="cartons">Cartons</option>
-               <option value="liters">Liters</option>
-               <option value="yard">Yard</option>
-               <option value="gram">Gram</option>
-               <option value="kilogram">Kilogram</option>
-            </select>
-         </div>
-
-
-
-         <div class="center-button">
-
-            <button class="hero-btn-dark updateStockModalBtn" id="updateStockModalBtn" type="submit">
-               <span class="btn-text">update Stock</span>
-               <span class="btn-spinner hidden"></span>
-            </button>
-         </div>
-
-         <div class="close closeModal" id="">&times;</div>
-      </div>
-   </form>
-
-   <!-- Add New Stock -->
-   <form class="modal-form addStockModal" name="modal">
-      <div class="card addStock modal ">
-         <div>
-            <h1 class="heading-text  addItemName">Add New Stock</h1>
-         </div>
-
-         <!-- Assign Add Stock Inventory to shop -->
-         <div class="modal-form_input">
-            <label for="stockinventoryShopDropdown">Select Shop</label>
-
-            <select id="stockinventoryShopDropdown" class="form-control" required>
-               <option value="">Select a shop</option>
-               <!-- <option value="1">Loading Shops...</option> -->
-
-               <!-- Add Main shops dynamically -->
-            </select>
-         </div>
-
-         <!-- Stock Category -->
-         <div class="modal-form_input">
-            <label for="addStockCategory">Stock Category</label>
-
-            <select id="addStockCategory" class="form-control" required>
-               <option value="">Select a Category</option>
-               <option value="01">Category 1</option>
-               <option value="02">Category 2</option>
-               <option value="03">Category 3</option>
-            </select>
-         </div>
-
-         <!-- Stock Name -->
-         <div class="modal-form_input">
-            <label for="addStockName">Product Name</label>
-
-            <input id="addStockName" type="text" placeholder="Enter Product Name" name="addStockName" required>
-         </div>
-
-         <!-- Stock Description -->
-         <div class="modal-form_input">
-            <label for="addStockDescription">Product Description</label>
-
-            <input id="addStockDescription" type="text" placeholder="Enter Product Description"
-               name="addStockDescription" required>
-         </div>
-
-         <!-- Stock Barcode -->
-         <!-- <div class="modal-form_input">
-            <label for="addStockDescription">Stock Barcode</label>
-
-            <div class="subscript-container">
-               <input id="addStockBarcode" type="number" placeholder="Leave blank to auto-generate"
-                  name="addStockBarcode">
-               <small id="subscript-info">If Stock already has a barcode, scan or type it here.</small>
-            </div>
-         </div> -->
-
-         <!-- Amount Bought -->
-         <div class="modal-form_input">
-            <label for="StockBoughtPrice">Purchase Price</label>
-
-            <div class="naira-input-container">
-               <input id="addStockBoughtPrice" type="text" placeholder="Enter Purchase Price" name="addStockBoughtPrice"
-                  required>
-               <span class="naira">&#x20A6;</span>
-            </div>
-         </div>
-
-         <!-- Amount to Sell -->
-         <div class="modal-form_input">
-            <label for="StockSellingPrice">Selling Price</label>
-
-            <div class="naira-input-container">
-               <input id="addStockSellingPrice" type="text" placeholder="Enter Selling  Price"
-                  name="addStockSellingPrice" required>
-               <span class="naira">&#x20A6;</span>
-            </div>
-         </div>
-         <!-- Date Purchased -->
-         <div class="modal-form_input">
-            <label for="addStockDatePurchased">Date Purchased</label>
-
-            <input type="date" id="addStockDatePurchased" required>
-         </div>
-
-         <!-- Stock Quantity -->
-         <div class="modal-form_input">
-            <label for="StockQuantity">Product Quantity</label>
-
-            <!-- <div class="naira-input-container"> -->
-            <input id="addStockQuantity" type="text" placeholder="Enter Product Quantity" name="addStockQuantity"
-               required>
-            <!-- </div> -->
-         </div>
-
-         <!-- Stock Unit Type -->
-         <div class="modal-form_input">
-            <label for="addStockUnitType">Unit Type</label>
-
-            <select id="addStockUnitType" class="form-control" required>
-               <option value="">Select a Unit Type</option>
-               <option value="per_item">Per Item</option>
-               <option value="dozen">Dozen</option>
-               <option value="cartons">Cartons</option>
-               <option value="liters">Liters</option>
-               <option value="yard">Yard</option>
-               <option value="gram">Gram</option>
-               <option value="kilogram">Kilogram</option>
-            </select>
-         </div>
-
-         <div class="center-button">
-
-            <button class="hero-btn-dark addStockItemSubmitBtn" id="addStockItemSubmitBtn">
-               <span class="btn-text">Add New Stock</span>
-               <span class="btn-spinner hidden"></span>
-            </button>
-         </div>
-
-         <div class="close closeModal" id="">&times;</div>
-      </div>
-   </form>
-
-   <!-- Restock -->
-   <form class="modal-form restockModal" name="modal">
-      <div class="card restock modal ">
-         <div>
-            <h1 class="heading-text  addItemName">Restock</h1>
-         </div>
-
-         <!-- Assign Add Existing Inventory to shop -->
-         <div class="modal-form_input">
-            <label for="restockShopDropdown">Select Shop</label>
-
-            <select id="restockShopDropdown" class="form-control">
-               <option value="">Select a shop</option>
-               <!-- <option value="1">Loading Shops...</option> -->
-
-               <!-- Add Main shops dynamically -->
-            </select>
-         </div>
-
-         <div class="restockSearch-section mb-2">
-
-            <div class="sellProduct-method-form_input ">
-               <div class="search-input-container">
-                  <input type="search" id="searchStockProdutItem" class="searchStockProdutItem"
-                     placeholder="Search Stock Name or Description ">
-                  <span class="searchIcon"><i class="fa-solid fa-magnifying-glass mr-2"></i></span>
-               </div>
-            </div>
-         </div>
-
-         <div class="restock-method-form_input mt-2">
-
-            <div class="input-container restockProductNameDiv">
-               <input type="text" id="stockNameInput" disabled required>
-               <i class="fa fa-times clear-icon" id="clearIcon" aria-hidden="true"></i>
-            </div>
-
-            <ul class="autocomplete-list" id="restockAutocompleteList"></ul>
-         </div>
-
-         <!-- New / Restock Quantity Input -->
-
-         <div class="modal-form_input">
-            <label for="newStockQuantity">Restock Quantity</label>
-
-            <div class="subscript-container">
-               <input id="restockQuantityAvailable" type="text" placeholder="Enter Restock Quantity"
-                  name="restockQuantityAvailable" required>
-               <small id="subscript-info">Current Quantity Available:
-                  <span class="previousStockQuantityAvailable"></span> </small>
-            </div>
-         </div>
-
-         <div class="center-button">
-
-            <button class="hero-btn-dark restockModalBtn" id="restockModalBtn">
-               <span class="btn-text">Restock Item</span>
-               <span class="btn-spinner hidden"></span>
-            </button>
-         </div>
-
-         <div class="close closeModal" id="">&times;</div>
-      </div>
-   </form>
-
-   <!-- Add Category Modal -->
-   <form class="modal-form addCategoryModal" name="modal">
-      <div class="card addCategory modal">
-         <div>
-            <h1 class="heading-text  addItemName">Add Stock Category</h1>
-         </div>
-
-         <!-- Category Name -->
-         <div class="modal-form_input">
-            <label for="addCategoryName">Category Name</label>
-
-            <input id="addCategoryName" type="text" placeholder="Enter Category Name" name="addCategoryName" required>
-         </div>
-
-         <!-- Category Description -->
-         <div class="modal-form_input">
-            <label for="addCategoryDescription">Category Description</label>
-
-            <input id="addCategoryDescription" type="text" placeholder="Enter Category Description"
-               name="addCategoryDescription" required>
-         </div>
-
-         <div class="center-button">
-
-            <button class="hero-btn-dark addStockCategorySubmitBtn" id="addStockCategorySubmitBtn">
-               <span class="btn-text">Add Stock Category</span>
-               <span class="btn-spinner hidden"></span>
-            </button>
-         </div>
-
-         <div class="close closeModal" id="">&times;</div>
-      </div>
-   </form>
-
-   <form class="modal-form createShopModal" name="modal">
-      <div class="card createShop modal">
-         <div>
-            <h1 class="heading-text">Create Shop</h1>
-         </div>
-
-         <!-- Use my Business Info -->
-         <div class="modal-form_input mb-1">
-            <div class="checkbox">
-               <div class="checkbox-container">
-                  <input id="useBusinessInfo" type="checkbox" name="useBusinessInfo">
-                  <label for="useBusinessInfo">Use my Business Info</label>
-               </div>
-            </div>
-         </div>
-
-
-         <!-- Shop Name -->
-         <div class="modal-form_input">
-            <label for="shopName">Shop Name</label>
-
-            <input id="shopName" type="text" placeholder="Enter Shop Name" name="shopName" required>
-         </div>
-
-         <!-- Shop Address -->
-         <div class="modal-form_input">
-            <label for="shopAddress">Shop Address</label>
-
-            <input id="shopAddress" type="text" placeholder="Enter Shop Address" name="shopAddress" required>
-         </div>
-
-         <!-- Service Type -->
-         <div class="modal-form_input mb-1">
-            <label for="serviceType" class="heading-subtext">Service Type</label>
-
-            <div class="checkbox">
-               <div class="checkbox-container">
-                  <input id="posShopCheckbox" type="radio" name="serviceType" value="POS_TRANSACTIONS">
-                  <label for="posShopCheckbox">POS</label>
+   <!-- Business Details Modal -->
+   <div class="modal-form businessDetailModal businessDetailModalContainer" name="modal">
+      <div class="card businessDetails modal ">
+         <div class="reports mt-4 mb-4">
+            <div class="reports-method">
+
+               <div>
+                  <h1 class="heading-text center mb-0" id="businessDetailName"></h1>
+                  <h3 class="heading-minitext center mb-2 center-text" id="businessDetailAddress"></h3>
                </div>
 
-               <div class="checkbox-container">
-                  <input id="sellShopCheckbox" type="radio" name="serviceType" value="INVENTORY_SALES">
-                  <label for="sellShopCheckbox">SELL</label>
+               <h2 class="heading-minitext mb-1"><strong>Business ID:</strong> <span id="businessDetailId"></span></h2>
+               <h2 class="heading-minitext mb-1"><strong>Phone:</strong> <span id="businessDetailPhone"></span></h2>
+               <h2 class="heading-minitext mb-1"><strong>State:</strong> <span id="businessDetailState"></span></h2>
+               <h2 class="heading-minitext mb-1"><strong>CAC Reg No:</strong> <span id="businessDetailCac"></span></h2>
+               <h2 class="heading-minitext mb-1"><strong>Tax ID (TIN):</strong> <span id="businessDetailTin"></span>
+               </h2>
+               <h2 class="heading-minitext mb-1"><strong>NIN:</strong> <span id="businessDetailNin"></span></h2>
+               <h2 class="heading-minitext mb-1"><strong>Business Type:</strong> <span id="businessDetailType"></span>
+               </h2>
+               <h2 class="heading-minitext mb-1"><strong>Staff Size:</strong> <span id="businessDetailStaffSize"></span>
+               </h2>
+               <h2 class="heading-minitext mb-1"><strong>Version Preference:</strong> <span
+                     id="businessDetailVersion"></span></h2>
+               <h2 class="heading-minitext mb-1"><strong>Status:</strong> <span id="businessDetailStatus"></span></h2>
+               <h2 class="heading-minitext mb-1"><strong>Created At:</strong> <span id="businessDetailCreatedAt"></span>
+               </h2>
+               <h2 class="heading-minitext mb-3"><strong>Last Updated:</strong> <span
+                     id="businessDetailUpdatedAt"></span></h2>
+
+               <div class="reports-table-container mt-2">
+                  <h2 class="heading-subtext mb-1 center-text">Registered Shops (<span
+                        id="businessDetailShopCount"></span>)</h2>
+
+                  <table class="itemsTable reports-table">
+                     <thead>
+                        <tr class="table-header-row">
+                           <th class="py-1">Shop ID</th>
+                           <th class="py-1">Shop Name</th>
+                           <th class="py-1">Location</th>
+                           <th class="py-1">Created At</th>
+                        </tr>
+                     </thead>
+                     <tbody id="businessDetailShopsBody">
+                        <!-- JS injects shops here -->
+                        <!-- Example:
+              <tr class="table-body-row">
+                <td class="py-1">98</td>
+                <td class="py-1">Development Business Inc.</td>
+                <td class="py-1">Okuokoko, Delta</td>
+                <td class="py-1">2025-05-23</td>
+              </tr>
+              -->
+                     </tbody>
+                  </table>
                </div>
 
-               <div class="checkbox-container">
-                  <input id="posAndSellShopCheckbox" type="radio" name="serviceType" value="BOTH">
-                  <label for="posAndSellShopCheckbox">POS & SELL</label>
+               <div class="subscription-section mt-3">
+                  <h2 class="heading-subtext mb-1 center-text">Subscription Info</h2>
+                  <h2 class="heading-minitext mb-1"><strong>Status:</strong> <span id="businessDetailSubStatus"></span>
+                  </h2>
+                  <h2 class="heading-minitext mb-1"><strong>Days Remaining:</strong> <span
+                        id="businessDetailSubDays"></span></h2>
+                  <h2 class="heading-minitext mb-1"><strong>Start Date:</strong> <span
+                        id="businessDetailSubStart"></span></h2>
+                  <h2 class="heading-minitext mb-1"><strong>End Date:</strong> <span id="businessDetailSubEnd"></span>
+                  </h2>
+                  <h2 class="heading-minitext mb-1"><strong>Activated By:</strong> <span
+                        id="businessDetailSubActivatedBy"></span></h2>
                </div>
+
+               <div class="center-button mb-2 mt-3">
+                  <button class="hero-btn-dark mt-2 mb-1 refreshBusinessDetailsBtn has-spinner" type="button">
+                     <span class="btn-text">Refresh Details</span>
+                     <span class="btn-spinner hidden"></span>
+                  </button>
+               </div>
+
             </div>
          </div>
 
-         <!-- Assign Staff Checkbox -->
-         <div class="modal-form_input mb-1">
-            <div class="checkbox">
-               <div class="checkbox-container">
-                  <input id="assignStaffCheckbox" type="checkbox" name="assignStaff">
-                  <label for="assignStaffCheckbox">Assign a staff to this shop after creation</label>
-               </div>
-            </div>
-         </div>
-
-         <div class="center-button">
-            <button class="hero-btn-dark" type="submit">Create SHop</button>
-         </div>
-
-         <div class="close closeModal" id="">&times;</div>
+         <div class="close closeModal">&times;</div>
       </div>
-   </form>
+   </div>
+
 
 
    <!-- profile Slider -->

@@ -63,3 +63,27 @@ export async function getAllBusinesses({ page, filters }) {
     throw error;
   }
 }
+
+export async function getBusinessDetailById(businessId) {
+  try {
+    showGlobalLoader();
+    const selectedSaleData = await safeFetch(
+      `${baseUrl}/api/super-admin/businesses/${businessId}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    //  console.log('selectedSaleData received...');
+
+    //  console.log('selectedSaleData:', selectedSaleData);
+    hideGlobalLoader();
+    return selectedSaleData;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error fetching Business Detail:', error.message);
+  }
+}

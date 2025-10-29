@@ -2152,7 +2152,7 @@ export async function renderSalesTable({
 
           row.addEventListener('click', async (e) => {
             updateSalesReceipt(e, row);
-            console.log('Row Clicked');
+            // console.log('Row Clicked');
           });
 
           salesTableBody.appendChild(row);
@@ -2660,3 +2660,45 @@ export async function renderMonthlySummary(year, month, shopId) {
     window[`monthlyPaymentMethodChartInstance_${shopId}`] = paymentChart;
   }
 }
+
+//   "data": {
+//         "id": 96,
+//         "business_name": "Development Business Inc",
+//         "address": "Development Business Inc. Address",
+//         "phone_number": "08123874887",
+//         "state_of_operation": "Delta",
+//         "cac_reg_no": "RC39859",
+//         "tax_id": "TIN3748696969",
+//         "nin": "87396203534",
+//         "business_type": "BOTH",
+//         "staff_size": 5,
+//         "version_preference": "WEB",
+//         "is_active": true,
+//         "created_at": "2025-05-07T17:32:21.000Z",
+//         "updated_at": "2025-06-12T09:14:34.000Z",
+//         "subscription": {
+//             "status": "none",
+//             "days_remaining": null,
+//             "subscription_start": null,
+//             "subscription_end": null,
+//             "activated_by": null,
+//             "last_updated": null,
+//             "history": []
+//         },
+//         "manager": null,
+//         "shops": [
+//             {
+//                 "id": 98,
+//                 "name": "Development Business Inc.",
+//                 "location": "No 17 Otevwe Ochuko Street, Okuokoko,",
+//                 "created_at": "2025-05-23T02:24:55.000Z"
+//             },
+//             {
+//                 "id": 123,
+//                 "name": "Development Business Inc",
+//                 "location": "Development Business Inc. Address",
+//                 "created_at": "2025-08-27T23:01:33.000Z"
+//             }
+//         ],
+//         "shop_count": 2
+//     }

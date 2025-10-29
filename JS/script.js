@@ -944,8 +944,13 @@ export function closeModal() {
 
   const updateStock = document.querySelector('.updateStock');
   const restock = document.querySelector('.restock');
+  const businessDetails = document.querySelector('.businessDetails');
 
   //
+
+  if (businessDetails) {
+    businessDetails.classList.remove('active');
+  }
 
   if (restock) {
     restock.classList.remove('active');
