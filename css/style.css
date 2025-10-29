@@ -4233,7 +4233,8 @@ body.authentication {
   align-items: center;
   min-height: 300px; }
 
-#businessTypeChart {
+#businessTypeChart,
+#monthlySignupsChart {
   height: 40rem;
   display: flex;
   align-items: center;

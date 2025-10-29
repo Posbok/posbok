@@ -29,7 +29,7 @@ if (isSuperAdmin) {
       populateAllBusinessesTableFn: populateAllBusinessesTable,
     });
 
-    await renderPlatformStatisticsCards();
+    loadPlatformStatisticsDashboard();
     await populateAllBusinessesTable({ page: 1, filters: currentFilter });
   });
 }
@@ -283,6 +283,9 @@ export async function populateAllBusinessesTable({
            business_type
          )}</td>
          <td class="py-1 businessSubscriptionStatus">${subscriptionStatus}</td>
+         <td class="py-1 businessSubscriptionStatus">${
+           is_active ? 'Active' : 'Not Active'
+         }</td>
           <td class="py-1 businessShopCount">${shop_count}</td>
 
           <td class="py-1 businessStaffSize">${staff_size}</td>
@@ -481,11 +484,10 @@ export async function renderBusinessDetailsById(e, row) {
   }
 }
 
-let businessChart = null;
-
-export async function renderPlatformStatisticsCards() {
-  showGlobalLoader();
-  if (isSuperAdmin) {
+export async function loadPlatformStatisticsDashboard() {
+  try {
+    showGlobalLoader();
+    // Fetch once
     const platformStatisticsData = await getPlatformStatistics();
 
     console.log(platformStatisticsData);
@@ -497,6 +499,21 @@ export async function renderPlatformStatisticsCards() {
     const businessTypes = platformStatisticsData.data.business_types;
     const monthlySignups = platformStatisticsData.data.trends.monthly_signups;
 
+    hideGlobalLoader();
+
+    renderPlatformStatisticsCards(platformOverview);
+    renderPlatformBusinessType(businessTypes);
+    renderPlatformMonthlySignups(monthlySignups);
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error loading report dashboard:', error);
+  } finally {
+    hideGlobalLoader();
+  }
+}
+
+export async function renderPlatformStatisticsCards(platformOverview) {
+  if (isSuperAdmin) {
     const {
       total_businesses,
       active_subscriptions,
@@ -539,11 +556,19 @@ export async function renderPlatformStatisticsCards() {
     if (recentRegisterationsEl)
       recentRegisterationsEl.textContent = recent_registrations;
 
+    // Area Chart - Trends
+
+    hideGlobalLoader();
+  }
+}
+
+let businessChart = null;
+export async function renderPlatformBusinessType(businessTypes) {
+  if (isSuperAdmin) {
     // Update PIE Chart - Business Types
 
     const sortedTypes = businessTypes.sort((a, b) => b.count - a.count);
 
-    // Extract labels and values
     const labels = sortedTypes.map((t) => {
       if (t.type === 'BOTH') return 'POS + Inventory';
       if (t.type === 'POS_TRANSACTIONS') return 'POS Only';
@@ -601,7 +626,107 @@ export async function renderPlatformStatisticsCards() {
     });
 
     businessChart.render();
+  }
+}
 
-    hideGlobalLoader();
+let monthlySignupChart = null;
+
+export async function renderPlatformMonthlySignups(monthlySignups) {
+  if (isSuperAdmin) {
+    // Update Area Chart - Monthly Signups
+
+    console.log(monthlySignups);
+
+    // Convert "YYYY-MM" → "Mon YYYY"
+    const formattedMonths = monthlySignups.map((item) => {
+      const [year, month] = item.month.split('-');
+      const date = new Date(year, month - 1);
+      return date.toLocaleString('default', {
+        month: 'short',
+        year: 'numeric',
+      });
+    });
+
+    const chartContainer = document.querySelector(`#monthlySignupsChart`);
+    chartContainer.innerHTML = '';
+
+    const options = {
+      chart: {
+        type: 'area',
+        stacked: false,
+        height: 350,
+        toolbar: {
+          show: true,
+          tools: {
+            download: false,
+            selection: false,
+            zoom: false,
+            zoomin: false,
+            zoomout: false,
+            pan: false,
+            reset: true,
+          },
+        },
+        zoom: {
+          enabled: true,
+        },
+      },
+      dataLabels: { enabled: false },
+      markers: { size: 0 },
+      title: {
+        text: `Monthly Signups`,
+        align: 'left',
+        style: {
+          fontSize: '16px',
+          fontWeight: 'bold',
+          color: '#15464C',
+        },
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.5,
+          opacityTo: 0,
+          stops: [0, 90, 100],
+        },
+      },
+      series: [
+        {
+          name: 'Number Of Signup',
+          data: monthlySignups.map((m) => m.count),
+        },
+      ],
+      xaxis: {
+        categories: formattedMonths,
+        title: { text: 'Month' },
+        labels: {
+          rotate: -45,
+          style: { fontSize: '11px' },
+        },
+      },
+      yaxis: {
+        title: { text: 'Number Of Signup' },
+      },
+      tooltip: {
+        y: {
+          formatter: (val) => `${val}`,
+        },
+      },
+      responsive: [
+        {
+          breakpoint: 768,
+          options: {
+            chart: { height: 300 },
+            xaxis: {
+              labels: { rotate: -90 },
+            },
+          },
+        },
+      ],
+    };
+
+    monthlySignupChart = new ApexCharts(chartContainer, options);
+    monthlySignupChart.render();
   }
 }
