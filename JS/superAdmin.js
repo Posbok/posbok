@@ -10,6 +10,7 @@ import { closeModal, showToast } from './script.js';
 import {
   getAllBusinesses,
   getBusinessDetailById,
+  getPlatformStatistics,
 } from './superAdmin/superAdminResources.js';
 
 const userData = config.userData;
@@ -28,6 +29,7 @@ if (isSuperAdmin) {
       populateAllBusinessesTableFn: populateAllBusinessesTable,
     });
 
+    await renderPlatformStatisticsCards();
     await populateAllBusinessesTable({ page: 1, filters: currentFilter });
   });
 }
@@ -425,8 +427,8 @@ export async function renderBusinessDetailsById(e, row) {
       : 'Inactive';
     document.getElementById('businessDetailCreatedAt').textContent =
       formatDateTimeReadable(created_at);
-    document.getElementById('businessDetailUpdatedAt').textContent =
-      formatDateTimeReadable(updated_at);
+    //  document.getElementById('businessDetailUpdatedAt').textContent =
+    //    formatDateTimeReadable(updated_at);
     document.getElementById('businessDetailShopCount').textContent = shop_count
       ? shop_count
       : '-';
@@ -475,6 +477,131 @@ export async function renderBusinessDetailsById(e, row) {
     showToast('fail', `❎ Failed to load sale details`);
     closeModal();
   } finally {
+    hideGlobalLoader();
+  }
+}
+
+let businessChart = null;
+
+export async function renderPlatformStatisticsCards() {
+  showGlobalLoader();
+  if (isSuperAdmin) {
+    const platformStatisticsData = await getPlatformStatistics();
+
+    console.log(platformStatisticsData);
+
+    if (!platformStatisticsData)
+      throw new Error(platformStatisticsData.message || 'Failed to fetch');
+
+    const platformOverview = platformStatisticsData.data.overview;
+    const businessTypes = platformStatisticsData.data.business_types;
+    const monthlySignups = platformStatisticsData.data.trends.monthly_signups;
+
+    const {
+      total_businesses,
+      active_subscriptions,
+      expired_subscriptions,
+      restricted_businesses,
+      registered_only,
+      recent_registrations,
+    } = platformOverview;
+
+    // Update the UI Cards for Platfirm Overview
+    const totalBusinessesEl = document.querySelector('#totalBusinesses');
+
+    if (totalBusinessesEl) totalBusinessesEl.textContent = total_businesses;
+
+    const activeSubscriptionsEl = document.getElementById(
+      'activeSubscriptions'
+    );
+
+    if (activeSubscriptionsEl)
+      activeSubscriptionsEl.textContent = active_subscriptions;
+
+    const expiredSubscriptionsEl = document.getElementById(
+      'expiredSubscriptions'
+    );
+    if (expiredSubscriptionsEl)
+      expiredSubscriptionsEl.textContent = expired_subscriptions;
+
+    const restrictedBusinessesEl = document.getElementById(
+      'restrictedBusinesses'
+    );
+    if (restrictedBusinessesEl)
+      restrictedBusinessesEl.textContent = restricted_businesses;
+
+    const registeredOnlyEl = document.getElementById('registeredOnly');
+    if (registeredOnlyEl) registeredOnlyEl.textContent = registered_only;
+
+    const recentRegisterationsEl = document.getElementById(
+      'recentRegisterations'
+    );
+    if (recentRegisterationsEl)
+      recentRegisterationsEl.textContent = recent_registrations;
+
+    // Update PIE Chart - Business Types
+
+    const sortedTypes = businessTypes.sort((a, b) => b.count - a.count);
+
+    // Extract labels and values
+    const labels = sortedTypes.map((t) => {
+      if (t.type === 'BOTH') return 'POS + Inventory';
+      if (t.type === 'POS_TRANSACTIONS') return 'POS Only';
+      if (t.type === 'INVENTORY_SALES') return 'Inventory Only';
+      return t.type;
+    });
+    const counts = sortedTypes.map((t) => t.count);
+
+    const chartEl = document.querySelector('#businessTypeChart');
+
+    if (chartEl) {
+      chartEl.innerHTML = '';
+
+      if (businessChart) {
+        chartEl.innerHTML = '';
+        businessChart.destroy();
+      }
+    }
+
+    businessChart = new ApexCharts(chartEl, {
+      chart: {
+        type: 'donut',
+        height: 300,
+      },
+      series: counts,
+      labels: labels,
+      colors: ['#007bff', '#51cf66', '#ff6b6b'], // customize as desired
+      legend: {
+        position: 'bottom',
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: (val, opts) => `${opts.w.config.series[opts.seriesIndex]}`,
+      },
+      tooltip: {
+        y: {
+          formatter: (val) => `${val} Businesses`,
+        },
+      },
+      plotOptions: {
+        pie: {
+          donut: {
+            size: '65%',
+            labels: {
+              show: true,
+              total: {
+                show: true,
+                label: 'Total',
+                formatter: () => counts.reduce((sum, num) => sum + num, 0),
+              },
+            },
+          },
+        },
+      },
+    });
+
+    businessChart.render();
+
     hideGlobalLoader();
   }
 }

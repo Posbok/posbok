@@ -29,6 +29,9 @@
    <!-- JsBarcode CDN -->
    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 
+   <!-- ApexCharts CDN -->
+   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
 
    <!-- <script defer type="module" src="JS/script.js"></script>
    <script defer type="module" src="JS/goods.js"></script> -->
@@ -95,9 +98,57 @@
          </div>
       </header>
 
+      <section class=" superAdmin reports-section platformStatisticsSection mb-4">
+         <h1 class="heading-text mt-4 mb-4">Platform Statistics</h1>
+
+         <div class="platform-summary">
+            <div class="summary-card">
+               <i class="fa-solid fa-building icon mb-1"></i>
+               <h2>Total Businesses</h2>
+               <p class="value" id="totalBusinesses">--</p>
+            </div>
+
+            <div class="summary-card">
+               <i class="fa-solid fa-bolt icon mb-1"></i>
+               <h2>Active Subscriptions</h2>
+               <p class="value" id="activeSubscriptions">--</p>
+            </div>
+
+            <div class="summary-card">
+               <i class="fa-solid fa-clock icon mb-1"></i>
+               <h2> Expired Subscriptions</h2>
+               <p class="value" id="expiredSubscriptions">--</p>
+            </div>
+
+            <div class="summary-card">
+               <i class="fa-solid fa-user-lock icon mb-1"></i>
+               <h2>Restricted Businesses</h2>
+               <p class="value" id="restrictedBusinesses">--</p>
+            </div>
+
+            <div class="summary-card">
+               <i class="fa-solid fa-clipboard-list icon mb-1"></i>
+               <h2>Registered Only</h2>
+               <p class="value" id="registeredOnly">--</p>
+            </div>
+
+            <div class="summary-card">
+               <i class="fa-solid fa-user-plus icon mb-1"></i>
+               <h2>Recent Registerations</h2>
+               <p class="value" id="recentRegisterations">--</p>
+            </div>
+         </div>
+
+         <div class="business-type">
+            <h2 class="heading-subtext mt-4 mb-2">Business Type</h2>
+            <div id="businessTypeChart" class="chart">
+               <p class="heading-subtext">Loading Platform Statistics...</p>
+            </div>
+         </div>
+      </section>
 
       <!-- Super Admin Busnesses Table -->
-      <div class="superAdmin card">
+      <section class="superAdmin card">
          <div class="superAdmin-method">
             <h2 class="heading-text mb-2">
                Business Management
@@ -173,7 +224,7 @@
 
             </div>
          </div>
-      </div>
+      </section>
 
    </main>
 
@@ -280,10 +331,11 @@
                <h2 class="heading-minitext mb-1"><strong>Version Preference:</strong> <span
                      id="businessDetailVersion"></span></h2>
                <h2 class="heading-minitext mb-1"><strong>Status:</strong> <span id="businessDetailStatus"></span></h2>
-               <h2 class="heading-minitext mb-1"><strong>Created At:</strong> <span id="businessDetailCreatedAt"></span>
+               <h2 class="heading-minitext mb-1"><strong>Date Created:</strong> <span
+                     id="businessDetailCreatedAt"></span>
                </h2>
-               <h2 class="heading-minitext mb-3"><strong>Last Updated:</strong> <span
-                     id="businessDetailUpdatedAt"></span></h2>
+               <!-- <h2 class="heading-minitext mb-3"><strong>Last Updated:</strong> <span
+                     id="businessDetailUpdatedAt"></span></h2> -->
 
                <div class="reports-table-container mt-2">
                   <h2 class="heading-subtext mb-1 center-text">Registered Shops (<span

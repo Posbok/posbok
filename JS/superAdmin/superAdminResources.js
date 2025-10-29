@@ -87,3 +87,27 @@ export async function getBusinessDetailById(businessId) {
     console.error('Error fetching Business Detail:', error.message);
   }
 }
+
+export async function getPlatformStatistics() {
+  try {
+    showGlobalLoader();
+    const selectedSaleData = await safeFetch(
+      `${baseUrl}/api/super-admin/statistics`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    //  console.log('selectedSaleData received...');
+
+    //  console.log('selectedSaleData:', selectedSaleData);
+    hideGlobalLoader();
+    return selectedSaleData;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error fetching Business Detail:', error.message);
+  }
+}

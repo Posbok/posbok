@@ -477,6 +477,7 @@
 .productSales-summary,
 .sales-summary,
 .financial-summary,
+.platform-summary,
 .performance-highlights,
 .summary-grid,
 .posTransactions-summary {
@@ -493,6 +494,10 @@
       padding: 1rem 1.5rem;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
       text-align: center;
+
+      .icon {
+         font-size: 2rem;
+      }
 
       h4 {
          margin: 0 0 0.5rem;
@@ -560,6 +565,13 @@
    align-items: center;
    min-height: 300px;
 
+}
+
+#businessTypeChart {
+   height: 40rem;
+   display: flex;
+   align-items: center;
+   justify-content: center;
 }
 
 .reports-section {
