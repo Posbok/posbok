@@ -2,6 +2,7 @@ import config from '../../config.js';
 import { safeFetch } from '../apiServices/utility/safeFetch.js';
 
 import { hideGlobalLoader, showGlobalLoader } from '../helper/helper.js';
+import { closeModal } from '../script.js';
 import { populateAllBusinessesTable } from '../superAdmin.js';
 
 const baseUrl = config.baseUrl;
@@ -176,6 +177,70 @@ export async function restrictBusiness(businessRestrictionDetails) {
   } catch (error) {
     //  hideGlobalLoader();
     console.error('Error Restricting Business:', error.message);
+    throw error;
+  }
+}
+
+export async function notifyBusiness(businessNotificationDetails) {
+  try {
+    //  showGlobalLoader();
+    const notifyBusinessData = await safeFetch(
+      `${baseUrl}/api/super-admin/send-notice`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(businessNotificationDetails),
+      }
+    );
+
+    if (notifyBusinessData) {
+      // console.log('Business Subscription restrictd successfully:', notifyBusinessData);
+      // showToast('success', `✅ ${notifyBusinessData.message}`);
+      closeModal();
+    }
+
+    //  console.log('notifyBusinessData received...');
+
+    //  console.log('notifyBusinessData:', notifyBusinessData);
+    //  hideGlobalLoader();
+    return notifyBusinessData;
+  } catch (error) {
+    //  hideGlobalLoader();
+    console.error('Error Restricting Business:', error.message);
+    throw error;
+  }
+}
+
+export async function deleteBusiness(businessId) {
+  try {
+    //  showGlobalLoader();
+    const deleteBusinessData = await safeFetch(
+      `${baseUrl}/api/super-admin/businesses/${businessId}`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    if (deleteBusinessData) {
+      // console.log('Business Subscription restrictd successfully:', deleteBusinessData);
+      // showToast('success', `✅ ${deleteBusinessData.message}`);
+      closeModal();
+    }
+
+    //  console.log('deleteBusinessData received...');
+
+    //  console.log('deleteBusinessData:', deleteBusinessData);
+    //  hideGlobalLoader();
+    return deleteBusinessData;
+  } catch (error) {
+    //  hideGlobalLoader();
+    console.error('Error Deleting Business:', error.message);
     throw error;
   }
 }

@@ -49,6 +49,14 @@ export function clearFormInputs() {
     '.activateBusinessContainerModal'
   );
 
+  const restrictBusinessContainerForm = document.querySelector(
+    '.restrictBusinessContainerModal'
+  );
+
+  const notifyBusinessContainerForm = document.querySelector(
+    '.notifyBusinessContainerModal'
+  );
+
   //   Clear Search Input
   const searchProductInput = document.querySelector('.searchProductInput');
   if (searchProductInput) searchProductInput.value = '';
@@ -60,7 +68,30 @@ export function clearFormInputs() {
 
   // Clear Form Implementations
 
-  // Clear Create Staff Form Inputs
+  if (notifyBusinessContainerForm) {
+    notifyBusinessContainerForm
+      .querySelectorAll('input, textarea, select')
+      .forEach((el) => {
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          el.checked = false;
+        } else {
+          el.value = '';
+        }
+      });
+  }
+
+  if (restrictBusinessContainerForm) {
+    restrictBusinessContainerForm
+      .querySelectorAll('input, textarea, select')
+      .forEach((el) => {
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          el.checked = false;
+        } else {
+          el.value = '';
+        }
+      });
+  }
+
   if (activateBusinessContainerForm) {
     activateBusinessContainerForm
       .querySelectorAll('input, textarea, select')

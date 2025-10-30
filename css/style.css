@@ -446,6 +446,7 @@ label {
     visibility: visible; }
 
 input,
+textarea,
 select {
   height: 100%;
   width: 100%;
@@ -462,18 +463,25 @@ select {
   transition: all 0.3s ease; }
   @media only screen and (max-width: 30.5em) {
     input,
+    textarea,
     select {
       width: 100%; } }
   input#productInput, input#stockNameInput,
+  textarea#productInput,
+  textarea#stockNameInput,
   select#productInput,
   select#stockNameInput {
     width: 40rem; }
     @media only screen and (max-width: 30.5em) {
       input#productInput, input#stockNameInput,
+      textarea#productInput,
+      textarea#stockNameInput,
       select#productInput,
       select#stockNameInput {
         width: 95%; } }
   input:focus, input:active,
+  textarea:focus,
+  textarea:active,
   select:focus,
   select:active {
     background-color: #eef1f6;
@@ -846,61 +854,89 @@ select {
   .business-form_input label {
     width: 19rem; }
   .addProduct-form_input input,
+  .addProduct-form_input textarea,
   .addProduct-form_input select,
   .sellProduct-form_input input,
+  .sellProduct-form_input textarea,
   .sellProduct-form_input select,
   .adminSellProduct-form_input input,
+  .adminSellProduct-form_input textarea,
   .adminSellProduct-form_input select,
   .updateProduct-form_input input,
+  .updateProduct-form_input textarea,
   .updateProduct-form_input select,
   .depositPosCapital-form_input input,
+  .depositPosCapital-form_input textarea,
   .depositPosCapital-form_input select,
   .fundMachine-form_input input,
+  .fundMachine-form_input textarea,
   .fundMachine-form_input select,
   .modal-form_input input,
+  .modal-form_input textarea,
   .modal-form_input select,
   .slider-form_input input,
+  .slider-form_input textarea,
   .slider-form_input select,
   .signup-form_input input,
+  .signup-form_input textarea,
   .signup-form_input select,
   .addUser-form_input input,
+  .addUser-form_input textarea,
   .addUser-form_input select,
   .addPosCharge-form_input input,
+  .addPosCharge-form_input textarea,
   .addPosCharge-form_input select,
   .addMachineFee-form_input input,
+  .addMachineFee-form_input textarea,
   .addMachineFee-form_input select,
   .inventory-form_input input,
+  .inventory-form_input textarea,
   .inventory-form_input select,
   .business-form_input input,
+  .business-form_input textarea,
   .business-form_input select {
     width: 100%; }
     .addProduct-form_input input:disabled,
+    .addProduct-form_input textarea:disabled,
     .addProduct-form_input select:disabled,
     .sellProduct-form_input input:disabled,
+    .sellProduct-form_input textarea:disabled,
     .sellProduct-form_input select:disabled,
     .adminSellProduct-form_input input:disabled,
+    .adminSellProduct-form_input textarea:disabled,
     .adminSellProduct-form_input select:disabled,
     .updateProduct-form_input input:disabled,
+    .updateProduct-form_input textarea:disabled,
     .updateProduct-form_input select:disabled,
     .depositPosCapital-form_input input:disabled,
+    .depositPosCapital-form_input textarea:disabled,
     .depositPosCapital-form_input select:disabled,
     .fundMachine-form_input input:disabled,
+    .fundMachine-form_input textarea:disabled,
     .fundMachine-form_input select:disabled,
     .modal-form_input input:disabled,
+    .modal-form_input textarea:disabled,
     .modal-form_input select:disabled,
     .slider-form_input input:disabled,
+    .slider-form_input textarea:disabled,
     .slider-form_input select:disabled,
     .signup-form_input input:disabled,
+    .signup-form_input textarea:disabled,
     .signup-form_input select:disabled,
     .addUser-form_input input:disabled,
+    .addUser-form_input textarea:disabled,
     .addUser-form_input select:disabled,
     .addPosCharge-form_input input:disabled,
+    .addPosCharge-form_input textarea:disabled,
     .addPosCharge-form_input select:disabled,
     .addMachineFee-form_input input:disabled,
+    .addMachineFee-form_input textarea:disabled,
     .addMachineFee-form_input select:disabled,
     .inventory-form_input input:disabled,
+    .inventory-form_input textarea:disabled,
     .inventory-form_input select:disabled,
     .business-form_input input:disabled,
+    .business-form_input textarea:disabled,
     .business-form_input select:disabled {
       background-color: #eef1f6;
       box-shadow: 0 0 0.2rem 0.5rem rgba(248, 153, 66, 0.36);

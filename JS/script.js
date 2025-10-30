@@ -948,8 +948,36 @@ export function closeModal() {
   const activateBusinessContainer = document.querySelector(
     '.activateBusinessContainer'
   );
+  const restrictBusinessContainer = document.querySelector(
+    '.restrictBusinessContainer'
+  );
+  const notifyBusinessContainer = document.querySelector(
+    '.notifyBusinessContainer'
+  );
+  const deleteBusinessContainer = document.querySelector(
+    '.deleteBusinessContainer'
+  );
+  const updateBusinessContainer = document.querySelector(
+    '.updateBusinessContainer'
+  );
 
   //
+
+  if (updateBusinessContainer) {
+    updateBusinessContainer.classList.remove('active');
+  }
+
+  if (deleteBusinessContainer) {
+    deleteBusinessContainer.classList.remove('active');
+  }
+
+  if (notifyBusinessContainer) {
+    notifyBusinessContainer.classList.remove('active');
+  }
+
+  if (restrictBusinessContainer) {
+    restrictBusinessContainer.classList.remove('active');
+  }
 
   if (activateBusinessContainer) {
     activateBusinessContainer.classList.remove('active');

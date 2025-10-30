@@ -170,9 +170,9 @@
 
                   <select id="businessStatusFilter" name="businessStatusFilter">
                      <option value="">All</option>
-                     <option value="active_subscriptions">Active</option>
-                     <option value="expired_subscriptions">Expired/Unsubscribed</option>
-                     <option value="restricted_businesses">Restricted Businesses</option>
+                     <option value="active">Active</option>
+                     <option value="expired">Expired/Unsubscribed</option>
+                     <option value="restricted">Restricted Businesses</option>
                      <option value="registered_only">Registered Only</option>
                   </select>
                </div>
@@ -325,6 +325,90 @@
       </div>
    </form>
 
+   <!-- Norify Business Modal -->
+   <form class="modal-form notifyBusinessContainerModal " name="modal">
+
+      <div class="card confirmation notifyBusinessContainer modal ">
+         <div>
+            <h1 class="heading-text ">Notify Business </h1>
+         </div>
+
+         <h1 class="business-name-text center-text heading-subtext">Business Name Here
+         </h1>
+
+
+         <div class="modal-form_input">
+            <label for="notificationMessage">Message</label>
+
+            <textarea id="notificationMessage" placeholder="Enter your message" name="notificationMessage" rows="4"
+               cols="50" required></textarea>
+         </div>
+
+         <div class="confirmation-btn_container">
+
+            <button class="hero-btn-dark cancel-close">Cancel</button>
+
+            <button class="hero-btn-dark notifyBusinessButton  mt-2 has-spinner" type="submit">
+               <span class="btn-text">notify Subscription</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+
+
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+
+   <!-- Delete Business Modal -->
+   <form class="modal-form deleteBusinessContainerModal " name="modal">
+
+      <div class="card confirmation deleteBusinessContainer modal ">
+         <h1 class="confirmation-text">Are you sure you want to Delete <span id="confirmation-text-2"
+               style="color: red;"></span> ?
+         </h1>
+
+         <div class="confirmation-btn_container">
+
+            <button class="hero-btn-dark cancel-close">Cancel</button>
+
+            <button class="hero-btn-danger deleteBusinessButton  mt-2 has-spinner" type="submit">
+               <span class="btn-text">Delete Business</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+
+
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <!-- Restrict Business Modal -->
+   <form class="modal-form restrictBusinessContainerModal " name="modal">
+
+      <div class="card confirmation restrictBusinessContainer modal ">
+         <h1 class="confirmation-text">Are you sure you want to Delete <span id="confirmation-text-2"
+               style="color: red;"></span> ?
+         </h1>
+
+         <div class="confirmation-btn_container">
+
+            <button class="hero-btn-dark cancel-close">Cancel</button>
+
+            <button class="hero-btn-danger restrictBusinessButton  mt-2 has-spinner" type="submit">
+               <span class="btn-text">Delete Business</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+
+
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
    <!-- Business Details Modal -->
    <div class="modal-form businessDetailModal businessDetailModalContainer" name="modal">
       <div class="card businessDetails modal ">
@@ -411,7 +495,6 @@
          <div class="close closeModal">&times;</div>
       </div>
    </div>
-
 
 
    <!-- profile Slider -->
