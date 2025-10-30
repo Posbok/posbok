@@ -2,12 +2,15 @@ import config from '../config.js';
 import {
   formatDateTimeReadable,
   formatServicePermission,
+  hideBtnLoader,
   hideGlobalLoader,
+  showBtnLoader,
   showGlobalLoader,
 } from './helper/helper.js';
 import './script.js';
 import { closeModal, showToast } from './script.js';
 import {
+  activateBusinessSubscription,
   getAllBusinesses,
   getBusinessDetailById,
   getPlatformStatistics,
@@ -133,6 +136,96 @@ export function openBusinessDetailsModal() {
   saleDetailModalForm();
 }
 
+// Activate Business Subscription
+
+export function openActivateBusinessSubscriptionModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const activateBusinessContainer = document.querySelector(
+    '.activateBusinessContainer'
+  );
+
+  if (activateBusinessContainer)
+    activateBusinessContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
+export function activateBusinessForm(business) {
+  const form = document.querySelector('.activateBusinessContainerModal');
+  if (!form) return;
+
+  form.dataset.businessId = business.id;
+
+  document.querySelector('.business-name-text').textContent =
+    business.business_name;
+}
+
+export function bindActivateBusinessFormListener() {
+  const form = document.querySelector('.activateBusinessContainerModal');
+  if (!form) return;
+
+  const activateBusinessButton = form.querySelector('.activateBusinessButton');
+  const cancelButton = form.querySelector('.cancel-close');
+
+  console.log(cancelButton);
+
+  if (!form.dataset.bound) {
+    form.dataset.bound = true;
+
+    cancelButton?.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeModal();
+    });
+
+    activateBusinessButton?.addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      const businessId = form.dataset.businessId;
+
+      const subscriptionDurationInput = form.querySelector(
+        '#subscriptionDuration'
+      );
+      const durationDays = Number(subscriptionDurationInput.value);
+
+      if (!businessId) {
+        showToast('fail', '❎ No Business ID found.');
+        return;
+      }
+
+      const businessSubscriptionDetails = {
+        business_id: businessId,
+        duration_days: durationDays,
+      };
+
+      console.log(
+        'Submitting Business Subscription Details with:',
+        businessSubscriptionDetails
+      );
+
+      try {
+        showBtnLoader(activateBusinessButton);
+        await activateBusinessSubscription(businessSubscriptionDetails);
+
+        if (!activateBusinessSubscription) {
+          console.error('fail', activateBusinessSubscription.message);
+          return;
+        }
+
+        hideBtnLoader(activateBusinessButton);
+        closeModal();
+        showToast(
+          'success',
+          '✅ Business Subscription Activated successfully.'
+        );
+      } catch (err) {
+        hideBtnLoader(activateBusinessButton);
+        showToast('fail', `❎ ${err.message}`);
+      }
+    });
+  }
+}
+
 export function saleDetailModalForm() {
   const form = document.querySelector('.businessDetails');
   if (!form) return;
@@ -140,6 +233,7 @@ export function saleDetailModalForm() {
 
 document.addEventListener('DOMContentLoaded', () => {
   bindRenderBusinessDetailById(); // Only once
+  bindActivateBusinessFormListener();
 });
 
 export function bindRenderBusinessDetailById() {
@@ -322,6 +416,41 @@ export async function populateAllBusinessesTable({
 
       row.addEventListener('click', async (e) => {
         renderBusinessDetailsById(e, row, businessId);
+      });
+
+      const activateBusinessButton = row.querySelector(
+        '.activateBusinessButton'
+      );
+
+      activateBusinessButton?.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        showGlobalLoader();
+
+        const businessId = activateBusinessButton.dataset.businessId;
+
+        const activateBusinessContainer = document.querySelector(
+          '.activateBusinessContainer'
+        );
+
+        if (activateBusinessContainer) {
+          // Store businessId in modal container for reference
+          activateBusinessContainer.dataset.businessId = businessId;
+
+          // Fetch Shop detail
+          const businessDetail = await getBusinessDetailById(businessId);
+
+          //   console.log('productDetail', productDetail);
+
+          // Call function to prefill modal inputs
+          if (businessDetail?.data) {
+            hideGlobalLoader();
+            openActivateBusinessSubscriptionModal(); // Show modal after data is ready
+            activateBusinessForm(businessDetail.data);
+          } else {
+            hideGlobalLoader();
+            showToast('fail', '❌ Failed to fetch Business details.');
+          }
+        }
       });
 
       //     <td class="py-1 itemStatus">${

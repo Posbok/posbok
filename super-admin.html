@@ -266,20 +266,31 @@
       <div class="spinner"></div>
    </div>
 
-   <!-- Delete Stock Modal -->
-   <form class="modal-form deleteStockContainerModal " name="modal">
+   <!-- Activate Business Subscription Modal -->
+   <form class="modal-form activateBusinessContainerModal " name="modal">
 
-      <div class="card confirmation deleteStockContainer modal ">
-         <h1 class="confirmation-text">Are you sure you want to Delete <span id="confirmation-text"
-               style="color: red;"></span> from Stock Inventory?
+      <div class="card confirmation activateBusinessContainer modal ">
+         <div>
+            <h1 class="heading-text ">Activate Business Subscription</h1>
+         </div>
+
+         <h1 class="business-name-text center-text heading-subtext">Business Name Here
          </h1>
+
+
+         <div class="modal-form_input">
+            <label for="subscriptionDuration">Subscription Duration</label>
+
+            <input id="subscriptionDuration" type="number" pattern="[0-9]" inputmode="numeric"
+               placeholder="Number of Days" name="subscriptionDuration" required>
+         </div>
 
          <div class="confirmation-btn_container">
 
             <button class="hero-btn-dark cancel-close">Cancel</button>
 
-            <button class="hero-btn-danger deleteStockButton  mt-2 has-spinner" type="submit">
-               <span class="btn-text">Delete Stock</span>
+            <button class="hero-btn-dark activateBusinessButton  mt-2 has-spinner" type="submit">
+               <span class="btn-text">Activate Subscription</span>
                <span class="btn-spinner hidden"></span>
             </button>
 
@@ -290,10 +301,10 @@
       </div>
    </form>
 
-   <!-- Delete Category Modal -->
-   <form class="modal-form deleteCategoryContainerModal " name="modal">
+   <!--  Modal -->
+   <form class="modal-form actiateBusinessContainerModal " name="modal">
 
-      <div class="card confirmation deleteCategoryContainer modal ">
+      <div class="card confirmation activateBuinessContainer modal ">
          <h1 class="confirmation-text">Are you sure you want to Delete <span id="confirmation-text-2"
                style="color: red;"></span> Category?
          </h1>

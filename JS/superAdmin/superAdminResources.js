@@ -64,6 +64,30 @@ export async function getAllBusinesses({ page, filters }) {
   }
 }
 
+export async function getPlatformStatistics() {
+  try {
+    showGlobalLoader();
+    const selectedSaleData = await safeFetch(
+      `${baseUrl}/api/super-admin/statistics`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    //  console.log('selectedSaleData received...');
+
+    //  console.log('selectedSaleData:', selectedSaleData);
+    hideGlobalLoader();
+    return selectedSaleData;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error fetching Business Detail:', error.message);
+  }
+}
+
 export async function getBusinessDetailById(businessId) {
   try {
     showGlobalLoader();
@@ -88,26 +112,37 @@ export async function getBusinessDetailById(businessId) {
   }
 }
 
-export async function getPlatformStatistics() {
+export async function activateBusinessSubscription(
+  businessSubscriptionDetails
+) {
   try {
-    showGlobalLoader();
-    const selectedSaleData = await safeFetch(
-      `${baseUrl}/api/super-admin/statistics`,
+    //  showGlobalLoader();
+    const activateBusinessData = await safeFetch(
+      `${baseUrl}/api/super-admin/activate-subscription`,
       {
-        method: 'GET',
+        method: 'POST',
         headers: {
           Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify(businessSubscriptionDetails),
       }
     );
 
-    //  console.log('selectedSaleData received...');
+    if (activateBusinessData) {
+      // console.log('Business Subscription Activated successfully:', activateBusinessData);
+      // showToast('success', `✅ ${activateBusinessData.message}`);
+      closeModal();
+    }
 
-    //  console.log('selectedSaleData:', selectedSaleData);
-    hideGlobalLoader();
-    return selectedSaleData;
+    //  console.log('activateBusinessData received...');
+
+    //  console.log('activateBusinessData:', activateBusinessData);
+    //  hideGlobalLoader();
+    return activateBusinessData;
   } catch (error) {
-    hideGlobalLoader();
-    console.error('Error fetching Business Detail:', error.message);
+    //  hideGlobalLoader();
+    console.error('Error Activating Business Subscription:', error.message);
+    throw error;
   }
 }

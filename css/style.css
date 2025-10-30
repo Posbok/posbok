@@ -970,12 +970,15 @@ select {
     width: max-content;
     margin: 0; }
 
-.modal-form_input .checkbox,
-.slider-form_input .checkbox {
-  display: block; }
-  .modal-form_input .checkbox-container,
-  .slider-form_input .checkbox-container {
-    margin-top: 1rem; }
+.modal-form_input,
+.slider-form_input {
+  color: #15464C; }
+  .modal-form_input .checkbox,
+  .slider-form_input .checkbox {
+    display: block; }
+    .modal-form_input .checkbox-container,
+    .slider-form_input .checkbox-container {
+      margin-top: 1rem; }
 
 .addUser-form_input .checkbox {
   display: block; }
@@ -1826,6 +1829,8 @@ body.authentication {
   z-index: 10000;
   transition: opacity .3s ease-in-out, visibility .3s ease-in-out;
   overflow-y: auto; }
+  .modal .heading-subtext {
+    color: #15464C; }
   @media only screen and (max-width: 50.3em) {
     .modal {
       padding: 1.7rem;

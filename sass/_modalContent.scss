@@ -14,7 +14,9 @@
    transition: opacity .3s ease-in-out, visibility .3s ease-in-out;
    overflow-y: auto;
 
-
+   .heading-subtext {
+      color: $color-grey-dark-2;
+   }
 
    @media only screen and (max-width:$bp-big) {
       padding: 1.7rem;

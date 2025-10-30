@@ -945,8 +945,15 @@ export function closeModal() {
   const updateStock = document.querySelector('.updateStock');
   const restock = document.querySelector('.restock');
   const businessDetails = document.querySelector('.businessDetails');
+  const activateBusinessContainer = document.querySelector(
+    '.activateBusinessContainer'
+  );
 
   //
+
+  if (activateBusinessContainer) {
+    activateBusinessContainer.classList.remove('active');
+  }
 
   if (businessDetails) {
     businessDetails.classList.remove('active');
