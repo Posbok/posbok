@@ -1,5 +1,6 @@
 import config from '../config.js';
 import {
+  clearFormInputs,
   formatDateTimeReadable,
   formatServicePermission,
   hideBtnLoader,
@@ -14,6 +15,7 @@ import {
   getAllBusinesses,
   getBusinessDetailById,
   getPlatformStatistics,
+  restrictBusiness,
 } from './superAdmin/superAdminResources.js';
 
 const userData = config.userData;
@@ -168,8 +170,6 @@ export function bindActivateBusinessFormListener() {
   const activateBusinessButton = form.querySelector('.activateBusinessButton');
   const cancelButton = form.querySelector('.cancel-close');
 
-  console.log(cancelButton);
-
   if (!form.dataset.bound) {
     form.dataset.bound = true;
 
@@ -194,7 +194,7 @@ export function bindActivateBusinessFormListener() {
       }
 
       const businessSubscriptionDetails = {
-        business_id: businessId,
+        business_id: Number(businessId),
         duration_days: durationDays,
       };
 
@@ -205,21 +205,111 @@ export function bindActivateBusinessFormListener() {
 
       try {
         showBtnLoader(activateBusinessButton);
-        await activateBusinessSubscription(businessSubscriptionDetails);
+        const activateBusinessData = await activateBusinessSubscription(
+          businessSubscriptionDetails
+        );
 
-        if (!activateBusinessSubscription) {
-          console.error('fail', activateBusinessSubscription.message);
+        if (!activateBusinessData) {
+          console.error('fail', activateBusinessData.message);
           return;
         }
 
         hideBtnLoader(activateBusinessButton);
         closeModal();
+        clearFormInputs();
         showToast(
           'success',
-          '✅ Business Subscription Activated successfully.'
+          `${activateBusinessData.message}` ||
+            '✅ Business Subscription Activated successfully.'
         );
       } catch (err) {
         hideBtnLoader(activateBusinessButton);
+        showToast('fail', `❎ ${err.message}`);
+      }
+    });
+  }
+}
+
+// Restrict Business Subscription
+
+export function openRestrictBusinessSubscriptionModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const restrictBusinessContainer = document.querySelector(
+    '.restrictBusinessContainer'
+  );
+
+  if (restrictBusinessContainer)
+    restrictBusinessContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
+export function restrictBusinessForm(business) {
+  const form = document.querySelector('.restrictBusinessContainerModal');
+  if (!form) return;
+
+  form.dataset.businessId = business.id;
+
+  form.querySelector('#confirmation-text-2').textContent =
+    business.business_name;
+}
+
+export function bindRestrictBusinessFormListener() {
+  const form = document.querySelector('.restrictBusinessContainerModal');
+  if (!form) return;
+
+  const restrictBusinessButton = form.querySelector('.restrictBusinessButton');
+  const cancelButton = form.querySelector('.cancel-close');
+
+  if (!form.dataset.bound) {
+    form.dataset.bound = true;
+
+    cancelButton?.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeModal();
+    });
+
+    restrictBusinessButton?.addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      const businessId = form.dataset.businessId;
+
+      if (!businessId) {
+        showToast('fail', '❎ No Business ID found.');
+        return;
+      }
+
+      const businessRestrictionDetails = {
+        business_id: Number(businessId),
+      };
+
+      console.log(
+        'Submitting Business Restriction Details with:',
+        businessRestrictionDetails
+      );
+
+      try {
+        showBtnLoader(restrictBusinessButton);
+        const restrictBusinessData = await restrictBusiness(
+          businessRestrictionDetails
+        );
+
+        if (!restrictBusinessData) {
+          console.error('fail', restrictBusinessData.message);
+          return;
+        }
+
+        hideBtnLoader(restrictBusinessButton);
+        closeModal();
+        clearFormInputs();
+        showToast(
+          'success',
+          `✅ ${restrictBusinessData.message}` ||
+            '✅ Business Restricted successfully.'
+        );
+      } catch (err) {
+        hideBtnLoader(restrictBusinessButton);
         showToast('fail', `❎ ${err.message}`);
       }
     });
@@ -234,6 +324,7 @@ export function saleDetailModalForm() {
 document.addEventListener('DOMContentLoaded', () => {
   bindRenderBusinessDetailById(); // Only once
   bindActivateBusinessFormListener();
+  bindRestrictBusinessFormListener();
 });
 
 export function bindRenderBusinessDetailById() {
@@ -400,7 +491,7 @@ export async function populateAllBusinessesTable({
                            <i class="fa-solid fa-toggle-on"></i>
                         </button>
 
-                        <button class="hero-btn-outline restrictBusinessButton" data-business-id="${businessId}" title="Restrict Account">
+                        <button class="hero-btn-outline restrictBusinessButton" data-business-id="${businessId}" title="Restrict Business">
                            <i class="fa-solid fa-user-lock"></i>
                         </button>
 
@@ -414,10 +505,21 @@ export async function populateAllBusinessesTable({
                      </td>
          `;
 
+      //     <td class="py-1 itemStatus">${
+      //    item.quantity === 0
+      //      ? (item.status = 'Out of Stock')
+      //      : item.quantity >= 1 && item.quantity <= 10
+      //      ? 'Low Stock'
+      //      : 'In Stock'
+      //  }</td>
+
       row.addEventListener('click', async (e) => {
         renderBusinessDetailsById(e, row, businessId);
       });
 
+      if (allBusinessesTableBody) allBusinessesTableBody.appendChild(row);
+
+      // Activate Business Subscription
       const activateBusinessButton = row.querySelector(
         '.activateBusinessButton'
       );
@@ -453,15 +555,39 @@ export async function populateAllBusinessesTable({
         }
       });
 
-      //     <td class="py-1 itemStatus">${
-      //    item.quantity === 0
-      //      ? (item.status = 'Out of Stock')
-      //      : item.quantity >= 1 && item.quantity <= 10
-      //      ? 'Low Stock'
-      //      : 'In Stock'
-      //  }</td>
+      // Activate Business Subscription
+      const restrictBusinessButton = row.querySelector(
+        '.restrictBusinessButton'
+      );
 
-      if (allBusinessesTableBody) allBusinessesTableBody.appendChild(row);
+      restrictBusinessButton?.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        showGlobalLoader();
+
+        const businessId = restrictBusinessButton.dataset.businessId;
+
+        const restrictBusinessContainer = document.querySelector(
+          '.restrictBusinessContainer'
+        );
+
+        if (restrictBusinessContainer) {
+          // Store businessId in modal container for reference
+          restrictBusinessContainer.dataset.businessId = businessId;
+
+          // Fetch Shop detail
+          const businessDetail = await getBusinessDetailById(businessId);
+
+          // Call function to prefill modal inputs
+          if (businessDetail?.data) {
+            hideGlobalLoader();
+            openRestrictBusinessSubscriptionModal(); // Show modal after data is ready
+            restrictBusinessForm(businessDetail.data);
+          } else {
+            hideGlobalLoader();
+            showToast('fail', '❌ Failed to fetch Business details.');
+          }
+        }
+      });
     });
 
     // Handle Load More button visibility
@@ -764,7 +890,7 @@ export async function renderPlatformMonthlySignups(monthlySignups) {
   if (isSuperAdmin) {
     // Update Area Chart - Monthly Signups
 
-    console.log(monthlySignups);
+    //  console.log(monthlySignups);
 
     // Convert "YYYY-MM" → "Mon YYYY"
     const formattedMonths = monthlySignups.map((item) => {

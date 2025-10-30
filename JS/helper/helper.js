@@ -45,6 +45,10 @@ export function clearFormInputs() {
   );
   const restockForm = document.querySelector('.restock');
 
+  const activateBusinessContainerForm = document.querySelector(
+    '.activateBusinessContainerModal'
+  );
+
   //   Clear Search Input
   const searchProductInput = document.querySelector('.searchProductInput');
   if (searchProductInput) searchProductInput.value = '';
@@ -55,6 +59,19 @@ export function clearFormInputs() {
   if (searchStockProdutItem) searchStockProdutItem.value = '';
 
   // Clear Form Implementations
+
+  // Clear Create Staff Form Inputs
+  if (activateBusinessContainerForm) {
+    activateBusinessContainerForm
+      .querySelectorAll('input, textarea, select')
+      .forEach((el) => {
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          el.checked = false;
+        } else {
+          el.value = '';
+        }
+      });
+  }
 
   if (restockForm) {
     restockForm.querySelectorAll('input, textarea, select').forEach((el) => {

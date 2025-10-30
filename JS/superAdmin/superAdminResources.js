@@ -146,3 +146,36 @@ export async function activateBusinessSubscription(
     throw error;
   }
 }
+
+export async function restrictBusiness(businessRestrictionDetails) {
+  try {
+    //  showGlobalLoader();
+    const restrictBusinessData = await safeFetch(
+      `${baseUrl}/api/super-admin/restrict-business`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(businessRestrictionDetails),
+      }
+    );
+
+    if (restrictBusinessData) {
+      // console.log('Business Subscription restrictd successfully:', restrictBusinessData);
+      // showToast('success', `✅ ${restrictBusinessData.message}`);
+      closeModal();
+    }
+
+    //  console.log('restrictBusinessData received...');
+
+    //  console.log('restrictBusinessData:', restrictBusinessData);
+    //  hideGlobalLoader();
+    return restrictBusinessData;
+  } catch (error) {
+    //  hideGlobalLoader();
+    console.error('Error Restricting Business:', error.message);
+    throw error;
+  }
+}
