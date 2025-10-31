@@ -766,6 +766,76 @@
       </div>
    </form>
 
+   <!-- Move Stock to Inventory -->
+   <form class="modal-form moveStockModal" name="modal">
+      <div class="card moveStock modal ">
+         <div>
+            <h1 class="heading-text  addItemName">Move Stock To Shop</h1>
+         </div>
+
+         <h1 class="heading-subtext center-text moveItemName"></h1>
+
+         <!-- Assign Shop To Move Inventory to shop -->
+         <div class="modal-form_input">
+            <label for="moveStockToShopDropdown">Select Shop</label>
+
+            <select id="moveStockToShopDropdown" class="form-control">
+               <option value="">Select a shop</option>
+               <!-- <option value="1">Loading Shops...</option> -->
+
+               <!-- Add Main shops dynamically -->
+            </select>
+         </div>
+
+         <!-- Assign Shop To Move Inventory to shop -->
+         <div class="modal-form_input">
+            <label for="moveStockToStaffDropdown">Receiver</label>
+
+            <select id="moveStockToStaffDropdown" class="form-control">
+               <option value="">Select a Staff</option>
+               <!-- <option value="1">Loading Shops...</option> -->
+
+               <!-- Add Main shops dynamically -->
+            </select>
+         </div>
+
+
+         <!-- Move Stock Quantity Input -->
+
+         <div class="modal-form_input">
+            <label for="moveStockQuantity">Move Stock Quantity</label>
+
+            <div class="subscript-container">
+               <input id="moveStockQuantity" type="text" placeholder="Enter  Stock Quantity" name="moveStockQuantity"
+                  required>
+               <small id="subscript-info">Current Quantity Available:
+                  <span class="stockQuantityAvailable"></span> </small>
+            </div>
+
+         </div>
+
+         <!-- Move Stock Selling Price Input -->
+
+         <div class="modal-form_input">
+            <label for="moveStockSellingPrice"> Stock Selling Price</label>
+
+            <input id="moveStockSellingPrice" type="text" placeholder="Enter Stock Selling Price"
+               name="moveStockSellingPrice" required>
+
+         </div>
+
+         <div class="center-button">
+
+            <button class="hero-btn-dark moveStockModalBtn" id="moveStockModalBtn">
+               <span class="btn-text">Move Stock Item</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
    <!-- Add Category Modal -->
    <form class="modal-form addCategoryModal" name="modal">
       <div class="card addCategory modal">

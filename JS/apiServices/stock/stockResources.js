@@ -360,3 +360,37 @@ export async function restockProduct(restockProductDetails, productId) {
     throw error;
   }
 }
+
+export async function moveStockItem(moveStockItemDetails) {
+  try {
+    //  console.log('Sending PUT request...');
+
+    const fetchedData = await safeFetch(
+      `${baseUrl}/api/stock/move-to-inventory`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(moveStockItemDetails),
+      }
+    );
+
+    //  console.log('Response received...');
+
+    if (fetchedData) {
+      // console.log('Stock Item Moved successfully:', fetchedData);
+      showToast('success', `✅ ${fetchedData.message}`);
+
+      // Refresh the table list after successful configuration
+      getStockItems();
+      getStockLogs();
+    }
+
+    return fetchedData;
+  } catch (error) {
+    console.error('Error Moving Stock Item:', error);
+    throw error;
+  }
+}

@@ -61,6 +61,8 @@ export function clearFormInputs() {
     '.updateBusinessDataContainerModal'
   );
 
+  const moveStockModalForm = document.querySelector('.moveStockModal');
+
   //   Clear Search Input
   const searchProductInput = document.querySelector('.searchProductInput');
   if (searchProductInput) searchProductInput.value = '';
@@ -71,6 +73,25 @@ export function clearFormInputs() {
   if (searchStockProdutItem) searchStockProdutItem.value = '';
 
   // Clear Form Implementations
+
+  if (moveStockModalForm) {
+    moveStockModalForm
+      .querySelectorAll('input, textarea, select')
+      .forEach((el) => {
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          el.checked = false;
+        } else {
+          el.value = '';
+        }
+      });
+
+    const stockQuantittyAvailableDisplay = document.querySelector(
+      '.stockQuantityAvailable'
+    );
+
+    if (stockQuantittyAvailableDisplay)
+      stockQuantittyAvailableDisplay.innerText = '';
+  }
 
   if (updateBusinessContainerForm) {
     updateBusinessContainerForm
@@ -659,6 +680,10 @@ document.addEventListener('DOMContentLoaded', function () {
     isAdmin ? 'adminPosMachineFee' : 'posMachineFee'
   );
 
+  const moveStockSellingPrice = document.getElementById(
+    'moveStockSellingPrice'
+  );
+
   //  const unitPriceInput = document.querySelector('.unit-price-input');
 
   //  if (unitPriceInput)
@@ -666,6 +691,11 @@ document.addEventListener('DOMContentLoaded', function () {
   //      console.log('object');
   //      formatAmountWithCommasOnInput(unitPriceInput);
   //    });
+
+  if (moveStockSellingPrice)
+    moveStockSellingPrice.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(moveStockSellingPrice);
+    });
 
   if (posMachineFee)
     posMachineFee.addEventListener('input', function () {

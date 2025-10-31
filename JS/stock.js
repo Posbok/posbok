@@ -9,6 +9,7 @@ import {
   getStockItems,
   getStockLogs,
   getStockProduct,
+  moveStockItem,
   restockProduct,
   updateStockItem,
 } from './apiServices/stock/stockResources';
@@ -20,15 +21,18 @@ import {
   formatDate,
   formatDateTimeReadable,
   formatUnitType,
+  getAmountForSubmission,
   hideBtnLoader,
   hideGlobalLoader,
   populateBusinessShopDropdown,
+  populateBusinessStaffDropdown,
   showBtnLoader,
   showGlobalLoader,
 } from './helper/helper';
 import { showToast, closeModal, setupModalCloseButtons } from './script';
 import { checkAndPromptCreateShop } from './apiServices/shop/shopResource.js';
 import { openDeleteCategoryModal } from './goods.js';
+import { checkAndPromptCreateStaff } from './apiServices/user/userResource.js';
 
 const userData = config.userData;
 const dummyShopId = config.dummyShopId; // Dummy user data for testing
@@ -250,9 +254,156 @@ export function bindUpdateProductFormListener() {
   }
 }
 
+// Move Stock to shop inventory
+
+// Open Business Detail Modal
+export function openMoveStockToInventoryModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const moveStockContainer = document.querySelector('.moveStock');
+
+  if (moveStockContainer) moveStockContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  // businessDetailModalForm();
+}
+
+export async function moveStockToShop(e, row) {
+  e.preventDefault();
+  showGlobalLoader();
+
+  const stockId = row.dataset.stockId;
+
+  const form = document.querySelector('.moveStockModal');
+  form.dataset.stockId = stockId;
+
+  // Get business by ID
+  try {
+    showGlobalLoader();
+    const stockDetails = await getStockProduct(stockId);
+    //  console.log('stockDetails when Row is Clicked', stockDetails);
+
+    if (!stockDetails || !stockDetails.data) {
+      console.log('No stock Details');
+      showToast('error', '❎  Cannot get Stock Details');
+      closeModal();
+      return;
+    }
+
+    console.log(stockDetails.data);
+
+    const { product_name, quantity, selling_price } = stockDetails.data;
+
+    // Populate Business Detail to UI
+
+    // Finally open the modal
+    openMoveStockToInventoryModal();
+
+    const moveItemName = document.querySelector('.moveItemName');
+    const stockQuantityAvailable = document.querySelector(
+      '.stockQuantityAvailable'
+    );
+    const moveStockSellingPrice = document.querySelector(
+      '#moveStockSellingPrice'
+    );
+
+    if (moveItemName) moveItemName.innerText = product_name;
+
+    if (stockQuantityAvailable) stockQuantityAvailable.innerText = quantity;
+    if (stockQuantityAvailable)
+      stockQuantityAvailable.className =
+        'stockQuantityAvailable quantity-normal';
+
+    if (moveStockSellingPrice)
+      moveStockSellingPrice.value = formatAmountWithCommas(selling_price);
+
+    hideGlobalLoader();
+    //   openBusinessDetailsModal();
+  } catch (err) {
+    hideGlobalLoader();
+    console.error('Error fetching Business details:', err.message);
+    showToast('fail', `❎ Failed to load Business details`);
+    closeModal();
+  } finally {
+    hideGlobalLoader();
+  }
+}
+
+export function bindMoveStockFormListener() {
+  const form = document.querySelector('.moveStockModal');
+  if (!form) return;
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const stockId = form.dataset.stockId;
+
+      if (!stockId) {
+        showToast('fail', '❎ No Stock Item selected to MOve.');
+        return;
+      }
+
+      const moveStockToShopDropdown = document.querySelector(
+        '#moveStockToShopDropdown'
+      ).value;
+
+      const moveStockToStaffDropdown = document.querySelector(
+        '#moveStockToStaffDropdown'
+      ).value;
+
+      const moveStockSellingPrice = document.querySelector(
+        '#moveStockSellingPrice'
+      ).value;
+
+      const moveStockQuantity =
+        document.querySelector('#moveStockQuantity').value;
+
+      const moveStockItemDetails = {
+        stock_id: Number(stockId),
+        quantity: Number(moveStockQuantity),
+        selling_price: getAmountForSubmission(moveStockSellingPrice),
+        shop_id: Number(moveStockToShopDropdown),
+        received_by: moveStockToStaffDropdown,
+      };
+
+      console.log('Moving Stock Item to Shop with:', moveStockItemDetails);
+
+      const moveStockModalBtn = document.querySelector('.moveStockModalBtn');
+
+      try {
+        showBtnLoader(moveStockModalBtn);
+        const movedStockData = await moveStockItem(moveStockItemDetails);
+
+        if (!movedStockData) {
+          console.error('fail', movedStockData.message);
+          return;
+        }
+        if (movedStockData) {
+          closeModal();
+        }
+
+        //   hideGlobalLoader();
+      } catch (err) {
+        hideBtnLoader(moveStockModalBtn);
+
+        console.error('Error Moving Stock Item:', err);
+        showToast('fail', `❎ ${err.message}`);
+        return;
+      } finally {
+        hideBtnLoader(moveStockModalBtn);
+        hideGlobalLoader();
+        clearFormInputs();
+      }
+    });
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   bindDeleteStockItemFormListener();
   bindUpdateProductFormListener();
+  bindMoveStockFormListener();
 });
 
 export function openAddStockCategoryModalBtn() {
@@ -522,6 +673,10 @@ export function populateStockItemsTable(stockItemsData) {
         : 'inStockRow'
     );
 
+    let stockId = item.id;
+
+    row.dataset.stockId = stockId;
+
     //  console.log(item);
 
     if (row)
@@ -552,6 +707,13 @@ export function populateStockItemsTable(stockItemsData) {
    
      <td class="py-1 action-buttons">
        <button
+         class="hero-btn-outline openMoveStockItemButton"
+         data-stock-item-id="${item.id}"
+       >
+      <i class="fa-solid fa-arrow-right-from-bracket"></i>
+       </button>
+
+       <button
          class="hero-btn-outline openUpdateStockItemButton"
          data-stock-item-id="${item.id}"
        >
@@ -567,6 +729,11 @@ export function populateStockItemsTable(stockItemsData) {
      </td>
       `;
 
+    row.addEventListener('click', async (e) => {
+      showGlobalLoader();
+      moveStockToShop(e, row, stockId);
+    });
+
     if (tbody) tbody.appendChild(row);
 
     const deleteStockItemButton = row.querySelector(`.deleteStockItemButton`);
@@ -577,7 +744,8 @@ export function populateStockItemsTable(stockItemsData) {
     //    // await deleteCategory(stockCategoryId);
     //  });
 
-    deleteStockItemButton.addEventListener('click', async () => {
+    deleteStockItemButton.addEventListener('click', async (e) => {
+      e.stopPropagation();
       showGlobalLoader();
       const stockItemId = deleteStockItemButton.dataset.stockItemId;
 
@@ -612,7 +780,8 @@ export function populateStockItemsTable(stockItemsData) {
       '.openUpdateStockItemButton'
     );
 
-    updateStockProductBtn?.addEventListener('click', async () => {
+    updateStockProductBtn?.addEventListener('click', async (e) => {
+      e.stopPropagation();
       showGlobalLoader();
       const stockItemId = updateStockProductBtn.dataset.stockItemId;
 
@@ -752,6 +921,7 @@ if (isAdmin) {
         'stockinventoryShopDropdown'
       );
       populateBusinessShopDropdown(enrichedShopData, 'restockShopDropdown');
+      populateBusinessShopDropdown(enrichedShopData, 'moveStockToShopDropdown');
     } catch (err) {
       hideGlobalLoader();
       console.error('Failed to load dropdown:', err.message);
@@ -760,7 +930,25 @@ if (isAdmin) {
     }
   }
 
+  async function loadStaffDropdown() {
+    try {
+      showGlobalLoader();
+      const staffData = await checkAndPromptCreateStaff();
+      // console.log('Staff Data', staffData);
+      const staffDataList = staffData?.data.users;
+
+      //   console.log(staffData);
+
+      populateBusinessStaffDropdown(staffDataList, `moveStockToStaffDropdown`);
+      hideGlobalLoader();
+    } catch (err) {
+      hideGlobalLoader();
+      console.error('Failed to load dropdown:', err.message);
+    }
+  }
+
   loadShopDropdown();
+  loadStaffDropdown();
 }
 
 export function addStockCategoryForm() {
@@ -1005,6 +1193,7 @@ export function bindRestockProductFormListener() {
 }
 
 const restockSearchSection = document.querySelector('.restockSearch-section');
+
 // const adminSellProductCategorySection = document.querySelector(
 //   '.addExistingSellProductCategory-section'
 // );
@@ -1053,6 +1242,12 @@ export function restockProductForm() {
   });
 }
 
+const moveStockToShopDropdown = document.getElementById(
+  'moveStockToShopDropdown'
+);
+
+const searchStockProdutItem = document.getElementById('searchStockProdutItem');
+
 async function displayAllStocks(selectedShopId) {
   try {
     showGlobalLoader();
@@ -1066,48 +1261,51 @@ async function displayAllStocks(selectedShopId) {
     updateAutocompleteList(allStocks); // Populate the autocomplete dropdown with all products
 
     // Autocomplete filter on input
-    searchStockProdutItem.addEventListener('input', function () {
-      const inputValue = searchStockProdutItem.value.toLowerCase();
 
-      // console.log(inputValue);
-      if (inputValue.value === '') {
-        restockProductNameDiv.style.display = 'none';
-        restockAutocompleteList.style.display = 'none';
-        return;
-      } else if (inputValue.length > 0) {
-        restockProductNameDiv.style.display = 'block';
-        restockAutocompleteList.style.display = 'block';
+    if (searchStockProdutItem) {
+      searchStockProdutItem.addEventListener('input', function () {
+        const inputValue = searchStockProdutItem.value.toLowerCase();
 
-        let filteredProducts = allStocks;
+        // console.log(inputValue);
+        if (inputValue.value === '') {
+          restockProductNameDiv.style.display = 'none';
+          restockAutocompleteList.style.display = 'none';
+          return;
+        } else if (inputValue.length > 0) {
+          restockProductNameDiv.style.display = 'block';
+          restockAutocompleteList.style.display = 'block';
 
-        // Filter by selected category (if any)
-        //   if (activeCategoryId !== null) {
-        //     filteredProducts = filteredProducts.filter(
-        //       (product) => product.Product.ProductCategory.id === activeCategoryId
-        //     );
-        //   }
+          let filteredProducts = allStocks;
 
-        // Further filter by input value - Add Existing Products
-        filteredProducts = filteredProducts.filter(
-          (product) =>
-            product.product_name.toLowerCase().includes(inputValue) ||
-            product.description.toLowerCase().includes(inputValue) ||
-            product.id.toString().includes(inputValue)
+          // Filter by selected category (if any)
+          //   if (activeCategoryId !== null) {
+          //     filteredProducts = filteredProducts.filter(
+          //       (product) => product.Product.ProductCategory.id === activeCategoryId
+          //     );
+          //   }
 
-          // || product.Product.barcode.toLowerCase().includes(inputValue)
-        );
+          // Further filter by input value - Add Existing Products
+          filteredProducts = filteredProducts.filter(
+            (product) =>
+              product.product_name.toLowerCase().includes(inputValue) ||
+              product.description.toLowerCase().includes(inputValue) ||
+              product.id.toString().includes(inputValue)
 
-        updateAutocompleteList(filteredProducts);
+            // || product.Product.barcode.toLowerCase().includes(inputValue)
+          );
 
-        //   console.log(filteredProducts);
+          updateAutocompleteList(filteredProducts);
 
-        return;
-      } else {
-        restockProductNameDiv.style.display = 'none';
-        restockAutocompleteList.style.display = 'none';
-        return;
-      }
-    });
+          //   console.log(filteredProducts);
+
+          return;
+        } else {
+          restockProductNameDiv.style.display = 'none';
+          restockAutocompleteList.style.display = 'none';
+          return;
+        }
+      });
+    }
 
     //  searchStockProdutItem.addEventListener('click', function () {
     //    autocompleteList.style.display = 'block';
@@ -1149,9 +1347,9 @@ async function fetchAllProducts(shopId) {
 
 // Update the autocomplete list with provided stocks
 function updateAutocompleteList(stocks) {
-  //   console.log(`updateAutocompleteList Stocks:`, stocks);
+  // console.log(`updateAutocompleteList Stocks:`, stocks);
 
-  restockAutocompleteList.innerHTML = '';
+  if (restockAutocompleteList) restockAutocompleteList.innerHTML = '';
 
   const restockQuantityAvailable = document.querySelector(
     '.restockQuantityAvailable'
@@ -1167,7 +1365,7 @@ function updateAutocompleteList(stocks) {
     const listItem = document.createElement('li');
     listItem.textContent = 'Item Not Found';
     listItem.classList.add('autocomplete-list-item');
-    restockAutocompleteList.appendChild(listItem);
+    if (restockAutocompleteList) restockAutocompleteList.appendChild(listItem);
   } else {
     stocks.forEach((product) => {
       const {
@@ -1204,9 +1402,11 @@ function updateAutocompleteList(stocks) {
 
         document.querySelector('#restockQuantityAvailable').value = '';
 
-        restockAutocompleteList.style.display = 'none';
+        if (restockAutocompleteList)
+          restockAutocompleteList.style.display = 'none';
       });
-      restockAutocompleteList.appendChild(listItem);
+      if (restockAutocompleteList)
+        restockAutocompleteList.appendChild(listItem);
     });
   }
 }

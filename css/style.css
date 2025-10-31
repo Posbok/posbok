@@ -164,7 +164,7 @@ body {
     page-break-inside: avoid; } }
 
 body.home {
-  background-image: linear-gradient(to right top, rgba(111, 193, 204, 0.9), rgba(21, 70, 76, 0.83)), url(/img/home.jpeg);
+  background-image: linear-gradient(to right top, rgba(111, 193, 204, 0.9), rgba(19, 63, 68, 0.83)), url(/img/home.jpeg);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center; }
@@ -318,7 +318,7 @@ body.home {
           background: linear-gradient(to right bottom, #2998ff, #5643fa); }
   body.home .depositPosCapital .heading-text,
   body.home .modal .heading-text {
-    color: #15464C;
+    color: #133f44;
     font-size: 2.5rem; }
 
 .settings-container {
@@ -340,7 +340,7 @@ body.home {
     .settings-container .setting-item .setting-info .subscript-info {
       font-size: small;
       text-align: left;
-      color: #15464C; }
+      color: #133f44; }
 
 .toggle {
   position: relative;
@@ -590,7 +590,7 @@ select {
 .slider-form .slider .heading-text,
 .modal-form .modal .heading-minitext,
 .slider-form .slider .heading-minitext {
-  color: #15464C; }
+  color: #133f44; }
 
 .addProduct .checkbox,
 .sellProduct .checkbox,
@@ -786,7 +786,7 @@ select {
       font-size: small;
       font-weight: bold;
       text-align: left;
-      color: #15464C; }
+      color: #133f44; }
     .addProduct-form_input .subscript-container .quantity-preview,
     .sellProduct-form_input .subscript-container .quantity-preview,
     .adminSellProduct-form_input .subscript-container .quantity-preview,
@@ -1008,7 +1008,7 @@ select {
 
 .modal-form_input,
 .slider-form_input {
-  color: #15464C; }
+  color: #133f44; }
   .modal-form_input .checkbox,
   .slider-form_input .checkbox {
     display: block; }
@@ -1129,7 +1129,7 @@ button:disabled:hover {
 
 .hero-btn-outline {
   background-color: transparent;
-  color: #15464C;
+  color: #133f44;
   font-size: 1.5rem;
   margin: 0 !important; }
   .hero-btn-outline:hover {
@@ -1443,7 +1443,7 @@ button:disabled:hover {
   grid-row: rowOne-start / rowTwo-end;
   padding: 1.6rem;
   position: relative;
-  color: #15464C;
+  color: #133f44;
   transition: width 0.3s ease; }
   .main.home {
     grid-column: 1/-1; }
@@ -1543,7 +1543,7 @@ body.authentication {
   align-items: center;
   flex-direction: column;
   height: 100vh;
-  background-image: linear-gradient(to right, rgba(32, 83, 41, 0.93), rgba(21, 70, 76, 0.93)), url(/img/bg-image.jpg);
+  background-image: linear-gradient(to right, rgba(32, 83, 41, 0.93), rgba(19, 63, 68, 0.93)), url(/img/bg-image.jpg);
   background-size: cover;
   background-repeat: no-repeat;
   overflow-y: auto; }
@@ -1866,7 +1866,7 @@ body.authentication {
   transition: opacity .3s ease-in-out, visibility .3s ease-in-out;
   overflow-y: auto; }
   .modal .heading-subtext {
-    color: #15464C; }
+    color: #133f44; }
   @media only screen and (max-width: 50.3em) {
     .modal {
       padding: 1.7rem;
@@ -2175,7 +2175,7 @@ body.authentication {
   .cart-slider-content .center-text,
   .profile-slider-content .center-text {
     text-align: center !important;
-    color: #15464C; }
+    color: #133f44; }
 
 .hidden {
   display: none; }
@@ -2189,7 +2189,7 @@ body.authentication {
 .machineFee,
 .inventory {
   height: min-content;
-  color: #15464C; }
+  color: #133f44; }
   .reports-method,
   .goods-method,
   .superAdmin-method,
@@ -3028,7 +3028,7 @@ body.authentication {
       .inventory-method .superAdmin-table-container .table-header-row,
       .inventory-method .category-table-container .table-header-row,
       .inventory-method .inventory-table-container .table-header-row {
-        color: #15464C;
+        color: #133f44;
         font-size: 1.6rem;
         text-align: left;
         border-bottom: 1px solid #6FC1CC;
@@ -3193,7 +3193,7 @@ body.authentication {
       .inventory-method .category-table-container .table-foot-row,
       .inventory-method .inventory-table-container .table-body-row,
       .inventory-method .inventory-table-container .table-foot-row {
-        color: #15464C;
+        color: #133f44;
         font-weight: 500;
         font-size: 1.5rem;
         cursor: pointer;
@@ -4018,14 +4018,14 @@ body.authentication {
       background-color: #fff;
       z-index: 1; }
   .reports-table-container .table-header-row {
-    color: #15464C;
+    color: #133f44;
     font-size: 1.6rem;
     text-align: left;
     border-bottom: 1px solid #6FC1CC;
     box-sizing: content-box; }
   .reports-table-container .table-body-row,
   .reports-table-container .table-foot-row {
-    color: #15464C;
+    color: #133f44;
     font-weight: 500;
     font-size: 1.5rem;
     cursor: pointer;
@@ -4067,12 +4067,12 @@ body.authentication {
     align-items: center; }
     .accordion-container .accordion-toggle .heading-subtext {
       text-align: left;
-      color: #15464C;
+      color: #133f44;
       font-size: 1.5rem;
       text-transform: initial; }
     .accordion-container .accordion-toggle .icon {
       font-size: 1.5rem;
-      color: #15464C;
+      color: #133f44;
       transform: rotate(360deg);
       transition: transform 0.3s ease; }
     .accordion-container .accordion-toggle:hover, .accordion-container .accordion-toggle:active {
@@ -4137,13 +4137,13 @@ body.authentication {
 
 .total-row,
 .totalSales-row {
-  background-color: #15464C;
+  background-color: #133f44;
   font-weight: bold;
   padding: 10px;
   color: #eef1f6 !important; }
   .total-row:hover,
   .totalSales-row:hover {
-    background-color: #15464C !important;
+    background-color: #133f44 !important;
     color: #fff !important; }
 
 .transaction-list {
@@ -4250,16 +4250,16 @@ body.authentication {
     .report-tabs .tab-buttons .tab-btn {
       padding: 1rem 2rem;
       background: #eef1f6;
-      color: #15464C;
+      color: #133f44;
       border: none;
       cursor: pointer;
       font-weight: 600; }
       .report-tabs .tab-buttons .tab-btn.active {
-        background: #15464C;
+        background: #133f44;
         color: #fff; }
       .report-tabs .tab-buttons .tab-btn:hover {
         transform: scale(1.1);
-        background: #15464C;
+        background: #133f44;
         color: #fff; }
   .report-tabs .tab-content {
     display: none; }
