@@ -274,7 +274,7 @@
             <h1 class="heading-text ">Activate Business Subscription</h1>
          </div>
 
-         <h1 class="business-name-text center-text heading-subtext">Business Name Here
+         <h1 class="business-name-text center-text heading-subtext">
          </h1>
 
 
@@ -333,7 +333,7 @@
             <h1 class="heading-text ">Notify Business </h1>
          </div>
 
-         <h1 class="business-name-text center-text heading-subtext">Business Name Here
+         <h1 class="business-name-text center-text heading-subtext">
          </h1>
 
 
@@ -403,6 +403,150 @@
             </button>
 
 
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <!-- Update Business Details - Super Admin -->
+   <form class="modal-form updateBusinessDataContainerModal" name="modal">
+      <div class="card updateBusinessDataContainer modal ">
+         <div>
+            <h1 class="heading-text">Update Business Details</h1>
+         </div>
+
+         <h1 class="business-name-text center-text heading-subtext">
+         </h1>
+
+         <!-- Business name -->
+         <div class="modal-form_input">
+            <label for="updateBusinessName">Business Name</label>
+
+            <input id="updateBusinessName" type="text" placeholder="Enter Business Name" name="updateBusinessName">
+         </div>
+
+         <!-- Business Address -->
+         <div class="modal-form_input">
+            <label for="updateBusinessAddress">Business Address</label>
+
+            <input id="updateBusinessAddress" type="text" placeholder="Enter Business Address"
+               name="updateBusinessAddress">
+         </div>
+
+         <!-- Business Phone Number -->
+         <div class="modal-form_input">
+            <label for="updateBusinessPhoneNumber">Business Phone Number</label>
+
+            <input id="updateBusinessPhoneNumber" type="number" pattern="[0-9]" inputmode="numeric"
+               placeholder="Enter Business Phone Number" name="updateBusinessPhoneNumber">
+         </div>
+
+         <!-- Business State Of Operation -->
+         <div class="modal-form_input">
+            <label for="updateBusinessStateOfOperation"> State Of Operation</label>
+
+            <input id="updateBusinessStateOfOperation" type="text" placeholder="Enter Business State Of Operation"
+               name="updateBusinessStateOfOperation">
+         </div>
+
+         <!-- Business CAC Number -->
+         <div class="modal-form_input">
+            <label for="updateBusinessCac"> CAC No.</label>
+
+            <input id="updateBusinessCac" type="text" placeholder="Enter Business CAC No." name="updateBusinessCac">
+         </div>
+
+         <!-- Business Tax Id Number -->
+         <div class="modal-form_input">
+            <label for="updateBusinessTaxId"> Tax Id </label>
+
+            <input id="updateBusinessTaxId" type="text" placeholder="Enter Business Tax Id " name="updateBusinessTaxId">
+         </div>
+
+         <!-- Business Nin Number -->
+         <div class="modal-form_input">
+            <label for="updateBusinessNin"> NIN </label>
+
+            <input id="updateBusinessNin" type="number" pattern="[0-9]" inputmode="numeric"
+               placeholder="Enter Business NIN " name="updateBusinessNin">
+         </div>
+
+         <!-- Business Staff Size -->
+         <div class="modal-form_input">
+            <label for="updateBusinessStaffSize"> Staff Size </label>
+
+            <input id="updateBusinessStaffSize" type="text" placeholder="Enter Business Staff Size "
+               name="updateBusinessStaffSize">
+         </div>
+
+         <!-- Business Service Type -->
+         <div class="modal-form_input mb-1">
+            <label for="serviceType" class="heading-subtext">Service Type</label>
+
+            <div class="checkbox">
+               <div class="checkbox-container">
+                  <input id="posShopCheckbox" type="radio" name="serviceType" value="POS_TRANSACTIONS">
+                  <label for="posShopCheckbox">POS</label>
+               </div>
+
+               <div class="checkbox-container">
+                  <input id="sellShopCheckbox" type="radio" name="serviceType" value="INVENTORY_SALES">
+                  <label for="sellShopCheckbox">SELL</label>
+               </div>
+
+               <div class="checkbox-container">
+                  <input id="posAndSellShopCheckbox" type="radio" name="serviceType" value="BOTH">
+                  <label for="posAndSellShopCheckbox">POS & SELL</label>
+               </div>
+            </div>
+         </div>
+
+         <!-- Business Version Preference -->
+         <div class="modal-form_input  mb-1">
+            <label for="versionPreference" class="heading-subtext">Version Preference</label>
+
+            <div class="checkbox">
+               <div class="checkbox-container">
+                  <input id="webCheckbox" type="radio" name="versionPreference" value="WEB">
+                  <label for="webCheckbox">Web</label>
+               </div>
+
+               <div class="checkbox-container">
+                  <input id="mobileCheckbox" type="radio" name="versionPreference" value="MOBILE">
+                  <label for="mobileCheckbox">Mobile</label>
+               </div>
+
+               <div class="checkbox-container">
+                  <input id="standaloneCheckbox" type="radio" name="versionPreference" value="STANDALONE">
+                  <label for="standaloneCheckbox">Standalone</label>
+               </div>
+            </div>
+         </div>
+
+         <!-- Business Is Active Status -->
+         <div class="modal-form_input  mb-1">
+            <label for="businessActiveStatus" class="heading-subtext">business Active Status</label>
+
+            <div class="checkbox">
+               <div class="checkbox-container">
+                  <input id="trueCheckbox" type="radio" name="businessActiveStatus" value="true">
+                  <label for="trueCheckbox">True</label>
+               </div>
+
+               <div class="checkbox-container">
+                  <input id="falseCheckbox" type="radio" name="businessActiveStatus" value="false">
+                  <label for="falseCheckbox">False</label>
+               </div>
+
+            </div>
+         </div>
+
+         <div class="center-button">
+            <button class="hero-btn-dark  updateBusinessBtn has-spinner" type="submit">
+               <span class="btn-text">Update Business</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
          </div>
 
          <div class="close closeModal" id="">&times;</div>

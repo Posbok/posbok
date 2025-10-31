@@ -957,14 +957,14 @@ export function closeModal() {
   const deleteBusinessContainer = document.querySelector(
     '.deleteBusinessContainer'
   );
-  const updateBusinessContainer = document.querySelector(
-    '.updateBusinessContainer'
+  const updateBusinessDataContainer = document.querySelector(
+    '.updateBusinessDataContainer'
   );
 
   //
 
-  if (updateBusinessContainer) {
-    updateBusinessContainer.classList.remove('active');
+  if (updateBusinessDataContainer) {
+    updateBusinessDataContainer.classList.remove('active');
   }
 
   if (deleteBusinessContainer) {

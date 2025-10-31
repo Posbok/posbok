@@ -18,6 +18,7 @@ import {
   getPlatformStatistics,
   notifyBusiness,
   restrictBusiness,
+  updateBusinessDetails,
 } from './superAdmin/superAdminResources.js';
 
 const userData = config.userData;
@@ -27,9 +28,9 @@ const parsedUserData = userData ? JSON.parse(userData) : null;
 
 const isSuperAdmin = parsedUserData?.accountType === 'SUPER_ADMIN';
 
-if (isSuperAdmin) {
-  const currentFilter = {};
+const currentFilter = {};
 
+if (isSuperAdmin) {
   document.addEventListener('DOMContentLoaded', async () => {
     setupAllBusinessesFilters({
       currentFilter,
@@ -126,7 +127,7 @@ function resetBusinessStatusFilter() {
   document.getElementById(`businessStatusFilter`).value = '';
 }
 
-// Open Sale Detail Modal
+// Open Business Detail Modal
 export function openBusinessDetailsModal() {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
@@ -137,7 +138,7 @@ export function openBusinessDetailsModal() {
   if (main) main.classList.add('blur');
   if (sidebar) sidebar.classList.add('blur');
 
-  saleDetailModalForm();
+  businessDetailModalForm();
 }
 
 // Activate Business Subscription
@@ -200,10 +201,10 @@ export function bindActivateBusinessFormListener() {
         duration_days: durationDays,
       };
 
-      console.log(
-        'Submitting Business Subscription Details with:',
-        businessSubscriptionDetails
-      );
+      // console.log(
+      //   'Submitting Business Subscription Details with:',
+      //   businessSubscriptionDetails
+      // );
 
       try {
         showBtnLoader(activateBusinessButton);
@@ -216,10 +217,12 @@ export function bindActivateBusinessFormListener() {
           return;
         }
 
-        console.log(activateBusinessData);
+        //   console.log(activateBusinessData);
 
         hideBtnLoader(activateBusinessButton);
         closeModal();
+        loadPlatformStatisticsDashboard();
+        await populateAllBusinessesTable({ page: 1, filters: currentFilter });
         clearFormInputs();
         showToast(
           'success',
@@ -287,10 +290,10 @@ export function bindRestrictBusinessFormListener() {
         business_id: Number(businessId),
       };
 
-      console.log(
-        'Submitting Business Restriction Details with:',
-        businessRestrictionDetails
-      );
+      // console.log(
+      //   'Submitting Business Restriction Details with:',
+      //   businessRestrictionDetails
+      // );
 
       try {
         showBtnLoader(restrictBusinessButton);
@@ -303,10 +306,12 @@ export function bindRestrictBusinessFormListener() {
           return;
         }
 
-        console.log(restrictBusinessData);
+        //   console.log(restrictBusinessData);
 
         hideBtnLoader(restrictBusinessButton);
         closeModal();
+        loadPlatformStatisticsDashboard();
+        await populateAllBusinessesTable({ page: 1, filters: currentFilter });
         clearFormInputs();
         showToast(
           'success',
@@ -399,6 +404,7 @@ export function bindNotifyBusinessFormListener() {
 
         hideBtnLoader(notifyBusinessButton);
         closeModal();
+        await populateAllBusinessesTable({ page: 1, filters: currentFilter });
         clearFormInputs();
         showToast(
           'success',
@@ -461,14 +467,14 @@ export function bindDeleteBusinessFormListener() {
         return;
       }
 
-      const businessDeletionDetails = {
-        business_id: Number(businessId),
-      };
+      // const businessDeletionDetails = {
+      //   business_id: Number(businessId),
+      // };
 
-      console.log(
-        'Submitting Business Deletion Details with:',
-        businessDeletionDetails
-      );
+      // console.log(
+      //   'Submitting Business Deletion Details with:',
+      //   businessDeletionDetails
+      // );
 
       try {
         showBtnLoader(deleteBusinessButton);
@@ -479,11 +485,13 @@ export function bindDeleteBusinessFormListener() {
           return;
         }
 
-        console.log(deleteBusinessData);
+        //   console.log(deleteBusinessData);
 
         hideBtnLoader(deleteBusinessButton);
         closeModal();
         clearFormInputs();
+        loadPlatformStatisticsDashboard();
+        await populateAllBusinessesTable({ page: 1, filters: currentFilter });
         showToast(
           'success',
           `✅ ${deleteBusinessData.message}` ||
@@ -497,7 +505,250 @@ export function bindDeleteBusinessFormListener() {
   }
 }
 
-export function saleDetailModalForm() {
+// Update Business Details
+
+export function openUpdateBusinessModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const updateBusinessContainer = document.querySelector(
+    '.updateBusinessDataContainer'
+  );
+
+  if (updateBusinessContainer) updateBusinessContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
+export function updateBusinessForm(business) {
+  const form = document.querySelector('.updateBusinessDataContainerModal');
+  if (!form) return;
+
+  form.dataset.businessId = business.id;
+
+  document.querySelector('.business-name-text').textContent =
+    business.business_name;
+
+  // Fill form inputs
+  const businessName = business?.business_name || 'Business Name Not Available';
+  const businessAddress = business?.address || 'Business Address Not Available';
+  const businessPhoneNumber =
+    business?.phone_number || 'Business Phone Number Not Available';
+  const stateofOperation =
+    business?.state_of_operation || 'Business State Of Operation Not Available';
+  const cacRegNo = business?.cac_reg_no || 'Business CAC Reg No. Not Available';
+  const taxId = business?.tax_id || 'Business Tax ID Not Available';
+  const nin = business?.nin || 'Business NIN Not Available';
+  const staffSize = business?.staff_size || 'Business Staff Size Not Available';
+  const businessType = business?.business_type;
+  const versionPreference = business?.version_preference;
+  const isActive = business?.is_active;
+
+  //   DOM Elements Input
+  const businessNameInput = document.getElementById('updateBusinessName');
+  const businessAddressInput = document.getElementById('updateBusinessAddress');
+  const businessPhoneNumberInput = document.getElementById(
+    'updateBusinessPhoneNumber'
+  );
+  const businessStateInput = document.getElementById(
+    'updateBusinessStateOfOperation'
+  );
+  const businessCacRegNoInput = document.getElementById('updateBusinessCac');
+  const businessTaxIdInput = document.getElementById('updateBusinessTaxId');
+  const businessNinInput = document.getElementById('updateBusinessNin');
+  const businessStaffSizeInput = document.getElementById(
+    'updateBusinessStaffSize'
+  );
+  const businessTypeInput = document.getElementById('updateBusinessType');
+  const businessVersionPreferenceInput = document.getElementById(
+    'updateBusinessVersionPreference'
+  );
+
+  //   const BusinessIsActiveInput = document.getElementById('isActive');
+
+  //   Set the values of the input fields
+  if (businessNameInput) businessNameInput.value = businessName;
+  if (businessAddressInput) businessAddressInput.value = businessAddress;
+  if (businessPhoneNumberInput)
+    businessPhoneNumberInput.value = businessPhoneNumber;
+  if (businessStateInput) businessStateInput.value = stateofOperation;
+  if (businessCacRegNoInput) businessCacRegNoInput.value = cacRegNo;
+  if (businessTaxIdInput) businessTaxIdInput.value = taxId;
+  if (businessNinInput) businessNinInput.value = nin;
+  if (businessStaffSizeInput) businessStaffSizeInput.value = staffSize;
+  //   if (businessTypeInput)
+  //     businessTypeInput.value =
+  //       businessType === 'BOTH' ? 'POS & SALES' : businessType;
+  //   if (businessVersionPreferenceInput)
+  //     businessVersionPreferenceInput.value = versionPreference;
+
+  // Service Type  check boxes
+  const posShopCheckbox = document.getElementById('posShopCheckbox');
+  const sellShopCheckbox = document.getElementById('sellShopCheckbox');
+  const posAndSellShopCheckbox = document.getElementById(
+    'posAndSellShopCheckbox'
+  );
+
+  if (businessType === 'POS_TRANSACTIONS') {
+    posShopCheckbox.checked = true;
+  } else if (businessType === 'INVENTORY_SALES') {
+    sellShopCheckbox.checked = true;
+  } else if (businessType === 'BOTH') {
+    posAndSellShopCheckbox.checked = true;
+  }
+
+  //   vERSION pREFERENCE check boxes
+  const webCheckbox = document.getElementById('webCheckbox');
+  const mobileCheckbox = document.getElementById('mobileCheckbox');
+  const standaloneCheckbox = document.getElementById('standaloneCheckbox');
+
+  if (versionPreference === 'WEB') {
+    webCheckbox.checked = true;
+  } else if (versionPreference === 'MOBILE') {
+    mobileCheckbox.checked = true;
+  } else if (versionPreference === 'STANDALONE') {
+    standaloneCheckbox.checked = true;
+  }
+
+  //   Version Preference check boxes
+  const trueCheckbox = document.getElementById('trueCheckbox');
+  const falseCheckbox = document.getElementById('falseCheckbox');
+
+  console.log('Business is Active?', isActive);
+
+  if (isActive === true) {
+    trueCheckbox.checked = true;
+    console.log('object is true');
+  } else if (isActive === false) {
+    console.log('object is false');
+    falseCheckbox.checked = true;
+  }
+}
+
+export function bindUpdateBusinessFormListener() {
+  const form = document.querySelector('.updateBusinessDataContainerModal');
+  if (!form) return;
+
+  const updateBusinessButton = form.querySelector('.updateBusinessBtn');
+
+  const cancelButton = form.querySelector('.cancel-close');
+
+  if (!form.dataset.bound) {
+    form.dataset.bound = true;
+
+    cancelButton?.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeModal();
+    });
+
+    updateBusinessButton?.addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      const businessId = form.dataset.businessId;
+
+      const businessNameInput = document.getElementById('updateBusinessName');
+      const businessAddressInput = document.getElementById(
+        'updateBusinessAddress'
+      );
+      const businessPhoneNumberInput = document.getElementById(
+        'updateBusinessPhoneNumber'
+      );
+      const businessStateInput = document.getElementById(
+        'updateBusinessStateOfOperation'
+      );
+      const businessCacRegNoInput =
+        document.getElementById('updateBusinessCac');
+      const businessTaxIdInput = document.getElementById('updateBusinessTaxId');
+      const businessNinInput = document.getElementById('updateBusinessNin');
+      const businessStaffSizeInput = document.getElementById(
+        'updateBusinessStaffSize'
+      );
+
+      const versionPreferenceCheckboxes = document.querySelectorAll(
+        'input[name="versionPreference"]:checked'
+      );
+
+      const businessTypeCheckboxes = document.querySelectorAll(
+        'input[name="serviceType"]:checked'
+      );
+
+      const businessActiveStatusCheckboxes = document.querySelectorAll(
+        'input[name="businessActiveStatus"]:checked'
+      );
+
+      const versionPreference = Array.from(versionPreferenceCheckboxes).map(
+        (cb) => cb.value
+      );
+
+      const businessType = Array.from(businessTypeCheckboxes).map(
+        (cb) => cb.value
+      );
+
+      const businessActiveStatus = Array.from(
+        businessActiveStatusCheckboxes
+      ).map((cb) => cb.value);
+
+      const versionPreferenceValue = versionPreference[0] || null;
+      const businessTypeValue = businessType[0] || null;
+      const businessActiveStatusValue = businessActiveStatus[0] || null;
+
+      if (!businessId) {
+        showToast('fail', '❎ No Business ID found.');
+        return;
+      }
+
+      const businessUpdateDetails = {
+        business_name: businessNameInput.value,
+        address: businessAddressInput.value,
+        phone_number: businessPhoneNumberInput.value,
+        state_of_operation: businessStateInput.value,
+        cac_reg_no: businessCacRegNoInput.value,
+        tax_id: businessTaxIdInput.value,
+        nin: businessNinInput.value,
+        staff_size: businessStaffSizeInput.value,
+        business_type: businessTypeValue,
+        version_preference: versionPreferenceValue,
+        is_active: businessActiveStatusValue,
+      };
+
+      // console.log(
+      //   'Submitting Business Update Details with:',
+      //   businessUpdateDetails
+      // );
+
+      try {
+        showBtnLoader(updateBusinessButton);
+        const updateBusinessData = await updateBusinessDetails(
+          businessUpdateDetails,
+          businessId
+        );
+
+        if (!updateBusinessData) {
+          console.error('fail', updateBusinessData.message);
+          return;
+        }
+
+        //   console.log(updateBusinessData);
+
+        hideBtnLoader(updateBusinessButton);
+        closeModal();
+        clearFormInputs();
+        loadPlatformStatisticsDashboard();
+        await populateAllBusinessesTable({ page: 1, filters: currentFilter });
+        showToast(
+          'success',
+          `${updateBusinessData.message}` || '✅ Business Updated successfully.'
+        );
+      } catch (err) {
+        hideBtnLoader(updateBusinessButton);
+        showToast('fail', `❎ ${err.message}`);
+      }
+    });
+  }
+}
+
+// Display Business Form Details
+
+export function businessDetailModalForm() {
   const form = document.querySelector('.businessDetails');
   if (!form) return;
 }
@@ -508,6 +759,7 @@ document.addEventListener('DOMContentLoaded', () => {
   bindRestrictBusinessFormListener();
   bindNotifyBusinessFormListener();
   bindDeleteBusinessFormListener();
+  bindUpdateBusinessFormListener();
 });
 
 export function bindRenderBusinessDetailById() {
@@ -844,6 +1096,40 @@ export async function populateAllBusinessesTable({
           }
         }
       });
+
+      // Update Business
+      const updateBusinessButton = row.querySelector('.updateBusinessButton');
+
+      updateBusinessButton?.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        showGlobalLoader();
+
+        const businessId = updateBusinessButton.dataset.businessId;
+
+        const updateBusinessContainer = document.querySelector(
+          '.updateBusinessDataContainer'
+        );
+
+        if (updateBusinessContainer) {
+          // Store businessId in modal container for reference
+          updateBusinessContainer.dataset.businessId = businessId;
+
+          // Fetch Shop detail
+          const businessDetail = await getBusinessDetailById(businessId);
+
+          console.log('businessDetail', businessDetail);
+
+          // Call function to prefill modal inputs
+          if (businessDetail?.data) {
+            hideGlobalLoader();
+            openUpdateBusinessModal(); // Show modal after data is ready
+            updateBusinessForm(businessDetail.data);
+          } else {
+            hideGlobalLoader();
+            showToast('fail', '❌ Failed to fetch Business details.');
+          }
+        }
+      });
     });
 
     // Handle Load More button visibility
@@ -918,7 +1204,7 @@ export async function renderBusinessDetailsById(e, row) {
     // Finally open the modal
     openBusinessDetailsModal();
 
-    // Sales Items - Middle Part Below
+    // Business Items - Middle Part Below
     const itemsTableBody = document.querySelector('.itemsTable tbody');
     itemsTableBody.innerHTML = ''; // clear previous rows
 
@@ -987,8 +1273,8 @@ export async function renderBusinessDetailsById(e, row) {
     //   openBusinessDetailsModal();
   } catch (err) {
     hideGlobalLoader();
-    console.error('Error fetching sale details:', err.message);
-    showToast('fail', `❎ Failed to load sale details`);
+    console.error('Error fetching Business details:', err.message);
+    showToast('fail', `❎ Failed to load Business details`);
     closeModal();
   } finally {
     hideGlobalLoader();

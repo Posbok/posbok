@@ -244,3 +244,36 @@ export async function deleteBusiness(businessId) {
     throw error;
   }
 }
+
+export async function updateBusinessDetails(businessUpdateDetails, businessId) {
+  try {
+    //  showGlobalLoader();
+    const updateBusinessData = await safeFetch(
+      `${baseUrl}/api/super-admin/businesses/${businessId}`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(businessUpdateDetails),
+      }
+    );
+
+    if (updateBusinessData) {
+      // console.log('Business  Updated successfully:', updateBusinessData);
+      // showToast('success', `✅ ${updateBusinessData.message}`);
+      closeModal();
+    }
+
+    //  console.log('updateBusinessData received...');
+
+    //  console.log('updateBusinessData:', updateBusinessData);
+    //  hideGlobalLoader();
+    return updateBusinessData;
+  } catch (error) {
+    //  hideGlobalLoader();
+    console.error('Error Updating Business :', error.message);
+    throw error;
+  }
+}
