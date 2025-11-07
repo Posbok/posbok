@@ -377,7 +377,7 @@ export async function createPosTransaction(transactionDetail) {
   try {
     //  console.log('Sending POST request...');
     const posTransactionData = await safeFetch(
-      `${baseUrl}/api/pos/transaction`,
+      `${baseUrl}/api/pos/transactions`,
       {
         method: 'POST',
         headers: {

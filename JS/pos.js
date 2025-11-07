@@ -499,7 +499,7 @@ export async function handlePosFormSubmit() {
       const posFeePaymentType = document.getElementById(
         isAdmin ? 'adminPosFeePaymentType' : 'posFeePaymentType'
       ).value;
-      const adminPosTransactionCharges = document.querySelector(
+      const posTransactionCharges = document.querySelector(
         isAdmin ? '#adminPosTransactionCharges' : '#posTransactionCharges'
       ).value;
       const transactionType = document.getElementById(
@@ -513,6 +513,15 @@ export async function handlePosFormSubmit() {
       ).value;
       const posTransactionRemark = document.getElementById(
         isAdmin ? 'adminPosTransactionRemark' : 'posTransactionRemark'
+      ).value;
+      const posMachineFee = document.querySelector(
+        isAdmin ? '#adminPosMachineFee' : '#posMachineFee'
+      ).value;
+      const posTaxFee = document.querySelector(
+        isAdmin ? '#adminPosTaxFee' : '#posTaxFee'
+      ).value;
+      const posTransferFee = document.querySelector(
+        isAdmin ? '#adminPosTransferFee' : '#posTransferFee'
       ).value;
 
       // "transactionType" must be one of [WITHDRAWAL, DEPOSIT, WITHDRAWAL_TRANSFER, BILL_PAYMENT]
@@ -533,25 +542,24 @@ export async function handlePosFormSubmit() {
 
       const posFormData = {
         shopId,
-        transaction_type: transactionType.toLowerCase(),
+        transaction_type: transactionType.toUpperCase(),
         amount: Number(getAmountForSubmission(amount)),
-        manual_charges: adminPosTransactionCharges
-          ? Number(getAmountForSubmission(adminPosTransactionCharges))
-          : null,
-        //   customer_name: customerName,
+        charges: Number(getAmountForSubmission(posTransactionCharges)),
         customer_phone: customerPhone,
         payment_method: paymentMethod.toUpperCase(),
         transaction_mode: posFeePaymentType.toLowerCase(),
+        machine_fee: Number(posMachineFee),
+        tax_fee: Number(posTaxFee),
+        transfer_fee: Number(posTransferFee),
         remarks: posTransactionRemark,
         transaction_reference: posTransactionReference,
-        //   transaction_fee: Number(fee),
-        //   machine_fee: Number(machineFeeInput),
+        //   customer_name: customerName,
       };
 
       const posSubmitButton = document.querySelector('.posSubmitButton');
 
       try {
-        //   console.log('📦 POS Ttransaction Details:', posFormData);
+        console.log('📦 POS Ttransaction Details:', posFormData);
         showBtnLoader(posSubmitButton);
 
         const isDayOpen = await ensureBusinessDayOpen(shopId);
@@ -562,7 +570,7 @@ export async function handlePosFormSubmit() {
 
         const posTransactionCreated = await createPosTransaction(posFormData);
 
-        console.log(posTransactionCreated);
+        //   console.log(posTransactionCreated);
 
         console.log(
           'POS transaction sent successfully:',
