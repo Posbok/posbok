@@ -235,7 +235,7 @@ export function bindFundMachineFormListener() {
         const addFundMachineData = await addFundMachine(fundMachineDetails);
 
         if (addFundMachineData) {
-          //  initAccountOverview();
+          initAccountOverview();
           showToast('success', `✅ ${addFundMachineData.message}`);
           closeModal();
         }
