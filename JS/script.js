@@ -1441,7 +1441,7 @@ if (!userData) {
     const restrictedStaffPages = [
       'manage',
       'staff-profile',
-      'pos-management',
+      // 'pos-management',
       'shop-management',
       'stock-management',
       'super-admin',
@@ -1526,7 +1526,7 @@ if (!userData) {
     const restrictedStaffPages = [
       'manage',
       'staff-profile',
-      'pos-management',
+      // 'pos-management',
       'shop-management',
       'stock-management',
       'inventory',

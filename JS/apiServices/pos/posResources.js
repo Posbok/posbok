@@ -278,14 +278,17 @@ export async function addPosCapital(posCapitalDetails) {
     showGlobalLoader();
     //  console.log('Sending POST request...');
 
-    const addPosCapitalData = await safeFetch(`${baseUrl}/api/pos/capital`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(posCapitalDetails),
-    });
+    const addPosCapitalData = await safeFetch(
+      `${baseUrl}/api/pos/admin/funding`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(posCapitalDetails),
+      }
+    );
 
     //  console.log('Response received...');
 
@@ -827,7 +830,7 @@ export async function createAdminWithdrawal(adminWithdrawalDetails) {
   try {
     //  console.log('Sending POST request...');
     const adminWithdrawalData = await safeFetch(
-      `${baseUrl}/api/admin/withdraw`,
+      `${baseUrl}/api/pos/admin/withdrawal`,
       {
         method: 'POST',
         headers: {
@@ -849,6 +852,36 @@ export async function createAdminWithdrawal(adminWithdrawalDetails) {
     return adminWithdrawalData;
   } catch (error) {
     console.error('Error Creating Admin Withdrawal Transaction:', error);
+    throw error;
+  }
+}
+
+// Get Admin dashboard
+
+export async function getAdminDashboard() {
+  try {
+    //  console.log('Sending POST request...');
+
+    const adminDashboardData = await safeFetch(
+      `${baseUrl}/api/admin/dashboard`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          //  'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    //  console.log('Response received...');
+
+    if (!adminDashboardData) {
+      return;
+    }
+
+    return adminDashboardData;
+  } catch (error) {
+    console.error('Error receiving POS Capital:', error);
     throw error;
   }
 }

@@ -684,6 +684,14 @@ document.addEventListener('DOMContentLoaded', function () {
     'moveStockSellingPrice'
   );
 
+  const posTaxFee = document.getElementById(
+    isAdmin ? 'adminPosTaxFee' : 'posTaxFee'
+  );
+
+  const posTransferFee = document.getElementById(
+    isAdmin ? 'adminPosTransferFee' : 'posTransferFee'
+  );
+
   //  const unitPriceInput = document.querySelector('.unit-price-input');
 
   //  if (unitPriceInput)
@@ -691,6 +699,16 @@ document.addEventListener('DOMContentLoaded', function () {
   //      console.log('object');
   //      formatAmountWithCommasOnInput(unitPriceInput);
   //    });
+
+  if (posTransferFee)
+    posTransferFee.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(posTransferFee);
+    });
+
+  if (posTaxFee)
+    posTaxFee.addEventListener('input', function () {
+      formatAmountWithCommasOnInput(posTaxFee);
+    });
 
   if (moveStockSellingPrice)
     moveStockSellingPrice.addEventListener('input', function () {
