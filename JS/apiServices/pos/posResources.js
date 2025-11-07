@@ -47,6 +47,11 @@ function getCurrentDateISO() {
 
 // Deposit POS Capital Modal FOrm
 export function openDepositPosCapitalModal() {
+  if (isStaff) {
+    console.log('object');
+    return;
+  }
+
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
   const depositPosCapitalContainer =

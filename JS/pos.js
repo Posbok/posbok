@@ -277,8 +277,10 @@ document.addEventListener('DOMContentLoaded', () => {
     );
 
   const fundMachineBtn = document.querySelector('#fundMachineBtn');
+  const depositPosCapitalBtn = document.querySelector('#depositPosCapitalBtn');
 
   isAdmin ? fundMachineBtn?.classList.remove('hidden') : '';
+  isAdmin ? depositPosCapitalBtn?.classList.remove('hidden') : '';
 
   fundMachineBtn?.addEventListener(
     'click',
