@@ -42,9 +42,12 @@ export async function initAccountOverview() {
       return;
     }
 
-    const shopBalances = adminDashboardData.data?.shop_balances;
+    console.log(adminDashboardData);
 
-    updateAdminDashboardUi(shopBalances);
+    const shopBalances = adminDashboardData.data?.shop_balances;
+    const adminSummary = adminDashboardData.data?.admin_summary;
+
+    updateAdminDashboardUi(shopBalances, adminSummary);
   } catch (error) {
     console.error('Error loading Admin Dashboard:', error);
     //  showToast('error', '❌ Failed to load account overview data.');
@@ -53,7 +56,7 @@ export async function initAccountOverview() {
 }
 
 // Updates just the Admin Dashboard section
-export function updateAdminDashboardUi(shopBalances) {
+export function updateAdminDashboardUi(shopBalances, adminSummary) {
   console.log(shopBalances, 'shopBalances');
   //   if (!isStaff) return;
 
@@ -68,6 +71,12 @@ export function updateAdminDashboardUi(shopBalances) {
     total_pos_charges,
     total_withdrawals,
   } = shopBalances;
+
+  const {
+    total_admin_withdrawals,
+    admin_withdrawal_cash,
+    admin_withdrawal_transfer,
+  } = adminSummary;
 
   const totalPosCapital = document.getElementById(
     isStaff ? 'totalPosCapital' : 'adminTotalPosCapital'
@@ -103,6 +112,15 @@ export function updateAdminDashboardUi(shopBalances) {
   const machineCharges = document.getElementById(
     isStaff ? 'machineCharges' : 'adminMachineCharges'
   );
+  const totalAdminWithdrawals = document.getElementById(
+    isStaff ? 'totalAdminWithdrawals' : 'totalAdminWithdrawals_admin'
+  );
+  const adminWithdrawalsCash = document.getElementById(
+    isStaff ? 'adminWithdrawalsCash' : 'adminWithdrawalsCash_admin'
+  );
+  const adminWithdrawalsTransfer = document.getElementById(
+    isStaff ? 'adminWithdrawalsTransfer' : 'adminWithdrawalsTransfer_admin'
+  );
 
   if (totalPosCapital)
     totalPosCapital.innerHTML = formatAmountWithCommas(total_pos_capital || 0);
@@ -122,6 +140,21 @@ export function updateAdminDashboardUi(shopBalances) {
     cashCharges.innerHTML = formatAmountWithCommas(charges_cash || 0);
   if (machineCharges)
     machineCharges.innerHTML = formatAmountWithCommas(charges_machine || 0);
+
+  if (totalAdminWithdrawals)
+    totalAdminWithdrawals.innerHTML = formatAmountWithCommas(
+      total_admin_withdrawals || 0
+    );
+
+  if (adminWithdrawalsCash)
+    adminWithdrawalsCash.innerHTML = formatAmountWithCommas(
+      admin_withdrawal_cash || 0
+    );
+
+  if (adminWithdrawalsTransfer)
+    adminWithdrawalsTransfer.innerHTML = formatAmountWithCommas(
+      admin_withdrawal_transfer || 0
+    );
 }
 
 export function updateCashInMachineUI(openingCash) {
