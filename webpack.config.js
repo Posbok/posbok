@@ -14,6 +14,7 @@ module.exports = {
     staff: './JS/staff.js',
     business: './JS/business.js',
     signup: './JS/signup.js',
+    resetPassword: './JS/resetPassword.js',
     shops: './JS/shops.js',
     posAndSalesReportAccordion: './JS/posAndSalesReportAccordion.js',
     main: './JS/script.js', // Common JS for the main page if needed

@@ -1587,20 +1587,21 @@ body.authentication {
   width: 80%;
   width: max-content;
   max-height: 85vh; }
-  .authentication-container.login {
+  .authentication-container.resetPassword, .authentication-container.login {
     max-height: 80vh; }
     @media only screen and (min-width: 75em) {
-      .authentication-container.login {
+      .authentication-container.resetPassword, .authentication-container.login {
         width: 40%; } }
     @media only screen and (max-width: 75em) {
-      .authentication-container.login {
+      .authentication-container.resetPassword, .authentication-container.login {
         width: 55%; } }
     @media only screen and (max-width: 45.7em) {
-      .authentication-container.login {
+      .authentication-container.resetPassword, .authentication-container.login {
         width: 90%; } }
   @media only screen and (max-width: 45.7em) {
     .authentication-container {
       width: 90%; } }
+  .authentication-container .resetPassword-header .heading-subtext,
   .authentication-container .login-header .heading-subtext,
   .authentication-container .signup-header .heading-subtext {
     text-align: center;

@@ -576,6 +576,7 @@ export async function handlePosFormSubmit() {
           'POS transaction sent successfully:',
           posTransactionCreated
         );
+        initAccountOverview();
         resetFormInputs();
         showToast('success', `✅ ${posTransactionCreated?.message}`);
         hideBtnLoader(posSubmitButton);

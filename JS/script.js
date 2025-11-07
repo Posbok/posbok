@@ -1,7 +1,7 @@
 import config from '../config.js';
 import flatpickr from 'flatpickr';
 import './apiServices/sales/salesResources.js';
-import { logoutUser } from './apiServices/login';
+
 import {
   checkAndPromptCreateShop,
   openCreateShopModal,
@@ -48,6 +48,7 @@ import {
   getProductInventory,
 } from './apiServices/inventory/inventoryResources.js';
 import { renderStaffPerformanceTable } from './apiServices/utility/businessReport.js';
+import { logoutUser } from './apiServices/authentication/loginResource.js';
 
 const userData = config.userData;
 const dummyShopId = config.dummyShopId;
@@ -1227,7 +1228,7 @@ const token = localStorage.getItem('accessToken');
 // const currentPage = window.location.pathname.toLowerCase();
 
 // Llist of all  public/auth pages & check if on auth page
-const authPages = ['login', 'signup', 'createbusiness'];
+const authPages = ['login', 'signup', 'createbusiness', 'reset-password'];
 const onAuthPage = authPages.some((page) => currentPage.includes(page));
 
 // If token exists and user is on an auth page, redirect to index
@@ -1239,7 +1240,7 @@ if (token && onAuthPage) {
 if (!token) {
   if (!onAuthPage) {
     window.location.href = 'login.html';
-    //  console.log('!onAuthPage');
+    console.log('!onAuthPage');
   } else {
     // If you're already on an auth page, don't redirect again
     //  console.log('On auth page, no token, staying put.');

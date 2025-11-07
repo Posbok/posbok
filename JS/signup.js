@@ -1,12 +1,13 @@
 import './script.js';
 import { parse } from 'postcss';
 import { fetchBusinessDetails } from './apiServices/business/businessResource';
-import { registerAdmin, registerBusiness } from './apiServices/registration';
+
 import {
   generateBusinessOwnerId,
   redirectWithDelay,
   showToast,
 } from './script';
+import { registerAdmin, registerBusiness } from './apiServices/authentication/registrationResource.js';
 
 // Create Business Registration Form
 const createbusinessForm = document.getElementById('createbusinessForm');

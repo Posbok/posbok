@@ -1,9 +1,5 @@
-import config from '../../config.js';
-import {
-  hideBtnLoader,
-  hideGlobalLoader,
-  showGlobalLoader,
-} from '../helper/helper.js';
+import config from '../../../config.js';
+import { hideGlobalLoader, showGlobalLoader } from '../../helper/helper.js';
 
 const baseUrl = config.baseUrl;
 const apiToken = config.token;

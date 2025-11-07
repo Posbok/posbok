@@ -1,9 +1,10 @@
 import config from '../config';
 import './script.js';
-import { loginUser } from './apiServices/login';
+
 import { safeFetch } from './apiServices/utility/safeFetch';
 import { hideBtnLoader, showBtnLoader } from './helper/helper';
 import { redirectWithDelay, showToast } from './script';
+import { loginUser } from './apiServices/authentication/loginResource.js';
 
 const loginForm = document.getElementById('loginForm');
 const baseUrl = config.baseUrl;
