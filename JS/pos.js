@@ -289,54 +289,54 @@ document.addEventListener('DOMContentLoaded', () => {
   bindFundMachineFormListener(); // Only once
 });
 
-document.addEventListener('DOMContentLoaded', async () => {
-  if (document.body.classList.contains('pos-page')) {
-    const businessSettings = await getBusinessSettings();
-    const businessSettingsData = businessSettings?.data;
+// document.addEventListener('DOMContentLoaded', async () => {
+//   if (document.body.classList.contains('pos-page')) {
+//     const businessSettings = await getBusinessSettings();
+//     const businessSettingsData = businessSettings?.data;
 
-    if (!businessSettings) return;
+//     if (!businessSettings) return;
 
-    console.log(businessSettingsData);
+//     console.log(businessSettingsData);
 
-    const posTransactionChargesDiv = document.querySelector(
-      isAdmin ? '.adminPosTransactionChargesDiv' : '.posTransactionChargesDiv'
-    );
+//     const posTransactionChargesDiv = document.querySelector(
+//       isAdmin ? '.adminPosTransactionChargesDiv' : '.posTransactionChargesDiv'
+//     );
 
-    const posTransactionChargesInput = document.getElementById(
-      isAdmin ? 'adminPosMachineFee' : 'posMachineFee'
-    );
+//     const posTransactionChargesInput = document.getElementById(
+//       isAdmin ? 'adminPosMachineFee' : 'posMachineFee'
+//     );
 
-    const posMachineFeeDiv = document.querySelector(
-      isAdmin ? '.adminPosMachineFeeDiv' : '.posMachineFeeDiv'
-    );
+//     const posMachineFeeDiv = document.querySelector(
+//       isAdmin ? '.adminPosMachineFeeDiv' : '.posMachineFeeDiv'
+//     );
 
-    const posMachineFeeInput = document.getElementById(
-      isAdmin ? 'adminPosMachineFee' : 'posMachineFee'
-    );
+//     const posMachineFeeInput = document.getElementById(
+//       isAdmin ? 'adminPosMachineFee' : 'posMachineFee'
+//     );
 
-    if (posTransactionChargesDiv) {
-      if (businessSettingsData.pos_manual_charge === true) {
-        posTransactionChargesDiv.classList.remove('hidden');
-        posTransactionChargesInput.setAttribute('required', 'true');
-      } else {
-        posTransactionChargesDiv.classList.add('hidden');
-        posTransactionChargesInput.removeAttribute('required');
-        posTransactionChargesInput.value = '';
-      }
-    }
+//     if (posTransactionChargesDiv) {
+//       if (businessSettingsData.pos_manual_charge === true) {
+//         posTransactionChargesDiv.classList.remove('hidden');
+//         posTransactionChargesInput.setAttribute('required', 'true');
+//       } else {
+//         posTransactionChargesDiv.classList.add('hidden');
+//         posTransactionChargesInput.removeAttribute('required');
+//         posTransactionChargesInput.value = '';
+//       }
+//     }
 
-    if (posMachineFeeDiv) {
-      if (businessSettingsData.manual_machine_fee_mode === true) {
-        posMachineFeeDiv.classList.remove('hidden');
-        posMachineFeeInput.setAttribute('required', 'true');
-      } else {
-        posMachineFeeDiv.classList.add('hidden');
-        posMachineFeeInput.removeAttribute('required');
-        posMachineFeeInput.value = '';
-      }
-    }
-  }
-});
+//     if (posMachineFeeDiv) {
+//       if (businessSettingsData.manual_machine_fee_mode === true) {
+//         posMachineFeeDiv.classList.remove('hidden');
+//         posMachineFeeInput.setAttribute('required', 'true');
+//       } else {
+//         posMachineFeeDiv.classList.add('hidden');
+//         posMachineFeeInput.removeAttribute('required');
+//         posMachineFeeInput.value = '';
+//       }
+//     }
+//   }
+// });
 
 document.addEventListener('DOMContentLoaded', async () => {
   if (isStaff) {

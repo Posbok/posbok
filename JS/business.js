@@ -25,7 +25,7 @@ const isAdmin = parsedUserData?.accountType === 'ADMIN';
 document.addEventListener('DOMContentLoaded', async function () {
   if (isAdmin) {
     await renderBusinessDetails();
-    await renderBusinessSettings();
+    //  await renderBusinessSettings();
 
     // Update Business Settings
 
@@ -207,37 +207,39 @@ export async function renderBusinessDetails() {
   //   console.log(businessData);
 }
 
-export async function renderBusinessSettings() {
-  const businessSettings = await getBusinessSettings();
-  const businessSettingsData = businessSettings?.data;
-  showGlobalLoader();
+// export async function renderBusinessSettings() {
+//   const businessSettings = await getBusinessSettings();
+//   const businessSettingsData = businessSettings?.data;
+//   showGlobalLoader();
 
-  if (!businessSettings) {
-    //  showToast('error', ' ⛔ Failed to fetch business Settings');
-    console.error('Failed to fetch business Settings');
-    hideGlobalLoader();
-    return;
-  }
+//   console.log('code got here');
 
-  showGlobalLoader();
-  //   console.log('businessSettingsData', businessSettingsData);
+//   if (!businessSettings) {
+//     //  showToast('error', ' ⛔ Failed to fetch business Settings');
+//     console.error('Failed to fetch business Settings');
+//     hideGlobalLoader();
+//     return;
+//   }
 
-  // Update the UI buttons based on fetched settings
-  const manualPosCharge = document.getElementById('pos_manual_charge');
-  const manualMachineFee = document.getElementById('manual_machine_fee_mode');
-  const transferFee = document.getElementById('transfer_fee_for_incoming');
+//   showGlobalLoader();
+//   //   console.log('businessSettingsData', businessSettingsData);
 
-  if (manualPosCharge)
-    manualPosCharge.checked = businessSettingsData.pos_manual_charge;
+//   // Update the UI buttons based on fetched settings
+//   const manualPosCharge = document.getElementById('pos_manual_charge');
+//   const manualMachineFee = document.getElementById('manual_machine_fee_mode');
+//   const transferFee = document.getElementById('transfer_fee_for_incoming');
 
-  if (manualMachineFee)
-    manualMachineFee.checked = businessSettingsData.manual_machine_fee_mode;
+//   if (manualPosCharge)
+//     manualPosCharge.checked = businessSettingsData.pos_manual_charge;
 
-  if (transferFee)
-    transferFee.checked = businessSettingsData.transfer_fee_for_incoming;
+//   if (manualMachineFee)
+//     manualMachineFee.checked = businessSettingsData.manual_machine_fee_mode;
 
-  hideGlobalLoader();
-}
+//   if (transferFee)
+//     transferFee.checked = businessSettingsData.transfer_fee_for_incoming;
+
+//   hideGlobalLoader();
+// }
 
 export function openUpdateBusinessModal() {
   const main = document.querySelector('.main');

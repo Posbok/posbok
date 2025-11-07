@@ -1,7 +1,7 @@
 import config from '../../../config.js';
 import {
   renderBusinessDetails,
-  renderBusinessSettings,
+  //   renderBusinessSettings,
 } from '../../business.js';
 import { hideGlobalLoader, showGlobalLoader } from '../../helper/helper.js';
 import { showToast } from '../../script.js';
@@ -139,7 +139,7 @@ export async function setManualFee(updateManualFeeData) {
 
       // Refresh list or update UI
       // fetchBusinessDetails();
-      renderBusinessSettings();
+      // renderBusinessSettings();
     }
 
     return updateManualFee;
@@ -176,7 +176,7 @@ export async function setManualPosCharges(updateManualPosChargesData) {
 
       // Refresh list or update UI
       // fetchBusinessDetails();
-      renderBusinessSettings();
+      // renderBusinessSettings();
     }
 
     return updateManualPosChargesFee;
@@ -209,7 +209,7 @@ export async function setTransferFee(updateTransferFeeData) {
       showToast('success', `✅ ${updateTransferFee.message}`);
 
       // Refresh list or update UI
-      renderBusinessSettings();
+      // renderBusinessSettings();
     }
 
     return updateTransferFee;
