@@ -14,6 +14,7 @@ const userData = config.userData;
 
 const parsedUserData = userData ? JSON.parse(userData) : null;
 const isAdmin = parsedUserData?.accountType === 'ADMIN';
+const businessName = parsedUserData?.businessName;
 
 // export function isUserLoggedIn() {
 //    return !!localStorage.getItem('accessToken') && !!localStorage.getItem('userData');
@@ -990,6 +991,40 @@ export function generateEAN13() {
 
   // Step 3: Append checksum to get full EAN-13
   return code + checksum;
+}
+
+export function generateSKU(businessName) {
+  if (!businessName || typeof businessName !== 'string') {
+    return 'GEN' + Math.floor(10000 + Math.random() * 99999);
+  }
+
+  // Step 1: Split the name into words
+  const words = businessName.trim().split(/\s+/);
+
+  // Step 2: Build acronym (up to 3 letters)
+  let acronym = '';
+  if (words.length === 1) {
+    // Only one word → take up to 3 letters from it
+    acronym = words[0].substring(0, 3);
+  } else {
+    // Take the first letter of the first 3 words
+    acronym = words
+      .slice(0, 3)
+      .map((w) => w[0])
+      .join('');
+  }
+
+  acronym = acronym.toUpperCase();
+
+  // Step 3: Generate random 4-digit number
+  const randomDigits = Math.floor(10000 + Math.random() * 99999);
+
+  // Step 4: Combine with hyphen
+  const sku = `${acronym}${randomDigits}`;
+
+  console.log(sku);
+
+  return sku;
 }
 
 export function getBarcodeFormat(barcode) {

@@ -23,6 +23,7 @@ import {
   formatAmountWithCommasOnInput,
   generateBarcode,
   generateEAN13,
+  generateSKU,
   getAmountForSubmission,
   getBarcodeFormat,
   hideBtnLoader,
@@ -59,6 +60,10 @@ const parsedUserData = userData ? JSON.parse(userData) : null;
 
 const isAdmin = parsedUserData?.accountType === 'ADMIN';
 const isStaff = parsedUserData?.accountType === 'STAFF';
+
+const businessName = parsedUserData?.businessName;
+
+console.log(businessName);
 
 const searchSellProdutItem = document.getElementById('searchSellProdutItem');
 
@@ -456,9 +461,6 @@ export function createProductForm() {
 
       const addProductSku = document.querySelector('#addProductSku').value;
 
-      const addProductBarcode =
-        document.querySelector('#addProductBarcode').value;
-
       const addProductBoughtPrice = document.querySelector(
         '#addProductBoughtPrice'
       ).value;
@@ -471,17 +473,17 @@ export function createProductForm() {
         '#addProductQuantity'
       ).value;
 
-      let finalBarcode =
-        addProductBarcode !== '' ? addProductBarcode : generateEAN13();
+      let finalSku_Barcode =
+        addProductSku !== '' ? addProductSku : generateSKU(businessName);
 
       const addProductDetails = {
         categoryId: Number(addProductCategory),
         name: addProductName,
         description: addProductDescription,
-        sku: addProductSku,
+        sku: finalSku_Barcode,
         purchasePrice: Number(getAmountForSubmission(addProductBoughtPrice)),
         sellingPrice: Number(getAmountForSubmission(addProductSellingPrice)),
-        barcode: finalBarcode,
+        barcode: finalSku_Barcode,
       };
 
       const addInventoryDetails = {
@@ -530,7 +532,7 @@ export function createProductForm() {
 
             handleBarcodeModeToast({
               mode: 'barcodeMode',
-              finalBarcode,
+              finalSku_Barcode,
               addProductName,
               addedProductSku: productSku,
             });
@@ -569,11 +571,11 @@ export function createProductForm() {
 
 function handleBarcodeModeToast({
   mode,
-  finalBarcode,
+  finalSku_Barcode,
   addProductName,
   addedProductSku,
 }) {
-  //   console.log(mode, finalBarcode, addProductName, addedProductId);
+  //   console.log(mode, finalSku_Barcode, addProductName, addedProductId);
 
   const productName = document.getElementById('productName');
   const productSku = document.getElementById('productSku');
@@ -594,12 +596,12 @@ function handleBarcodeModeToast({
     // Populate data
     productName.textContent = `Product Name: ${addProductName}` || '';
     productSku.textContent = `SKU: ${addedProductSku}` || '';
-    productBarcode.textContent = `Product Barcode: ${finalBarcode}` || '';
+    //  productBarcode.textContent = `Product Barcode: ${finalSku_Barcode}` || '';
 
     // Generate barcode
-    const format = getBarcodeFormat(finalBarcode);
+    const format = getBarcodeFormat(finalSku_Barcode);
 
-    JsBarcode(barcodeImg, finalBarcode, {
+    JsBarcode(barcodeImg, finalSku_Barcode, {
       format,
       displayValue: true,
       fontSize: 16,
