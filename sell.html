@@ -340,7 +340,6 @@
                   oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
             </div>
 
-
             <div class="center-button mt-2" style="display: flex; align-items: center; gap: 1.5rem;">
                <button class="hero-btn-dark addToCartButton has-spinner force-m-0" type="submit">
                   <span class="btn-text"> Add To Cart</span>
@@ -553,6 +552,29 @@
                      <option value="cash">Cash</option>
                   </select>
                </div>
+
+               <!-- Sold Machine Fee -->
+               <div class="sellProduct-form_input">
+                  <label for="soldProductMachineFee">Machine Fee</label>
+
+                  <div class="naira-input-container">
+                     <input id="soldProductMachineFee" type="text" placeholder="Enter Machine Fee (Optional)"
+                        name="soldProductMachineFee" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                     <span class="naira">&#x20A6;</span>
+                  </div>
+               </div>
+
+               <!-- Sold Tax Fee -->
+               <div class="sellProduct-form_input">
+                  <label for="soldProductTaxFee">Tax Fee</label>
+
+                  <div class="naira-input-container">
+                     <input id="soldProductTaxFee" type="text" placeholder="Enter Tax Fee (Optional)"
+                        name="soldProductTaxFee" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                     <span class="naira">&#x20A6;</span>
+                  </div>
+               </div>
+
                <!-- 
                <div class="sellProduct-form_input sellStatus">
                   <label for="Status" class="heading-subtext">Status</label>
@@ -880,6 +902,7 @@
                <h1 class="heading-subtext center-text mt-2">THANK YOU FOR SHOPPING WITH US</h1>
 
             </div>
+
 
             <div class="center-button">
                <button class="hero-btn-dark printReceiptBtn  mt-2 mb-1  has-spinner" type="button">

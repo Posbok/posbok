@@ -610,6 +610,11 @@ export function sellProductForm() {
       const customerPhone = document.getElementById('sellCustomerPhone').value;
       const paymentMethod = document.getElementById('paymentTypeOption').value;
       const amountPaid = document.getElementById('amount-paid').value;
+      const soldProductMachineFee = document.getElementById(
+        'soldProductMachineFee'
+      ).value;
+      const soldProductTaxFee =
+        document.getElementById('soldProductTaxFee').value;
       const remarks =
         document.getElementById('soldProductRemark').value || 'Sold';
 
@@ -631,6 +636,8 @@ export function sellProductForm() {
         customerPhone,
         paymentMethod: paymentMethod.toUpperCase(),
         amountPaid: Number(getAmountForSubmission(amountPaid)),
+        machineFee: Number(getAmountForSubmission(soldProductMachineFee)),
+        taxFee: Number(getAmountForSubmission(soldProductTaxFee)),
         remarks,
         items: cart.map((item) => ({
           productId: item.productId, // ensure this exists
@@ -645,7 +652,7 @@ export function sellProductForm() {
         showGlobalLoader();
         showBtnLoader(checkoutSubmitBtn);
 
-        //   console.log('Submitting Sales Details:', sellProductDetails);
+        console.log('Submitting Sales Details:', sellProductDetails);
         //   hideBtnLoader(checkoutSubmitBtn);
 
         const soldData = await createSale(sellProductDetails);
@@ -655,6 +662,8 @@ export function sellProductForm() {
           showToast('success', `✅ ${soldData.message}`);
           //  await fetchAllProducts(Number(cart[0]?.shopId));
           //  await fetchAllCategories(Number(cart[0]?.shopId));
+
+          console.log('Sold Items Details', soldData);
 
           localStorage.removeItem(cartKey);
           updateCartCounter();
@@ -1571,7 +1580,8 @@ async function updateSalesReceipt(soldData) {
       customer_name,
       customer_phone,
       payment_method,
-
+      machineFee,
+      taxFee,
       total_amount,
       amount_paid,
       balance,

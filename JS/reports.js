@@ -1608,6 +1608,8 @@ if (isStaff) {
               amount_paid,
               total_amount,
               balance,
+              machine_fee,
+              tax_fee,
               customer_name,
               customer_phone,
               payment_method,
@@ -1647,6 +1649,12 @@ if (isStaff) {
                     balance
                   )}</td>
                   <td class="py-1 soldItemDateReport">${payment_method}</td>
+                   <td class="py-1 soldItemMachineFeeAmountReport">&#x20A6;${formatAmountWithCommas(
+                     machine_fee
+                   )}</td>
+                   <td class="py-1 soldItemTaxFeeAmountReport">&#x20A6;${formatAmountWithCommas(
+                     tax_fee
+                   )}</td>
                   <td class="py-1 soldItemDateReport">${business_day}</td>
                    <td class="py-1 soldItemStatusReport">${formatSaleStatus(
                      status

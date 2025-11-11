@@ -408,7 +408,9 @@ export function getAdminSalesReportHtml(shop) {
                         <th class="py-1">Amount</th>
                         <th class="py-1">Paid</th>
                         <th class="py-1">Balance</th>
-                        <th class="py-1">Payment Method</th>
+                        <th class="py-1">Payment Method</th>z
+                        <th class="py-1">Machine Fee</th>z
+                        <th class="py-1">Tax Fee</th>z
                         <th class="py-1">Date</th>
                         <th class="py-1">Remarks</th>
                         <th class="py-1">Status</th>
@@ -1324,6 +1326,8 @@ export function getAdminSalesTransactionList(
   amount_paid,
   total_amount,
   balance,
+  machine_fee,
+  tax_fee,
   customer_name,
   customer_phone,
   payment_method,
@@ -1350,6 +1354,12 @@ export function getAdminSalesTransactionList(
                        balance
                      )}</td>
                      <td class="py-1 soldItemDateReport">${payment_method}</td>
+                          <td class="py-1 soldItemMachineFeeAmountReport">&#x20A6;${formatAmountWithCommas(
+                            machine_fee
+                          )}</td>
+                          <td class="py-1 soldItemTaxFeeAmountReport">&#x20A6;${formatAmountWithCommas(
+                            tax_fee
+                          )}</td>
                      <td class="py-1 soldItemDateReport">${business_day}</td>
                      <td class="py-1 soldItemDateReport">${remarks}</td>
                       <td class="py-1 soldItemStatusReport">${formatSaleStatus(
@@ -1511,7 +1521,7 @@ export async function renderPosTable({
         //   `;
 
         transactions.forEach((posTransaction) => {
-          console.log(posTransaction);
+          //  console.log(posTransaction);
           const {
             id: transactionId,
             transaction_type,
@@ -2087,7 +2097,7 @@ export async function renderSalesTable({
         //     </td>
         //   `;
 
-        //   console.log('sales', sales);
+        console.log('sales', sales);
 
         sales.forEach((salesTransaction) => {
           const {
@@ -2100,6 +2110,8 @@ export async function renderSalesTable({
             customer_phone,
             payment_method,
             business_day,
+            machine_fee,
+            tax_fee,
             remarks,
             status,
             SaleItems,
@@ -2135,6 +2147,8 @@ export async function renderSalesTable({
             amount_paid,
             total_amount,
             balance,
+            machine_fee,
+            tax_fee,
             customer_name,
             customer_phone,
             payment_method,
