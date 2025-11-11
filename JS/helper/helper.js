@@ -555,16 +555,10 @@ export function formatActionType(value) {
       return 'Added';
     case 'restocked':
       return 'Restocked';
-    case 'cartons':
-      return 'Carton';
-    case 'liters':
-      return 'Liters';
-    case 'yard':
-      return 'Yard';
-    case 'gram':
-      return 'Gram';
-    case 'kilogram':
-      return 'Kilogram';
+    case 'moved':
+      return 'Moved';
+    case 'deleted':
+      return 'Deleted';
     default:
       return value;
   }

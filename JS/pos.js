@@ -542,19 +542,34 @@ export async function handlePosFormSubmit() {
       //   //   machine_fee: Number(machineFeeInput),
       // };
 
+      // {
+      // "amount": 3000,
+      // "posChargeAmount": 300,
+      // "customerPhone": "08960697383",
+      // "paymentMethod":"CARD",
+      // "chargePaymentMethod":"TRANSFER",
+      // "remarks": "Successful Transaction",
+      // "transactionReference": "12366",
+      // "transactionType": "WITHDRAWAL",
+      // "machineFee": 100,
+      // "taxFee": 50,
+      // "transferFee" :0,
+      // "shopId": 98
+      // }
+
       const posFormData = {
         shopId,
-        transaction_type: transactionType.toUpperCase(),
+        transactionType: transactionType.toUpperCase(),
         amount: Number(getAmountForSubmission(amount)),
-        charges: Number(getAmountForSubmission(posTransactionCharges)),
-        customer_phone: customerPhone,
-        payment_method: paymentMethod.toUpperCase(),
-        transaction_mode: posFeePaymentType.toLowerCase(),
-        machine_fee: Number(posMachineFee),
-        tax_fee: Number(posTaxFee),
-        transfer_fee: Number(posTransferFee),
+        posChargeAmount: Number(getAmountForSubmission(posTransactionCharges)),
+        customerPhone: customerPhone,
+        paymentMethod: paymentMethod.toUpperCase(),
+        chargePaymentMethod: posFeePaymentType.toUpperCase(),
+        machineFee: Number(posMachineFee),
+        taxFee: Number(posTaxFee),
+        transferFee: Number(posTransferFee),
         remarks: posTransactionRemark,
-        transaction_reference: posTransactionReference,
+        transactionReference: posTransactionReference,
         //   customer_name: customerName,
       };
 
@@ -593,7 +608,7 @@ export async function handlePosFormSubmit() {
       function resetFormInputs() {
         document.getElementById(
           isAdmin ? 'adminTransactionType' : 'transactionType'
-        ).value = 'withdraw';
+        ).value = 'withdrawal';
         document.getElementById(
           isAdmin ? 'adminPaymentMethod' : 'paymentMethod'
         ).value = 'card';
@@ -618,12 +633,20 @@ export async function handlePosFormSubmit() {
         document.getElementById(
           isAdmin ? 'adminPosTransactionRemark' : 'posTransactionRemark'
         ).value = '';
+        document.getElementById(
+          isAdmin ? 'adminPosMachineFee' : 'posMachineFee'
+        ).value = '';
+        document.getElementById(
+          isAdmin ? 'adminPosTaxFee' : 'posTaxFee'
+        ).value = '';
+        document.getElementById(
+          isAdmin ? 'adminPosTransferFee' : 'posTransferFee'
+        ).value = '';
 
         document.querySelector('.paymentMethodType').style.display = 'block';
         document.querySelector('.posRemarksDiv').style.display = 'block';
 
         //   document.getElementById('posTransactionFee').value = '';
-        //   document.getElementById('posMachineFee').value = '';
         //   document.getElementById('posTransactionConfirmation').value = '';
         //   document.getElementById('posSuccessfulCheckbox').checked = false;
         //   document.getElementById('posPendingCheckbox').checked = false;
@@ -654,9 +677,9 @@ export async function handleAdminWithdrawalFormSubmit() {
         'adminTransactionType-2'
       )?.value;
 
-      const adminWithdrawalMethod = document.getElementById(
-        'adminWithdrawalMethod'
-      )?.value;
+      // const adminWithdrawalMethod = document.getElementById(
+      //   'adminWithdrawalMethod'
+      // )?.value;
 
       const adminWithdrawalAmount = document.getElementById(
         'adminWithdrawalAmount'
@@ -705,6 +728,7 @@ export async function handleAdminWithdrawalFormSubmit() {
         );
         resetFormInputs();
         showToast('success', `✅ ${adminWithdrawalData?.message}`);
+        initAccountOverview();
         hideBtnLoader(adminWithdrawalSubmitButton);
       } catch (err) {
         console.error('Error sending Admin Withdrawal transaction:', err);
@@ -722,9 +746,6 @@ export async function handleAdminWithdrawalFormSubmit() {
 
         document.getElementById('adminTransactionType-2').value =
           'cash_in_machine';
-
-        document.getElementById('adminWithdrawalMethod').value = 'card';
-
         document.getElementById('adminWithdrawalAmount').value = '';
       }
     });
@@ -1499,7 +1520,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // === Main function ===
     function updateTransactionFields(type) {
       switch (type) {
-        case 'withdraw':
+        case 'withdrawal':
           // Submit Button
           posSubmitButton.removeAttribute('disabled');
 

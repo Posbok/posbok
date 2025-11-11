@@ -196,7 +196,8 @@ export async function getStockLogs() {
     //  console.log('Sending getStockItems request...');
 
     const stockLogsData = await safeFetch(
-      `${baseUrl}/api/stock/logs/inventory`,
+      // `${baseUrl}/api/stock/logs/inventory`,
+      `${baseUrl}/api/reports/inventory-log`,
       {
         method: 'GET',
         headers: {
@@ -209,7 +210,7 @@ export async function getStockLogs() {
     //  console.log('Response received...');
 
     if (stockLogsData) {
-      // console.log(stockLogsData);
+      console.log('Stock Inventory Logs data', stockLogsData);
       // hideGlobalLoader();
     }
 

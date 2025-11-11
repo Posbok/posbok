@@ -363,9 +363,10 @@ export function bindMoveStockFormListener() {
       const moveStockItemDetails = {
         stock_id: Number(stockId),
         quantity: Number(moveStockQuantity),
-        selling_price: getAmountForSubmission(moveStockSellingPrice),
+        selling_price: Number(getAmountForSubmission(moveStockSellingPrice)),
         shop_id: Number(moveStockToShopDropdown),
         received_by: moveStockToStaffDropdown,
+        category_id: 11,
       };
 
       console.log('Moving Stock Item to Shop with:', moveStockItemDetails);
@@ -817,14 +818,17 @@ export function populateStockItemsTable(stockItemsData) {
 }
 
 export function populateStockLogsTable(stockLogsData) {
+  const logsList = stockLogsData.logs;
+  const logsSummary = stockLogsData.summary;
+
+  console.log('TO DO', logsSummary);
+
   const tbody = document.querySelector('.stock-logs-table tbody');
   const loadingRow = document.querySelector('.loading-row');
 
-  //   console.log('stockLogsData', stockLogsData);
-
   if (tbody) tbody.innerHTML = '';
 
-  if (!stockLogsData.length) {
+  if (!logsList.length) {
     const emptyRow = document.createElement('tr');
     emptyRow.innerHTML = `
         <td colspan="10" class="table-error-text">No Stock Logs Actions found.</td>
@@ -833,7 +837,7 @@ export function populateStockLogsTable(stockLogsData) {
     return;
   }
 
-  stockLogsData.forEach((stockLog, index) => {
+  logsList.forEach((stockLog, index) => {
     const { item_name, quantity, action_type, price, created_at } = stockLog;
 
     const { first_name, last_name } = stockLog.performer;

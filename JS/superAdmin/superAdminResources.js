@@ -131,7 +131,10 @@ export async function activateBusinessSubscription(
     );
 
     if (activateBusinessData) {
-      // console.log('Business Subscription Activated successfully:', activateBusinessData);
+      console.log(
+        'Business Subscription Activated successfully:',
+        activateBusinessData
+      );
       // showToast('success', `✅ ${activateBusinessData.message}`);
       closeModal();
     }

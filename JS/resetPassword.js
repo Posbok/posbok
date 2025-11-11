@@ -6,6 +6,7 @@ import {
   hideBtnLoader,
   hideGlobalLoader,
   showBtnLoader,
+  showGlobalLoader,
 } from './helper/helper';
 import { redirectWithDelay, showToast } from './script';
 
@@ -156,15 +157,64 @@ document
     }
   });
 
-resendCodeLink.addEventListener('click', (e) => {
+resendCodeLink.addEventListener('click', async (e) => {
   e.preventDefault();
+  showGlobalLoader();
+
   if (!currentEmail) {
     showToast('info', 'No Email...');
+    hideGlobalLoader();
     return;
   }
 
   // TODO: API call to resend code
-  showToast('info', `Resending code to  ${currentEmail}`);
+
+  const getTokensBodyDetalils = {
+    email: currentEmail,
+  };
+
+  //  console.log('📦 Get Token Details:', getTokensBodyDetalils);
+
+  const sendResetCodeBtn = document.querySelector('.sendResetCodeBtn');
+
+  showBtnLoader(sendResetCodeBtn);
+
+  try {
+    const getResetTokensData = await getResetTokens(getTokensBodyDetalils);
+
+    if (!getResetTokensData) {
+      hideBtnLoader(sendResetCodeBtn);
+      hideGlobalLoader();
+
+      showToast(
+        'error',
+        getResetTokensData.message || `An error occured, try again later`
+      );
+      return;
+    }
+
+    if (getResetTokensData) {
+      showToast(
+        'success',
+        getResetTokensData.message ||
+          `Reset code sent to ${currentEmail}, Check your Inbox or Spam`
+      );
+      hideBtnLoader(sendResetCodeBtn);
+      hideGlobalLoader();
+
+      console.log(getResetTokensData);
+
+      resetStep1.classList.add('hidden');
+      resetStep2.classList.remove('hidden');
+    }
+  } catch (error) {
+    showToast('error', error.message || `An error occured, try again later`);
+    hideBtnLoader(sendResetCodeBtn);
+    hideGlobalLoader();
+
+    console.log(error.message);
+  }
+  //   showToast('info', `Resending code to  ${currentEmail}`);
 });
 
 changeEmailLink.addEventListener('click', (e) => {
