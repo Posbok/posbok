@@ -4182,6 +4182,7 @@ body.authentication {
 
 .productSales-summary,
 .sales-summary,
+.warehouse-summary,
 .financial-summary,
 .platform-summary,
 .performance-highlights,
@@ -4193,6 +4194,7 @@ body.authentication {
   flex-wrap: wrap; }
   .productSales-summary .summary-card,
   .sales-summary .summary-card,
+  .warehouse-summary .summary-card,
   .financial-summary .summary-card,
   .platform-summary .summary-card,
   .performance-highlights .summary-card,
@@ -4207,6 +4209,7 @@ body.authentication {
     text-align: center; }
     .productSales-summary .summary-card .icon,
     .sales-summary .summary-card .icon,
+    .warehouse-summary .summary-card .icon,
     .financial-summary .summary-card .icon,
     .platform-summary .summary-card .icon,
     .performance-highlights .summary-card .icon,
@@ -4215,6 +4218,7 @@ body.authentication {
       font-size: 2rem; }
     .productSales-summary .summary-card h4,
     .sales-summary .summary-card h4,
+    .warehouse-summary .summary-card h4,
     .financial-summary .summary-card h4,
     .platform-summary .summary-card h4,
     .performance-highlights .summary-card h4,
@@ -4226,6 +4230,8 @@ body.authentication {
     .productSales-summary .summary-card .value,
     .sales-summary .summary-card .amount,
     .sales-summary .summary-card .value,
+    .warehouse-summary .summary-card .amount,
+    .warehouse-summary .summary-card .value,
     .financial-summary .summary-card .amount,
     .financial-summary .summary-card .value,
     .platform-summary .summary-card .amount,

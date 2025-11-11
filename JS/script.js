@@ -693,10 +693,11 @@ export function bindOpenBusinessDayFormListener() {
       };
 
       const posCapitalDetails = {
-        shopId: isAdmin
+        shop_id: isAdmin
           ? Number(businessDayShopDropdown.value)
           : Number(shopId),
         amount: Number(getAmountForSubmission(openPosCapitalAmount)),
+        notes: openingNotes,
       };
 
       // console.log('Opening Business Day with:', openBusinessDayDetails);

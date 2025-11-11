@@ -821,7 +821,7 @@ export function populateStockLogsTable(stockLogsData) {
   const logsList = stockLogsData.logs;
   const logsSummary = stockLogsData.summary;
 
-  console.log('TO DO', logsSummary);
+  //   console.log('TO DO', logsSummary);
 
   const tbody = document.querySelector('.stock-logs-table tbody');
   const loadingRow = document.querySelector('.loading-row');
