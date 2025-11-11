@@ -1317,11 +1317,14 @@ if (isStaff) {
           //     </td>
           //   `;
 
+          console.log(transactions);
+
           transactions.forEach((posTransaction) => {
+            console.log(posTransaction);
             const {
               transaction_type,
               amount,
-              transaction_mode,
+              chargePaymentMethod,
               customer_name,
               customer_phone,
               payment_method,
@@ -1330,19 +1333,14 @@ if (isStaff) {
               remarks,
               business_day,
               transaction_time,
-              charges,
-              manual_charges,
-              fees,
-              transaction_fee,
+              pos_charge_amount,
+              transfer_fee,
+              tax_fee,
+              machine_fee,
               transaction_ref,
               deleted_at,
               deleted_by,
             } = posTransaction;
-
-            const machineFee = fees || 0;
-            //  const transactionCharges = charges?.charge_amount || '0';
-
-            const chargeToDisplay = manual_charges ?? charges;
 
             const row = document.createElement('tr');
             row.classList.add(
@@ -1353,13 +1351,13 @@ if (isStaff) {
               }`
             );
             row.classList.add('table-body-row');
-            row.classList.add('table-body-row');
             row.innerHTML = `
     <td class="py-1">${serialNumber++}.</td>
                <td class="py-1">${business_day}</td>
                <td class="py-1 posTransTypeReport">${formatTransactionType(
                  transaction_type
                )}</td>
+              <td class="py-1 posPaymentMethodReport">${payment_method}</td>
                <td class="py-1 posCustomerInfo">${`${
                  customer_phone === '' ? '-' : customer_phone
                }`}</td>
@@ -1367,17 +1365,18 @@ if (isStaff) {
                  amount
                )}</td>
                <td class="py-1 posChargesReport">&#x20A6;${formatAmountWithCommas(
-                 chargeToDisplay ? chargeToDisplay : 0
+                 pos_charge_amount
                )}</td>
+               <td class="py-1 posFeePaymentMethodReport">${chargePaymentMethod}</td>
                <td class="py-1 posMachineFeeReport">&#x20A6;${formatAmountWithCommas(
-                 machineFee
+                 machine_fee
                )}</td>
-               <td class="py-1 posFeePaymentMethodReport">${
-                 transaction_mode !== null
-                   ? transaction_mode.toUpperCase()
-                   : 'N/A'
-               }</td>
-               <td class="py-1 posPaymentMethodReport">${payment_method}</td>
+               <td class="py-1 posTransferFeeReport">&#x20A6;${formatAmountWithCommas(
+                 transfer_fee
+               )}</td>
+               <td class="py-1 posTaxFeeReport">&#x20A6;${formatAmountWithCommas(
+                 tax_fee
+               )}</td>
                <td class="py-1 posPaymentMethodRef">${transaction_ref}</td> 
                <td class="py-1 posPaymentMethodRemark">${remarks}</td>
                <td class="py-1 posPaymentMethodReceiptId">${receipt_id}</td>

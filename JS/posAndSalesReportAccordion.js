@@ -939,12 +939,14 @@ export function getAdminPosReportHtml(shop) {
                                     <th class="py-1">S/N</th>
                                     <th class="py-1">Date</th>
                                     <th class="py-1">Transaction Type</th>
+                                    <th class="py-1">Payment Method</th>
                                     <th class="py-1">Customer Phone No.</th>
                                     <th class="py-1">Amount</th>
                                     <th class="py-1">Charges</th>
-                                    <th class="py-1">Machine Fee</th>
                                     <th class="py-1">Charge Payment Method</th>
-                                    <th class="py-1">Payment Method</th>
+                                    <th class="py-1">Machine Fee</th>
+                                    <th class="py-1">Transfer Fee</th>
+                                    <th class="py-1">Tax Fee</th>
                                     <th class="py-1">Transaction Ref.</th>
                                     <th class="py-1">Remarks</th>
                                     <th class="py-1">Receipt ID</th>
@@ -1173,7 +1175,7 @@ export function getAdminFinancialSummaryHtml(shop) {
                </div>
 
                <div class="summary-card">
-                  <h3>Total W/Transafer</h3>
+                  <h3>Total W/Transfer</h3>
                   <p class="value" id="totalWithdrawalTransfer">--</p>
                </div>
 
@@ -1222,7 +1224,7 @@ export function getAdminPosTransactionList(
   transactionId,
   transaction_type,
   amount,
-  transaction_mode,
+  chargePaymentMethod,
   customer_name,
   customer_phone,
   payment_method,
@@ -1231,11 +1233,10 @@ export function getAdminPosTransactionList(
   remarks,
   business_day,
   transaction_time,
-  machineFee,
-  //   transactionCharges,
-  //   manual_charges,
-  chargeToDisplay,
-  transaction_fee,
+  pos_charge_amount,
+  transfer_fee,
+  tax_fee,
+  machine_fee,
   transaction_ref,
   deleted_at,
   deleted_by,
@@ -1248,6 +1249,7 @@ export function getAdminPosTransactionList(
                <td class="py-1 posTransTypeReport">${formatTransactionType(
                  transaction_type
                )}</td>
+               <td class="py-1 posPaymentMethodReport">${payment_method}</td>
                <td class="py-1 posCustomerInfo">${`${
                  customer_phone === '' ? '-' : customer_phone
                }`}</td>
@@ -1255,17 +1257,18 @@ export function getAdminPosTransactionList(
                  amount
                )}</td>
                <td class="py-1 posChargesReport">&#x20A6;${formatAmountWithCommas(
-                 chargeToDisplay ? chargeToDisplay : 0
+                 pos_charge_amount
                )}</td>
+               <td class="py-1 posFeePaymentMethodReport">${chargePaymentMethod}</td>
                <td class="py-1 posMachineFeeReport">&#x20A6;${formatAmountWithCommas(
-                 machineFee
+                 machine_fee
                )}</td>
-               <td class="py-1 posFeePaymentMethodReport">${
-                 transaction_mode !== null
-                   ? transaction_mode.toUpperCase()
-                   : 'N/A'
-               }</td>
-               <td class="py-1 posPaymentMethodReport">${payment_method}</td>
+               <td class="py-1 posTransferFeeReport">&#x20A6;${formatAmountWithCommas(
+                 transfer_fee
+               )}</td>
+               <td class="py-1 posTaxFeeReport">&#x20A6;${formatAmountWithCommas(
+                 tax_fee
+               )}</td>
                <td class="py-1 posPaymentMethodRef">${transaction_ref}</td> 
                <td class="py-1 posPaymentMethodRemark">${remarks}</td>
                <td class="py-1 posPaymentMethodReceiptId">${receipt_id}</td>
@@ -1508,12 +1511,12 @@ export async function renderPosTable({
         //   `;
 
         transactions.forEach((posTransaction) => {
-          //  console.log(posTransaction);
+          console.log(posTransaction);
           const {
             id: transactionId,
             transaction_type,
             amount,
-            transaction_mode,
+            chargePaymentMethod,
             customer_name,
             customer_phone,
             payment_method,
@@ -1522,20 +1525,15 @@ export async function renderPosTable({
             remarks,
             business_day,
             transaction_time,
-            charges,
-            manual_charges,
-            fees,
-            transaction_fee,
+            pos_charge_amount,
+            transfer_fee,
+            tax_fee,
+            machine_fee,
             transaction_ref,
             deleted_at,
             deleted_by,
             shop_id,
           } = posTransaction;
-
-          const machineFee = fees || 0;
-          //  const transactionCharges = charges?.charge_amount || '0';
-
-          const chargeToDisplay = manual_charges ?? charges;
 
           const row = document.createElement('tr');
           row.classList.add(
@@ -1550,7 +1548,7 @@ export async function renderPosTable({
             transactionId,
             transaction_type,
             amount,
-            transaction_mode,
+            chargePaymentMethod,
             customer_name,
             customer_phone,
             payment_method,
@@ -1559,11 +1557,10 @@ export async function renderPosTable({
             remarks,
             business_day,
             transaction_time,
-            machineFee,
-            // transactionCharges,
-            // manual_charges,
-            chargeToDisplay,
-            transaction_fee,
+            pos_charge_amount,
+            transfer_fee,
+            tax_fee,
+            machine_fee,
             transaction_ref,
             deleted_at,
             deleted_by,
