@@ -1,6 +1,7 @@
 import config from '../../../config';
 import {
   formatAmountWithCommas,
+  formatDateTimeReadable,
   hideGlobalLoader,
   showGlobalLoader,
 } from '../../helper/helper';
@@ -62,7 +63,7 @@ export async function initAccountOverview() {
 // Updates just the Admin Dashboard section
 // export function updatePosSummaryDashboardUi(shopBalances, adminSummary) {
 export function updatePosSummaryDashboardUi(shopBalances, adminShopSelection) {
-  console.log(shopBalances, 'shopBalances');
+  //   console.log(shopBalances, 'shopBalances');
 
   const selectedShopId = isStaff ? shopId : adminShopSelection;
 
@@ -70,7 +71,7 @@ export function updatePosSummaryDashboardUi(shopBalances, adminShopSelection) {
     (shop) => shop.id === Number(selectedShopId)
   );
 
-  console.log('Selected Shop ID:', selectedShopId);
+  //   console.log('Selected Shop ID:', selectedShopId);
   console.log('Selected Shop Balance:', balancePerShop);
 
   const {
@@ -83,6 +84,12 @@ export function updatePosSummaryDashboardUi(shopBalances, adminShopSelection) {
     total_pos_capital,
     total_pos_charges,
     total_withdrawals,
+    total_cash_at_hand,
+    total_machine_fee,
+    total_tax_fee,
+    total_transfer_fee,
+    total_fees,
+    current_business_day,
   } = balancePerShop;
 
   //   const {
@@ -93,6 +100,9 @@ export function updatePosSummaryDashboardUi(shopBalances, adminShopSelection) {
 
   const totalPosCapital = document.getElementById(
     isStaff ? 'totalPosCapital' : 'adminTotalPosCapital'
+  );
+  const totaCashAtHand = document.getElementById(
+    isStaff ? 'totalCashAtHand' : 'adminTotalCashAtHand'
   );
 
   const cashAtHand = document.getElementById(
@@ -125,6 +135,18 @@ export function updatePosSummaryDashboardUi(shopBalances, adminShopSelection) {
   const machineCharges = document.getElementById(
     isStaff ? 'machineCharges' : 'adminMachineCharges'
   );
+  const machineFee = document.getElementById(
+    isStaff ? 'totalMachineFee' : 'adminTotalMachineFee'
+  );
+  const taxFee = document.getElementById(
+    isStaff ? 'totalTaxFee' : 'adminTotalTaxFee'
+  );
+  const transferFe = document.getElementById(
+    isStaff ? 'totalTransferFee' : 'adminTotalTransferFee'
+  );
+  const totalFees = document.getElementById(
+    isStaff ? 'totalFees' : 'adminTotalFees'
+  );
   const totalAdminWithdrawals = document.getElementById(
     isStaff ? 'totalAdminWithdrawals' : 'totalAdminWithdrawals_admin'
   );
@@ -134,9 +156,14 @@ export function updatePosSummaryDashboardUi(shopBalances, adminShopSelection) {
   const adminWithdrawalsTransfer = document.getElementById(
     isStaff ? 'adminWithdrawalsTransfer' : 'adminWithdrawalsTransfer_admin'
   );
+  const currentBusinessDay = document.getElementById(
+    isStaff ? 'currentBusinessDay' : 'adminCurrentBusinessDay'
+  );
 
   if (totalPosCapital)
     totalPosCapital.innerHTML = formatAmountWithCommas(total_pos_capital || 0);
+  if (totaCashAtHand)
+    totaCashAtHand.innerHTML = formatAmountWithCommas(total_cash_at_hand || 0);
   if (cashAtHand)
     cashAtHand.innerHTML = formatAmountWithCommas(cash_at_hand || 0);
   if (cashInMachine)
@@ -153,6 +180,13 @@ export function updatePosSummaryDashboardUi(shopBalances, adminShopSelection) {
     cashCharges.innerHTML = formatAmountWithCommas(charges_cash || 0);
   if (machineCharges)
     machineCharges.innerHTML = formatAmountWithCommas(charges_machine || 0);
+  if (machineFee)
+    machineFee.innerHTML = formatAmountWithCommas(total_machine_fee || 0);
+  if (taxFee) taxFee.innerHTML = formatAmountWithCommas(total_tax_fee || 0);
+  if (transferFe)
+    transferFe.innerHTML = formatAmountWithCommas(total_transfer_fee || 0);
+  if (totalFees) totalFees.innerHTML = formatAmountWithCommas(total_fees || 0);
+  if (currentBusinessDay) currentBusinessDay.innerHTML = current_business_day;
 
   if (totalAdminWithdrawals)
     totalAdminWithdrawals.innerHTML = formatAmountWithCommas(
