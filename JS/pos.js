@@ -377,8 +377,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           return;
         }
 
-        //   const businessDay = await getCurrentBusinessDay(selectedShopId);
-        //   console.log('new Business Day:', businessDay.data);
+        const businessDay = await getCurrentBusinessDay(selectedShopId);
+        console.log('Current Business Day:', businessDay.data);
 
         //   const openingCash = businessDay?.data?.opening_cash || 0;
         //   updateCashInMachineUI(openingCash);
@@ -1559,7 +1559,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           //   Dynamic Fee Fields
           toggleField(posChargesDiv, 'input', true);
-          toggleField(machineFeeDiv, 'input', true);
+          toggleField(machineFeeDiv, 'input', false);
           toggleField(taxFeeDiv, 'input', false);
           toggleField(transferFeeDiv, 'input', true);
           break;

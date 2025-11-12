@@ -871,6 +871,8 @@ export async function populateAllBusinessesTable({
         version_preference,
       } = businessData;
 
+      const { email, first_name, last_name } = manager || {};
+
       //  const {
       //    created_at: shopCreationDate,
       //    id: shopId,
@@ -914,6 +916,7 @@ export async function populateAllBusinessesTable({
           <td class="py-1 businessStaffSize">${staff_size}</td>
 
           <td class="py-1 businessPhoneNumber">${phone_number}</td>
+          <td class="py-1 businessPhoneNumber">${email || 'N/A'}</td>
           <td class="py-1 businessStateofOperation">${state_of_operation}</td>
           <td class="py-1 businessaddress">${address}</td>
           <td class="py-1 businessDateCreated">${formatDateTimeReadable(
@@ -1199,6 +1202,8 @@ export async function renderBusinessDetailsById(e, row) {
       last_updated,
     } = businessDetails.data.subscription;
 
+    const { email, first_name, last_name } = manager || {};
+
     // Populate Business Detail to UI
 
     // Finally open the modal
@@ -1212,6 +1217,7 @@ export async function renderBusinessDetailsById(e, row) {
     document.getElementById('businessDetailAddress').textContent = address;
     document.getElementById('businessDetailId').textContent = businessId;
     document.getElementById('businessDetailPhone').textContent = phone_number;
+    document.getElementById('businessDetailEmail').textContent = email || 'N/A';
     document.getElementById('businessDetailState').textContent =
       state_of_operation;
     document.getElementById('businessDetailCac').textContent =

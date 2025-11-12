@@ -1520,6 +1520,8 @@ export async function renderPosTable({
         //     </td>
         //   `;
 
+        console.log(transactions);
+
         transactions.forEach((posTransaction) => {
           //  console.log(posTransaction);
           const {
