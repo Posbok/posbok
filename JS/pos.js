@@ -524,7 +524,7 @@ export async function handlePosFormSubmit() {
         isAdmin ? '#adminPosTransactionCharges' : '#posTransactionCharges'
       ).value;
       const transactionType = document.getElementById(
-        isAdmin ? 'adminTransactionType' : 'transactionType'
+        isAdmin ? 'adminTransactionType' : 'staffTransactionType'
       ).value;
       const paymentMethod = document.getElementById(
         isAdmin ? 'adminPaymentMethod' : 'paymentMethod'
@@ -629,7 +629,7 @@ export async function handlePosFormSubmit() {
 
       function resetFormInputs() {
         document.getElementById(
-          isAdmin ? 'adminTransactionType' : 'transactionType'
+          isAdmin ? 'adminTransactionType' : 'staffTransactionType'
         ).value = 'withdrawal';
         document.getElementById(
           isAdmin ? 'adminPaymentMethod' : 'paymentMethod'
