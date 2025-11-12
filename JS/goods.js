@@ -892,13 +892,24 @@ async function displayAllProducts(selectedShopId) {
         }
 
         // Further filter by input value - Add Existing Products
-        filteredProducts = filteredProducts.filter(
-          (product) =>
-            product.Product.name.toLowerCase().includes(inputValue) ||
-            product.Product.description.toLowerCase().includes(inputValue) ||
-            product.product_id.toString().includes(inputValue) ||
-            product.Product.barcode.toLowerCase().includes(inputValue)
-        );
+        filteredProducts = filteredProducts.filter((item) => {
+          const product = item.Product;
+
+          // Skip if product is null or undefined
+          if (!product) return false;
+
+          const name = product.name?.toLowerCase() || '';
+          const desc = product.description?.toLowerCase() || '';
+          const sku = product.sku?.toString()?.toLowerCase() || '';
+          const barcode = product.barcode?.toLowerCase() || '';
+
+          return (
+            name.includes(inputValue) ||
+            desc.includes(inputValue) ||
+            sku.includes(inputValue) ||
+            barcode.includes(inputValue)
+          );
+        });
 
         updateAutocompleteList(filteredProducts);
 
@@ -1743,11 +1754,18 @@ if (isAdmin && adminAccordionContainer && container) {
         const filteredProducts = products.filter((item) => {
           const product = item.Product;
 
+          if (!product) return false;
+
+          const name = product.name?.toLowerCase() || '';
+          const desc = product.description?.toLowerCase() || '';
+          const sku = product.sku?.toString()?.toLowerCase() || '';
+          const barcode = product.barcode?.toLowerCase() || '';
+
           return (
-            product.name.toLowerCase().includes(query) ||
-            product.description.toLowerCase().includes(query) ||
-            product.id.toString().includes(query) ||
-            product.barcode.toLowerCase().includes(query)
+            name.includes(query) ||
+            desc.includes(query) ||
+            sku.includes(query) ||
+            barcode.includes(query)
           );
         });
 
@@ -1834,6 +1852,7 @@ function renderFilteredProducts(shopId, productList) {
       Product: {
         name: productName,
         description,
+        sku,
         barcode,
         purchase_price,
         selling_price,
@@ -1856,8 +1875,10 @@ function renderFilteredProducts(shopId, productList) {
                 <td class="py-1 productName">${productName}</td>
                 <td class="py-1 productDescription">${description}</td>
                 <td class="py-1 producCategory">${categoryName}</td>
-                <td class="py-1 producCategory">${product_id}</td>
-                <td class="py-1 producCategory">${barcode}</td>
+                <td class="py-1 producCategory">${sku ? sku : 'N/A'}</td>
+                <td class="py-1 producCategory">${
+                  barcode ? barcode : 'N/A'
+                }</td>
                 <td class="py-1 productAmountBought">&#x20A6;${formatAmountWithCommas(
                   purchase_price
                 )}</td>
@@ -2071,6 +2092,7 @@ export async function renderProductInventoryTable(shopId) {
         barcode,
         purchase_price,
         selling_price,
+        sku,
       } = productInventory.Product;
       const { name: categoryName } = productInventory.Product.ProductCategory;
 
@@ -2089,8 +2111,10 @@ export async function renderProductInventoryTable(shopId) {
                 <td class="py-1 productName">${productName}</td>
                 <td class="py-1 productDescription">${description}</td>
                 <td class="py-1 producCategory">${categoryName}</td>
-                <td class="py-1 producCategory">${product_id}</td>
-                <td class="py-1 producCategory">${barcode}</td>
+           <td class="py-1 producCategory">${sku ? sku : 'N/A'}</td>
+                <td class="py-1 producCategory">${
+                  barcode ? barcode : 'N/A'
+                }</td>
                 <td class="py-1 productAmountBought">&#x20A6;${formatAmountWithCommas(
                   purchase_price
                 )}</td>

@@ -299,15 +299,24 @@ async function displayAllProducts() {
         }
 
         // Further filter by input value
-        filteredProducts = filteredProducts.filter(
-          (product) =>
-            (product.Product.name?.toLowerCase() || '').includes(inputValue) ||
-            (product.Product.description?.toLowerCase() || '').includes(
-              inputValue
-            ) ||
-            product.Product.id?.toString().includes(inputValue) ||
-            (product.Product.barcode?.toLowerCase() || '').includes(inputValue)
-        );
+        filteredProducts = filteredProducts.filter((item) => {
+          const product = item.Product;
+
+          // Skip if product is null or undefined
+          if (!product) return false;
+
+          const name = product.name?.toLowerCase() || '';
+          const desc = product.description?.toLowerCase() || '';
+          const sku = product.sku?.toString()?.toLowerCase() || '';
+          const barcode = product.barcode?.toLowerCase() || '';
+
+          return (
+            name.includes(inputValue) ||
+            desc.includes(inputValue) ||
+            sku.includes(inputValue) ||
+            barcode.includes(inputValue)
+          );
+        });
 
         //   console.log(filteredProducts);
 
