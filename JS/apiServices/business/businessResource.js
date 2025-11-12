@@ -267,3 +267,28 @@ export async function getReportDashboard(filters) {
     console.error('Error fetching Report Dashboard:', error.message);
   }
 }
+
+export async function getPosDailySummary(business_id) {
+  //   console.log(filters);
+  try {
+    showGlobalLoader();
+    const posDailySummaryData = await safeFetch(
+      `${baseUrl}/api/business/${business_id}/shops`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    //  console.log('posDailySummaryData received...');
+
+    //  console.log('posDailySummaryData:', posDailySummaryData);
+    hideGlobalLoader();
+    return posDailySummaryData;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error fetching Report Dashboard:', error.message);
+  }
+}

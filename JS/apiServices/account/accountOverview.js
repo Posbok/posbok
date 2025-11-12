@@ -5,6 +5,7 @@ import {
   showGlobalLoader,
 } from '../../helper/helper';
 import { showToast } from '../../script';
+import { getPosDailySummary } from '../business/businessResource';
 import { getAdminDashboard, getPosCapital } from '../pos/posResources';
 
 const userData = config.userData;
@@ -12,6 +13,7 @@ const userData = config.userData;
 const parsedUserData = userData ? JSON.parse(userData) : null;
 
 const shopId = parsedUserData?.shopId;
+const businessId = parsedUserData?.businessId;
 
 const isStaff = parsedUserData?.accountType === 'STAFF';
 
@@ -33,32 +35,43 @@ export async function initAccountOverview() {
   //   }
   //   if (!isStaff) return;
   try {
-    const adminDashboardData = await getAdminDashboard(
-      isStaff ? shopId : adminShopSelection
-    );
+    //  const adminDashboardData = await getAdminDashboard(
+    //    isStaff ? shopId : adminShopSelection
+    //  );
+    const posDailySummaryData = await getPosDailySummary(businessId);
 
-    if (!adminDashboardData) {
+    if (!posDailySummaryData) {
       hideGlobalLoader();
       return;
     }
 
-    console.log(adminDashboardData);
+    console.log(posDailySummaryData);
 
-    const shopBalances = adminDashboardData.data?.shop_balances;
-    const adminSummary = adminDashboardData.data?.admin_summary;
+    const shopBalances = posDailySummaryData?.data;
+    //  const adminSummary = posDailySummaryData.data?.admin_summary;
 
-    updateAdminDashboardUi(shopBalances, adminSummary);
+    //  updatePosSummaryDashboardUi(shopBalances, adminSummary);
+    updatePosSummaryDashboardUi(shopBalances, adminShopSelection);
   } catch (error) {
-    console.error('Error loading Admin Dashboard:', error);
+    console.error('Error loading POS Summary Dashboard:', error);
     //  showToast('error', '❌ Failed to load account overview data.');
   }
   hideGlobalLoader();
 }
 
 // Updates just the Admin Dashboard section
-export function updateAdminDashboardUi(shopBalances, adminSummary) {
+// export function updatePosSummaryDashboardUi(shopBalances, adminSummary) {
+export function updatePosSummaryDashboardUi(shopBalances, adminShopSelection) {
   console.log(shopBalances, 'shopBalances');
-  //   if (!isStaff) return;
+
+  const selectedShopId = isStaff ? shopId : adminShopSelection;
+
+  const balancePerShop = shopBalances.find(
+    (shop) => shop.id === Number(selectedShopId)
+  );
+
+  console.log('Selected Shop ID:', selectedShopId);
+  console.log('Selected Shop Balance:', balancePerShop);
 
   const {
     billpayment_cash,
@@ -70,13 +83,13 @@ export function updateAdminDashboardUi(shopBalances, adminSummary) {
     total_pos_capital,
     total_pos_charges,
     total_withdrawals,
-  } = shopBalances;
+  } = balancePerShop;
 
-  const {
-    total_admin_withdrawals,
-    admin_withdrawal_cash,
-    admin_withdrawal_transfer,
-  } = adminSummary;
+  //   const {
+  //     total_admin_withdrawals,
+  //     admin_withdrawal_cash,
+  //     admin_withdrawal_transfer,
+  //   } = adminSummary;
 
   const totalPosCapital = document.getElementById(
     isStaff ? 'totalPosCapital' : 'adminTotalPosCapital'
@@ -143,17 +156,20 @@ export function updateAdminDashboardUi(shopBalances, adminSummary) {
 
   if (totalAdminWithdrawals)
     totalAdminWithdrawals.innerHTML = formatAmountWithCommas(
-      total_admin_withdrawals || 0
+      // total_admin_withdrawals || 0
+      0
     );
 
   if (adminWithdrawalsCash)
     adminWithdrawalsCash.innerHTML = formatAmountWithCommas(
-      admin_withdrawal_cash || 0
+      // admin_withdrawal_cash || 0
+      0
     );
 
   if (adminWithdrawalsTransfer)
     adminWithdrawalsTransfer.innerHTML = formatAmountWithCommas(
-      admin_withdrawal_transfer || 0
+      // admin_withdrawal_transfer || 0
+      0
     );
 }
 
