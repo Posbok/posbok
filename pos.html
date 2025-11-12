@@ -968,6 +968,32 @@
    </form>
 
 
+   <!-- Proceed with Previous Day pop up -->
+   <form class="modal-form proceedWithPreviousBusinessDayModal proceedWithPreviousBusinessDayContainer" name="modal">
+
+      <div class="card confirmation proceedWithPreviousBusinessDay modal ">
+         <h1 class="heading-text">Previous Business Day Detected</h1>
+         <h1 class="confirmation-text">You are currently on the previous business day <span
+               id="confirmation-text"></span>. Do you want to continue with this business day?
+         </h1>
+
+         <div class="confirmation-btn_container">
+
+            <button class="hero-btn-dark cancel-close">Close Business Day</button>
+
+            <button class="hero-btn-danger proceedWithPreviousBusinessDayBtn  mt-2 has-spinner" type="submit">
+               <span class="btn-text">Proceed With Transaction </span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+
+
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+
    <!-- profile Slider -->
    <div class="profile-slider-overlay "></div>
 

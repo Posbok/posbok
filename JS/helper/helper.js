@@ -2,7 +2,7 @@
 
 import config from '../../config';
 import { getCurrentBusinessDay } from '../apiServices/pos/posResources';
-import { showToast } from '../script';
+import { closeModal, redirectWithDelay, showToast } from '../script';
 
 export function isUserLoggedIn() {
   const token = localStorage.getItem('accessToken');
@@ -1120,25 +1120,123 @@ export function populateBusinessStaffDropdown(
 //   return true;
 // }
 
+// export async function ensureBusinessDayOpen(shopId) {
+//   const response = await getCurrentBusinessDay(shopId);
+//   //   console.log(shopId, response);
+
+//   // Make sure response and response.data exist
+//   //   if (!response?.success || !response.data) {
+//   //     showToast('warning', '⛔ Could not verify business day. Try again.');
+//   //     return false;
+//   //   }
+
+//   const day = response.data;
+
+//   //   const
+
+//   console.log('DAY', day);
+
+//   if (day === null) {
+//     showToast('warning', '⛔ Please open a business day to continue.');
+//     return false;
+//   }
+
+//   return true;
+// }
+
 export async function ensureBusinessDayOpen(shopId) {
   const response = await getCurrentBusinessDay(shopId);
-  //   console.log(shopId, response);
 
-  // Make sure response and response.data exist
-  //   if (!response?.success || !response.data) {
-  //     showToast('warning', '⛔ Could not verify business day. Try again.');
-  //     return false;
-  //   }
+  if (!response?.success) {
+    showToast('warning', '⛔ Could not verify business day. Try again.');
+    return false;
+  }
 
   const day = response.data;
+  console.log('DAY', day);
 
-  if (day === null) {
+  // 1️⃣ No business day
+  if (!day) {
     showToast('warning', '⛔ Please open a business day to continue.');
     return false;
   }
 
+  // 2️⃣ Compare dates
+  const today = new Date().toISOString().split('T')[0]; // "2025-11-12"
+  const businessDayDate = day.date; // e.g., "2025-11-11"
+
+  if (day.is_open && businessDayDate !== today) {
+    // Show a confirmation dialog
+
+    console.log('Previous Business Day Detected');
+
+    return await new Promise((resolve) => {
+      openProceedWithPreviousBusinessDayModal();
+      proceedWithPreviousForm(businessDayDate, shopId);
+
+      bindProceedWithPreviousBusinessDayFormListener(resolve);
+    });
+  }
+
+  // 3️⃣ Everything okay → proceed
   return true;
 }
+
+export function openProceedWithPreviousBusinessDayModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const proceedWithPreviousBusinessDayContainer = document.querySelector(
+    '.proceedWithPreviousBusinessDay'
+  );
+
+  if (proceedWithPreviousBusinessDayContainer)
+    proceedWithPreviousBusinessDayContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
+export function proceedWithPreviousForm(businessDayDate, shopId) {
+  const form = document.querySelector('.proceedWithPreviousBusinessDayModal');
+  if (!form) return;
+
+  form.dataset.shopId = shopId;
+  form.dataset.businessDayDate = businessDayDate;
+
+  document.getElementById('confirmation-text').textContent = businessDayDate;
+}
+
+export function bindProceedWithPreviousBusinessDayFormListener(resolve) {
+  const form = document.querySelector('.proceedWithPreviousBusinessDayModal');
+  if (!form) return;
+
+  const proceedBtn = form.querySelector('.proceedWithPreviousBusinessDayBtn');
+  const cancelButton = form.querySelector('.cancel-close');
+
+  if (!form.dataset.bound) {
+    form.dataset.bound = true;
+
+    cancelButton?.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      console.log('Cancel button was CLICKED');
+      resolve(false);
+      closeModal();
+      redirectWithDelay('Homepage', 'index.html', 1500);
+    });
+
+    proceedBtn?.addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      console.log('Proceed Button was CLICKED');
+      resolve(true);
+      closeModal();
+    });
+  }
+}
+
+// document.addEventListener('DOMContentLoaded', function () {
+//   bindProceedWithPreviousBusinessDayFormListener();
+// });
 
 export function clearReceiptDiv() {
   // Top Part Below

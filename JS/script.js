@@ -963,9 +963,15 @@ export function closeModal() {
   const updateBusinessDataContainer = document.querySelector(
     '.updateBusinessDataContainer'
   );
+  const proceedWithPreviousBusinessDay = document.querySelector(
+    '.proceedWithPreviousBusinessDay'
+  );
 
   //
 
+  if (proceedWithPreviousBusinessDay) {
+    proceedWithPreviousBusinessDay.classList.remove('active');
+  }
   if (updateBusinessDataContainer) {
     updateBusinessDataContainer.classList.remove('active');
   }

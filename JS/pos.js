@@ -378,6 +378,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         const businessDay = await getCurrentBusinessDay(selectedShopId);
+        //   const businessDay = await ensureBusinessDayOpen(selectedShopId);
         console.log('Current Business Day:', businessDay.data);
 
         //   const openingCash = businessDay?.data?.opening_cash || 0;
@@ -432,7 +433,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function clearPosSummaryDiv() {
-    console.log('clear the html');
     document.getElementById(
       isStaff ? 'totalPosCapital' : 'adminTotalPosCapital'
     ).innerHTML = 0;
@@ -467,6 +467,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById(
       isStaff ? 'machineCharges' : 'adminMachineCharges'
     ).innerHTML = 0;
+
+    document.getElementById(
+      isStaff ? 'totalCashAtHand' : 'adminTotalCashAtHand'
+    ).innerHTML = 0;
+    document.getElementById(
+      isStaff ? 'totalMachineFee' : 'adminTotalMachineFee'
+    ).innerHTML = 0;
+    document.getElementById(
+      isStaff ? 'totalTaxFee' : 'adminTotalTaxFee'
+    ).innerHTML = 0;
+    document.getElementById(
+      isStaff ? 'totalTransferFee' : 'adminTotalTransferFee'
+    ).innerHTML = 0;
+    document.getElementById(
+      isStaff ? 'totalFees' : 'adminTotalFees'
+    ).innerHTML = 0;
+    document.getElementById(
+      isStaff ? 'currentBusinessDay' : 'adminCurrentBusinessDay'
+    ).innerHTML = '';
   }
 });
 
@@ -579,8 +598,11 @@ export async function handlePosFormSubmit() {
         console.log('📦 POS Ttransaction Details:', posFormData);
         showBtnLoader(posSubmitButton);
 
-        const isDayOpen = await ensureBusinessDayOpen(shopId);
-        if (!isDayOpen) {
+        const businessDayVerified = await ensureBusinessDayOpen(shopId);
+
+        console.log(businessDayVerified);
+
+        if (!businessDayVerified) {
           hideBtnLoader(posSubmitButton);
           return;
         }
@@ -710,8 +732,10 @@ export async function handleAdminWithdrawalFormSubmit() {
         );
         showBtnLoader(adminWithdrawalSubmitButton);
 
-        const isDayOpen = await ensureBusinessDayOpen(posShopDropdown);
-        if (!isDayOpen) {
+        const businessDayVerified = await ensureBusinessDayOpen(
+          posShopDropdown
+        );
+        if (!businessDayVerified) {
           hideBtnLoader(adminWithdrawalSubmitButton);
           return;
         }
