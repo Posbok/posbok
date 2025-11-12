@@ -77,7 +77,7 @@ export function updateTotalPosAmounts(transactions, totalRow, date) {
 
   const posChargesAmount = transactions.reduce((sum, item) => {
     if (!isDeleted(item)) {
-      const charge = item.manual_charges ?? item.charges;
+      const charge = item.pos_charge_amount;
       return sum + Number(charge || 0);
     }
     return sum;
@@ -88,11 +88,31 @@ export function updateTotalPosAmounts(transactions, totalRow, date) {
 
   //   Total Machine
   const machineFeeItems = transactions.filter(
-    (item) => item.fees && !isDeleted(item)
+    (item) => item.machine_fee && !isDeleted(item)
   );
 
   const totalMachineFeeAmount = machineFeeItems.reduce(
-    (sum, item) => sum + Number(item.fees || 0),
+    (sum, item) => sum + Number(item.machine_fee || 0),
+    0
+  );
+
+  //   Total Tax Fee
+  const taxFeeItems = transactions.filter(
+    (item) => item.tax_fee && !isDeleted(item)
+  );
+
+  const totalTaxFeeAmount = taxFeeItems.reduce(
+    (sum, item) => sum + Number(item.tax_fee || 0),
+    0
+  );
+
+  //   Total Transfer Fee
+  const transferFeeItems = transactions.filter(
+    (item) => item.transfer_fee && !isDeleted(item)
+  );
+
+  const totalTransferFeeAmount = transferFeeItems.reduce(
+    (sum, item) => sum + Number(item.transfer_fee || 0),
     0
   );
 
@@ -122,6 +142,18 @@ export function updateTotalPosAmounts(transactions, totalRow, date) {
      <td  class="date-header py-1 px-2 mt-1 mb-1">
        <strong>Total Machine Fee </strong> = ₦${formatAmountWithCommas(
          totalMachineFeeAmount
+       )}
+     </td>
+ 
+     <td  class="date-header py-1 px-2 mt-1 mb-1">
+       <strong>Total Transfer Fee </strong> = ₦${formatAmountWithCommas(
+         totalTransferFeeAmount
+       )}
+     </td>
+ 
+     <td  class="date-header py-1 px-2 mt-1 mb-1">
+       <strong>Total Tax Fee </strong> = ₦${formatAmountWithCommas(
+         totalTaxFeeAmount
        )}
      </td>
  

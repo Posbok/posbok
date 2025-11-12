@@ -150,12 +150,12 @@ export function updatePosSummaryDashboardUi(shopBalances, adminShopSelection) {
   const totalAdminWithdrawals = document.getElementById(
     isStaff ? 'totalAdminWithdrawals' : 'totalAdminWithdrawals_admin'
   );
-  const adminWithdrawalsCash = document.getElementById(
-    isStaff ? 'adminWithdrawalsCash' : 'adminWithdrawalsCash_admin'
-  );
-  const adminWithdrawalsTransfer = document.getElementById(
-    isStaff ? 'adminWithdrawalsTransfer' : 'adminWithdrawalsTransfer_admin'
-  );
+  //   const adminWithdrawalsCash = document.getElementById(
+  //     isStaff ? 'adminWithdrawalsCash' : 'adminWithdrawalsCash_admin'
+  //   );
+  //   const adminWithdrawalsTransfer = document.getElementById(
+  //     isStaff ? 'adminWithdrawalsTransfer' : 'adminWithdrawalsTransfer_admin'
+  //   );
   const currentBusinessDay = document.getElementById(
     isStaff ? 'currentBusinessDay' : 'adminCurrentBusinessDay'
   );
@@ -194,17 +194,17 @@ export function updatePosSummaryDashboardUi(shopBalances, adminShopSelection) {
       0
     );
 
-  if (adminWithdrawalsCash)
-    adminWithdrawalsCash.innerHTML = formatAmountWithCommas(
-      // admin_withdrawal_cash || 0
-      0
-    );
+  //   if (adminWithdrawalsCash)
+  //     adminWithdrawalsCash.innerHTML = formatAmountWithCommas(
+  //       // admin_withdrawal_cash || 0
+  //       0
+  //     );
 
-  if (adminWithdrawalsTransfer)
-    adminWithdrawalsTransfer.innerHTML = formatAmountWithCommas(
-      // admin_withdrawal_transfer || 0
-      0
-    );
+  //   if (adminWithdrawalsTransfer)
+  //     adminWithdrawalsTransfer.innerHTML = formatAmountWithCommas(
+  //       // admin_withdrawal_transfer || 0
+  //       0
+  //     );
 }
 
 export function updateCashInMachineUI(openingCash) {
