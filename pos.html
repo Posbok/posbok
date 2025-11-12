@@ -993,6 +993,86 @@
       </div>
    </form>
 
+   <!-- Close Business Day Modals -->
+   <form class="modal-form closeBusinessDayModal staffCloseBusinessDayContainer" name="modal">
+
+      <div class="card confirmation closeBusinessDay modal ">
+         <h1 class="confirmation-text">Are you sure you want to Close Business Day <span id="confirmation-text"></span>?
+         </h1>
+
+         <div class="depositPosCapital-form_input">
+            <label for="closingCashAmount">Closing Cash</label>
+
+            <div class="naira-input-container">
+               <input id="closingCashAmount" type="text" placeholder="Enter Closing Cash" name="closingCashAmount"
+                  required>
+               <span class="naira">&#x20A6;</span>
+            </div>
+         </div>
+
+         <div class="confirmation-btn_container">
+
+            <button class="hero-btn-dark cancel-close">Cancel</button>
+
+            <button class="hero-btn-danger closeBusinessDayBtn  mt-2 has-spinner" type="submit">
+               <span class="btn-text">Close Business Day </span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+
+
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <form class="modal-form closeBusinessDayModal adminCloseBusinessDayContainer" name="modal">
+
+      <div class="card confirmation adminCloseBusinessDay modal ">
+         <h1 class="confirmation-text">Are you sure you want to Close Business Day <span id="confirmation-text"></span>?
+         </h1>
+
+
+         <!-- Assign Business Day Close to shop -->
+         <div class="modal-form_input">
+            <label for="closeBusinessDayShopDropdown">Select Shop</label>
+
+            <select id="closeBusinessDayShopDropdown" class="form-control" required>
+               <option value="">Select a shop</option>
+               <!-- <option value="1">Loading Shops...</option> -->
+
+               <!-- Add Main shops dynamically -->
+            </select>
+         </div>
+
+
+         <div class="depositPosCapital-form_input">
+            <label for="adminClosingCashAmount">Closing Cash</label>
+
+            <div class="naira-input-container">
+               <input id="adminClosingCashAmount" type="text" placeholder="Enter Closing Cash"
+                  name="adminClosingCashAmount" required>
+               <span class="naira">&#x20A6;</span>
+            </div>
+         </div>
+
+
+         <div class="confirmation-btn_container">
+
+            <button class="hero-btn-dark adminCancel-close">Cancel</button>
+
+            <button class="hero-btn-danger closeBusinessDayBtn  mt-2 has-spinner" type="submit">
+               <span class="btn-text">Close Business Day </span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+
+
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
 
    <!-- profile Slider -->
    <div class="profile-slider-overlay "></div>

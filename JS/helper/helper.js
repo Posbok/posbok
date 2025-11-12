@@ -1,7 +1,11 @@
 // isUserLoggedIn() - Used to make sure that a user is loggedin before running functions that needs to run automatically so that they don rn on Authenyication pages
 
 import config from '../../config';
-import { getCurrentBusinessDay } from '../apiServices/pos/posResources';
+import {
+  getCurrentBusinessDay,
+  openAdminCloseBusinessDayModal,
+  openCloseBusinessDayModal,
+} from '../apiServices/pos/posResources';
 import { closeModal, redirectWithDelay, showToast } from '../script';
 
 export function isUserLoggedIn() {
@@ -14,6 +18,7 @@ const userData = config.userData;
 
 const parsedUserData = userData ? JSON.parse(userData) : null;
 const isAdmin = parsedUserData?.accountType === 'ADMIN';
+const isStaff = parsedUserData?.accountType === 'STAFF';
 const businessName = parsedUserData?.businessName;
 
 // export function isUserLoggedIn() {
@@ -1155,20 +1160,18 @@ export async function ensureBusinessDayOpen(shopId) {
   const day = response.data;
   console.log('DAY', day);
 
-  // 1️⃣ No business day
+  // 1No business day
   if (!day) {
     showToast('warning', '⛔ Please open a business day to continue.');
     return false;
   }
 
-  // 2️⃣ Compare dates
-  const today = new Date().toISOString().split('T')[0]; // "2025-11-12"
-  const businessDayDate = day.date; // e.g., "2025-11-11"
+  // Compare dates
+  const today = new Date().toISOString().split('T')[0];
+  const businessDayDate = day.date;
 
   if (day.is_open && businessDayDate !== today) {
-    // Show a confirmation dialog
-
-    console.log('Previous Business Day Detected');
+    // Show a confirmation dialog;
 
     return await new Promise((resolve) => {
       openProceedWithPreviousBusinessDayModal();
@@ -1178,7 +1181,7 @@ export async function ensureBusinessDayOpen(shopId) {
     });
   }
 
-  // 3️⃣ Everything okay → proceed
+  // Everything okay >  proceed
   return true;
 }
 
@@ -1211,25 +1214,38 @@ export function bindProceedWithPreviousBusinessDayFormListener(resolve) {
 
   const proceedBtn = form.querySelector('.proceedWithPreviousBusinessDayBtn');
   const cancelButton = form.querySelector('.cancel-close');
+  const closeModalIcon = form.querySelector('.closeModal');
 
   if (!form.dataset.bound) {
     form.dataset.bound = true;
 
+    closeModalIcon?.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      resolve(false);
+      closeModal();
+      if (form) form.dataset.bound = '';
+      // redirectWithDelay('Homepage', 'index.html', 1500);
+    });
+
     cancelButton?.addEventListener('click', (e) => {
       e.preventDefault();
 
-      console.log('Cancel button was CLICKED');
       resolve(false);
       closeModal();
-      redirectWithDelay('Homepage', 'index.html', 1500);
+      if (form) form.dataset.bound = '';
+      if (isAdmin) openAdminCloseBusinessDayModal();
+      if (isStaff) openCloseBusinessDayModal();
+      // redirectWithDelay('Homepage', 'index.html', 1500);
     });
 
     proceedBtn?.addEventListener('click', async (e) => {
       e.preventDefault();
 
-      console.log('Proceed Button was CLICKED');
       resolve(true);
       closeModal();
+
+      if (form) form.dataset.bound = '';
     });
   }
 }
