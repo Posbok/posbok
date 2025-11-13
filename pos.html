@@ -205,7 +205,7 @@
                   <label for="fee">POS Charges Amount</label>
                   <div class="naira-input-container">
                      <input id="adminPosTransactionCharges" type="text" placeholder="Enter POS Charges Amount"
-                        name="adminPosTransactionCharges" required>
+                        pattern="[0-9]" inputmode="numeric" name="adminPosTransactionCharges" required>
                      <span class="naira">&#x20A6;</span>
                   </div>
                </div>
@@ -214,7 +214,7 @@
                   <label for="adminPosMachineFee">Machine Fee</label>
                   <div class="naira-input-container">
                      <input class="adminPosMachineFee" id="adminPosMachineFee" placeholder="Enter Machine Fee"
-                        type="text" name="posMachineFee">
+                        pattern="[0-9]" inputmode="numeric" type="text" name="posMachineFee">
                      <span class="naira">&#x20A6;</span>
                   </div>
                </div>
@@ -222,7 +222,8 @@
                <div class="pos-method-form_input adminPosTaxFeeDiv hidden">
                   <label for="adminPosTaxFee">Tax Fee</label>
                   <div class="naira-input-container">
-                     <input id="adminPosTaxFee" type="text" placeholder="Enter Tax Fee" name="posTaxFee">
+                     <input id="adminPosTaxFee" type="text" pattern="[0-9]" inputmode="numeric"
+                        placeholder="Enter Tax Fee" name="posTaxFee">
                      <span class="naira">&#x20A6;</span>
                   </div>
                </div>
@@ -230,15 +231,16 @@
                <div class="pos-method-form_input adminPosTransferFeeDiv hidden">
                   <label for="adminPosTransferFee">Transfer Fee</label>
                   <div class="naira-input-container">
-                     <input id="adminPosTransferFee" type="text" placeholder="Enter Transfer Fee" name="posTransferFee">
+                     <input id="adminPosTransferFee" type="text" pattern="[0-9]" inputmode="numeric"
+                        placeholder="Enter Transfer Fee" name="posTransferFee">
                      <span class="naira">&#x20A6;</span>
                   </div>
                </div>
 
                <div class="pos-method-form_input adminPosCustomerPhoneDiv hidden">
                   <label for="posCustomerPhone">Customer Phone Number</label>
-                  <input class="posCustomerPhone" id="adminPosCustomerPhone" type="number"
-                     placeholder="(Optional) Enter Customer Phone Number" name="posCustomerPhone">
+                  <input class="posCustomerPhone" id="adminPosCustomerPhone" type="number" pattern="[0-9]"
+                     inputmode="numeric" placeholder="(Optional) Enter Customer Phone Number" name="posCustomerPhone">
                </div>
 
                <div class="pos-method-form_input adminPosTransactionReferenceDiv hidden">
@@ -312,7 +314,7 @@
                      <label for="amount">Transaction Amount</label>
                      <div class="naira-input-container">
                         <input id="adminWithdrawalAmount" type="text" placeholder="Enter Amount"
-                           name="adminWithdrawalAmount" required>
+                           name="adminWithdrawalAmount" pattern="[0-9]" inputmode="numeric" required>
                         <span class="naira">&#x20A6;</span>
                      </div>
                   </div>
@@ -483,7 +485,7 @@
                   <label for="amount">Transaction Amount</label>
                   <div class="naira-input-container">
                      <input id="posTransactionAmount" type="text" placeholder="Enter Amount" name="posTransactionAmount"
-                        required>
+                        pattern="[0-9]" inputmode="numeric" required>
                      <span class="naira">&#x20A6;</span>
                   </div>
                </div>
@@ -500,8 +502,8 @@
                <div class="pos-method-form_input posTransactionChargesDiv staffPosTransactionChargesDiv ">
                   <label for="posTransactionCharges">POS Charges Amount</label>
                   <div class="naira-input-container">
-                     <input id="posTransactionCharges" type="text" placeholder="Enter Charges Amount"
-                        name="posTransactionCharges" required>
+                     <input id="posTransactionCharges" type="text" pattern="[0-9]" inputmode="numeric"
+                        placeholder="Enter Charges Amount" name="posTransactionCharges" required>
                      <span class="naira">&#x20A6;</span>
                   </div>
                </div>
@@ -510,7 +512,7 @@
                   <label for="posMachineFee">Machine Fee</label>
                   <div class="naira-input-container">
                      <input class="posMachineFee" id="posMachineFee" placeholder="Enter Machine Fee" type="text"
-                        name="posMachineFee">
+                        pattern="[0-9]" inputmode="numeric" name="posMachineFee">
                      <span class="naira">&#x20A6;</span>
                   </div>
                </div>
@@ -518,7 +520,8 @@
                <div class="pos-method-form_input staffPosTaxFeeDiv hidden">
                   <label for="posTaxFee">Tax Fee</label>
                   <div class="naira-input-container">
-                     <input id="posTaxFee" type="text" placeholder="Enter Tax Fee" name="posTaxFee">
+                     <input id="posTaxFee" type="text" pattern="[0-9]" inputmode="numeric" placeholder="Enter Tax Fee"
+                        name="posTaxFee">
                      <span class="naira">&#x20A6;</span>
                   </div>
                </div>
@@ -526,15 +529,16 @@
                <div class="pos-method-form_input staffPosTransferFeeDiv hidden">
                   <label for="posTransferFee">Transfer Fee</label>
                   <div class="naira-input-container">
-                     <input id="posTransferFee" type="text" placeholder="Enter Transfer Fee" name="posTransferFee">
+                     <input id="posTransferFee" type="text" pattern="[0-9]" inputmode="numeric"
+                        placeholder="Enter Transfer Fee" name="posTransferFee">
                      <span class="naira">&#x20A6;</span>
                   </div>
                </div>
 
                <div class="pos-method-form_input staffPosCustomerPhoneDiv">
                   <label for="posCustomerPhone">Customer Phone Number</label>
-                  <input class="posCustomerPhone" id="posCustomerPhone" type="number"
-                     placeholder="(Optional) Enter Customer Phone Number" name="posCustomerPhone">
+                  <input class="posCustomerPhone" id="posCustomerPhone" type="number" pattern="[0-9]"
+                     inputmode="numeric" placeholder="(Optional) Enter Customer Phone Number" name="posCustomerPhone">
                </div>
 
                <div class="pos-method-form_input staffPosTransactionReferenceDiv">
