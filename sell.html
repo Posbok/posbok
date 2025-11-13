@@ -227,8 +227,8 @@
                <label for="adminProductSoldPrice ">Amount Sold</label>
 
                <div class="naira-input-container">
-                  <input id="adminSoldProductPrice" type="text" pattern="[0-9]" inputmode="numeric"
-                     placeholder="Enter Sold Price" name="adminSoldProductPrice">
+                  <input id="adminSoldProductPrice" type="text" placeholder="Enter Sold Price"
+                     name="adminSoldProductPrice" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
                   <span class="naira">&#x20A6;</span>
                </div>
             </div>
@@ -238,7 +238,7 @@
                <label for="adminSoldProductQuantity">Quantity</label>
 
                <input id="adminSoldProductQuantity" type="text" placeholder="Enter Quantity"
-                  name="adminSoldProductQuantity">
+                  name="adminSoldProductQuantity" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
             </div>
 
             <div class="center-button mt-2" style="display: flex; align-items: center; gap: 1.5rem;">
@@ -327,8 +327,8 @@
                <label for="productSoldPrice ">Amount Sold</label>
 
                <div class="naira-input-container">
-                  <input id="soldProductPrice" type="text" pattern="[0-9]" inputmode="numeric"
-                     placeholder="Enter Sold Price" name="soldProductPrice" required>
+                  <input id="soldProductPrice" type="text" placeholder="Enter Sold Price" name="soldProductPrice"
+                     oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
                   <span class="naira">&#x20A6;</span>
                </div>
             </div>
@@ -337,7 +337,7 @@
                <label for="soldProductQuantity">Quantity</label>
 
                <input id="soldProductQuantity" type="text" placeholder="Enter Quantity" name="soldProductQuantity"
-                  required>
+                  oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
             </div>
 
             <div class="center-button mt-2" style="display: flex; align-items: center; gap: 1.5rem;">
@@ -448,8 +448,8 @@
             <label for="openPosCapitalAmount">POS Capital:</label>
 
             <div class="naira-input-container">
-               <input id="openPosCapitalAmount" type="text" pattern="[0-9]" inputmode="numeric"
-                  placeholder="Enter Amount" name="openPosCapitalAmount" required>
+               <input id="openPosCapitalAmount" type="text" placeholder="Enter Amount" name="openPosCapitalAmount"
+                  required>
                <span class="naira">&#x20A6;</span>
             </div>
          </div>
@@ -459,8 +459,7 @@
             <label for="openCashAmount">OpenIng Cash:</label>
 
             <div class="naira-input-container">
-               <input id="openCashAmount" type="text" pattern="[0-9]" inputmode="numeric" placeholder="Enter Amount"
-                  name="openCashAmount" required>
+               <input id="openCashAmount" type="text" placeholder="Enter Amount" name="openCashAmount" required>
                <span class="naira">&#x20A6;</span>
             </div>
          </div>
@@ -531,16 +530,15 @@
                <div class="sellProduct-form_input">
                   <label for="sellCustomerPhone">Customer Phone Number</label>
 
-                  <input class="sellCustomerPhone" id="sellCustomerPhone" type="number" pattern="[0-9]"
-                     inputmode="numeric" placeholder="(Optional) Enter Customer Phone Number" name="sellCustomerPhone">
+                  <input class="sellCustomerPhone" id="sellCustomerPhone" type="number"
+                     placeholder="(Optional) Enter Customer Phone Number" name="sellCustomerPhone">
                </div>
 
                <div class="sellProduct-form_input">
                   <label for="amount-paid">Amount Paid</label>
 
                   <div class="naira-input-container">
-                     <input id="amount-paid" type="text" placeholder="Enter Amount Paid" name="amount-paid"
-                        pattern="[0-9]" inputmode="numeric" required>
+                     <input id="amount-paid" type="text" placeholder="Enter Amount Paid" name="amount-paid" required>
                      <span class="naira">&#x20A6;</span>
                   </div>
                </div>
@@ -560,8 +558,8 @@
                   <label for="soldProductMachineFee">Machine Fee</label>
 
                   <div class="naira-input-container">
-                     <input id="soldProductMachineFee" type="text" pattern="[0-9]" inputmode="numeric"
-                        placeholder="Enter Machine Fee (Optional)" name="soldProductMachineFee">
+                     <input id="soldProductMachineFee" type="text" placeholder="Enter Machine Fee (Optional)"
+                        name="soldProductMachineFee" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
                      <span class="naira">&#x20A6;</span>
                   </div>
                </div>
@@ -571,8 +569,8 @@
                   <label for="soldProductTaxFee">Tax Fee</label>
 
                   <div class="naira-input-container">
-                     <input id="soldProductTaxFee" type="text" pattern="[0-9]" inputmode="numeric"
-                        placeholder="Enter Tax Fee (Optional)" name="soldProductTaxFee">
+                     <input id="soldProductTaxFee" type="text" placeholder="Enter Tax Fee (Optional)"
+                        name="soldProductTaxFee" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
                      <span class="naira">&#x20A6;</span>
                   </div>
                </div>
@@ -687,8 +685,7 @@
 
                   <div class="penEdit-input-container">
                      <input class="userProfilePhoneNumber" id="userProfilePhoneNumber" type="number"
-                        placeholder="Enter Phone Number" pattern="[0-9]" inputmode="numeric"
-                        name="userProfilePhoneNumber" required>
+                        placeholder="Enter Phone Number" name="userProfilePhoneNumber" required>
                      <i class="fa-solid penEditIcon fa-pen-to-square"></i>
 
                   </div>
