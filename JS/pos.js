@@ -1514,10 +1514,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const input = div.querySelector(inputSelector);
       if (shouldShow) {
         div.classList.remove('hidden');
-        input.setAttribute('required', 'true');
+        //   input.setAttribute('required', 'true');
       } else {
         div.classList.add('hidden');
-        input.removeAttribute('required');
+        //   input.removeAttribute('required');
         input.value = '';
       }
     };

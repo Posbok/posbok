@@ -366,7 +366,7 @@ export function bindMoveStockFormListener() {
         selling_price: Number(getAmountForSubmission(moveStockSellingPrice)),
         shop_id: Number(moveStockToShopDropdown),
         received_by: moveStockToStaffDropdown,
-        category_id: 11,
+        //   category_id: 11,
       };
 
       console.log('Moving Stock Item to Shop with:', moveStockItemDetails);
