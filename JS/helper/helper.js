@@ -1168,7 +1168,7 @@ export async function ensureBusinessDayOpen(shopId) {
 
   // Compare dates
   const today = new Date().toISOString().split('T')[0];
-  const businessDayDate = day.date;
+  const businessDayDate = day.opening_time.split('T')[0];
 
   console.log('today', today);
   console.log('businessDayDate', businessDayDate);
