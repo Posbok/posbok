@@ -1170,6 +1170,9 @@ export async function ensureBusinessDayOpen(shopId) {
   const today = new Date().toISOString().split('T')[0];
   const businessDayDate = day.date;
 
+  console.log('today', today);
+  console.log('businessDayDate', businessDayDate);
+
   if (day.is_open && businessDayDate !== today) {
     // Show a confirmation dialog;
 
