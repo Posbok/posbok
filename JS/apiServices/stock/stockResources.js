@@ -129,6 +129,42 @@ export async function deleteStockCategory(categoryId) {
   }
 }
 
+export async function updateStockCategory(
+  stockCategoryId,
+  updateStockCategoryDetails
+) {
+  try {
+    //  showGlobalLoader();
+    //  console.log('Sending  request...');
+
+    const stockCategoryData = await safeFetch(
+      `${baseUrl}/api/stock/categories/${stockCategoryId}`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updateStockCategoryDetails),
+      }
+    );
+
+    //  console.log('Response received...');
+
+    if (stockCategoryData) {
+      // console.log(stockCategoryData);
+      // hideGlobalLoader();
+    }
+
+    return stockCategoryData;
+  } catch (error) {
+    //  hideGlobalLoader();
+    //  console.log(tbody);
+    console.error('Error Deleting Stock Category:', error);
+    throw error;
+  }
+}
+
 export async function createStockItem(stockItemDetails) {
   try {
     //  console.log('Sending POST request...');

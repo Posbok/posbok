@@ -970,9 +970,13 @@ export function closeModal() {
   const deleteStockCategoryContainer = document.querySelector(
     '.deleteStockCategoryContainer'
   );
+  const updateStockCategory = document.querySelector('.updateStockCategory');
 
   //
 
+  if (updateStockCategory) {
+    updateStockCategory.classList.remove('active');
+  }
   if (deleteStockCategoryContainer) {
     deleteStockCategoryContainer.classList.remove('active');
   }

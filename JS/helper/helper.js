@@ -81,6 +81,10 @@ export function clearFormInputs() {
     '.openBusinessDayModal'
   );
 
+  const updateStockCategoryModalForm = document.querySelector(
+    '.updateStockCategoryModal'
+  );
+
   //   Clear Search Input
   const searchProductInput = document.querySelector('.searchProductInput');
   if (searchProductInput) searchProductInput.value = '';
@@ -91,6 +95,22 @@ export function clearFormInputs() {
   if (searchStockProdutItem) searchStockProdutItem.value = '';
 
   // Clear Form Implementations
+
+  if (updateStockCategoryModalForm) {
+    updateStockCategoryModalForm
+      .querySelectorAll('input, textarea, select')
+      .forEach((el) => {
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          el.checked = false;
+        } else {
+          el.value = '';
+        }
+      });
+
+    delete updateStockCategoryModalForm.dataset.stockCategoryId;
+    delete updateStockCategoryModalForm.dataset.stockCategoryName;
+    delete updateStockCategoryModalForm.dataset.stockCategoryDescription;
+  }
 
   if (openBusinessDayModalForm) {
     openBusinessDayModalForm

@@ -12,6 +12,7 @@ import {
   getStockProduct,
   moveStockItem,
   restockProduct,
+  updateStockCategory,
   updateStockItem,
 } from './apiServices/stock/stockResources';
 import {
@@ -34,6 +35,7 @@ import { showToast, closeModal, setupModalCloseButtons } from './script';
 import { checkAndPromptCreateShop } from './apiServices/shop/shopResource.js';
 
 import { checkAndPromptCreateStaff } from './apiServices/user/userResource.js';
+import { getProductCategories } from './apiServices/inventory/inventoryResources.js';
 
 const userData = config.userData;
 const dummyShopId = config.dummyShopId; // Dummy user data for testing
@@ -268,7 +270,6 @@ export function openDeleteStockCategoryModal() {
   if (sidebar) sidebar.classList.add('blur');
 }
 
-// Delete Category
 export function deleteStockCategoryForm(stockCategoryId, stockCategoryName) {
   const form = document.querySelector('.deleteStockCategoryContainerModal');
 
@@ -329,14 +330,115 @@ export function bindDeleteStockCategoryFormListener() {
   }
 }
 
-export function openUpdateCategoryButton() {
+export function openUpdateStockCategoryModalButton() {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
-  const updateCategoryContainer = document.querySelector('.updateCategory');
+  const updateStockCategoryContainer = document.querySelector(
+    '.updateStockCategory'
+  );
 
-  if (updateCategoryContainer) updateCategoryContainer.classList.add('active');
+  //   console.log(updateStockCategoryContainer);
+
+  if (updateStockCategoryContainer)
+    updateStockCategoryContainer.classList.add('active');
   if (main) main.classList.add('blur');
   if (sidebar) sidebar.classList.add('blur');
+}
+
+export function updateStockCategoryForm(
+  stockCategoryId,
+  stockCategoryName,
+  stockCategoryDescription
+) {
+  const form = document.querySelector('.updateStockCategoryModal');
+
+  //   console.log(form);
+  if (!form) return;
+
+  if (form) {
+    const stockCategoryNameInput = document.querySelector(
+      '#updateStockCategoryName'
+    );
+    const stockCategoryDescriptionInput = document.querySelector(
+      '#updateStockCategoryDescription'
+    );
+
+    stockCategoryNameInput.value = stockCategoryName;
+    stockCategoryDescriptionInput.value = stockCategoryDescription;
+  }
+
+  //   const formCategoryId = Number(form.dataset.stockCategoryId);
+
+  //   if (formCategoryId === Number(stockCategoryId)) {
+  //     document.getElementById('confirmation-text-2').textContent =
+  //       stockCategoryName;
+  //   }
+}
+
+export function bindUpdateStockCategoryFormListener() {
+  const form = document.querySelector('.updateStockCategoryModal');
+  if (!form) return;
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const stockCategoryId = form.dataset.stockCategoryId;
+
+      const updateStockCategoryName = document.querySelector(
+        '#updateStockCategoryName'
+      ).value;
+
+      const updateStockCategoryDescription = document.querySelector(
+        '#updateStockCategoryDescription'
+      ).value;
+
+      const updateStockItemDetails = {
+        category_name: updateStockCategoryName,
+        description: updateStockCategoryDescription,
+      };
+
+      // console.log('Updating Stock Item Details with:', updateStockItemDetails);
+      // console.log(stockCategoryId);
+
+      const updateStockCategoryModalBtn = document.querySelector(
+        '.updateStockCategoryModalBtn'
+      );
+
+      try {
+        showBtnLoader(updateStockCategoryModalBtn);
+        const updatedStockData = await updateStockCategory(
+          stockCategoryId,
+          updateStockItemDetails
+        );
+
+        if (!updatedStockData) {
+          console.error('fail', updatedStockData.message);
+          return;
+        }
+        if (updatedStockData) {
+          await getStockCategories();
+          showToast(
+            'success',
+            updatedStockData.message ||
+              '✅ Stock Category updated successfully.'
+          );
+          closeModal();
+        }
+
+        //   hideGlobalLoader();
+      } catch (err) {
+        hideBtnLoader(updateStockCategoryModalBtn);
+        showToast('fail', `❎ ${err.message}`);
+        console.error('Error Updating Stock Item:', err);
+        showToast('fail', `❎ ${err.message}`);
+        return;
+      } finally {
+        hideBtnLoader(updateStockCategoryModalBtn);
+        hideGlobalLoader();
+      }
+    });
+  }
 }
 
 // Move Stock to shop inventory
@@ -491,6 +593,7 @@ document.addEventListener('DOMContentLoaded', () => {
   bindUpdateProductFormListener();
   bindMoveStockFormListener();
   bindDeleteStockCategoryFormListener();
+  bindUpdateStockCategoryFormListener();
 });
 
 export function openAddStockCategoryModalBtn() {
@@ -586,9 +689,11 @@ export function populateStockCategoryTable(stockCategoriesData) {
          <td class="py-1 categoryDescription">${category.description}</td>
 
         <td class="py-1 action-buttons">
-          <button class="hero-btn-outline openUpdateCategoryButton" data-stock-category-id="${
+          <button class="hero-btn-outline openUpdateStockCategoryButton" data-stock-category-id="${
             category.id
-          }"  data-stock-category-name="${category.category_name}">
+          }"  data-stock-category-name="${
+        category.category_name
+      }"  data-stock-category-description="${category.description}">
             <i class="fa-solid fa-pen-to-square"></i>
           </button>
 
@@ -653,6 +758,10 @@ export function populateStockCategoryTable(stockCategoriesData) {
     updateStockCategoryBtn?.addEventListener('click', async () => {
       showGlobalLoader();
       const stockCategoryId = updateStockCategoryBtn.dataset.stockCategoryId;
+      const stockCategoryName =
+        updateStockCategoryBtn.dataset.stockCategoryName;
+      const stockCategoryDescription =
+        updateStockCategoryBtn.dataset.stockCategoryDescription;
 
       const updateStockCategoryModalContainer = document.querySelector(
         '.updateStockCategoryModal'
@@ -662,6 +771,10 @@ export function populateStockCategoryTable(stockCategoriesData) {
         // Store StockCategoryId in modal container for reference
         updateStockCategoryModalContainer.dataset.stockCategoryId =
           stockCategoryId;
+        updateStockCategoryModalContainer.dataset.stockCategoryName =
+          stockCategoryName;
+        updateStockCategoryModalContainer.dataset.stockCategoryDescription =
+          stockCategoryDescription;
 
         //   console.log(updateCategoryModalContainer.dataset.stockCategoryId);
         // Fetch staff detail
@@ -670,11 +783,15 @@ export function populateStockCategoryTable(stockCategoriesData) {
         //  console.log('Category detail received successfully:', CategoryDetail);
 
         // Call function to prefill modal inputs
-        if (CategoryDetail?.success === true) {
+        if (stockCategoryId || stockCategoryName || stockCategoryDescription) {
           hideGlobalLoader();
-          openUpdateCategoryButton(); // Show modal after data is ready
+          openUpdateStockCategoryModalButton(); // Show modal after data is ready
 
-          updateCategoryForm(CategoryDetail);
+          updateStockCategoryForm(
+            stockCategoryId,
+            stockCategoryName,
+            stockCategoryDescription
+          );
         } else {
           hideGlobalLoader();
           showToast('fail', '❌ Failed to fetch Category details.');
