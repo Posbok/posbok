@@ -39,7 +39,10 @@ export async function initAccountOverview() {
     //  const adminDashboardData = await getAdminDashboard(
     //    isStaff ? shopId : adminShopSelection
     //  );
+    const summaryShopId = isStaff ? shopId : adminShopSelection;
+
     const posDailySummaryData = await getPosDailySummary(businessId);
+    //  const posDailySummaryData = await getPosDailySummary(summaryShopId);
 
     if (!posDailySummaryData) {
       hideGlobalLoader();

@@ -269,10 +269,12 @@ export async function getReportDashboard(filters) {
 }
 
 export async function getPosDailySummary(business_id) {
+  // export async function getPosDailySummary(shopId) {
   //   console.log(filters);
   try {
     showGlobalLoader();
     const posDailySummaryData = await safeFetch(
+      // `${baseUrl}/api/shops/${shopId}/dashboard`,
       `${baseUrl}/api/business/${business_id}/shops`,
       {
         method: 'GET',

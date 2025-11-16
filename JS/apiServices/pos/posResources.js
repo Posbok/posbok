@@ -215,6 +215,7 @@ export async function openBusinessDay(openBusinessDayDetails) {
     console.log('Sending POST request...');
 
     const openBusinessDayData = await safeFetch(
+      // `${baseUrl}/api/business-day/open`,
       `${baseUrl}/api/pos/business-day/`,
       {
         method: 'POST',
@@ -285,6 +286,7 @@ export async function addPosCapital(posCapitalDetails) {
 
     const addPosCapitalData = await safeFetch(
       `${baseUrl}/api/pos/admin/funding`,
+      // `${baseUrl}/api/admin-management/fund-cash-in-machine`,
       {
         method: 'POST',
         headers: {

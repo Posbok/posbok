@@ -157,11 +157,16 @@
       <!-- Super Admin Busnesses Table -->
       <section class="superAdmin card">
          <div class="superAdmin-method">
-            <h2 class="heading-text mb-2">
+            <h2 class="heading-text mb-4">
                Business Management
             </h2>
 
+            <div class="filter-buttons mb-2">
+               <button id="exportBusinessModalBtn" class="hero-btn-dark">Export Businesses</button>
+            </div>
 
+
+            <!-- <h1 class="heading-subtext">Filter Businesses</h1> -->
             <div class="filter-section mb-2">
 
                <div class="pos-method-form_input ">
@@ -641,6 +646,39 @@
          <div class="close closeModal">&times;</div>
       </div>
    </div>
+
+   <form class="modal-form exportBusinessesDataModal " name="exportBusinessesData">
+      <div class="card exportBusinessesData modal ">
+         <div>
+            <h1 class="heading-text addItemName">Deposit POS Capital</h1>
+         </div>
+
+
+         <!-- Select Export Format -->
+         <div class="modal-form_input">
+            <label for="exportBusinessesDataFormatDropdown">Select Export Format</label>
+
+            <select id="exportBusinessesDataFormatDropdown" class="form-control" required>
+               <option value="">Select a Format</option>
+               <option value="excel">Excel/Spreadsheet Format</option>
+               <option value="csv">CSV Format</option>
+               <option value="json">JSON Format</option>
+            </select>
+         </div>
+
+
+
+         <div class="center-button">
+
+            <button class="hero-btn-dark exportBusinessesDataBtn  mt-2 mb-1  has-spinner" type="submit">
+               <span class="btn-text">Export Data </span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
 
 
    <!-- profile Slider -->

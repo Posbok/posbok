@@ -966,8 +966,13 @@ export function closeModal() {
   const proceedWithPreviousBusinessDay = document.querySelector(
     '.proceedWithPreviousBusinessDay'
   );
+  const exportBusinessesData = document.querySelector('.exportBusinessesData');
 
   //
+
+  if (exportBusinessesData) {
+    exportBusinessesData.classList.remove('active');
+  }
 
   if (proceedWithPreviousBusinessDay) {
     proceedWithPreviousBusinessDay.classList.remove('active');

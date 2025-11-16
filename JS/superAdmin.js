@@ -15,6 +15,7 @@ import {
   deleteBusiness,
   getAllBusinesses,
   getBusinessDetailById,
+  getExportBusinessesData,
   getPlatformStatistics,
   notifyBusiness,
   restrictBusiness,
@@ -1531,5 +1532,82 @@ export async function renderPlatformMonthlySignups(monthlySignups) {
 
     monthlySignupChart = new ApexCharts(chartContainer, options);
     monthlySignupChart.render();
+  }
+}
+
+// Export Businesses Data
+export function openExportBusinessesDataModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const exportBusinessesDataContainer = document.querySelector(
+    '.exportBusinessesData'
+  );
+
+  if (exportBusinessesDataContainer)
+    exportBusinessesDataContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  depositPosCapitalForm();
+}
+
+export function depositPosCapitalForm() {
+  const form = document.querySelector('.exportBusinessesDataModal');
+
+  if (!form) return;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document
+    .querySelector('#exportBusinessModalBtn')
+    ?.addEventListener('click', openExportBusinessesDataModal);
+
+  bindExportBusinessesDataFormListener();
+});
+
+export function bindExportBusinessesDataFormListener() {
+  const form = document.querySelector('.exportBusinessesDataModal');
+
+  if (!form) return;
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const exportBusinessesDataFormatDropdown = document.querySelector(
+        '#exportBusinessesDataFormatDropdown'
+      ).value;
+
+      const exportBusinessDetails = {
+        format: exportBusinessesDataFormatDropdown,
+      };
+
+      // console.log('Sending POS Capital with:', exportBusinessDetails);
+      const exportBusinessesDataBtn = document.querySelector(
+        '.exportBusinessesDataBtn'
+      );
+
+      try {
+        showBtnLoader(exportBusinessesDataBtn);
+        showGlobalLoader();
+        const exportBusinessResponse = await getExportBusinessesData(
+          exportBusinessDetails
+        );
+
+        if (exportBusinessResponse) {
+          showToast('success', `✅ ${exportBusinessResponse.message}`);
+          console.log('Businesses Exported', exportBusinessResponse);
+          closeModal();
+        }
+
+        // closeModal(); // close modal after success
+      } catch (err) {
+        console.error('Error Exporting Businesses:', err.message);
+        showToast('fail', `❎ ${err.message}`);
+      } finally {
+        hideBtnLoader(exportBusinessesDataBtn);
+        hideGlobalLoader();
+      }
+    });
   }
 }

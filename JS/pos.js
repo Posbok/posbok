@@ -170,9 +170,9 @@ export function bindDepositPosCapitalFormListener() {
         : document.querySelector('#posCapitalDepositNotes');
 
       const posCapitalDetails = {
-        shop_id: isAdmin ? adminDepositposCapitalShopDropdown : staffShopId,
+        shopId: isAdmin ? adminDepositposCapitalShopDropdown : staffShopId,
         amount: Number(getAmountForSubmission(posDepositAmount)),
-        notes: posCapitalDepositNotes.value,
+        //   notes: posCapitalDepositNotes.value,
       };
 
       // console.log('Sending POS Capital with:', posCapitalDetails);

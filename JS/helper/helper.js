@@ -69,6 +69,18 @@ export function clearFormInputs() {
 
   const moveStockModalForm = document.querySelector('.moveStockModal');
 
+  const exportBusinessesDataModalForm = document.querySelector(
+    '.exportBusinessesDataModal'
+  );
+
+  const closeBusinessDayModalForm = document.querySelector(
+    '.closeBusinessDayModal'
+  );
+
+  const openBusinessDayModalForm = document.querySelector(
+    '.openBusinessDayModal'
+  );
+
   //   Clear Search Input
   const searchProductInput = document.querySelector('.searchProductInput');
   if (searchProductInput) searchProductInput.value = '';
@@ -79,6 +91,63 @@ export function clearFormInputs() {
   if (searchStockProdutItem) searchStockProdutItem.value = '';
 
   // Clear Form Implementations
+
+  if (openBusinessDayModalForm) {
+    openBusinessDayModalForm
+      .querySelectorAll('input, textarea, select')
+      .forEach((el) => {
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          el.checked = false;
+        } else {
+          el.value = '';
+        }
+      });
+
+    const stockQuantittyAvailableDisplay = document.querySelector(
+      '.stockQuantityAvailable'
+    );
+
+    if (stockQuantittyAvailableDisplay)
+      stockQuantittyAvailableDisplay.innerText = '';
+  }
+
+  if (closeBusinessDayModalForm) {
+    closeBusinessDayModalForm
+      .querySelectorAll('input, textarea, select')
+      .forEach((el) => {
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          el.checked = false;
+        } else {
+          el.value = '';
+        }
+      });
+
+    const stockQuantittyAvailableDisplay = document.querySelector(
+      '.stockQuantityAvailable'
+    );
+
+    if (stockQuantittyAvailableDisplay)
+      stockQuantittyAvailableDisplay.innerText = '';
+  }
+
+  if (exportBusinessesDataModalForm) {
+    exportBusinessesDataModalForm
+      .querySelectorAll('input, textarea, select')
+      .forEach((el) => {
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          el.checked = false;
+        } else {
+          el.value = '';
+        }
+      });
+
+    const stockQuantittyAvailableDisplay = document.querySelector(
+      '.stockQuantityAvailable'
+    );
+
+    if (stockQuantittyAvailableDisplay)
+      stockQuantittyAvailableDisplay.innerText = '';
+  }
 
   if (moveStockModalForm) {
     moveStockModalForm

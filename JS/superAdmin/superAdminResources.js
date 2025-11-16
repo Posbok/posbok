@@ -280,3 +280,125 @@ export async function updateBusinessDetails(businessUpdateDetails, businessId) {
     throw error;
   }
 }
+
+// Export Businesses Data
+
+export async function getExportBusinessesData({ format }) {
+  try {
+    const queryParams = new URLSearchParams();
+    if (format) queryParams.append('format', format);
+
+    showGlobalLoader();
+
+    const response = await fetch(
+      `${baseUrl}/api/super-admin/export-businesses?${queryParams.toString()}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.message || 'Failed to export businesses');
+    }
+
+    // If JSON → return directly (no download)
+    //  if (format === 'json') {
+    //    const data = await response.json();
+    //    hideGlobalLoader();
+    //    return data;
+    //  }
+
+    if (format === 'json') {
+      const data = await response.json();
+
+      const jsonBlob = new Blob([JSON.stringify(data, null, 2)], {
+        type: 'application/json',
+      });
+
+      const url = window.URL.createObjectURL(jsonBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'businesses.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      window.URL.revokeObjectURL(url);
+
+      hideGlobalLoader();
+
+      return {
+        success: true,
+        message: 'JSON file downloaded successfully',
+      };
+    }
+
+    // Excel or CSV → handle BLOB download
+    const blob = await response.blob();
+
+    const fileExtension = format === 'csv' ? 'csv' : 'xlsx';
+    const fileName = `businesses.${fileExtension}`;
+
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    window.URL.revokeObjectURL(url);
+
+    hideGlobalLoader();
+
+    return { success: true, message: 'Exported successfully' };
+  } catch (err) {
+    hideGlobalLoader();
+    console.error('Export error:', err);
+    throw err;
+  }
+}
+
+// export async function getExportBusinessesData({ format }) {
+//   console.log(format);
+//   try {
+//     const queryParams = new URLSearchParams({});
+
+//     if (format) queryParams.append('format', format);
+
+//     showGlobalLoader();
+//     //  console.log('Sending getAllBusinesses request...');
+
+//     const allBusinessesData = await safeFetch(
+//       `${baseUrl}/api/super-admin/export-businesses?${queryParams.toString()}`,
+//       {
+//         method: 'GET',
+//         headers: {
+//           Authorization: `Bearer ${userToken}`,
+//           //  'Content-Type': 'application/json',
+//         },
+//       }
+//     );
+
+//     //  console.log('Response received...');
+
+//     if (allBusinessesData) {
+//       // console.log(allBusinessesData);
+//       hideGlobalLoader();
+//     }
+
+//     //  populateAllBusinessesTable(allBusinessesData);
+
+//     return allBusinessesData;
+//   } catch (error) {
+//     hideGlobalLoader();
+
+//     console.error('Error receiving All Businesses: Data for export', error);
+//     throw error;
+//   }
+// }
