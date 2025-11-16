@@ -4,6 +4,7 @@ import './script.js';
 import {
   createStockCategory,
   createStockItem,
+  deleteStockCategory,
   deleteStockItem,
   getStockCategories,
   getStockItems,
@@ -31,7 +32,7 @@ import {
 } from './helper/helper';
 import { showToast, closeModal, setupModalCloseButtons } from './script';
 import { checkAndPromptCreateShop } from './apiServices/shop/shopResource.js';
-import { openDeleteCategoryModal } from './goods.js';
+
 import { checkAndPromptCreateStaff } from './apiServices/user/userResource.js';
 
 const userData = config.userData;
@@ -254,6 +255,90 @@ export function bindUpdateProductFormListener() {
   }
 }
 
+export function openDeleteStockCategoryModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const deleteStockCategoryContainer = document.querySelector(
+    '.deleteStockCategoryContainer'
+  );
+
+  if (deleteStockCategoryContainer)
+    deleteStockCategoryContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
+// Delete Category
+export function deleteStockCategoryForm(stockCategoryId, stockCategoryName) {
+  const form = document.querySelector('.deleteStockCategoryContainerModal');
+
+  //   console.log(form);
+  if (!form) return;
+
+  const formCategoryId = Number(form.dataset.stockCategoryId);
+
+  if (formCategoryId === Number(stockCategoryId)) {
+    document.getElementById('confirmation-text-2').textContent =
+      stockCategoryName;
+  }
+}
+
+export function bindDeleteStockCategoryFormListener() {
+  const form = document.querySelector('.deleteStockCategoryContainerModal');
+
+  if (!form) return;
+
+  const deleteStockCategoryButton = form.querySelector(
+    '.deleteStockCategoryButton'
+  );
+  const cancelButton = form.querySelector('.cancel-close');
+
+  if (!form.dataset.bound) {
+    form.dataset.bound = true;
+
+    cancelButton?.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeModal();
+    });
+
+    deleteStockCategoryButton?.addEventListener('click', async (e) => {
+      e.preventDefault();
+      console.log(form);
+
+      const stockCategoryId = form.dataset.stockCategoryId;
+
+      console.log(stockCategoryId);
+
+      if (!stockCategoryId) {
+        showToast('fail', '❎ No Warehouse Category ID found.');
+        return;
+      }
+
+      try {
+        showBtnLoader(deleteStockCategoryButton);
+        await deleteStockCategory(stockCategoryId);
+        await getStockCategories();
+        hideBtnLoader(deleteStockCategoryButton);
+        closeModal();
+        showToast('success', '✅ Warehouse Category deleted successfully.');
+      } catch (err) {
+        hideBtnLoader(deleteStockCategoryButton);
+        showToast('fail', `❎ ${err.message}`);
+      }
+    });
+  }
+}
+
+export function openUpdateCategoryButton() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const updateCategoryContainer = document.querySelector('.updateCategory');
+
+  if (updateCategoryContainer) updateCategoryContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
 // Move Stock to shop inventory
 
 // Open Business Detail Modal
@@ -405,6 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
   bindDeleteStockItemFormListener();
   bindUpdateProductFormListener();
   bindMoveStockFormListener();
+  bindDeleteStockCategoryFormListener();
 });
 
 export function openAddStockCategoryModalBtn() {
@@ -502,13 +588,13 @@ export function populateStockCategoryTable(stockCategoriesData) {
         <td class="py-1 action-buttons">
           <button class="hero-btn-outline openUpdateCategoryButton" data-stock-category-id="${
             category.id
-          }">
+          }"  data-stock-category-name="${category.category_name}">
             <i class="fa-solid fa-pen-to-square"></i>
           </button>
 
           <button class="hero-btn-outline deleteCategoryButton" data-stock-category-id="${
             category.id
-          }">
+          }" data-stock-category-name="${category.category_name}">
             <i class="fa-solid fa-trash-can"></i>
           </button>
         </td>
@@ -527,28 +613,33 @@ export function populateStockCategoryTable(stockCategoriesData) {
     deleteCategoryButton.addEventListener('click', async () => {
       showGlobalLoader();
       const stockCategoryId = deleteCategoryButton.dataset.stockCategoryId;
+      const stockCategoryName = deleteCategoryButton.dataset.stockCategoryName;
 
-      const deleteCategoryContainer = document.querySelector(
-        '.deleteCategoryContainer'
+      const deleteStockCategoryContainerModal = document.querySelector(
+        '.deleteStockCategoryContainerModal'
       );
 
-      if (deleteCategoryContainer) {
+      if (deleteStockCategoryContainerModal) {
         // Store stockCategoryId in modal container for reference
-        deleteCategoryContainer.dataset.stockCategoryId = stockCategoryId;
+        deleteStockCategoryContainerModal.dataset.stockCategoryId =
+          stockCategoryId;
+        deleteStockCategoryContainerModal.dataset.stockCategoryName =
+          stockCategoryName;
 
-        // Fetch Shop detail
-        const categoryDetail = await getStockCategories(stockCategoryId);
+        // Fetch Stock detail
+        //   const categoryDetail = await getStockCategories(stockCategoryId);
 
-        console.log('categoryDetail', categoryDetail);
+        //   console.log('categoryDetail', categoryDetail);
 
         // Call function to prefill modal inputs
-        if (categoryDetail?.data) {
+        //   if (categoryDetail?.data) {
+        if (stockCategoryId || stockCategoryName) {
           hideGlobalLoader();
-          openDeleteCategoryModal(); // Show modal after data is ready
-          deleteCategoryForm(categoryDetail.data, stockCategoryId);
+          openDeleteStockCategoryModal(); // Show modal after data is ready
+          deleteStockCategoryForm(stockCategoryId, stockCategoryName);
         } else {
           hideGlobalLoader();
-          showToast('fail', '❌ Failed to fetch shop details.');
+          showToast('fail', '❌ Failed to fetch Stock details.');
         }
       }
     });

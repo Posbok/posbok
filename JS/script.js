@@ -967,8 +967,15 @@ export function closeModal() {
     '.proceedWithPreviousBusinessDay'
   );
   const exportBusinessesData = document.querySelector('.exportBusinessesData');
+  const deleteStockCategoryContainer = document.querySelector(
+    '.deleteStockCategoryContainer'
+  );
 
   //
+
+  if (deleteStockCategoryContainer) {
+    deleteStockCategoryContainer.classList.remove('active');
+  }
 
   if (exportBusinessesData) {
     exportBusinessesData.classList.remove('active');

@@ -63,8 +63,6 @@ const isStaff = parsedUserData?.accountType === 'STAFF';
 
 const businessName = parsedUserData?.businessName;
 
-console.log(businessName);
-
 const searchSellProdutItem = document.getElementById('searchSellProdutItem');
 
 if (isAdmin) {
@@ -1458,54 +1456,6 @@ export function deleteCategoryForm(category, categoryId) {
     }
   });
 }
-
-export function bindDeleteCategoryFormListener() {
-  const form = document.querySelector('.deleteCategoryContainer');
-  if (!form) return;
-
-  const deleteCategoryButton = form.querySelector('.deleteCategoryButton');
-  const cancelButton = form.querySelector('.cancel-close');
-
-  if (!form.dataset.bound) {
-    form.dataset.bound = true;
-
-    cancelButton?.addEventListener('click', (e) => {
-      e.preventDefault();
-      closeModal();
-    });
-
-    deleteCategoryButton?.addEventListener('click', async (e) => {
-      e.preventDefault();
-
-      const categoryId = form.dataset.categoryId;
-
-      console.log(categoryId);
-
-      if (!categoryId) {
-        showToast('fail', '❎ No Categpry ID found.');
-        return;
-      }
-
-      try {
-        showBtnLoader(deleteCategoryButton);
-        await deleteCategory(categoryId);
-        hideBtnLoader(deleteCategoryButton);
-        closeModal();
-        showToast('success', '✅ Category deleted successfully.');
-      } catch (err) {
-        hideBtnLoader(deleteCategoryButton);
-        showToast('fail', `❎ ${err.message}`);
-      }
-    });
-  }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  bindUpdateProductFormListener(); // Only once
-  bindDeleteProductFormListener();
-  bindDeleteCategoryFormListener();
-  bindGetProductBarcodeFormListener();
-});
 
 //  Update Category
 export function bindUpdateCategoryFormListener() {
