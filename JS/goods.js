@@ -10,6 +10,7 @@ import {
   getProductCategories,
   getProductDetail,
   getProductInventory,
+  getShopInventoryLog,
   updateCategory,
   updateProduct,
   updateProductInventory,
@@ -19,8 +20,10 @@ import { checkAndPromptCreateShop } from './apiServices/shop/shopResource';
 
 import {
   clearFormInputs,
+  formatActionType,
   formatAmountWithCommas,
   formatAmountWithCommasOnInput,
+  formatDateTimeReadable,
   generateBarcode,
   generateEAN13,
   generateSKU,
@@ -544,6 +547,12 @@ export function createProductForm() {
             closeModal();
             clearFormInputs();
             await renderProductInventoryTable(shopId);
+            const filters = getInventoryLogFilters('admin', shopId);
+            await renderInventoryLogTable({
+              filters,
+              shopId,
+              tableBody: `#inventoryLogBody-${shopId}`,
+            });
           }
         } catch (inventoryDataErr) {
           showToast(
@@ -765,6 +774,12 @@ export function bindAddExistingProductFormListener() {
             closeModal();
             clearFormInputs();
             await renderProductInventoryTable(shopId);
+            const filters = getInventoryLogFilters('admin', shopId);
+            await renderInventoryLogTable({
+              filters,
+              shopId,
+              tableBody: `#inventoryLogBody-${shopId}`,
+            });
           }
         } catch (inventoryDataErr) {
           showToast(
@@ -1223,6 +1238,8 @@ export function bindUpdateProductFormListener() {
             productId
           );
 
+          const filters = getInventoryLogFilters('admin', shopId);
+
           if (inventoryData) {
             showToast(
               'success',
@@ -1231,6 +1248,11 @@ export function bindUpdateProductFormListener() {
             closeModal();
             clearFormInputs();
             await renderProductInventoryTable(shopId);
+            await renderInventoryLogTable({
+              filters,
+              shopId,
+              tableBody: `#inventoryLogBody-${shopId}`,
+            });
           }
         } catch (inventoryDataErr) {
           showToast(
@@ -1635,56 +1657,10 @@ if (isAdmin && adminAccordionContainer && container) {
                        <i class="fa-solid icon fa-chevron-down"></i>
                     </button>
                         <div class="accordion-content">
-           <div id="shop-report-${shop.id}" class="reports card" data-loaded="false">
-                      <div class="reports ">
-                          <div class="reports-method">
-                             <h2 class="heading-text mb-2">
-                               Shop inventory
-                             </h2>
-
-                             <div>
-                             <h2 class="heading-subtext ">Total Products: <span class="totalProductsCount_${shop.id}">0</span></h2>
-
-                             <h2 class="heading-subtext ">Total Products Worth: <span class="totalProductsWorth_${shop.id}">0</span></h2>
-
-                             <h2 class="heading-subtext ">Total Estimated Profits: <span class="totalProductsProfits_${shop.id}">0</span></h2>
-
-                             </div>
-
-                              <div class="search-section_${shop.id} mb-2">
-
-                                 <div class="inventory-method-form_input ml-1 mr-1">
-                                 <label for="searchProdutInventory_${shop.id}">Search Products:</label>
-                                 <input type="search" id="searchProdutInventory_${shop.id}" class="searchProductInput"
-                                    placeholder="Search Product Name or Description ">
-                                </div>
-                              </div>
-
-                             <div class="table-header">
-                                <!-- <h2 class="heading-subtext"> inventory </h2> -->
-                             </div>
-                             <div class="reports-table-container">
-                                <table class="reports-table inventoryTableDisplay_admin_${shop.id}">
-                                          <thead>
-                                      <tr class="table-header-row">
-                                          <th class="py-1">S/N</th>
-                          <th class="py-1">Product Name</th>
-                          <th class="py-1">Product Description</th>
-                          <th class="py-1">Product Category</th>
-                          <th class="py-1">SKU</th>
-                          <th class="py-1">Barcode</th>
-                          <th class="py-1">Buying Price</th>
-                          <th class="py-1">Quantity</th>
-                          <th class="py-1">Selling Price</th>
-                          <th class="py-1">Action</th>
-                                      </tr>
-                                   </thead>
-                                     <tbody id="inventory-tbody-${shop.id}">
-                                      </tbody>
-                                </table>
-                                      
-                             </div>
-           </div>
+                        ${getAdminInventoryTableHtml(shop)}
+                        ${getAdminInventoryLogHtml(shop)}
+             
+       
         </div>`;
       if (container) container.appendChild(accordion);
       if (container) container.dataset.shopId;
@@ -1724,6 +1700,12 @@ if (isAdmin && adminAccordionContainer && container) {
         console.log(filteredProducts);
       });
 
+      setupInventoryLogFilters({
+        shopId: shop.id,
+        currentFiltersByShop,
+        renderInventoryLogTableFn: renderInventoryLogTable,
+      });
+
       // const filters = getFilters('admin', shop.id);
       // currentFiltersByShop[shop.id] = filters;
     });
@@ -1755,6 +1737,12 @@ if (isAdmin && adminAccordionContainer && container) {
       //  shopPageTracker[shopId] = 1;
 
       // await renderProductInventoryTable(shopId);
+      //        const filters = getInventoryLogFilters('admin', shopId);
+      //   await renderInventoryLogTable({
+      //            filters,
+      //            shopId,
+      //            tableBody: `#inventoryLogBody-${shopId}`,
+      //          });
 
       const shopInventorySection = document.getElementById(
         `shop-report-${shopId}`
@@ -1765,6 +1753,13 @@ if (isAdmin && adminAccordionContainer && container) {
         shopInventorySection.dataset.loaded !== 'true'
       ) {
         await renderProductInventoryTable(shopId);
+        const filters = getInventoryLogFilters('admin', shopId);
+        await renderInventoryLogTable({
+          filters,
+          shopId,
+          tableBody: `#inventoryLogBody-${shopId}`,
+        });
+
         shopInventorySection.dataset.loaded = 'true';
       }
 
@@ -2035,7 +2030,7 @@ export async function renderProductInventoryTable(shopId) {
 
     inventoryTableBody.innerHTML = '';
     productInventories.map((productInventory, index) => {
-      console.log(productInventory);
+      // console.log(productInventory);
       const { id, product_id, quantity } = productInventory;
       const {
         name: productName,
@@ -2218,87 +2213,310 @@ export async function renderProductInventoryTable(shopId) {
   }
 }
 
-// export function populateProductInventoryTable(productInventoryData) {
-//   const tbody = document.querySelector('.category-table tbody');
-//   const loadingRow = document.querySelector('.loading-row');
+export async function renderInventoryLogTable({ filters, shopId }) {
+  const inventoryLogTableBody = document.querySelector(
+    `#inventoryLogBody-${shopId}`
+  );
 
-//   // Remove static rows and loading
+  if (!inventoryLogTableBody) {
+    console.error('Error: Table body not found');
+    return;
+  }
+  try {
+    let loadingRow = document.querySelector('.loading-row');
+    if (!loadingRow) {
+      loadingRow = document.createElement('tr');
+      loadingRow.className = 'loading-row';
+      loadingRow.innerHTML = `<td colspan="11" class="table-loading-text">Loading Shop Inventory Logs...</td>`;
+      inventoryLogTableBody.appendChild(loadingRow);
+    }
 
-//   const productInventory = productInventoryData.data;
+    const queryParams = new URLSearchParams({
+      shopId: shopId,
+    });
 
-//   if (tbody) tbody.innerHTML = '';
+    if (filters.date_from) queryParams.append('date_from', filters.date_from);
+    if (filters.date_to) queryParams.append('date_to', filters.date_to);
 
-//   if (!productInventory.length) {
-//     const emptyRow = document.createElement('tr');
-//     emptyRow.innerHTML = `
-//         <td colspan="6" class="table-error-text">No Products found.</td>
-//       `;
-//     if (tbody) tbody.appendChild(emptyRow);
-//     return;
-//   }
+    const result = await getShopInventoryLog({ shopId, filters });
+    if (!result) throw new Error('Failed to fetch Shop Inventory Log');
 
-//   productInventory.forEach((product, index) => {
-//     const row = document.createElement('tr');
-//     row.classList.add('table-body-row');
+    const shopInventoryLogs = result?.data?.logs;
 
-//     //  console.log('product', product);
+    //  shopProductMap[shopId] = shopInventoryLogs;
 
-//     if (row)
-//       row.innerHTML = `
-//         <td class="py-1 productSerialNumber">${index + 1}</td>
-//         <td class="py-1 productName">${product.name}</td>
-//          <td class="py-1 productDescription">${product.description}</td>
+    console.log(shopInventoryLogs);
 
-//         <td class="py-1 action-buttons">
-//           <button class="hero-btn-outline editproductButton" data-product-id="${
-//             product.id
-//           }">
-//             <i class="fa-solid fa-pen-to-square"></i>
-//           </button>
-//           <button class="hero-btn-outline deleteproductButton" data-product-id="${
-//             product.id
-//           }">
-//             <i class="fa-solid fa-trash-can"></i>
-//           </button>
-//         </td>
-//       `;
+    if (shopInventoryLogs.length === 0) {
+      const searchSection = document.querySelector(`.search-section_${shopId}`);
 
-//     if (tbody) tbody.appendChild(row);
+      searchSection.style.display = 'none';
 
-//     //  const deleteBtn = row.querySelector('.deleteShopButton');
-//     //  deleteBtn.addEventListener('click', async () => {
-//     //    const shopId = deleteBtn.dataset.shopId;
-//     //    await deleteShop(shopId);
-//     //  });
+      inventoryLogTableBody.innerHTML =
+        '<tr class="loading-row"><td colspan="11" class="table-error-text ">No Shop Inventory Logs Available.</td></tr>';
+      return;
+    }
 
-//     //  const updateShopBtn = row.querySelector('.editShopButton');
-//     //  updateShopBtn?.addEventListener('click', async () => {
-//     //    showGlobalLoader();
-//     //    const shopId = updateShopBtn.dataset.shopId;
+    inventoryLogTableBody.innerHTML = '';
+    shopInventoryLogs.forEach((shopInventoryLog, index) => {
+      // console.log(shopInventoryLog);
 
-//     //    const adminUpdateShopDataContainer = document.querySelector(
-//     //      '.adminUpdateShopData'
-//     //    );
+      //   "id": 57,
+      //        "business_id": 96,
+      //        "item_name": "Carton Of Iphone Charger 1",
+      //        "quantity": 300,
+      //        "price": 150000,
+      //        "action_type": "added",
+      //        "performed_by": 85,
+      //        "created_at": "2025-11-08T00:15:59.000Z",
+      //        "performer": {
+      //            "id": 85,
+      //            "first_name": "Praises",
+      //            "last_name": "Amaiyo",
+      //            "email": "development@example.com"
+      //        }
 
-//     //    if (adminUpdateShopDataContainer) {
-//     //      // Store shopId in modal container for reference
-//     //      adminUpdateShopDataContainer.dataset.shopId = shopId;
+      const {
+        id,
+        product_id,
+        quantity,
+        item_name,
+        price,
+        action_type,
+        performed_by,
+        created_at,
+      } = shopInventoryLog;
 
-//     //      // Fetch Shop detail
-//     //      const shopDetail = await fetchShopDetail(shopId);
+      const performerName = shopInventoryLog.performer
+        ? `${shopInventoryLog.performer.first_name} ${shopInventoryLog.performer.last_name}`
+        : 'Unknown';
 
-//     //      //   console.log(shopDetail);
+      const row = document.createElement('tr');
+      row.classList.add('table-body-row');
+      // row.classList.add(
+      //   quantity < 1
+      //     ? 'finishedStockRow'
+      //     : quantity >= 1 && quantity <= 10
+      //     ? 'nearFinishedStockRow'
+      //     : 'inStockRow'
+      // );
+      row.innerHTML = `
+       
+                <td class="py-1 productSerialNumber">${index + 1}</td>
+                <td class="py-1 productName">${item_name}</td>
+                <td class="py-1 productDescription">${quantity}</td>
+                <td class="py-1 producCategory">&#x20A6;${formatAmountWithCommas(
+                  price
+                )}</td>
+                <td class="py-1 producCategory">${formatActionType(
+                  action_type
+                )}</td>
+                <td class="py-1 producCategory">${performerName}</td>
+                <td class="py-1 productAmountBought">${formatDateTimeReadable(
+                  created_at
+                )}</td>
+              
+    
+             `;
+      inventoryLogTableBody.appendChild(row);
+    });
+  } catch (error) {
+    console.error('Error rendering  Inventory Log:', error);
+    inventoryLogTableBody.innerHTML =
+      '<tr><td colspan="6" class="table-error-text">Error Loading Inventory Log.</td></tr>';
+  }
+}
 
-//     //      // Call function to prefill modal inputs
-//     //      if (shopDetail?.data) {
-//     //        hideGlobalLoader();
-//     //        openUpdateShopModal(); // Show modal after data is ready
-//     //        setupUpdateShopForm(shopDetail.data);
-//     //      } else {
-//     //        hideGlobalLoader();
-//     //        showToast('fail', '❌ Failed to fetch shop details.');
-//     //      }
-//     //    }
-//     //  });
-//   });
-// }
+export function getAdminInventoryTableHtml(shop) {
+  return `
+         <div id="shop-report-${shop.id}" class="reports card" data-loaded="false">
+         <div class="reports ">
+            <div class="reports-method">
+               <h2 class="heading-text mb-2">
+                  Shop inventory
+               </h2>
+
+               <div>
+                  <h2 class="heading-subtext ">Total Products: <span class="totalProductsCount_${shop.id}">0</span></h2>
+
+                  <h2 class="heading-subtext ">Total Products Worth: <span
+                        class="totalProductsWorth_${shop.id}">0</span></h2>
+
+                  <h2 class="heading-subtext ">Total Estimated Profits: <span
+                        class="totalProductsProfits_${shop.id}">0</span></h2>
+
+               </div>
+
+               <div class="search-section_${shop.id} mb-2">
+
+                  <div class="inventory-method-form_input ml-1 mr-1">
+                     <label for="searchProdutInventory_${shop.id}">Search Products:</label>
+                     <input type="search" id="searchProdutInventory_${shop.id}" class="searchProductInput"
+                        placeholder="Search Product Name or Description ">
+                  </div>
+               </div>
+
+               <div class="table-header">
+                  <!-- <h2 class="heading-subtext"> inventory </h2> -->
+               </div>
+
+               <div class="reports-table-container">
+                  <table class="reports-table inventoryTableDisplay_admin_${shop.id}">
+                     <thead>
+                        <tr class="table-header-row">
+                           <th class="py-1">S/N</th>
+                           <th class="py-1">Product Name</th>
+                           <th class="py-1">Product Description</th>
+                           <th class="py-1">Product Category</th>
+                           <th class="py-1">SKU</th>
+                           <th class="py-1">Barcode</th>
+                           <th class="py-1">Buying Price</th>
+                           <th class="py-1">Quantity</th>
+                           <th class="py-1">Selling Price</th>
+                           <th class="py-1">Action</th>
+                        </tr>
+                     </thead>
+                     <tbody id="inventory-tbody-${shop.id}">
+                     </tbody>
+                  </table>
+
+               </div>
+            </div>
+         </div>
+      </div>
+
+   `;
+}
+
+export function getAdminInventoryLogHtml(shop) {
+  return `
+     
+         <!-- Inventory Log Table HTML starts Here -->
+     
+   <div id="shop-report-${shop.id}" class="reports card" data-loaded="false">
+
+         <div class="reports">
+            <div class="reports-method">
+               <h2 class="heading-text mb-2">
+                  Inventory Log
+               </h2>
+
+               <h2 class="filter-heading heading-subtext mb-2">Filter Inventory Log </h2>
+
+               <div class="filter-section mb-2">
+
+                  <div class="pos-method-form_input">
+                     <label for="inventoryLogDateFrom_admin_${shop.id}">Start Date:</label>
+
+                     <input type="date" id="inventoryLogDateFrom_admin_${shop.id}">
+                  </div>
+
+                  <div class="pos-method-form_input">
+                     <label for="inventoryLogDateTo_admin_${shop.id}">End Date:</label>
+
+                     <input type="date" id="inventoryLogDateTo_admin_${shop.id}">
+                  </div>
+
+                  <div class="filter-buttons">
+                     <button id="applyInventoryLogFiltersBtn_admin_${shop.id}" class="hero-btn-dark">Apply
+                        Filters</button>
+                     <button id="resetInventoryLogFiltersBtn_${shop.id}" class="hero-btn-outline">Reset</button>
+                  </div>
+
+               </div>
+
+               <div class="transaction-breakdown">
+
+
+                  <div class="reports-table-container mt-4">
+                     <table class="reports-table inventoryLog_admin_${shop.id}">
+                        <thead>
+                           <tr class="table-header-row">
+                              <th class="py-1">S/N</th>
+                              <th class="py-1">Item Name</th>
+                              <th class="py-1">Quantity</th>
+                              <th class="py-1">Selling Price</th>
+                              <th class="py-1">Action Type</th>
+                              <th class="py-1">Performed By</th>
+                              <th class="py-1">Date/Time</th>
+                           </tr>
+                        </thead>
+
+                        <tbody id="inventoryLogBody-${shop.id}">
+
+                        </tbody>
+
+                     </table>
+                  </div>
+
+               </div>
+
+            </div>
+         </div>
+      </div>
+         <!-- Inventory Log Table HTML Ends Here -->
+   `;
+}
+
+function getInventoryLogFilters(role, shopId) {
+  const suffix = role === 'admin' ? `${role}_${shopId}` : role;
+
+  return {
+    date_from:
+      document.getElementById(`inventoryLogDateFrom_${suffix}`)?.value || '',
+    date_to:
+      document.getElementById(`inventoryLogDateTo_${suffix}`)?.value || '',
+  };
+}
+
+function resetInventoryLogFilters(role, shopId) {
+  const suffix = role === 'admin' ? `${role}_${shopId}` : role;
+
+  document.getElementById(`inventoryLogDateFrom_${suffix}`).value = '';
+  document.getElementById(`inventoryLogDateTo_${suffix}`).value = '';
+}
+
+function setupInventoryLogFilters({
+  shopId,
+  currentFiltersByShop,
+  renderInventoryLogTableFn,
+}) {
+  const applyBtn = document.getElementById(
+    `applyInventoryLogFiltersBtn_admin_${shopId}`
+  );
+  const resetBtn = document.getElementById(
+    `resetInventoryLogFiltersBtn_${shopId}`
+  );
+
+  if (!applyBtn || !resetBtn) return;
+
+  // Apply Filters
+  applyBtn.addEventListener('click', () => {
+    console.log('clicked');
+    const filters = getInventoryLogFilters('admin', shopId);
+    currentFiltersByShop[shopId] = filters;
+
+    renderInventoryLogTableFn({
+      filters,
+      shopId,
+      tableBodyId: `#inventoryLogBody-${shopId}`,
+      append: false,
+    });
+  });
+
+  // Reset Filters
+  resetBtn.addEventListener('click', () => {
+    const role = 'admin';
+
+    resetInventoryLogFilters(role, shopId);
+    const filters = getInventoryLogFilters(role, shopId);
+    currentFiltersByShop[shopId] = filters;
+
+    renderInventoryLogTableFn({
+      filters,
+      shopId,
+      tableBodyId: `#inventoryLogBody-${shopId}`,
+      append: false,
+    });
+  });
+}

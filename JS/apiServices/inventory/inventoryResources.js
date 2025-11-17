@@ -411,6 +411,47 @@ export async function updateProductInventory(
   }
 }
 
+export async function getShopInventoryLog({ shopId, filters = {} }) {
+  try {
+    //  showGlobalLoader();
+    //  console.log('Sending  getProductInventory request...');
+    console.log(filters);
+
+    const queryParams = new URLSearchParams({
+      shop_id: shopId,
+    });
+
+    if (filters.date_from) queryParams.append('date_from', filters.date_from);
+    if (filters.date_to) queryParams.append('date_to', filters.date_to);
+
+    const inventoryLogData = await safeFetch(
+      `${baseUrl}/api/reports/shop-inventory-log?${queryParams.toString()}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          //  'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    //  console.log('Response received...');
+
+    if (inventoryLogData) {
+      // console.log(inventoryLogData);
+      hideGlobalLoader();
+    }
+
+    //  populateProductInventoryTable(inventoryLogData);
+
+    return inventoryLogData;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error receiving Product Categories:', error);
+    throw error;
+  }
+}
+
 export async function getAllSales({
   shopId,
   page = 1,
