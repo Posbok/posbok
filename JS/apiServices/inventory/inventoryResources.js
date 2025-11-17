@@ -415,7 +415,6 @@ export async function getShopInventoryLog({ shopId, filters = {} }) {
   try {
     //  showGlobalLoader();
     //  console.log('Sending  getProductInventory request...');
-    console.log(filters);
 
     const queryParams = new URLSearchParams({
       shop_id: shopId,
@@ -423,6 +422,11 @@ export async function getShopInventoryLog({ shopId, filters = {} }) {
 
     if (filters.date_from) queryParams.append('date_from', filters.date_from);
     if (filters.date_to) queryParams.append('date_to', filters.date_to);
+
+    //  console.log(
+    //    shopId,
+    //    `${baseUrl}/api/reports/shop-inventory-log?${queryParams.toString()}`
+    //  );
 
     const inventoryLogData = await safeFetch(
       `${baseUrl}/api/reports/shop-inventory-log?${queryParams.toString()}`,
@@ -447,7 +451,7 @@ export async function getShopInventoryLog({ shopId, filters = {} }) {
     return inventoryLogData;
   } catch (error) {
     hideGlobalLoader();
-    console.error('Error receiving Product Categories:', error);
+    console.error('Error receiving Shop Inventory Logs:', error);
     throw error;
   }
 }
