@@ -20,6 +20,7 @@ const isStaff = parsedUserData?.accountType === 'STAFF';
 
 export async function initAccountOverview() {
   showGlobalLoader();
+  //   console.log('code got here');
   const posShopDropdown = document.getElementById('posShopDropdown')?.value;
   const posShopDropdownwithdrawal =
     document.getElementById('posShopDropdown-2')?.value;
@@ -49,7 +50,7 @@ export async function initAccountOverview() {
       return;
     }
 
-    console.log(posDailySummaryData);
+    //  console.log(posDailySummaryData);
 
     const shopBalances = posDailySummaryData?.data;
     //  const adminSummary = posDailySummaryData.data?.admin_summary;
@@ -93,6 +94,8 @@ export function updatePosSummaryDashboardUi(shopBalances, adminShopSelection) {
     total_transfer_fee,
     total_fees,
     current_business_day,
+    total_admin_withdrawal_machine,
+    total_admin_withdrawal_cash_at_hand,
   } = balancePerShop;
 
   //   const {
@@ -153,6 +156,16 @@ export function updatePosSummaryDashboardUi(shopBalances, adminShopSelection) {
   const totalAdminWithdrawals = document.getElementById(
     isStaff ? 'totalAdminWithdrawals' : 'totalAdminWithdrawals_admin'
   );
+  const totalAdminWithdrawalsFromCashInMachine = document.getElementById(
+    isStaff
+      ? 'totalAdminWithdrawalsFromCashInMachine'
+      : 'totalAdminWithdrawalsFromCashInMachine_admin'
+  );
+  const totalAdminWithdrawalsFromCashAtHand = document.getElementById(
+    isStaff
+      ? 'totalAdminWithdrawalsFromCashAtHand'
+      : 'totalAdminWithdrawalsFromCashAtHand_admin'
+  );
   //   const adminWithdrawalsCash = document.getElementById(
   //     isStaff ? 'adminWithdrawalsCash' : 'adminWithdrawalsCash_admin'
   //   );
@@ -193,8 +206,17 @@ export function updatePosSummaryDashboardUi(shopBalances, adminShopSelection) {
 
   if (totalAdminWithdrawals)
     totalAdminWithdrawals.innerHTML = formatAmountWithCommas(
-      // total_admin_withdrawals || 0
-      0
+      total_admin_withdrawal_machine + total_admin_withdrawal_cash_at_hand || 0
+    );
+
+  if (totalAdminWithdrawalsFromCashInMachine)
+    totalAdminWithdrawalsFromCashInMachine.innerHTML = formatAmountWithCommas(
+      total_admin_withdrawal_machine || 0
+    );
+
+  if (totalAdminWithdrawalsFromCashAtHand)
+    totalAdminWithdrawalsFromCashAtHand.innerHTML = formatAmountWithCommas(
+      total_admin_withdrawal_cash_at_hand || 0
     );
 
   //   if (adminWithdrawalsCash)

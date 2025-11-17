@@ -572,6 +572,26 @@ export function formatAmountWithCommasOnInput(input) {
   input.value = formatAmountWithCommas(value);
 }
 
+// Format dashboard Field type
+export function formatDashboardType(value) {
+  switch (value.toLowerCase()) {
+    case 'pos_capital':
+      return 'POS Capital';
+    case 'cash_in_machine':
+      return 'Cash In Machine';
+    case 'cash_at_hand':
+      return 'Cash At Hand';
+    case 'total_withdrawals':
+      return 'Total Withdrawals';
+    case 'charges_cash':
+      return 'Charges (Cash)';
+    case 'charges_machine':
+      return 'Charges (Machine)';
+    default:
+      return value;
+  }
+}
+
 // Format Fee type
 export function formatFeeType(value) {
   switch (value.toLowerCase()) {

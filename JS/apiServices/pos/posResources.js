@@ -106,6 +106,19 @@ export function openAdminFundMachineModal() {
   fundMachineForm();
 }
 
+export function openAClearDashboardFieldModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const adminFundMachineContainer = document.querySelector(
+    '.adminClearDashboardFieldModal'
+  );
+
+  if (adminFundMachineContainer)
+    adminFundMachineContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
 // Close Business Modal FOrm
 export function openCloseBusinessDayModal() {
   const main = document.querySelector('.main');
@@ -215,8 +228,8 @@ export async function openBusinessDay(openBusinessDayDetails) {
     console.log('Sending POST request...');
 
     const openBusinessDayData = await safeFetch(
-      // `${baseUrl}/api/business-day/open`,
-      `${baseUrl}/api/pos/business-day/`,
+      `${baseUrl}/api/business-day/open`,
+      // `${baseUrl}/api/pos/business-day/`,
       {
         method: 'POST',
         headers: {
@@ -285,7 +298,8 @@ export async function addPosCapital(posCapitalDetails) {
     //  console.log('Sending POST request...');
 
     const addPosCapitalData = await safeFetch(
-      `${baseUrl}/api/pos/admin/funding`,
+      `${baseUrl}/api/pos/capital`,
+      // `${baseUrl}/api/pos/admin/funding`,
       // `${baseUrl}/api/admin-management/fund-cash-in-machine`,
       {
         method: 'POST',
@@ -305,7 +319,8 @@ export async function addPosCapital(posCapitalDetails) {
       // hideGlobalLoader();
     }
 
-    isStaff ? initAccountOverview() : '';
+    //  isStaff ? initAccountOverview() : '';
+    initAccountOverview();
 
     return addPosCapitalData;
   } catch (error) {
@@ -322,6 +337,7 @@ export async function addFundMachine(fundMachineDetails) {
     //  console.log('Sending POST request...');
 
     const fundMachinelData = await safeFetch(
+      //   `${baseUrl}/api/admin/fund-cash-in-machine`,
       `${baseUrl}/api/admin/fund-machine`,
       {
         method: 'POST',
@@ -889,6 +905,37 @@ export async function getAdminDashboard() {
     return adminDashboardData;
   } catch (error) {
     console.error('Error receiving POS Capital:', error);
+    throw error;
+  }
+}
+
+export async function clearDashboardFieldApi(clearDashboardFieldDetails) {
+  try {
+    //  console.log('Sending POST request...');
+
+    showGlobalLoader();
+
+    const fetchedData = await safeFetch(`${baseUrl}/api/admin/clear-field`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(clearDashboardFieldDetails),
+    });
+
+    if (fetchedData) {
+      // console.log('POS Dashboard Summary cleared successfully:', fetchedData);
+      showToast('success', `✅ ${fetchedData.message}`);
+      // await renderPosTable();
+      hideGlobalLoader();
+    }
+
+    return fetchedData;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error Clearing POS Dashboard Summary', error);
+    showToast('error', '❌ Failed to Clear POS Dashboard Summary');
     throw error;
   }
 }

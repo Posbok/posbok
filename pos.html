@@ -328,7 +328,19 @@
 
             </div>
 
-            <div class="posTransactions-summary">
+         </div>
+
+         <div class="posTransactions-summary_div mb-1 mt-2 card">
+            <h2 class="heading-text mt-2">
+               POS Summaries
+            </h2>
+
+            <div class=" mt-3 mb-2">
+               <button id="openClearDashboardFieldModalBtn" class="hero-btn-dark">Clear Dashboard Field</button>
+            </div>
+
+            <div class="posTransactions-summary ">
+
 
                <!-- Total POS Capital -->
                <div class="summary-card">
@@ -426,25 +438,37 @@
                   <p class="amount">₦<span id="totalAdminWithdrawals_admin">0</span></p>
                </div>
 
+               <!-- Total Admin Withdrawals - Cash In Machine -->
+               <div class="summary-card">
+                  <h3>Total Admin Withdrawals</h3>
+                  <p class="amount">₦<span id="totalAdminWithdrawalsFromCashInMachine_admin">0</span></p>
+               </div>
+               <!-- Total Admin Withdrawals - Cash at Hand -->
+               <div class="summary-card">
+                  <h3>Total Admin Withdrawals</h3>
+                  <p class="amount">₦<span id="totalAdminWithdrawalsFromCashAtHand_admin">0</span></p>
+               </div>
+
                <!-- Admin Withdrawals (Cash) -->
                <!-- <div class="summary-card">
-                  <h3>Admin Withdrawals (Cash)</h3>
-                  <p class="amount">₦<span id="adminWithdrawalsCash_admin">0</span></p>
-               </div> -->
+               <h3>Admin Withdrawals (Cash)</h3>
+               <p class="amount">₦<span id="adminWithdrawalsCash_admin">0</span></p>
+            </div> -->
 
                <!-- Admin Withdrawals (Transfer) -->
                <!-- <div class="summary-card">
-                  <h3>Admin Withdrawals (Transfer)</h3>
-                  <p class="amount">₦<span id="adminWithdrawalsTransfer_admin">0</span></p>
-               </div> -->
+               <h3>Admin Withdrawals (Transfer)</h3>
+               <p class="amount">₦<span id="adminWithdrawalsTransfer_admin">0</span></p>
+            </div> -->
 
                <!-- Machine Fee -->
                <!-- <div class="summary-card">
-                  <h3>Machine Fee</h3>
-                  <p class="amount">₦<span id="adminMachineFee">0</span></p>
-               </div> -->
+               <h3>Machine Fee</h3>
+               <p class="amount">₦<span id="adminMachineFee">0</span></p>
+            </div> -->
             </div>
          </div>
+
       </div>
 
       <!-- Staff POS Form -->
@@ -559,124 +583,141 @@
             </form>
          </div>
 
-         <div class="posTransactions-summary mb-1 mt-2 card">
-            <!-- Total POS Capital -->
-            <div class="summary-card">
-               <h3>Total POS Capital</h3>
-               <p class="amount">₦<span id="totalPosCapital">0</span></p>
-            </div>
+         <div class=" mb-1 mt-2 card">
+            <h2 class="heading-text">
+               POS Summaries
+            </h2>
+
+            <div class="posTransactions-summary ">
+               <!-- Total POS Capital -->
+               <div class="summary-card">
+                  <h3>Total POS Capital</h3>
+                  <p class="amount">₦<span id="totalPosCapital">0</span></p>
+               </div>
 
 
-            <!-- Total  Cash At Hand -->
-            <div class="summary-card">
-               <h3>Total Cash At Hand</h3>
-               <p class="amount">₦<span id="totalCashAtHand">0</span></p>
-            </div>
+               <!-- Total  Cash At Hand -->
+               <div class="summary-card">
+                  <h3>Total Cash At Hand</h3>
+                  <p class="amount">₦<span id="totalCashAtHand">0</span></p>
+               </div>
 
 
-            <!-- Cash In Machine -->
-            <div class="summary-card">
-               <h3>Cash In Machine</h3>
-               <p class="amount">₦<span id="cashInMachine">0</span></p>
-            </div>
+               <!-- Cash In Machine -->
+               <div class="summary-card">
+                  <h3>Cash In Machine</h3>
+                  <p class="amount">₦<span id="cashInMachine">0</span></p>
+               </div>
 
-            <!-- Cash At Hand -->
-            <div class="summary-card">
-               <h3>Cash At Hand</h3>
-               <p class="amount">₦<span id="cashAtHand">0</span></p>
-            </div>
+               <!-- Cash At Hand -->
+               <div class="summary-card">
+                  <h3>Cash At Hand</h3>
+                  <p class="amount">₦<span id="cashAtHand">0</span></p>
+               </div>
 
-            <!-- Total Deposit -->
-            <div class="summary-card">
-               <h3>Total Deposit</h3>
-               <p class="amount">₦<span id="totalDeposit">0</span></p>
-            </div>
+               <!-- Total Deposit -->
+               <div class="summary-card">
+                  <h3>Total Deposit</h3>
+                  <p class="amount">₦<span id="totalDeposit">0</span></p>
+               </div>
 
-            <!-- Total Withdrawals -->
-            <div class="summary-card">
-               <h3>Total Withdrawals</h3>
-               <p class="amount">₦<span id="totalWithdrawals">0</span></p>
-            </div>
+               <!-- Total Withdrawals -->
+               <div class="summary-card">
+                  <h3>Total Withdrawals</h3>
+                  <p class="amount">₦<span id="totalWithdrawals">0</span></p>
+               </div>
 
-            <!-- Bill Payment (Cash) -->
-            <div class="summary-card">
-               <h3>Bill Payment (Cash)</h3>
-               <p class="amount">₦<span id="cashBillPayment">0</span></p>
-            </div>
+               <!-- Bill Payment (Cash) -->
+               <div class="summary-card">
+                  <h3>Bill Payment (Cash)</h3>
+                  <p class="amount">₦<span id="cashBillPayment">0</span></p>
+               </div>
 
-            <!-- Total POS Charges -->
-            <div class="summary-card">
-               <h3>Total POS Charges</h3>
-               <p class="amount">₦<span id="totalPosCharges">0</span></p>
-            </div>
+               <!-- Total POS Charges -->
+               <div class="summary-card">
+                  <h3>Total POS Charges</h3>
+                  <p class="amount">₦<span id="totalPosCharges">0</span></p>
+               </div>
 
-            <!-- Charges (Cash) -->
-            <div class="summary-card">
-               <h3>Charges (Cash)</h3>
-               <p class="amount">₦<span id="cashCharges">0</span></p>
-            </div>
+               <!-- Charges (Cash) -->
+               <div class="summary-card">
+                  <h3>Charges (Cash)</h3>
+                  <p class="amount">₦<span id="cashCharges">0</span></p>
+               </div>
 
-            <!-- Charges (Machine) -->
-            <div class="summary-card">
-               <h3>Charges (Machine)</h3>
-               <p class="amount">₦<span id="machineCharges">0</span></p>
-            </div>
+               <!-- Charges (Machine) -->
+               <div class="summary-card">
+                  <h3>Charges (Machine)</h3>
+                  <p class="amount">₦<span id="machineCharges">0</span></p>
+               </div>
 
-            <!-- Total Machine Fee -->
-            <div class="summary-card">
-               <h3>Total Machine Fee</h3>
-               <p class="amount">₦<span id="totalMachineFee">0</span></p>
-            </div>
+               <!-- Total Machine Fee -->
+               <div class="summary-card">
+                  <h3>Total Machine Fee</h3>
+                  <p class="amount">₦<span id="totalMachineFee">0</span></p>
+               </div>
 
-            <!-- Total Tax Fee -->
-            <div class="summary-card">
-               <h3>Total Tax Fee</h3>
-               <p class="amount">₦<span id="totalTaxFee">0</span></p>
-            </div>
+               <!-- Total Tax Fee -->
+               <div class="summary-card">
+                  <h3>Total Tax Fee</h3>
+                  <p class="amount">₦<span id="totalTaxFee">0</span></p>
+               </div>
 
-            <!-- Total Transfer Fee -->
-            <div class="summary-card">
-               <h3>Total Transfer Fee</h3>
-               <p class="amount">₦<span id="totalTransferFee">0</span></p>
-            </div>
+               <!-- Total Transfer Fee -->
+               <div class="summary-card">
+                  <h3>Total Transfer Fee</h3>
+                  <p class="amount">₦<span id="totalTransferFee">0</span></p>
+               </div>
 
-            <!-- Total  Fees -->
-            <div class="summary-card">
-               <h3>Total Fees</h3>
-               <p class="amount">₦<span id="totalFees">0</span></p>
-            </div>
+               <!-- Total  Fees -->
+               <div class="summary-card">
+                  <h3>Total Fees</h3>
+                  <p class="amount">₦<span id="totalFees">0</span></p>
+               </div>
 
-            <!-- Current Business Day -->
-            <div class="summary-card">
-               <h3>Current Business Day</h3>
-               <p class="amount"><span id="currentBusinessDay">0</span></p>
-            </div>
+               <!-- Current Business Day -->
+               <div class="summary-card">
+                  <h3>Current Business Day</h3>
+                  <p class="amount"><span id="currentBusinessDay">0</span></p>
+               </div>
 
+               <!-- Total Admin Withdrawals -->
+               <div class="summary-card">
+                  <h3>Total Admin Withdrawals</h3>
+                  <p class="amount">₦<span id="totalAdminWithdrawals">0</span></p>
+               </div>
 
-            <!-- Total Admin Withdrawals -->
-            <div class="summary-card">
-               <h3>Total Admin Withdrawals</h3>
-               <p class="amount">₦<span id="totalAdminWithdrawals">0</span></p>
-            </div>
+               <!-- Total Admin Withdrawals - Cash In Machine -->
+               <div class="summary-card">
+                  <h3> Admin Withdrawals (Machine)</h3>
+                  <p class="amount">₦<span id="totalAdminWithdrawalsFromCashInMachine">0</span></p>
+               </div>
 
-            <!-- Admin Withdrawals (Cash) -->
-            <!-- <div class="summary-card">
+               <!-- Total Admin Withdrawals - Cash at Hand -->
+               <div class="summary-card">
+                  <h3> Admin Withdrawals (Hand)</h3>
+                  <p class="amount">₦<span id="totalAdminWithdrawalsFromCashAtHand">0</span></p>
+               </div>
+
+               <!-- Admin Withdrawals (Cash) -->
+               <!-- <div class="summary-card">
                <h3>Admin Withdrawals (Cash)</h3>
                <p class="amount">₦<span id="adminWithdrawalsCash">0</span></p>
             </div> -->
 
-            <!-- Admin Withdrawals (Transfer) -->
-            <!-- <div class="summary-card">
+               <!-- Admin Withdrawals (Transfer) -->
+               <!-- <div class="summary-card">
                <h3>Admin Withdrawals (Transfer)</h3>
                <p class="amount">₦<span id="adminWithdrawalsTransfer">0</span></p>
             </div> -->
 
-            <!-- Machine Fee -->
+               <!-- Machine Fee -->
 
-            <!-- <div class="summary-card">
+               <!-- <div class="summary-card">
                <h3>Machine Fee</h3>
                <p class="amount">₦<span id="machineFee">0</span></p>
             </div> -->
+            </div>
          </div>
       </div>
    </main>
@@ -687,10 +728,10 @@
       <!-- <button class="close-toast hero-btn-dark mr-0">Okay</button> -->
 
    </div>
+
    <div id="global-loader" class="loader-overlay hidden">
       <div class="spinner"></div>
    </div>
-
 
    <form class="modal-form createShopModal" name="modal" netlify>
       <div class="card createShop modal">
@@ -959,6 +1000,55 @@
 
             <button class="hero-btn-dark submitFundMachine  mt-2 mb-1  has-spinner" type="submit">
                <span class="btn-text">Fund Machine </span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <!-- Clear Dashboard Field -->
+   <form class="modal-form clearDashboardFieldModal " name="clearDashboardFieldModal">
+      <div class="card adminClearDashboardFieldModal modal ">
+         <div>
+            <h1 class="heading-text ">Clear Dashboard Field</h1>
+         </div>
+
+
+         <!-- Assign Pos Capital Deposit to shop -->
+         <div class="modal-form_input">
+            <label for="adminClearDashboardFieldShopDropdown">Select Shop</label>
+
+            <select id="adminClearDashboardFieldShopDropdown" class="form-control" required>
+               <option value="">Select a shop</option>
+               <!-- <option value="1">Loading Shops...</option> -->
+
+               <!-- Add Main shops dynamically -->
+            </select>
+         </div>
+
+         <div class="modal-form_input">
+            <label for="adminClearDashboardFieldDropdown">Select Dashboard Field</label>
+
+            <select id="adminClearDashboardFieldDropdown" class="form-control" required>
+               <option value="">Select a Field</option>
+               <option value="pos_capital">POS Capital</option>
+               <option value="cash_in_machine">Cash In Machine </option>
+               <option value="cash_at_hand">Cash At Hand</option>
+               <option value="total_withdrawals">Total Withdrawals</option>
+               <option value="charges_cash">Charges (Cash)</option>
+               <option value="charges_machine">Charges (Machine)</option>
+               <!-- <option value="1">Loading s...</option> -->
+
+               <!-- Add Main s dynamically -->
+            </select>
+         </div>
+
+         <div class="center-button">
+
+            <button class="hero-btn-dark submitClearDashboardField  mt-2 mb-1  has-spinner" type="submit">
+               <span class="btn-text">Clear Field </span>
                <span class="btn-spinner hidden"></span>
             </button>
          </div>

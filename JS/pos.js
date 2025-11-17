@@ -18,6 +18,8 @@ import {
   openFundMachineModal,
   addFundMachine,
   createAdminWithdrawal,
+  openAClearDashboardFieldModal,
+  clearDashboardFieldApi,
 } from './apiServices/pos/posResources';
 import { closeModal, setupModalCloseButtons, showToast } from './script';
 import config from '../config.js';
@@ -26,6 +28,7 @@ import {
   ensureBusinessDayOpen,
   formatAmountWithCommas,
   formatAmountWithCommasOnInput,
+  formatDashboardType,
   formatDateTimeReadable,
   formatFeeType,
   formatTransactionType,
@@ -129,6 +132,11 @@ if (isAdmin) {
       populateBusinessShopDropdown(
         enrichedShopData,
         'adminFundMachineShopDropdown'
+      );
+
+      populateBusinessShopDropdown(
+        enrichedShopData,
+        'adminClearDashboardFieldShopDropdown'
       );
 
       populateBusinessShopDropdown(
@@ -252,6 +260,76 @@ export function bindFundMachineFormListener() {
   }
 }
 
+export function bindClearDashboardFieldFormListener() {
+  const form = document.querySelector('.clearDashboardFieldModal');
+
+  if (!form) return;
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const adminClearDashboardFieldShopDropdown = document.querySelector(
+        '#adminClearDashboardFieldShopDropdown'
+      ).value;
+
+      const adminClearDashboardFieldDropdown = document.querySelector(
+        '#adminClearDashboardFieldDropdown'
+      ).value;
+
+      const clearDashboardFieldDetails = {
+        shopId: Number(adminClearDashboardFieldShopDropdown),
+        field: adminClearDashboardFieldDropdown,
+      };
+
+      // console.log('Clearing POS Dashboard with:', clearDashboardFieldDetails);
+
+      const submitClearDashboardField = document.querySelector(
+        '.submitClearDashboardField'
+      );
+
+      try {
+        showBtnLoader(submitClearDashboardField);
+        showGlobalLoader();
+        const clearDashboardFieldData = await clearDashboardFieldApi(
+          clearDashboardFieldDetails
+        );
+
+        if (clearDashboardFieldData) {
+          const clearedAmount =
+            clearDashboardFieldData?.data?.clearedAmount || 0;
+          const field = clearDashboardFieldData?.data?.field;
+
+          //  console.log(
+          //    `₦${clearedAmount} has been cleared from ${formatDashboardType(
+          //      field
+          //    )} field successfully`
+          //  );
+
+          initAccountOverview();
+          showToast(
+            'success',
+            `₦${formatAmountWithCommas(
+              clearedAmount
+            )} has been cleared from ${formatDashboardType(
+              field
+            )} field successfully`
+          );
+          closeModal();
+        }
+
+        // closeModal(); // close modal after success
+      } catch (err) {
+        console.error('Error Clearing POS Dashboard:', err.message);
+        showToast('fail', `❎ ${err.message}`);
+      } finally {
+        hideBtnLoader(submitClearDashboardField);
+        hideGlobalLoader();
+      }
+    });
+  }
+}
+
 export function depositPosCapitalForm() {
   const form = isAdmin
     ? document.querySelector('.adminDepositPosCapitalModal')
@@ -277,6 +355,9 @@ document.addEventListener('DOMContentLoaded', () => {
     );
 
   const fundMachineBtn = document.querySelector('#fundMachineBtn');
+  const openClearDashboardFieldModalBtn = document.querySelector(
+    '#openClearDashboardFieldModalBtn'
+  );
   const depositPosCapitalBtn = document.querySelector('#depositPosCapitalBtn');
 
   isAdmin ? fundMachineBtn?.classList.remove('hidden') : '';
@@ -287,8 +368,14 @@ document.addEventListener('DOMContentLoaded', () => {
     isAdmin ? openAdminFundMachineModal : openFundMachineModal
   );
 
+  openClearDashboardFieldModalBtn?.addEventListener(
+    'click',
+    openAClearDashboardFieldModal
+  );
+
   bindDepositPosCapitalFormListener(); // Only once
   bindFundMachineFormListener(); // Only once
+  bindClearDashboardFieldFormListener(); // Only once
 });
 
 // document.addEventListener('DOMContentLoaded', async () => {
@@ -361,18 +448,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     const posShopDropdown = document.getElementById('posShopDropdown');
     const posShopDropdownWithdrawal =
       document.getElementById('posShopDropdown-2');
+    const posTransactionSummaryDiv = document.querySelector(
+      '.posTransactions-summary_div'
+    );
     const posTransactionSummary = document.querySelector(
       '.posTransactions-summary'
     );
+    if (posTransactionSummaryDiv)
+      posTransactionSummaryDiv.style.display = 'none';
     if (posTransactionSummary) posTransactionSummary.style.display = 'none';
 
     if (posShopDropdown)
       posShopDropdown.addEventListener('change', async function (e) {
         const selectedShopId = e.target.value;
         clearPosSummaryDiv();
+        posTransactionSummaryDiv.style.display = 'block';
         posTransactionSummary.style.display = 'flex';
 
         if (!selectedShopId) {
+          posTransactionSummaryDiv.style.display = 'none';
           posTransactionSummary.style.display = 'none';
           return;
         }
@@ -404,9 +498,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         //   console.log(selectedShopId);
         clearPosSummaryDiv();
+        posTransactionSummaryDiv.style.display = 'block';
         posTransactionSummary.style.display = 'flex';
 
         if (!selectedShopId) {
+          posTransactionSummaryDiv.style.display = 'none';
           posTransactionSummary.style.display = 'none';
           return;
         }

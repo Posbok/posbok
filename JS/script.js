@@ -693,7 +693,7 @@ export function bindOpenBusinessDayFormListener() {
       };
 
       const posCapitalDetails = {
-        shop_id: isAdmin
+        shopId: isAdmin
           ? Number(businessDayShopDropdown.value)
           : Number(shopId),
         amount: Number(getAmountForSubmission(openPosCapitalAmount)),
@@ -972,7 +972,15 @@ export function closeModal() {
   );
   const updateStockCategory = document.querySelector('.updateStockCategory');
 
+  const adminClearDashboardFieldModal = document.querySelector(
+    '.adminClearDashboardFieldModal'
+  );
+
   //
+
+  if (adminClearDashboardFieldModal) {
+    adminClearDashboardFieldModal.classList.remove('active');
+  }
 
   if (updateStockCategory) {
     updateStockCategory.classList.remove('active');
