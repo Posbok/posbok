@@ -221,7 +221,7 @@ export async function deleteBusiness(businessId) {
   try {
     //  showGlobalLoader();
     const deleteBusinessData = await safeFetch(
-      `${baseUrl}/api/super-admin/businesses/${businessId}`,
+      `${baseUrl}/api/super-admin/businesses/${businessId}?permanent=true`,
       {
         method: 'DELETE',
         headers: {

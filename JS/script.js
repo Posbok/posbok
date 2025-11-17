@@ -976,7 +976,15 @@ export function closeModal() {
     '.adminClearDashboardFieldModal'
   );
 
+  const exportStockTakingData = document.querySelector(
+    '.exportStockTakingData'
+  );
+
   //
+
+  if (exportStockTakingData) {
+    exportStockTakingData.classList.remove('active');
+  }
 
   if (adminClearDashboardFieldModal) {
     adminClearDashboardFieldModal.classList.remove('active');

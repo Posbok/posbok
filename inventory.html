@@ -184,8 +184,14 @@
                   <span class="btn-spinner hidden"></span>
                </button>
 
-               <button class="hero-btn-dark openAddExistingProductModalBtn mr-0 " id="openAddExistingProductModalBtn">
+               <button class="hero-btn-dark openAddExistingProductModalBtn mr-0  force-mb-0 "
+                  id="openAddExistingProductModalBtn">
                   <span class="btn-text">Add Existing Product</span>
+                  <span class="btn-spinner hidden"></span>
+               </button>
+
+               <button class="hero-btn-dark exportStockTakingModalBtn mr-0 force-mb-0  " id="exportStockTakingModalBtn">
+                  <span class="btn-text">Stock Taking</span>
                   <span class="btn-spinner hidden"></span>
                </button>
             </div>
@@ -252,67 +258,6 @@
 
       <!-- Inventory Log -->
 
-      <div id="shop-report-${shop.id}" class="reports card" data-loaded="false">
-
-         <div class="reports">
-            <div class="reports-method">
-               <h2 class="heading-text mb-2">
-                  Inventory Log
-               </h2>
-
-               <h2 class="filter-heading heading-subtext mb-2">Filter Inventory Log </h2>
-
-               <div class="filter-section mb-2">
-
-                  <div class="pos-method-form_input">
-                     <label for="inventoryLogDateFrom_admin_${shop.id}">Start Date:</label>
-
-                     <input type="date" id="inventoryLogDateFrom_admin_${shop.id}">
-                  </div>
-
-                  <div class="pos-method-form_input">
-                     <label for="inventoryLogDateTo_admin_${shop.id}">End Date:</label>
-
-                     <input type="date" id="inventoryLogDateTo_admin_${shop.id}">
-                  </div>
-
-                  <div class="filter-buttons">
-                     <button id="applyinventoryLogFiltersBtn_admin_${shop.id}" class="hero-btn-dark">Apply
-                        Filters</button>
-                     <button id="resetinventoryLogFiltersBtn_${shop.id}" class="hero-btn-outline">Reset</button>
-                  </div>
-
-               </div>
-
-               <div class="transaction-breakdown">
-
-
-                  <div class="reports-table-container mt-4">
-                     <table class="reports-table inventoryLog_admin_${shop.id}">
-                        <thead>
-                           <tr class="table-header-row">
-                              <th class="py-1">S/N</th>
-                              <th class="py-1">Item Name</th>
-                              <th class="py-1">Quantity</th>
-                              <th class="py-1">Purchase Price</th>
-                              <th class="py-1">Action Type</th>
-                              <th class="py-1">Performed By</th>
-                              <th class="py-1">Date/Time</th>
-                           </tr>
-                        </thead>
-
-                        <tbody id="inventoryLogBody-${shop.id}">
-
-                        </tbody>
-
-                     </table>
-                  </div>
-
-               </div>
-
-            </div>
-         </div>
-      </div>
 
       <!-- Categories Table -->
       <div class="goods card">
@@ -417,6 +362,53 @@
    <div id="global-loader" class="loader-overlay hidden">
       <div class="spinner"></div>
    </div>
+
+   <!-- Stock Taking per shop -->
+
+   <form class="modal-form exportStockTakingDataModal " name="exportStockTakingData">
+      <div class="card exportStockTakingData modal ">
+         <div>
+            <h1 class="heading-text ">Stock Taking (Per Shop)</h1>
+         </div>
+
+         <div class="modal-form_input">
+            <label for="stockTakingShopDropdown">Select Shop</label>
+
+            <select id="stockTakingShopDropdown" class="form-control" required>
+               <option value="">Select a shop</option>
+               <!-- <option value="1">Loading Shops...</option> -->
+
+               <!-- Add Main shops dynamically -->
+            </select>
+         </div>
+
+
+
+         <!-- Select Export Format -->
+         <div class="modal-form_input">
+            <label for="exportStockTakingDataFormatDropdown">Select Export Format</label>
+
+            <select id="exportStockTakingDataFormatDropdown" class="form-control" required>
+               <option value="">Select a Format</option>
+               <option value="excel">Excel/Spreadsheet Format</option>
+               <option value="csv">CSV Format</option>
+               <option value="json">JSON Format</option>
+            </select>
+         </div>
+
+
+
+         <div class="center-button">
+
+            <button class="hero-btn-dark exportStockTakingDataBtn  mt-2 mb-1  has-spinner" type="submit">
+               <span class="btn-text">Export Data </span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
 
    <!--  Product Barcode Modal -->
    <form class="modal-form getBarcodeImageContainerModal" name="updateCategory">

@@ -1548,10 +1548,10 @@ export function openExportBusinessesDataModal() {
   if (main) main.classList.add('blur');
   if (sidebar) sidebar.classList.add('blur');
 
-  depositPosCapitalForm();
+  exportBusinessDataForm();
 }
 
-export function depositPosCapitalForm() {
+export function exportBusinessDataForm() {
   const form = document.querySelector('.exportBusinessesDataModal');
 
   if (!form) return;

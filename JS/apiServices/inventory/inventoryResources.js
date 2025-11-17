@@ -497,3 +497,89 @@ export async function getAllSales({
     throw error;
   }
 }
+
+// Export Stock Taking Data
+
+export async function getExportStockTakingData(shopId, format = '') {
+  console.log(shopId);
+  try {
+    const queryParams = new URLSearchParams({
+      shop_id: shopId,
+    });
+    if (format) queryParams.append('format', format);
+
+    showGlobalLoader();
+
+    const response = await fetch(
+      `${baseUrl}/api/stock/stock-taking/export?${queryParams.toString()}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.message || 'Failed to export stock_taking');
+    }
+
+    // If JSON → return directly (no download)
+    //  if (format === 'json') {
+    //    const data = await response.json();
+    //    hideGlobalLoader();
+    //    return data;
+    //  }
+
+    if (format === 'json') {
+      const data = await response.json();
+
+      const jsonBlob = new Blob([JSON.stringify(data, null, 2)], {
+        type: 'application/json',
+      });
+
+      const url = window.URL.createObjectURL(jsonBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'stock_taking.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      window.URL.revokeObjectURL(url);
+
+      hideGlobalLoader();
+
+      return {
+        success: true,
+        message: 'JSON file downloaded successfully',
+      };
+    }
+
+    // Excel or CSV → handle BLOB download
+    const blob = await response.blob();
+
+    const fileExtension = format === 'csv' ? 'csv' : 'xlsx';
+    const fileName = `stock_taking.${fileExtension}`;
+
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    window.URL.revokeObjectURL(url);
+
+    hideGlobalLoader();
+
+    return { success: true, message: 'Exported successfully' };
+  } catch (err) {
+    hideGlobalLoader();
+    console.error('Export error:', err);
+    throw err;
+  }
+}

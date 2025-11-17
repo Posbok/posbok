@@ -7,6 +7,7 @@ import {
   createProductCategory,
   deleteCategory,
   deleteProduct,
+  getExportStockTakingData,
   getProductCategories,
   getProductDetail,
   getProductInventory,
@@ -177,7 +178,144 @@ export function openUpdateCategoryButton() {
   if (sidebar) sidebar.classList.add('blur');
 }
 
-// Delete Product
+function getInventoryLogFilters(role, shopId) {
+  const suffix = role === 'admin' ? `${role}_${shopId}` : role;
+
+  return {
+    date_from:
+      document.getElementById(`inventoryLogDateFrom_${suffix}`)?.value || '',
+    date_to:
+      document.getElementById(`inventoryLogDateTo_${suffix}`)?.value || '',
+  };
+}
+
+function resetInventoryLogFilters(role, shopId) {
+  const suffix = role === 'admin' ? `${role}_${shopId}` : role;
+
+  document.getElementById(`inventoryLogDateFrom_${suffix}`).value = '';
+  document.getElementById(`inventoryLogDateTo_${suffix}`).value = '';
+}
+
+function setupInventoryLogFilters({
+  shopId,
+  currentFiltersByShop,
+  renderInventoryLogTableFn,
+}) {
+  const applyBtn = document.getElementById(
+    `applyInventoryLogFiltersBtn_admin_${shopId}`
+  );
+  const resetBtn = document.getElementById(
+    `resetInventoryLogFiltersBtn_${shopId}`
+  );
+
+  if (!applyBtn || !resetBtn) return;
+
+  // Apply Filters
+  applyBtn.addEventListener('click', () => {
+    console.log('clicked');
+    const filters = getInventoryLogFilters('admin', shopId);
+    currentFiltersByShop[shopId] = filters;
+
+    renderInventoryLogTableFn({
+      filters,
+      shopId,
+      tableBodyId: `#inventoryLogBody-${shopId}`,
+      append: false,
+    });
+  });
+
+  // Reset Filters
+  resetBtn.addEventListener('click', () => {
+    const role = 'admin';
+
+    resetInventoryLogFilters(role, shopId);
+    const filters = getInventoryLogFilters(role, shopId);
+    currentFiltersByShop[shopId] = filters;
+
+    renderInventoryLogTableFn({
+      filters,
+      shopId,
+      tableBodyId: `#inventoryLogBody-${shopId}`,
+      append: false,
+    });
+  });
+}
+
+// Export StockTaking Data
+export function openExportStockTakingDataModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const exportStockTakingDataContainer = document.querySelector(
+    '.exportStockTakingData'
+  );
+
+  if (exportStockTakingDataContainer)
+    exportStockTakingDataContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  exportBusinessDataForm();
+}
+
+export function exportBusinessDataForm() {
+  const form = document.querySelector('.exportStockTakingDataModal');
+
+  if (!form) return;
+}
+
+export function bindExportStockTakingDataFormListener() {
+  const form = document.querySelector('.exportStockTakingDataModal');
+
+  if (!form) return;
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const stockTakingShopDropdown = document.querySelector(
+        '#stockTakingShopDropdown'
+      ).value;
+
+      const exportStockTakingDataFormatDropdown = document.querySelector(
+        '#exportStockTakingDataFormatDropdown'
+      ).value;
+
+      const shopId = stockTakingShopDropdown;
+
+      const exportBusinessDetails = {
+        format: exportStockTakingDataFormatDropdown,
+      };
+
+      // console.log('Sending POS Capital with:', exportBusinessDetails);
+      const exportStockTakingDataBtn = document.querySelector(
+        '.exportStockTakingDataBtn'
+      );
+
+      try {
+        showBtnLoader(exportStockTakingDataBtn);
+        showGlobalLoader();
+        const exportBusinessResponse = await getExportStockTakingData(
+          shopId,
+          exportStockTakingDataFormatDropdown
+        );
+
+        if (exportBusinessResponse) {
+          showToast('success', `✅ ${exportBusinessResponse.message}`);
+          console.log('StockTaking Exported', exportBusinessResponse);
+          closeModal();
+        }
+
+        // closeModal(); // close modal after success
+      } catch (err) {
+        console.error('Error Exporting Stock Taking:', err.message);
+        showToast('fail', `❎ ${err.message}`);
+      } finally {
+        hideBtnLoader(exportStockTakingDataBtn);
+        hideGlobalLoader();
+      }
+    });
+  }
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   // Setup for Opening Pos Charges Modal
@@ -381,6 +519,10 @@ export function populateGoodsShopDropdown(shopList = []) {
     'addExistingProductShopDropdown'
   );
 
+  const stockTakingShopDropdown = document.getElementById(
+    'stockTakingShopDropdown'
+  );
+
   if (inventoryShopDropdown) {
     inventoryShopDropdown.innerHTML = `<option value="">Select a shop</option>`;
 
@@ -402,6 +544,19 @@ export function populateGoodsShopDropdown(shopList = []) {
       option.value = shop.id;
       option.textContent = `${shop.shop_name} - ${shop.location}`;
       addExistingProductShopDropdown.appendChild(option);
+    });
+  } else {
+    return;
+  }
+
+  if (stockTakingShopDropdown) {
+    stockTakingShopDropdown.innerHTML = `<option value="">Select a shop</option>`;
+
+    shopList.forEach((shop) => {
+      const option = document.createElement('option');
+      option.value = shop.id;
+      option.textContent = `${shop.shop_name} - ${shop.location}`;
+      stockTakingShopDropdown.appendChild(option);
     });
   } else {
     return;
@@ -867,6 +1022,11 @@ export function addExistingProductForm() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  document
+    .querySelector('#exportStockTakingModalBtn')
+    ?.addEventListener('click', openExportStockTakingDataModal);
+
+  bindExportStockTakingDataFormListener();
   bindAddExistingProductFormListener();
   addExistingProductForm();
 });
@@ -2261,21 +2421,6 @@ export async function renderInventoryLogTable({ filters, shopId }) {
     shopInventoryLogs.forEach((shopInventoryLog, index) => {
       // console.log(shopInventoryLog);
 
-      //   "id": 57,
-      //        "business_id": 96,
-      //        "item_name": "Carton Of Iphone Charger 1",
-      //        "quantity": 300,
-      //        "price": 150000,
-      //        "action_type": "added",
-      //        "performed_by": 85,
-      //        "created_at": "2025-11-08T00:15:59.000Z",
-      //        "performer": {
-      //            "id": 85,
-      //            "first_name": "Praises",
-      //            "last_name": "Amaiyo",
-      //            "email": "development@example.com"
-      //        }
-
       const {
         id,
         product_id,
@@ -2456,67 +2601,4 @@ export function getAdminInventoryLogHtml(shop) {
       </div>
          <!-- Inventory Log Table HTML Ends Here -->
    `;
-}
-
-function getInventoryLogFilters(role, shopId) {
-  const suffix = role === 'admin' ? `${role}_${shopId}` : role;
-
-  return {
-    date_from:
-      document.getElementById(`inventoryLogDateFrom_${suffix}`)?.value || '',
-    date_to:
-      document.getElementById(`inventoryLogDateTo_${suffix}`)?.value || '',
-  };
-}
-
-function resetInventoryLogFilters(role, shopId) {
-  const suffix = role === 'admin' ? `${role}_${shopId}` : role;
-
-  document.getElementById(`inventoryLogDateFrom_${suffix}`).value = '';
-  document.getElementById(`inventoryLogDateTo_${suffix}`).value = '';
-}
-
-function setupInventoryLogFilters({
-  shopId,
-  currentFiltersByShop,
-  renderInventoryLogTableFn,
-}) {
-  const applyBtn = document.getElementById(
-    `applyInventoryLogFiltersBtn_admin_${shopId}`
-  );
-  const resetBtn = document.getElementById(
-    `resetInventoryLogFiltersBtn_${shopId}`
-  );
-
-  if (!applyBtn || !resetBtn) return;
-
-  // Apply Filters
-  applyBtn.addEventListener('click', () => {
-    console.log('clicked');
-    const filters = getInventoryLogFilters('admin', shopId);
-    currentFiltersByShop[shopId] = filters;
-
-    renderInventoryLogTableFn({
-      filters,
-      shopId,
-      tableBodyId: `#inventoryLogBody-${shopId}`,
-      append: false,
-    });
-  });
-
-  // Reset Filters
-  resetBtn.addEventListener('click', () => {
-    const role = 'admin';
-
-    resetInventoryLogFilters(role, shopId);
-    const filters = getInventoryLogFilters(role, shopId);
-    currentFiltersByShop[shopId] = filters;
-
-    renderInventoryLogTableFn({
-      filters,
-      shopId,
-      tableBodyId: `#inventoryLogBody-${shopId}`,
-      append: false,
-    });
-  });
 }
