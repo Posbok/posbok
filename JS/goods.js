@@ -2035,6 +2035,7 @@ export async function renderProductInventoryTable(shopId) {
 
     inventoryTableBody.innerHTML = '';
     productInventories.map((productInventory, index) => {
+      console.log(productInventory);
       const { id, product_id, quantity } = productInventory;
       const {
         name: productName,
@@ -2044,7 +2045,8 @@ export async function renderProductInventoryTable(shopId) {
         selling_price,
         sku,
       } = productInventory.Product;
-      const { name: categoryName } = productInventory.Product.ProductCategory;
+      const categoryName =
+        productInventory?.Product?.ProductCategory?.name || 'Uncategorized';
 
       const row = document.createElement('tr');
       row.classList.add('table-body-row');
