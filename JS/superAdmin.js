@@ -341,6 +341,21 @@ export function openNotifyBusinessModal() {
   if (sidebar) sidebar.classList.add('blur');
 }
 
+export function openNotifyAllBusinessModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const notifyAllBusinessContainer = document.querySelector(
+    '.notifyAllBusinessContainer'
+  );
+
+  if (notifyAllBusinessContainer)
+    notifyAllBusinessContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  notifyAllBusinessForm();
+}
+
 export function notifyBusinessForm(business) {
   const form = document.querySelector('.notifyBusinessContainerModal');
   if (!form) return;
@@ -349,6 +364,11 @@ export function notifyBusinessForm(business) {
 
   form.querySelector('.business-name-text').textContent =
     business.business_name;
+}
+
+export function notifyAllBusinessForm() {
+  const form = document.querySelector('.notifyBusinessContainerModal');
+  if (!form) return;
 }
 
 export function bindNotifyBusinessFormListener() {
@@ -371,9 +391,18 @@ export function bindNotifyBusinessFormListener() {
 
       const businessId = form.dataset.businessId;
 
+      const notificationTitleInput =
+        form.querySelector('#notificationTitle').value;
+
       const notificationMessageInput = form.querySelector(
         '#notificationMessage'
-      );
+      ).value;
+
+      const notificationType = form.querySelector('#notificationType').value;
+
+      const notificationExpiryInput = form.querySelector(
+        '#notificationExpiry'
+      ).value;
 
       if (!businessId) {
         showToast('fail', '❎ No Business ID found.');
@@ -382,7 +411,10 @@ export function bindNotifyBusinessFormListener() {
 
       const businessNotificationDetails = {
         business_ids: [Number(businessId)],
-        message: notificationMessageInput.value,
+        title: notificationTitleInput,
+        message: notificationMessageInput,
+        notice_type: notificationType,
+        expires_at: notificationExpiryInput,
       };
 
       console.log(
@@ -414,6 +446,85 @@ export function bindNotifyBusinessFormListener() {
         );
       } catch (err) {
         hideBtnLoader(notifyBusinessButton);
+        showToast('fail', `❎ ${err.message}`);
+      }
+    });
+  }
+}
+
+export function bindNotifyAllBusinessFormListener() {
+  const form = document.querySelector('.notifyAllBusinessContainerModal');
+  if (!form) return;
+
+  const notifyAllBusinessButton = form.querySelector(
+    '.notifyAllBusinessButton'
+  );
+  const cancelButton = form.querySelector('.cancel-close');
+
+  if (!form.dataset.bound) {
+    form.dataset.bound = true;
+
+    cancelButton?.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeModal();
+    });
+
+    notifyAllBusinessButton?.addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      const generalNotificationTitleInput = form.querySelector(
+        '#generalNotificationTitle'
+      ).value;
+
+      const generalNotificationMessageInput = form.querySelector(
+        '#generalNotificationMessage'
+      ).value;
+
+      const generalNotificationType = form.querySelector(
+        '#generalNotificationType'
+      ).value;
+
+      const generalNotificationExpiryInput = form.querySelector(
+        '#generalNotificationExpiry'
+      ).value;
+
+      const GeneralBusinessNotificationDetails = {
+        business_ids: null,
+        title: generalNotificationTitleInput,
+        message: generalNotificationMessageInput,
+        notice_type: generalNotificationType,
+        expires_at: generalNotificationExpiryInput,
+      };
+
+      console.log(
+        'Submitting  General Businesses Notification Details with:',
+        GeneralBusinessNotificationDetails
+      );
+
+      try {
+        showBtnLoader(notifyAllBusinessButton);
+        const generalNotifyBusinessData = await notifyBusiness(
+          GeneralBusinessNotificationDetails
+        );
+
+        if (!generalNotifyBusinessData) {
+          console.error('fail', generalNotifyBusinessData.message);
+          return;
+        }
+
+        console.log(generalNotifyBusinessData);
+
+        hideBtnLoader(notifyAllBusinessButton);
+        closeModal();
+        await populateAllBusinessesTable({ page: 1, filters: currentFilter });
+        clearFormInputs();
+        showToast(
+          'success',
+          `${generalNotifyBusinessData.message}` ||
+            '✅ Business Notified successfully.'
+        );
+      } catch (err) {
+        hideBtnLoader(notifyAllBusinessButton);
         showToast('fail', `❎ ${err.message}`);
       }
     });
@@ -759,6 +870,7 @@ document.addEventListener('DOMContentLoaded', () => {
   bindActivateBusinessFormListener();
   bindRestrictBusinessFormListener();
   bindNotifyBusinessFormListener();
+  bindNotifyAllBusinessFormListener();
   bindDeleteBusinessFormListener();
   bindUpdateBusinessFormListener();
 });
@@ -1561,6 +1673,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document
     .querySelector('#exportBusinessModalBtn')
     ?.addEventListener('click', openExportBusinessesDataModal);
+
+  document
+    .querySelector('#notifyAllBusinessesModalBtn')
+    ?.addEventListener('click', openNotifyAllBusinessModal);
 
   bindExportBusinessesDataFormListener();
 });

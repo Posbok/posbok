@@ -188,7 +188,8 @@ export async function notifyBusiness(businessNotificationDetails) {
   try {
     //  showGlobalLoader();
     const notifyBusinessData = await safeFetch(
-      `${baseUrl}/api/super-admin/send-notice`,
+      // `${baseUrl}/api/super-admin/send-notice`,
+      `${baseUrl}/api/super-admin/business-notices`,
       {
         method: 'POST',
         headers: {

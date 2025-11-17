@@ -980,7 +980,15 @@ export function closeModal() {
     '.exportStockTakingData'
   );
 
+  const notifyAllBusinessContainer = document.querySelector(
+    '.notifyAllBusinessContainer'
+  );
+
   //
+
+  if (notifyAllBusinessContainer) {
+    notifyAllBusinessContainer.classList.remove('active');
+  }
 
   if (exportStockTakingData) {
     exportStockTakingData.classList.remove('active');

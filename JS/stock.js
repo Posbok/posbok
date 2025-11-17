@@ -23,6 +23,7 @@ import {
   formatDate,
   formatDateTimeReadable,
   formatUnitType,
+  generateSKU,
   getAmountForSubmission,
   hideBtnLoader,
   hideGlobalLoader,
@@ -46,6 +47,7 @@ const parsedUserData = userData ? JSON.parse(userData) : null;
 
 const isAdmin = parsedUserData?.accountType === 'ADMIN';
 const isStaff = parsedUserData?.accountType === 'STAFF';
+const businessName = parsedUserData?.businessName;
 
 if (isAdmin) {
   document.addEventListener('DOMContentLoaded', () => {
@@ -1233,6 +1235,8 @@ export function addStockItemForm() {
         '#addStockDescription'
       ).value;
 
+      const addStockSku = document.querySelector('#addStockSku').value;
+
       const addStockBoughtPrice = document.querySelector(
         '#addStockBoughtPrice'
       ).value;
@@ -1251,10 +1255,15 @@ export function addStockItemForm() {
       const addStockUnitType =
         document.querySelector('#addStockUnitType').value;
 
+      let finalSku_Barcode =
+        addStockSku !== '' ? addStockSku : generateSKU(businessName);
+
       const addStockItemDetails = {
         product_name: addStockName,
         quantity: addStockQuantity,
         unit_type: addStockUnitType,
+        //   barcode: finalSku_Barcode,
+        //   sku: finalSku_Barcode,
         purchase_price: addStockBoughtPrice,
         date_purchased: addStockDatePurchased,
         category_id: Number(addStockCategory),

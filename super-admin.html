@@ -165,6 +165,10 @@
                <button id="exportBusinessModalBtn" class="hero-btn-dark">Export Businesses</button>
             </div>
 
+            <div class="filter-buttons mb-2">
+               <button id="notifyAllBusinessesModalBtn" class="hero-btn-dark">Notify All Businesses</button>
+            </div>
+
 
             <!-- <h1 class="heading-subtext">Filter Businesses</h1> -->
             <div class="filter-section mb-2">
@@ -331,7 +335,7 @@
       </div>
    </form>
 
-   <!-- Norify Business Modal -->
+   <!-- Norify Business Modal - single -->
    <form class="modal-form notifyBusinessContainerModal " name="modal">
 
       <div class="card confirmation notifyBusinessContainer modal ">
@@ -342,7 +346,15 @@
          <h1 class="business-name-text center-text heading-subtext">
          </h1>
 
+         <!-- Notice Title -->
+         <div class="modal-form_input">
+            <label for="notificationTitle">Title</label>
 
+            <input id="notificationTitle" type="text" placeholder="Enter Notification Title " name="notificationTitle"
+               required>
+         </div>
+
+         <!-- Notice Message -->
          <div class="modal-form_input">
             <label for="notificationMessage">Message</label>
 
@@ -350,12 +362,95 @@
                cols="50" required></textarea>
          </div>
 
+         <!-- Notice Type -->
+         <div class="modal-form_input">
+            <label for="notificationType">Select Notice Type</label>
+
+            <select id="notificationType" class="form-control" required>
+               <option value="">Select Notice Type</option>
+               <option value="subscription">Subscription Notice</option>
+               <!-- <option value="">Null</option>
+               <option value="">Null</option> -->
+            </select>
+         </div>
+
+         <!-- Date Purchased -->
+         <div class="modal-form_input">
+            <label for="notificationExpiry">Expires At</label>
+
+            <input type="date" id="notificationExpiry" required>
+         </div>
+
+
          <div class="confirmation-btn_container">
 
             <button class="hero-btn-dark cancel-close">Cancel</button>
 
             <button class="hero-btn-dark notifyBusinessButton  mt-2 has-spinner" type="submit">
-               <span class="btn-text">notify Subscription</span>
+               <span class="btn-text">notify Business</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+
+
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <!-- Norify Business Modal - ALL -->
+   <form class="modal-form notifyAllBusinessContainerModal " name="modal">
+
+      <div class="card confirmation notifyAllBusinessContainer modal ">
+         <div>
+            <h1 class="heading-text ">Notify All Business </h1>
+         </div>
+
+         <h1 class="business-name-text center-text heading-subtext">
+         </h1>
+
+         <!-- Notice Title -->
+         <div class="modal-form_input">
+            <label for="generalNotificationTitle">Title</label>
+
+            <input id="generalNotificationTitle" type="text" placeholder="Enter General Notification Title "
+               name="generalNotificationTitle" required>
+         </div>
+
+         <!-- Notice Message -->
+         <div class="modal-form_input">
+            <label for="generalNotificationMessage">Message</label>
+
+            <textarea id="generalNotificationMessage" placeholder="Enter your message" name="generalNotificationMessage"
+               rows="4" cols="50" required></textarea>
+         </div>
+
+         <!-- Notice Type -->
+         <div class="modal-form_input">
+            <label for="generalNotificationType">Select Notice Type</label>
+
+            <select id="generalNotificationType" class="form-control" required>
+               <option value="">Select Notice Type</option>
+               <option value="general">General Notice</option>
+               <option value="urgent">Urgent Notice</option>
+               <option value="maintenance">Maintenance Notice</option>
+            </select>
+         </div>
+
+         <!-- Date Purchased -->
+         <div class="modal-form_input">
+            <label for="generalNotificationExpiry">Expires At</label>
+
+            <input type="date" id="generalNotificationExpiry" required>
+         </div>
+
+
+         <div class="confirmation-btn_container">
+
+            <button class="hero-btn-dark cancel-close">Cancel</button>
+
+            <button class="hero-btn-dark notifyAllBusinessButton  mt-2 has-spinner" type="submit">
+               <span class="btn-text">notify All Businesses</span>
                <span class="btn-spinner hidden"></span>
             </button>
 
