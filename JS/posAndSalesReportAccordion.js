@@ -1055,6 +1055,13 @@ export function getAdminWithdrawalsHtml(shop) {
 
                      </table>
 
+                               <div id="loadMoreButtonDiv_admin" class=" center-button mt-2">
+
+                              <button id="adminWithdrawalLoadMoreButton_admin_${shop.id}" class=" hero-btn-dark load-more-button">Load
+                                 More</button>
+                              <!-- <button id="loadMoreButton" class="">Load More</button> -->
+                           </div>
+
                   </div>
 
                </div>
@@ -1369,24 +1376,6 @@ export function getAdminPosAnalyticsList(
                
    `;
 }
-
-//  {
-//           "id": 30,
-//           "business_id": 96,
-//           "shop_id": 98,
-//           "withdrawal_source": "cash_in_machine",
-//           "amount": 600,
-//           "transfer_fee": 0,
-//           "business_day": "2025-11-13",
-//           "created_by": 85,
-//           "created_at": "2025-11-13T08:32:19.000Z",
-//           "creator": {
-//               "id": 85,
-//               "first_name": "Praises",
-//               "last_name": "Amaiyo",
-//               "email": "development@example.com"
-//           }
-//       },
 
 export function getAdminWithdrawalsList(
   index,
@@ -1841,10 +1830,14 @@ export async function renderPosAnalyticsTable({
   }
 }
 
+let allAdminWithdrawals = [];
+
 export async function renderAdminWithdrawalsTable({
+  page = 1,
   filters,
   shopId,
   tableBodyId,
+  loadMoreButton,
   append = false,
 }) {
   if (
@@ -1868,9 +1861,12 @@ export async function renderAdminWithdrawalsTable({
         adminWithdrawalsTableBody.appendChild(loadingRow);
       }
 
+      loadMoreButton.style.display = 'none';
+
       // Build query with filters
       const queryParams = new URLSearchParams({
         shopId: shopId,
+        page,
       });
 
       // console.log('queryParams', queryParams);
@@ -1883,6 +1879,7 @@ export async function renderAdminWithdrawalsTable({
 
       const result = await getAdminWithdrawals({
         shopId,
+        page,
         filters,
       });
 
@@ -1891,6 +1888,13 @@ export async function renderAdminWithdrawalsTable({
       if (!result) throw new Error(result.message || 'Failed to fetch');
 
       const adminWithdrawals = result.data.withdrawals;
+      totalPages = result.data.pagination.totalPages;
+      totalItems = result.data.pagination.totalItems;
+      currentPage = result.data.pagination.currentPage;
+
+      if (page === 1) {
+        allAdminWithdrawals = [];
+      }
 
       if (adminWithdrawals.length === 0 && currentPage === 1) {
         adminWithdrawalsTableBody.innerHTML =
@@ -1898,33 +1902,19 @@ export async function renderAdminWithdrawalsTable({
         return;
       }
 
+      adminWithdrawals.forEach((transaction) => {
+        if (!allAdminWithdrawals.some((t) => t.id === transaction.id)) {
+          allAdminWithdrawals.push(transaction);
+        }
+      });
+
       // Clear the table body and render all accumulated transactions
       if (!append) {
         adminWithdrawalsTableBody.innerHTML = '';
       }
       adminWithdrawalsTableBody.innerHTML = '';
 
-      // console.log('adminWithdrawals', adminWithdrawals);
-
-      //       {
-      //     "id": 30,
-      //     "business_id": 96,
-      //     "shop_id": 98,
-      //     "withdrawal_source": "cash_in_machine",
-      //     "amount": 600,
-      //     "transfer_fee": 0,
-      //     "business_day": "2025-11-13",
-      //     "created_by": 85,
-      //     "created_at": "2025-11-13T08:32:19.000Z",
-      //     "creator": {
-      //         "id": 85,
-      //         "first_name": "Praises",
-      //         "last_name": "Amaiyo",
-      //         "email": "development@example.com"
-      //     }
-      // },
-
-      adminWithdrawals.forEach((posTransaction, index) => {
+      allAdminWithdrawals.forEach((posTransaction, index) => {
         //  console.log(posTransaction);
         const {
           business_id,
@@ -1956,6 +1946,13 @@ export async function renderAdminWithdrawalsTable({
 
         adminWithdrawalsTableBody.appendChild(row);
       });
+
+      // Handle Load More button visibility
+      if (currentPage >= totalPages) {
+        loadMoreButton.style.display = 'none';
+      } else {
+        loadMoreButton.style.display = 'block';
+      }
     } catch (error) {
       console.error('Error rendering Admin Withdrawals Data:', error);
       adminWithdrawalsTableBody.innerHTML =
@@ -2886,45 +2883,3 @@ export async function renderMonthlySummary(year, month, shopId) {
     window[`monthlyPaymentMethodChartInstance_${shopId}`] = paymentChart;
   }
 }
-
-//   "data": {
-//         "id": 96,
-//         "business_name": "Development Business Inc",
-//         "address": "Development Business Inc. Address",
-//         "phone_number": "08123874887",
-//         "state_of_operation": "Delta",
-//         "cac_reg_no": "RC39859",
-//         "tax_id": "TIN3748696969",
-//         "nin": "87396203534",
-//         "business_type": "BOTH",
-//         "staff_size": 5,
-//         "version_preference": "WEB",
-//         "is_active": true,
-//         "created_at": "2025-05-07T17:32:21.000Z",
-//         "updated_at": "2025-06-12T09:14:34.000Z",
-//         "subscription": {
-//             "status": "none",
-//             "days_remaining": null,
-//             "subscription_start": null,
-//             "subscription_end": null,
-//             "activated_by": null,
-//             "last_updated": null,
-//             "history": []
-//         },
-//         "manager": null,
-//         "shops": [
-//             {
-//                 "id": 98,
-//                 "name": "Development Business Inc.",
-//                 "location": "No 17 Otevwe Ochuko Street, Okuokoko,",
-//                 "created_at": "2025-05-23T02:24:55.000Z"
-//             },
-//             {
-//                 "id": 123,
-//                 "name": "Development Business Inc",
-//                 "location": "Development Business Inc. Address",
-//                 "created_at": "2025-08-27T23:01:33.000Z"
-//             }
-//         ],
-//         "shop_count": 2
-//     }

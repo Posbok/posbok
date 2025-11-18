@@ -527,10 +527,11 @@ export async function deletePosTransaction(transactionId) {
   }
 }
 
-export async function getAdminWithdrawals({ shopId, filters = {} }) {
+export async function getAdminWithdrawals({ shopId, page = 1, filters = {} }) {
   try {
     const queryParams = new URLSearchParams({
       shop_id: shopId,
+      page,
     });
 
     if (filters.date_from) queryParams.append('date_from', filters.date_from);

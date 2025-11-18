@@ -306,45 +306,69 @@ function setupPosFilters({
 function setupAdminWithdrawalsFilters({
   shopId,
   currentFiltersByShop,
+  tableBodyId,
+  loadMoreButton,
   renderAdminWithdrawalsTableFn,
 }) {
-  const applyBtn = document.getElementById(
-    `applyAnalyticsFiltersBtn_admin_${shopId}`
-  );
-  const resetBtn = document.getElementById(
-    `resetAnalyticsFiltersBtn_${shopId}`
+  //   const applyBtn = document.getElementById(
+  //     `applyAdminWithdrawalsFiltersBtn_admin_${shopId}`
+  //   );
+  //   const resetBtn = document.getElementById(
+  //     `resetAdminWithdrawalsFiltersBtn_${shopId}`
+  //   );
+  const loadMoreBtn = document.getElementById(
+    `adminWithdrawalLoadMoreButton_admin_${shopId}`
   );
 
-  if (!applyBtn || !resetBtn) return;
+  //   if (!applyBtn || !resetBtn || loadMoreBtn) return;
+  if (!loadMoreBtn) return;
 
-  // Apply Filters
-  applyBtn.addEventListener('click', () => {
-    const filters = getAnalyticsFilters('admin', shopId);
-    currentFiltersByShop[shopId] = filters;
+  loadMoreButton.addEventListener('click', () => {
+    // 1. Calculate the next page number using your tracker
+    const nextPage = ++shopPageTracker[shopId];
+    const filters = currentFiltersByShop[shopId] || {};
 
     renderAdminWithdrawalsTableFn({
+      page: nextPage, // ✅ Correctly use the calculated nextPage
       filters,
       shopId,
-      tableBodyId: `#adminWithdrawalsTableBody-${shopId}`,
-      append: false,
+      tableBodyId,
+      loadMoreButton,
+      append: true, // ⚠️ See next point: You should append, not replace!
     });
   });
 
-  // Reset Filters
-  resetBtn.addEventListener('click', () => {
-    const role = 'admin';
+  //   // Apply Filters
+  //   applyBtn.addEventListener('click', () => {
+  //     const filters = getAnalyticsFilters('admin', shopId);
+  //     currentFiltersByShop[shopId] = filters;
 
-    resetAdminWithdrawalsFilters(role, shopId);
-    const filters = getAnalyticsFilters(role, shopId);
-    currentFiltersByShop[shopId] = filters;
+  //     renderAdminWithdrawalsTableFn({
+  //       filters,
+  //       shopId,
+  //       tableBodyId: `#adminWithdrawalsTableBody-${shopId}`,
+  //       loadMoreButton,
+  //       append: false,
+  //     });
+  //   });
 
-    renderAdminWithdrawalsTableFn({
-      filters,
-      shopId,
-      tableBodyId: `#adminWithdrawalsTableBody-${shopId}`,
-      append: false,
-    });
-  });
+  //   // Reset Filters
+  //   resetBtn.addEventListener('click', () => {
+  //     const role = 'admin';
+
+  //     resetAdminWithdrawalsFilters(role, shopId);
+  //     const filters = getAnalyticsFilters(role, shopId);
+  //     currentFiltersByShop[shopId] = filters;
+
+  //     renderAdminWithdrawalsTableFn({
+  //       filters,
+  //       shopId,
+  //       tableBodyId,
+  //       append: false,
+  //     });
+  //   });
+
+  // Load More
 }
 
 function setupPosAnalyticsFilters({
@@ -725,6 +749,10 @@ if (isAdmin) {
         shopId: shop.id,
         currentFiltersByShop,
         renderAdminWithdrawalsTableFn: renderAdminWithdrawalsTable,
+        tableBodyId: `#adminWithdrawalsTableBody-${shopId}`,
+        loadMoreButton: document.getElementById(
+          `adminWithdrawalLoadMoreButton_admin_${shopId}`
+        ),
       });
 
       // setupPosAnalyticsFilters({
@@ -832,6 +860,9 @@ if (isAdmin) {
             filters,
             shopId,
             tableBodyId: `#adminWithdrawalsTableBody-${shopId}`,
+            loadMoreButton: document.getElementById(
+              `adminWithdrawalLoadMoreButton_admin_${shopId}`
+            ),
           });
 
           //  await renderPosAnalyticsTable({
