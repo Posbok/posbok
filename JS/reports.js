@@ -32,8 +32,10 @@ import {
   renderFinancialSummaryTable,
   renderMonthlySummary,
   renderPosAnalyticsTable,
+  renderAdminWithdrawalsTable,
   renderPosTable,
   renderSalesTable,
+  getAdminWithdrawalsHtml,
 } from './posAndSalesReportAccordion';
 import { checkAndPromptCreateStaff } from './apiServices/user/userResource';
 import {
@@ -297,6 +299,50 @@ function setupPosFilters({
       tableBodyId: `#pos-tbody-${shopId}`,
       loadMoreButton: loadMoreBtn,
       append: true,
+    });
+  });
+}
+
+function setupAdminWithdrawalsFilters({
+  shopId,
+  currentFiltersByShop,
+  renderAdminWithdrawalsTableFn,
+}) {
+  const applyBtn = document.getElementById(
+    `applyAnalyticsFiltersBtn_admin_${shopId}`
+  );
+  const resetBtn = document.getElementById(
+    `resetAnalyticsFiltersBtn_${shopId}`
+  );
+
+  if (!applyBtn || !resetBtn) return;
+
+  // Apply Filters
+  applyBtn.addEventListener('click', () => {
+    const filters = getAnalyticsFilters('admin', shopId);
+    currentFiltersByShop[shopId] = filters;
+
+    renderAdminWithdrawalsTableFn({
+      filters,
+      shopId,
+      tableBodyId: `#adminWithdrawalsTableBody-${shopId}`,
+      append: false,
+    });
+  });
+
+  // Reset Filters
+  resetBtn.addEventListener('click', () => {
+    const role = 'admin';
+
+    resetAdminWithdrawalsFilters(role, shopId);
+    const filters = getAnalyticsFilters(role, shopId);
+    currentFiltersByShop[shopId] = filters;
+
+    renderAdminWithdrawalsTableFn({
+      filters,
+      shopId,
+      tableBodyId: `#adminWithdrawalsTableBody-${shopId}`,
+      append: false,
     });
   });
 }
@@ -629,6 +675,12 @@ if (isAdmin) {
                        : ''
                    }
                    ${
+                     servicePermission === 'POS_TRANSACTIONS' ||
+                     servicePermission === 'BOTH'
+                       ? getAdminWithdrawalsHtml(shop)
+                       : ''
+                   }
+                   ${
                      servicePermission === 'INVENTORY_SALES' ||
                      servicePermission === 'BOTH'
                        ? getAdminSalesReportHtml(shop)
@@ -667,6 +719,12 @@ if (isAdmin) {
         currentFiltersByShop,
         limit,
         renderPosTableFn: renderPosTable,
+      });
+
+      setupAdminWithdrawalsFilters({
+        shopId: shop.id,
+        currentFiltersByShop,
+        renderAdminWithdrawalsTableFn: renderAdminWithdrawalsTable,
       });
 
       // setupPosAnalyticsFilters({
@@ -768,6 +826,12 @@ if (isAdmin) {
             loadMoreButton: document.getElementById(
               `loadMoreButton_admin_${shopId}`
             ),
+          });
+
+          await renderAdminWithdrawalsTable({
+            filters,
+            shopId,
+            tableBodyId: `#adminWithdrawalsTableBody-${shopId}`,
           });
 
           //  await renderPosAnalyticsTable({

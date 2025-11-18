@@ -1,6 +1,7 @@
 import config from '../config';
 import {
   deletePosTransaction,
+  getAdminWithdrawals,
   getFinancialSummary,
   getPosAnalytics,
   getPosTransactions,
@@ -22,6 +23,7 @@ import {
   updateTotalSalesAmounts,
 } from './apiServices/utility/salesReportUtility';
 import {
+  formatAdminWithdrawalType,
   formatAmountWithCommas,
   formatDateTimeReadable,
   formatSaleStatus,
@@ -1014,6 +1016,55 @@ export function getAdminPosReportHtml(shop) {
    `;
 }
 
+export function getAdminWithdrawalsHtml(shop) {
+  //   console.log('adminWithdrawals Report');
+  return `
+     
+         <!-- admin Withdrawals Table HTML starts Here -->
+         <div id="shop-report-${shop.id}" class="reports card" data-loaded="false">
+
+            <div class="reports">
+               <div class="reports-method">
+                  <h2 class="heading-text mb-2">
+                    Admin Withdrawals
+                  </h2>
+
+                  <!-- <div id="transactionList" class="transaction-list mb-3"></div> -->
+
+                  <div class="table-header">
+                     <!-- <h2 class="heading-subtext"> POS </h2> -->
+                  </div>
+
+                  <div class="reports-table-container">
+
+                     <table class="reports-table adminWithdrawalsTable_admin_${shop.id}">
+                        <thead>
+                           <tr class="table-header-row">
+                        <th class="py-1">S/N</th>
+                        <th class="py-1">Name</th>
+                        <th class="py-1">Source</th>
+                        <th class="py-1">Amount</th>
+                        <th class="py-1">Business Day</th>
+                        <th class="py-1">Withdrawal Date</th>
+                           </tr>
+                        </thead>
+
+                        <tbody id="adminWithdrawalsTableBody-${shop.id}">
+
+                        </tbody>
+
+                     </table>
+
+                  </div>
+
+               </div>
+            </div>
+         </div>
+
+         <!-- admin Withdrawals Table HTML Ends Here -->
+   `;
+}
+
 export function getAdminAnalyticsHtml(shop) {
   //   console.log('Analytics Report');
   return `
@@ -1319,6 +1370,45 @@ export function getAdminPosAnalyticsList(
    `;
 }
 
+//  {
+//           "id": 30,
+//           "business_id": 96,
+//           "shop_id": 98,
+//           "withdrawal_source": "cash_in_machine",
+//           "amount": 600,
+//           "transfer_fee": 0,
+//           "business_day": "2025-11-13",
+//           "created_by": 85,
+//           "created_at": "2025-11-13T08:32:19.000Z",
+//           "creator": {
+//               "id": 85,
+//               "first_name": "Praises",
+//               "last_name": "Amaiyo",
+//               "email": "development@example.com"
+//           }
+//       },
+
+export function getAdminWithdrawalsList(
+  index,
+  business_id,
+  shop_id,
+  withdrawal_source,
+  amount,
+  business_day,
+  created_at,
+  creatorName
+) {
+  return `
+      <td class="py-1">${index + 1}</td>
+      <td class="py-1">${creatorName}</td>
+      <td class="py-1">${formatAdminWithdrawalType(withdrawal_source)}</td>
+      <td class="py-1">₦${formatAmountWithCommas(amount)}</td>
+      <td class="py-1">${business_day}</td>
+      <td class="py-1">${formatDateTimeReadable(created_at)}</td>
+              
+   `;
+}
+
 export function getAdminSalesTransactionList(
   serialNumber,
   id,
@@ -1520,7 +1610,7 @@ export async function renderPosTable({
         //     </td>
         //   `;
 
-        console.log(transactions);
+        //   console.log(transactions);
 
         transactions.forEach((posTransaction) => {
           //  console.log(posTransaction);
@@ -1747,6 +1837,129 @@ export async function renderPosAnalyticsTable({
       console.error('Error rendering POS Analytics Data:', error);
       posAnalyticsTableBody.innerHTML =
         '<tr><td colspan="12" class="table-error-text">Error loading POS Analytics Data.</td></tr>';
+    }
+  }
+}
+
+export async function renderAdminWithdrawalsTable({
+  filters,
+  shopId,
+  tableBodyId,
+  append = false,
+}) {
+  if (
+    servicePermission === 'POS_TRANSACTIONS' ||
+    servicePermission === 'BOTH'
+  ) {
+    const adminWithdrawalsTableBody = document.querySelector(tableBodyId);
+
+    if (!adminWithdrawalsTableBody) {
+      console.error('Error: Admin Withdrawals Table body not found');
+      return;
+    }
+
+    try {
+      let loadingRow = document.querySelector('.loading-row');
+      // console.log('loading', loadingRow);
+      if (!loadingRow) {
+        loadingRow = document.createElement('tr');
+        loadingRow.className = 'loading-row';
+        loadingRow.innerHTML = `<td colspan="12" class="table-loading-text">Loading Admin Withdrawals Data...</td>`;
+        adminWithdrawalsTableBody.appendChild(loadingRow);
+      }
+
+      // Build query with filters
+      const queryParams = new URLSearchParams({
+        shopId: shopId,
+      });
+
+      // console.log('queryParams', queryParams);
+
+      if (filters.date_from) queryParams.append('date_from', filters.date_from);
+      if (filters.date_to) queryParams.append('date_to', filters.date_to);
+      if (filters.group_by) queryParams.append('group_by', filters.group_by);
+      if (filters.transaction_type)
+        queryParams.append('transaction_type', filters.transaction_type);
+
+      const result = await getAdminWithdrawals({
+        shopId,
+        filters,
+      });
+
+      console.log(result);
+
+      if (!result) throw new Error(result.message || 'Failed to fetch');
+
+      const adminWithdrawals = result.data.withdrawals;
+
+      if (adminWithdrawals.length === 0 && currentPage === 1) {
+        adminWithdrawalsTableBody.innerHTML =
+          '<tr class="loading-row"><td colspan="12" class="table-error-text ">No Admin Withdrawals Data Available.</td></tr>';
+        return;
+      }
+
+      // Clear the table body and render all accumulated transactions
+      if (!append) {
+        adminWithdrawalsTableBody.innerHTML = '';
+      }
+      adminWithdrawalsTableBody.innerHTML = '';
+
+      // console.log('adminWithdrawals', adminWithdrawals);
+
+      //       {
+      //     "id": 30,
+      //     "business_id": 96,
+      //     "shop_id": 98,
+      //     "withdrawal_source": "cash_in_machine",
+      //     "amount": 600,
+      //     "transfer_fee": 0,
+      //     "business_day": "2025-11-13",
+      //     "created_by": 85,
+      //     "created_at": "2025-11-13T08:32:19.000Z",
+      //     "creator": {
+      //         "id": 85,
+      //         "first_name": "Praises",
+      //         "last_name": "Amaiyo",
+      //         "email": "development@example.com"
+      //     }
+      // },
+
+      adminWithdrawals.forEach((posTransaction, index) => {
+        //  console.log(posTransaction);
+        const {
+          business_id,
+          shop_id,
+          withdrawal_source,
+          amount,
+          transfer_fee,
+          business_day,
+          created_by,
+          created_at,
+          creator,
+        } = posTransaction;
+
+        const creatorName = `${creator.first_name} ${creator.last_name}`;
+
+        const row = document.createElement('tr');
+        row.classList.add('table-body-row');
+
+        row.innerHTML = getAdminWithdrawalsList(
+          index,
+          business_id,
+          shop_id,
+          withdrawal_source,
+          amount,
+          business_day,
+          created_at,
+          creatorName
+        );
+
+        adminWithdrawalsTableBody.appendChild(row);
+      });
+    } catch (error) {
+      console.error('Error rendering Admin Withdrawals Data:', error);
+      adminWithdrawalsTableBody.innerHTML =
+        '<tr><td colspan="12" class="table-error-text">Error loading Admin Withdrawals Data.</td></tr>';
     }
   }
 }
@@ -2099,7 +2312,7 @@ export async function renderSalesTable({
         //     </td>
         //   `;
 
-        console.log('sales', sales);
+        //   console.log('sales', sales);
 
         sales.forEach((salesTransaction) => {
           const {

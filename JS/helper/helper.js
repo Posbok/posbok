@@ -605,6 +605,18 @@ export function formatAmountWithCommasOnInput(input) {
 }
 
 // Format dashboard Field type
+export function formatAdminWithdrawalType(value) {
+  switch (value.toLowerCase()) {
+    case 'cash_in_machine':
+      return 'Cash In Machine';
+    case 'cash_at_hand':
+      return 'Cash At Hand';
+    default:
+      return value;
+  }
+}
+
+// Format dashboard Field type
 export function formatDashboardType(value) {
   switch (value.toLowerCase()) {
     case 'pos_capital':
