@@ -28,10 +28,13 @@ const dummyShopId = config.dummyShopId; // Dummy user data for testing
 const parsedUserData = userData ? JSON.parse(userData) : null;
 
 const isSuperAdmin = parsedUserData?.accountType === 'SUPER_ADMIN';
+const isSuperAdminManagementPage = document.body.classList.contains(
+  'superAdminManagementPage'
+);
 
 const currentFilter = {};
 
-if (isSuperAdmin) {
+if (isSuperAdmin && isSuperAdminManagementPage) {
   document.addEventListener('DOMContentLoaded', async () => {
     setupAllBusinessesFilters({
       currentFilter,
@@ -1564,7 +1567,7 @@ export async function renderPlatformMonthlySignups(monthlySignups) {
     });
 
     const chartContainer = document.querySelector(`#monthlySignupsChart`);
-    chartContainer.innerHTML = '';
+    if (chartContainer) chartContainer.innerHTML = '';
 
     const options = {
       chart: {

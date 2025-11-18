@@ -443,6 +443,7 @@
    font-weight: bold;
 }
 
+.message-type,
 .filter-section {
    display: flex;
    flex-wrap: wrap;
@@ -468,6 +469,7 @@
    }
 }
 
+.message-type label,
 .filter-section label {
    display: flex;
    flex-direction: column;

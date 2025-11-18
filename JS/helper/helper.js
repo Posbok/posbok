@@ -89,9 +89,9 @@ export function clearFormInputs() {
     '.exportStockTakingDataModal'
   );
 
-  const notifyAllBusinessContainerModalForm = document.querySelector(
-    '.notifyAllBusinessContainerModal'
-  );
+  const notifyAllBusinessContainerModalForm =
+    document.querySelector('.notifyAllBusinessContainerModal') ||
+    document.querySelector('.notifyAllBusinessContainerModal_2');
 
   //   Clear Search Input
   const searchProductInput = document.querySelector('.searchProductInput');
@@ -1613,4 +1613,71 @@ export function formatDate(dateStr) {
     month: 'short',
     day: 'numeric',
   });
+}
+
+export function updateDateTime() {
+  const currentDate = new Date();
+
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+  const dayOfWeek = dayNames[currentDate.getDay()];
+
+  const monthNames = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+
+  // Get the month, day, year, hour, and minute components
+  const month = monthNames[currentDate.getMonth()];
+  const day = currentDate.getDate();
+  const year = currentDate.getFullYear();
+  const hour = currentDate.getHours();
+  const minute = currentDate.getMinutes();
+
+  // Format the day with the appropriate suffix (e.g., 1st, 2nd, 3rd, 4th, etc.)
+  const daySuffix = getDaySuffix(day);
+
+  // Format the time as AM or PM
+  const amPm = hour >= 12 ? 'PM' : 'AM';
+
+  // Adjust the hour to 12-hour format
+  const formattedHour = hour % 12 === 0 ? 12 : hour % 12;
+
+  // Create the formatted date and time strings
+  const formattedDate = `${dayOfWeek}, ${month} ${day}${daySuffix}, ${year}`;
+  const formattedTime = `${formattedHour}:${
+    (minute < 10 ? '0' : '') + minute
+  } ${amPm}`;
+
+  // Update the HTML elements with the formatted date and time
+  //   document.querySelector('.main-date').textContent = formattedDate;
+  //   document.querySelector('.main-time').textContent = formattedTime;
+
+  return `${formattedDate} ${formattedTime}`;
+}
+
+export function getDaySuffix(day) {
+  if (day >= 11 && day <= 13) {
+    return 'th';
+  }
+  switch (day % 10) {
+    case 1:
+      return 'st';
+    case 2:
+      return 'nd';
+    case 3:
+      return 'rd';
+    default:
+      return 'th';
+  }
 }

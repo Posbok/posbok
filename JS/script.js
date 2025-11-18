@@ -984,7 +984,15 @@ export function closeModal() {
     '.notifyAllBusinessContainer'
   );
 
+  const messageDisplayModalContainer = document.querySelector(
+    '.messageDisplayModalContainer'
+  );
+
   //
+
+  if (messageDisplayModalContainer) {
+    messageDisplayModalContainer.classList.remove('active');
+  }
 
   if (notifyAllBusinessContainer) {
     notifyAllBusinessContainer.classList.remove('active');

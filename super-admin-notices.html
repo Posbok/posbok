@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+
+   <meta name="description"
+      content="POSBOK - A powerful Inventory and POS management system designed for businesses to track Warehouse levels, monitor POS transactions (withdrawals, deposits, transfers), and evaluate staff performance — all in one intuitive platform." />
+
+   <script src="authGuard.js"></script>
+
+   <link
+      href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400,400i,600|Nunito:300,300i,400,600&display=swap"
+      rel="stylesheet" />
+
+   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="css/style.css" />
+
+   <script src="https://kit.fontawesome.com/d0cbf0cdf0.js" crossorigin="anonymous"></script>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+   <script defer src="https://unpkg.com/smoothscroll-polyfill@0.4.4/dist/smoothscroll.min.js"></script>
+
+   <!-- JsBarcode CDN -->
+   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+
+   <!-- ApexCharts CDN -->
+   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+
+   <!-- <script defer type="module" src="JS/script.js"></script>
+   <script defer type="module" src="JS/goods.js"></script> -->
+
+   <!-- <script src="dist/main.bundle.js" defer></script> -->
+   <script src="dist/superAdminNotices.bundle.js" defer></script>
+
+   <title>POSBOK &mdash; Super Admin</title>
+   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+   <link rel="manifest" href="/site.webmanifest">
+</head>
+
+<body class="container superAdminNoticePage">
+
+
+   <nav class="sidebar collapsed">
+      <div class="sidebar-fixed">
+
+         <div class="sidebar-header">
+            <a href="/index.html" class="sidebar-header-link">
+               <img src="img/logo.png" alt="Logo" class="sidebar-header-logo" />
+
+            </a>
+
+            <!-- Collapse/Expand Button -->
+            <button class="sidebar-toggle" id="sidebarToggle">
+               <i class="fas fa-bars"></i>
+            </button>
+         </div>
+
+         <ul class="side-nav">
+            <a href="/super-admin.html" class="side-nav_link" id="businessManagementNav">
+               <li class="side-nav_item active">
+                  <i class="fa-solid fa-shield-alt icon"></i>
+                  <span>Business Mgt</span>
+               </li>
+            </a>
+         </ul>
+
+         <ul class="side-nav">
+            <a href="/super-admin-notices.html" class="side-nav_link" id="noticeManagementNav">
+               <li class="side-nav_item active">
+                  <i class="fa-regular fa-comment-dots icon"></i>
+                  <span>Notice Mgt</span>
+               </li>
+            </a>
+         </ul>
+      </div>
+   </nav>
+
+   <main class="main">
+      <header class="main-heading card">
+         <div class="main-heading_intro">
+
+            <div>
+               <a href="/index.html">
+                  <img src="img/logo-mini.png" alt="Logo" class="main-heading_logo" />
+               </a>
+            </div>
+
+            <h2 class="main-welcome">Welcome Back, <span class="user-name"> </span></h2>
+         </div>
+
+         <div class="main-heading_left">
+            <button class="hero-btn-dark logoutButton">LOGOUT</button>
+
+            <div class="profileIconDiv mr-2">
+
+               <i class="fa-solid fa-circle-user main-heading-profile--image"></i>
+            </div>
+         </div>
+      </header>
+
+      <section class="notice-section mb-4">
+
+         <h1 class="heading-text">Notice Center</h1>
+
+         <div class="filter-buttons mb-2">
+            <button id="notifyAllBusinessesModalBtn" class="hero-btn-dark composeBtn">Compose Notice</button>
+            <!-- <button id="" class="hero-btn-dark composeBtn">Compose Notice</button> -->
+         </div>
+
+
+         <!-- <div class="message-type mb-2">
+         <div class="pos-method-form_input ">
+
+            <label for="messageType">Select to view Inbox, Sent, Trash and Spam Messages:</label>
+
+            <select id="messageSelect" name="messageSelect">
+               <option value="inbox">INBOX</option>
+               <option value="sent">SENT</option>
+               <option value="trash">TRASH</option>
+               <option value="spam">SPAM</option>
+            </select>
+         </div>
+      </div> -->
+
+         <!-- <div class="messaging"> -->
+
+         <h4 class="heading-subtext mb-2 mt-2">Sent Notices</h4>
+
+         <div class="chats">
+            <!-- <div class="message-card unread">
+               <div class="user-inbox">
+                  <div class="user-inbox_header">
+
+                     <div>
+                        <h2 class=" heading-subtext"> <span class="user-inbox_tab-name">Super Administrator</span> </h2>
+                        <h4 class="heading-minitext"><span class="user-inbox_tab-title">General Maintenance Notice
+                           </span>
+                        </h4>
+                     </div>
+                  </div>
+
+                  <div class="user-inbox_tab">
+                     <p class="heading-minitext user-inbox_tab-text">1st Message Lorem ipsum dolor sit amet consectetur
+                        adipisicing
+                        elit. Rem hic,
+                        officia deleniti culpa necessitatibus quam debitis totam tempora fuga cumque perferendis ullam
+                        labore modi, est architecto rerum voluptatibus et voluptate! Lorem ipsum dolor, sit amet
+                        consectetur adipisicing elit. Error explicabo doloribus, ut sed excepturi soluta laborum,
+                        adipisci
+                        ad unde a quam tempora? Deserunt, provident modi repellendus corporis odio molestiae libero!
+                     </p>
+                  </div>
+
+                  <div class="user-inbox_info">
+                     <p class="user-inbox_info-time">03:22 pm</p>
+                     <p class="user-inbox_info-date">October 23rd</p>
+                  </div>
+
+                  <div class="user-inbox_actions">
+                     <button class="hero-btn-outline deleteNoticeBtn" id="deleteNoticeModalBtn"
+                        data-Notice-id="${notice_id}" title="Mark as read">
+                        <i class="fa-solid fa-envelope-circle-check"></i>
+                     </button>
+
+                     <button class="hero-btn-outline deleteNoticeBtn" id="deleteNoticeModalBtn"
+                        data-Notice-id="${notice_id}" title="Delete Notice">
+                        <i class="fa-solid fa-trash-can"></i>
+                     </button>
+                  </div>
+
+
+                  <div class="inbox-actions">
+                     <p class="inbox-actions_btns">Mark as Read</p>
+                     <p class="inbox-actions_btns">Delete</p>
+                  </div>
+               </div>
+            </div>
+
+            <div class="message-card ">
+               <div class="user-inbox">
+                  <div class="user-inbox_header">
+
+                     <div>
+                        <h2 class=" heading-subtext"> <span class="user-inbox_tab-name">Super Administrator</span> </h2>
+                        <h4 class="heading-minitext"><span class="user-inbox_tab-title">Down Time Notice
+                           </span>
+                        </h4>
+                     </div>
+                  </div>
+
+                  <div class="user-inbox_tab">
+                     <p class="heading-minitext user-inbox_tab-text">2nd message Lorem ipsum dolor sit amet consectetur
+                        adipisicing
+                        elit. Rem hic,
+                        officia deleniti culpa necessitatibus quam debitis totam tempora fuga cumque perferendis ullam
+                        labore modi, est architecto rerum voluptatibus et voluptate! Lorem ipsum dolor, sit amet
+                        consectetur adipisicing elit. Error explicabo doloribus, ut sed excepturi soluta laborum,
+                        adipisci
+                        ad unde a quam tempora? Deserunt, provident modi repellendus corporis odio molestiae libero!
+                     </p>
+                  </div>
+
+                  <div class="user-inbox_info">
+                     <p class="user-inbox_info-time">03:22 pm</p>
+                     <p class="user-inbox_info-date">October 23rd</p>
+                  </div>
+
+                  <div class="user-inbox_actions">
+                     <button class="hero-btn-outline deleteNoticeBtn" id="deleteNoticeModalBtn"
+                        data-Notice-id="${notice_id}" title="Mark as read">
+                        <i class="fa-solid fa-envelope-circle-check"></i>
+                     </button>
+
+                     <button class="hero-btn-outline deleteNoticeBtn" id="deleteNoticeModalBtn"
+                        data-Notice-id="${notice_id}" title="Delete Notice">
+                        <i class="fa-solid fa-trash-can"></i>
+                     </button>
+                  </div>
+
+
+                  <div class="inbox-actions">
+                     <p class="inbox-actions_btns">Mark as Read</p>
+                     <p class="inbox-actions_btns">Delete</p>
+                  </div>
+               </div>
+            </div> -->
+
+
+         </div>
+         <div id="loadMoreButtonDiv" class=" center-button mt-2">
+
+            <button id="superAdminNoticesLoadMoreButton" class=" hero-btn-dark load-more-button">Load
+               More</button>
+         </div>
+      </section>
+
+   </main>
+
+
+   <!-- <form class="modal-form composeNoticeModal">
+
+      <div class="composeNotic compose modal ">
+         <div class="message-card-white">
+
+            <div class="compose-header">
+
+               <div class="compose-header_info">
+                  <h3 class="compose-header_info-name" id="userName">Johnson Cane</h3>
+
+                  <div class="compose-header_info-input">
+                     <label for="title">To:</label>
+                     <input type="text" id="toRecepient">
+                     <i class="fa-solid fa-chevron-down carbonCopyToggleIcon"></i>
+                  </div>
+
+                  <div class="carbonCopy">
+                     <div class="compose-header_info-input">
+                        <label for="title">Cc:</label>
+                        <input type="text" id="Cc">
+                     </div>
+
+                     <div class="compose-header_info-input ">
+                        <label for="title">Bcc:</label>
+                        <input type="text" id="Bcc">
+                     </div>
+                  </div>
+
+                  <div class="compose-header_info-input">
+                     <label for="title">title:</label>
+                     <input type="text" id="title">
+                  </div>
+               </div>
+            </div>
+
+            <textarea name="inputField" id="inputField" cols="30" rows="5" placeholder="Enter text here..."></textarea>
+
+
+            <div class="files"></div>
+
+            <div class="file-container">
+               <label for="file-input" class="hero-btn-light">
+                  Select File
+               </label>
+               <input type="file" id="file-input" accept=".jpg, .jpeg, .png, .pdf, .doc, .docx">
+            </div>
+
+            <div class="compose-sendBtn">
+               <button type="submit" for="file-input" class="hero-btn-dark" id="sendMessage">
+                  SEND
+               </button>
+            </div>
+            <div class="close closeModal" id="">&times;</div>
+
+         </div>
+
+      </div>
+   </form> -->
+
+
+   <div class="modal-form messageDisplayModal">
+      <div class="card messageDisplayModalContainer modal ">
+
+         <div class="open-inbox">
+            <div class="open-inbox_header">
+
+               <div>
+                  <h2 class=" heading-subtext"> <span class="open-inbox_tab-name">Super Administrator</span> </h2>
+                  <h4 class="heading-minitext"><span class="open-inbox_tab-title">Down Time Notice
+                     </span>
+                  </h4>
+               </div>
+            </div>
+
+            <div class="open-inbox_tab">
+               <p class="heading-minitext open-inbox_tab-text--full">2nd message Lorem ipsum dolor sit amet consectetur
+                  adipisicing
+                  elit. Rem hic,
+                  officia deleniti culpa necessitatibus quam debitis totam tempora fuga cumque perferendis ullam
+                  labore modi, est architecto rerum voluptatibus et voluptate! Lorem ipsum dolor, sit amet
+                  consectetur adipisicing elit. Error explicabo doloribus, ut sed excepturi soluta laborum,
+                  adipisci
+                  ad unde a quam tempora? Deserunt, provident modi repellendus corporis odio molestiae libero!
+               </p>
+            </div>
+
+            <div class="open-inbox_info">
+               <p class="open-inbox_info-time">03:22 pm</p>
+               <p class="open-inbox_info-date">October 23rd</p>
+            </div>
+
+
+
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+
+
+   </div>
+
+   <div id="imageModal" class=" card modal">
+      <span class="close closeImageModal" id="">&times;</span>
+      <img id="enlargedImg" class="modal-image">
+   </div>
+
+   <div id="toast" class="toast ">
+      <h4 class="toast-message heading-subtext center-text mb-2">This is a toast message!</h4>
+
+      <!-- <p id="stockName" class="hidden"></p>
+      <p id="stockId" class="hidden"></p>
+      <p id="stockBarcode" class="hidden"></p>
+
+      <img id="barcode" class="mt-1 hidden" />
+
+
+      <div class="toast-actions center-button mt-2 " style="display: none; align-items: center; gap: 1.5rem;">
+         <button class="hero-btn-dark download-barcode has-spinner force-m-0">
+            <span class="btn-text">Download</span>
+            <span class="btn-spinner hidden"></span>
+         </button>
+
+         <button class="hero-btn-dark close-toast_barcode has-spinner force-m-0">
+            <span class="btn-text">Close</span>
+            <span class="btn-spinner hidden"></span>
+         </button>
+      </div>
+
+      <button class="close-toast hero-btn-dark mt-2 mr-0 default-close">Okay</button> -->
+
+   </div>
+
+   <div id="global-loader" class="loader-overlay hidden">
+      <div class="spinner"></div>
+   </div>
+
+   <!-- Norify Business Modal - ALL -->
+   <form class="modal-form notifyAllBusinessContainerModal_2 " name="modal">
+
+      <div class="card confirmation notifyAllBusinessContainer modal ">
+         <div>
+            <h1 class="heading-text ">Notify All Business </h1>
+         </div>
+
+         <h1 class="business-name-text center-text heading-subtext">
+         </h1>
+
+         <!-- Notice Title -->
+         <div class="modal-form_input">
+            <label for="generalNotificationTitle">Title</label>
+
+            <input id="generalNotificationTitle" type="text" placeholder="Enter General Notification Title "
+               name="generalNotificationTitle" required>
+         </div>
+
+         <!-- Notice Message -->
+         <div class="modal-form_input">
+            <label for="generalNotificationMessage">Message</label>
+
+            <textarea id="generalNotificationMessage" placeholder="Enter your message" name="generalNotificationMessage"
+               rows="4" cols="50" required></textarea>
+         </div>
+
+         <!-- Notice Type -->
+         <div class="modal-form_input">
+            <label for="generalNotificationType">Select Notice Type</label>
+
+            <select id="generalNotificationType" class="form-control" required>
+               <option value="">Select Notice Type</option>
+               <option value="general">General Notice</option>
+               <option value="urgent">Urgent Notice</option>
+               <option value="maintenance">Maintenance Notice</option>
+            </select>
+         </div>
+
+         <!-- Date Purchased -->
+         <div class="modal-form_input">
+            <label for="generalNotificationExpiry">Expires At</label>
+
+            <input type="date" id="generalNotificationExpiry" required>
+         </div>
+
+
+         <div class="confirmation-btn_container">
+
+            <button class="hero-btn-dark cancel-close">Cancel</button>
+
+            <button class="hero-btn-dark notifyAllBusinessButton_2  mt-2 has-spinner" type="submit">
+               <span class="btn-text">notify All Businesses</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+
+
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+
+   <!-- Delete Business Modal -->
+   <form class="modal-form deleteBusinessContainerModal " name="modal">
+
+      <div class="card confirmation deleteBusinessContainer modal ">
+         <h1 class="confirmation-text">Are you sure you want to Delete <span id="confirmation-text-2"
+               style="color: red;"></span> ?
+         </h1>
+
+         <div class="confirmation-btn_container">
+
+            <button class="hero-btn-dark cancel-close">Cancel</button>
+
+            <button class="hero-btn-danger deleteBusinessButton  mt-2 has-spinner" type="submit">
+               <span class="btn-text">Delete Business</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+
+
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+
+
+   <!-- profile Slider -->
+   <div class="profile-slider-overlay "></div>
+
+   <div class="profile-slider-content ">
+      <div class="slider-wrapper">
+
+         <!-- profile View -->
+         <div class="profile-view ">
+            <div class="profile-slider-header">
+               <h2 class="heading-text">Your profile</h2>
+               <div class="close closeModal close-profile-btn" id="">&times;</div>
+            </div>
+
+            <form id="profile-form">
+               <!-- First  NAME -->
+               <div class="slider-form_input">
+                  <label for="userProfileFirstName">First Name</label>
+
+                  <div class="penEdit-input-container">
+                     <input class="userProfileFirstName" id="userProfileFirstName" type="text"
+                        name="userProfileFirstName" placeholder="Enter First Name" required>
+                     <i class="fa-solid penEditIcon fa-pen-to-square"></i>
+
+                  </div>
+
+
+               </div>
+
+               <!-- Last Name -->
+               <div class="slider-form_input">
+                  <label for="userProfileLastName">Last Name</label>
+
+                  <div class="penEdit-input-container">
+                     <input class="userProfileLastName" id="userProfileLastName" type="text" name="userProfileLastName"
+                        placeholder="Enter Last Name" required>
+                     <i class="fa-solid penEditIcon fa-pen-to-square"></i>
+
+                  </div>
+
+               </div>
+
+               <!-- USer Address -->
+               <div class="slider-form_input">
+                  <label for="userProfileAddress">Address</label>
+
+                  <div class="penEdit-input-container">
+                     <input class="userProfileAddress" id="userProfileAddress" type="text" placeholder="Enter Address"
+                        name="userProfileAddress" required>
+                     <i class="fa-solid penEditIcon fa-pen-to-square"></i>
+
+                  </div>
+               </div>
+
+               <!-- PHONE NUMBER -->
+               <div class="slider-form_input">
+                  <label for="userProfilePhoneNumber">Phone Number</label>
+
+                  <div class="penEdit-input-container">
+                     <input class="userProfilePhoneNumber" id="userProfilePhoneNumber" type="number"
+                        placeholder="Enter Phone Number" name="userProfilePhoneNumber" required>
+                     <i class="fa-solid penEditIcon fa-pen-to-square"></i>
+
+                  </div>
+               </div>
+
+               <!-- USer Email -->
+               <div class="slider-form_input">
+                  <label for="userProfileEmail">Email</label>
+
+                  <input class="userProfileEmail" id="userProfileEmail" type="text" placeholder="Enter Email"
+                     name="userProfileEmail" disabled>
+               </div>
+
+               <!-- USer Date Of Birth -->
+               <div class="slider-form_input">
+                  <label for="userProfileDateOfBirth">Date Of Birth</label>
+
+                  <input class="userProfileDateOfBirth" id="userProfileDate Of Birth" type="text"
+                     placeholder="Enter DateOfBirth" name="userProfileDateOfBirth" disabled>
+               </div>
+
+               <!-- USer State Of Origin -->
+               <div class="slider-form_input">
+                  <label for="userProfileStateOfOrigin">State Of Origin</label>
+
+                  <input class="userProfileStateOfOrigin" id="userProfileStateOfOrigin" type="text"
+                     placeholder="Enter State Of Origin" name="userProfileStateOfOrigin" disabled>
+               </div>
+
+               <!-- USer lga -->
+               <div class="slider-form_input">
+                  <label for="userProfilelga">LGA</label>
+
+                  <input class="userProfilelga" id="userProfilelga" type="text" placeholder="Enter LGA"
+                     name="userProfilelga" disabled>
+               </div>
+
+               <!-- USer Account Type -->
+               <div class="slider-form_input">
+                  <label for="userProfileAccountType">Account Type</label>
+
+                  <input class="userProfileAccountType" id="userProfileAccountType" type="text"
+                     placeholder="Enter Account Type" name="userProfileAccountType" disabled>
+               </div>
+
+               <!-- USer  Service Permission -->
+               <div class="slider-form_input">
+                  <label for="userProfileServicePermission">Service Permission</label>
+
+                  <input class="userProfileServicePermission" id="userProfileServicePermission" type="text"
+                     placeholder="Enter Service Permission" name="userProfileServicePermission" disabled>
+               </div>
+
+               <!-- USer  Business Name -->
+               <div class="slider-form_input">
+                  <label for="userProfileBusinessName">Business Name</label>
+
+                  <input class="userProfileBusinessName" id="userProfileBusinessName" type="text"
+                     placeholder="Enter Business Name" name="userProfileBusinessName" disabled>
+               </div>
+
+               <!-- Update Button -->
+               <div class="center-button">
+                  <button class="hero-btn-dark mb-2 updateProfileModalBtn has-spinner" type="submit">
+                     <span class="btn-text">Update Profile</span>
+                     <span class="btn-spinner hidden"></span>
+                  </button>
+                  <!-- <button class="hero-btn-dark sellStockActionButton">Sell</button> -->
+               </div>
+
+
+            </form>
+
+            <form id="updatePassword-form">
+
+               <!-- Current Password -->
+               <div class="slider-form_input">
+                  <label for="currentPassword">Current Password</label>
+
+                  <div class="password-container">
+
+                     <input class="" id="currentPassword" type="password" placeholder="Enter Current Password"
+                        name="currentPassword" required>
+
+                     <small id="same-password" class="error-text" style="color: red; display: none;"> </small>
+
+                  </div>
+               </div>
+
+               <!-- New Password -->
+               <div class="slider-form_input">
+                  <label for="newPassword">New Password</label>
+
+                  <div class="password-container">
+
+                     <input class="" id="newPassword" type="password" placeholder="Enter New Password"
+                        name="newPassword" required>
+
+                     <small id="password-length" class="error-text" style="color: red; display: none;"> </small>
+                  </div>
+               </div>
+
+               <!-- Confirm New Password -->
+               <div class="slider-form_input">
+                  <label for="confirmNewPassword"> Confirm New Password</label>
+
+                  <div class="password-container">
+
+                     <input class="" id="confirmNewPassword" type="password" placeholder=" Confirm New Password"
+                        name="confirmNewPassword" required>
+
+                     <small id="password-mismatch" class="error-text" style="color: red; display: none;"> </small>
+
+
+                  </div>
+               </div>
+
+               <div class="center-button">
+                  <button class="hero-btn-dark mb-2 updatePasswordSubmitBtn has-spinner" type="submit">
+                     <span class="btn-text">Update Password</span>
+                     <span class="btn-spinner hidden"></span>
+                  </button>
+               </div>
+            </form>
+         </div>
+
+      </div>
+
+   </div>
+
+</body>
+
+</html>

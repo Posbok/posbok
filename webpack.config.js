@@ -7,6 +7,7 @@ module.exports = {
     goods: './JS/goods.js',
     stock: './JS/stock.js',
     superAdmin: './JS/superAdmin.js',
+    superAdminNotices: './JS/superAdminNotices.js',
     login: './JS/login.js',
     pos: './JS/pos.js',
     reports: './JS/reports.js',

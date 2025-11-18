@@ -365,6 +365,48 @@ export async function getExportBusinessesData({ format }) {
   }
 }
 
+export async function getSuperAdminNotices(page = 1, limit = 5) {
+  const superAdminNoticesContainer = document.querySelector('.chats');
+
+  superAdminNoticesContainer.innerHTML =
+    '<p class="table-error-text">Loading Notices...</p>';
+
+  try {
+    const queryParams = new URLSearchParams({
+      page, // 👈 New: Pass the current page number
+      limit, // 👈 New: Pass the limit per page
+    });
+
+    showGlobalLoader();
+    const superAdminNotices = await safeFetch(
+      `${baseUrl}/api/super-admin/business-notices?${queryParams.toString()}`, // 👈 Use queryParams
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    if (superAdminNotices) {
+      superAdminNoticesContainer.innerHTML = '';
+      hideGlobalLoader();
+    }
+
+    console.log('superAdminNotices Data:', superAdminNotices);
+
+    if (!superAdminNotices?.data) {
+      throw new Error('Failed to fetch notices or invalid data structure.');
+    }
+
+    return superAdminNotices;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error receiving Super Admin Notices:', error);
+    throw error;
+  }
+}
+
 // export async function getExportBusinessesData({ format }) {
 //   console.log(format);
 //   try {
