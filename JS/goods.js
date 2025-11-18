@@ -1372,11 +1372,11 @@ export function bindUpdateProductFormListener() {
         quantity: Number(updateProductQuantity),
       };
 
-      console.log(
-        'Updating Product Detail with:',
-        updateProductDetails,
-        productId
-      );
+      // console.log(
+      //   'Updating Product Detail with:',
+      //   updateProductDetails,
+      //   productId
+      // );
 
       const updateProductModalBtn = document.querySelector(
         '.updateProductModalBtn'

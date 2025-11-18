@@ -304,7 +304,7 @@ function setupPosFilters({
 function setupPosAnalyticsFilters({
   shopId,
   currentFiltersByShop,
-  renderPosAnalyticsTableFn,
+  //   renderPosAnalyticsTableFn,
 }) {
   const applyBtn = document.getElementById(
     `applyAnalyticsFiltersBtn_admin_${shopId}`
@@ -320,12 +320,12 @@ function setupPosAnalyticsFilters({
     const filters = getAnalyticsFilters('admin', shopId);
     currentFiltersByShop[shopId] = filters;
 
-    renderPosAnalyticsTableFn({
-      filters,
-      shopId,
-      tableBodyId: `#analyticsTableBody-${shopId}`,
-      append: false,
-    });
+    //  renderPosAnalyticsTableFn({
+    //    filters,
+    //    shopId,
+    //    tableBodyId: `#analyticsTableBody-${shopId}`,
+    //    append: false,
+    //  });
   });
 
   // Reset Filters
@@ -336,19 +336,19 @@ function setupPosAnalyticsFilters({
     const filters = getAnalyticsFilters(role, shopId);
     currentFiltersByShop[shopId] = filters;
 
-    renderPosAnalyticsTableFn({
-      filters,
-      shopId,
-      tableBodyId: `#analyticsTableBody-${shopId}`,
-      append: false,
-    });
+    //  renderPosAnalyticsTableFn({
+    //    filters,
+    //    shopId,
+    //    tableBodyId: `#analyticsTableBody-${shopId}`,
+    //    append: false,
+    //  });
   });
 }
 
 function setupFinancialSummaryFilters({
   shopId,
   currentFiltersByShop,
-  renderFinancialSummaryTableFn,
+  //   renderFinancialSummaryTableFn,
 }) {
   const applyBtn = document.getElementById(
     `applyFinancialSummaryFiltersBtn_admin_${shopId}`
@@ -364,12 +364,12 @@ function setupFinancialSummaryFilters({
     const filters = getFinancialSummaryFilters('admin', shopId);
     currentFiltersByShop[shopId] = filters;
 
-    renderFinancialSummaryTableFn({
-      filters,
-      shopId,
-      tableBodyId: `#financialSummaryBody-${shopId}`,
-      append: false,
-    });
+    //  renderFinancialSummaryTableFn({
+    //    filters,
+    //    shopId,
+    //    tableBodyId: `#financialSummaryBody-${shopId}`,
+    //    append: false,
+    //  });
   });
 
   // Reset Filters
@@ -380,12 +380,12 @@ function setupFinancialSummaryFilters({
     const filters = getFinancialSummaryFilters(role, shopId);
     currentFiltersByShop[shopId] = filters;
 
-    renderFinancialSummaryTableFn({
-      filters,
-      shopId,
-      tableBodyId: `#financialSummaryBody-${shopId}`,
-      append: false,
-    });
+    //  renderFinancialSummaryTableFn({
+    //    filters,
+    //    shopId,
+    //    tableBodyId: `#financialSummaryBody-${shopId}`,
+    //    append: false,
+    //  });
   });
 }
 
@@ -629,25 +629,26 @@ if (isAdmin) {
                        : ''
                    }
                    ${
-                     servicePermission === 'POS_TRANSACTIONS' ||
-                     servicePermission === 'BOTH'
-                       ? getAdminAnalyticsHtml(shop)
-                       : ''
-                   }
-                   ${
-                     servicePermission === 'POS_TRANSACTIONS' ||
-                     servicePermission === 'BOTH'
-                       ? getAdminFinancialSummaryHtml(shop)
-                       : ''
-                   }
-                   ${
                      servicePermission === 'INVENTORY_SALES' ||
                      servicePermission === 'BOTH'
                        ? getAdminSalesReportHtml(shop)
                        : ''
                    }
-                        </div>
-    `;
+                     </div>
+                     `;
+
+    // ${
+    //   servicePermission === 'POS_TRANSACTIONS' ||
+    //   servicePermission === 'BOTH'
+    //     ? getAdminAnalyticsHtml(shop)
+    //     : ''
+    // }
+    // ${
+    //   servicePermission === 'POS_TRANSACTIONS' ||
+    //   servicePermission === 'BOTH'
+    //     ? getAdminFinancialSummaryHtml(shop)
+    //     : ''
+    // }
 
     if (container) container.appendChild(accordion);
     if (container) container.dataset.shopId;
@@ -668,17 +669,17 @@ if (isAdmin) {
         renderPosTableFn: renderPosTable,
       });
 
-      setupPosAnalyticsFilters({
-        shopId: shop.id,
-        currentFiltersByShop,
-        renderPosAnalyticsTableFn: renderPosAnalyticsTable,
-      });
+      // setupPosAnalyticsFilters({
+      //   shopId: shop.id,
+      //   currentFiltersByShop,
+      //   renderPosAnalyticsTableFn: renderPosAnalyticsTable,
+      // });
 
-      setupFinancialSummaryFilters({
-        shopId: shop.id,
-        currentFiltersByShop,
-        renderFinancialSummaryTableFn: renderFinancialSummaryTable,
-      });
+      // setupFinancialSummaryFilters({
+      //   shopId: shop.id,
+      //   currentFiltersByShop,
+      //   renderFinancialSummaryTableFn: renderFinancialSummaryTable,
+      // });
     }
     // Admin POS Filter Logic End
 
@@ -769,17 +770,17 @@ if (isAdmin) {
             ),
           });
 
-          await renderPosAnalyticsTable({
-            filters,
-            shopId,
-            tableBodyId: `#analyticsTableBody-${shopId}`,
-          });
+          //  await renderPosAnalyticsTable({
+          //    filters,
+          //    shopId,
+          //    tableBodyId: `#analyticsTableBody-${shopId}`,
+          //  });
 
-          await renderFinancialSummaryTable({
-            filters,
-            shopId,
-            tableBodyId: `#financialSummaryBody-${shopId}`,
-          });
+          //  await renderFinancialSummaryTable({
+          //    filters,
+          //    shopId,
+          //    tableBodyId: `#financialSummaryBody-${shopId}`,
+          //  });
 
           shopPosTransactiionSection.dataset.loaded = 'true';
         }
