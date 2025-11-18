@@ -178,7 +178,7 @@ export function bindDeleteStockItemFormListener() {
 }
 
 //  Update Stock Product
-export function bindUpdateProductFormListener() {
+export function bindUpdateStockProductFormListener() {
   const form = document.querySelector('.updateStockModal');
   if (!form) return;
 
@@ -592,7 +592,7 @@ export function bindMoveStockFormListener() {
 
 document.addEventListener('DOMContentLoaded', () => {
   bindDeleteStockItemFormListener();
-  bindUpdateProductFormListener();
+  bindUpdateStockProductFormListener();
   bindMoveStockFormListener();
   bindDeleteStockCategoryFormListener();
   bindUpdateStockCategoryFormListener();

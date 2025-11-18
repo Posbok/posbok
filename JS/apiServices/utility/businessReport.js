@@ -29,22 +29,22 @@ function getReportDashboardFilters() {
   };
 }
 
-if (
-  servicePermission === 'POS_TRANSACTIONS' ||
-  servicePermission === 'BOTH' ||
-  servicePermission === 'INVENTORY_SALES'
-) {
-  document
-    .getElementById('applyReportDashboardPeriodFIlter')
-    ?.addEventListener('click', () => {
-      loadReportDashboard('90d');
-    });
+// if (
+//   servicePermission === 'POS_TRANSACTIONS' ||
+//   servicePermission === 'BOTH' ||
+//   servicePermission === 'INVENTORY_SALES'
+// ) {
+//   document
+//     .getElementById('applyReportDashboardPeriodFIlter')
+//     ?.addEventListener('click', () => {
+//       loadReportDashboard('90d');
+//     });
 
-  if (document.body.classList.contains('page-report')) {
-    renderStaffPerformanceTable();
-    loadReportDashboard('90d');
-  }
-}
+//   if (document.body.classList.contains('page-report')) {
+//     renderStaffPerformanceTable();
+//     loadReportDashboard('90d');
+//   }
+// }
 
 export async function loadReportDashboard(period = '90d') {
   const filters = getReportDashboardFilters(period);

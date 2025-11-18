@@ -1026,6 +1026,10 @@ document.addEventListener('DOMContentLoaded', () => {
     .querySelector('#exportStockTakingModalBtn')
     ?.addEventListener('click', openExportStockTakingDataModal);
 
+  bindUpdateCategoryFormListener(); // Only once
+  bindDeleteProductFormListener(); // Only once
+  bindUpdateProductFormListener(); // Only once
+  bindGetProductBarcodeFormListener(); // Only once
   bindExportStockTakingDataFormListener();
   bindAddExistingProductFormListener();
   addExistingProductForm();
@@ -1316,6 +1320,8 @@ export function bindUpdateProductFormListener() {
   const form = document.querySelector('.updateProductModal');
   if (!form) return;
 
+  console.log(form);
+
   if (form) {
     form.addEventListener('submit', async function (e) {
       e.preventDefault();
@@ -1468,7 +1474,10 @@ export function updateProductForm(productDetail) {
     sku,
   } = product;
 
-  const { name: categoryName, id: categoryId } = productCategory;
+  //   const categoryName =
+  //   productInventory?.Product?.ProductCategory?.name || 'Uncategorized';
+
+  const { name: categoryName, id: categoryId } = productCategory || '';
 
   //   console.log(
   //     inventoryId,
@@ -1734,9 +1743,7 @@ export function updateCategoryForm(categoryDetail) {
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  bindUpdateCategoryFormListener(); // Only once
-});
+document.addEventListener('DOMContentLoaded', () => {});
 
 // function getFilters(role, shopId) {
 //   const suffix = role === 'admin' ? `${role}_${shopId}` : role;
