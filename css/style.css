@@ -2495,9 +2495,7 @@ body.authentication {
 .machineFee,
 .inventory {
   height: min-content;
-  color: #133f44;
-  scrollbar-width: auto;
-  scrollbar-color: #133f44 #fff; }
+  color: #133f44; }
   .reports-method,
   .goods-method,
   .superAdmin-method,
