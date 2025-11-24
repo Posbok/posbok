@@ -1021,7 +1021,7 @@ export function getAdminWithdrawalsHtml(shop) {
   return `
      
          <!-- admin Withdrawals Table HTML starts Here -->
-         <div id="shop-report-${shop.id}" class="reports card" data-loaded="false">
+         <div id="shopAdminWithdrawals-report-${shop.id}" class="reports card" data-loaded="false">
 
             <div class="reports">
                <div class="reports-method">

@@ -730,429 +730,12 @@ if (isAdmin) {
                      </div>
                      `;
 
-    const adminSelectedReport = accordion.querySelector(
-      `.adminSelectReport_${shop.id} select`
+    const adminSelectedReport = document.querySelector(
+      `.adminSelectReport_${shop.id}`
     );
 
     adminSelectedReport.addEventListener('change', async function (e) {
-      const selectedValue = e.target.value;
-      // console.log('Selected report:', selectedValue);
-
-      const shopPosTransactiionSection = document.getElementById(
-        `shop-report-${shopId}`
-      );
-      const shopAdminWithdrawalsSection = accordion.querySelector(
-        `#shopAdminWithdrawals-report-${shopId}`
-      );
-
-      const shopSalesTransactiionSection = document.getElementById(
-        `shopSales-report-${shopId}`
-      );
-
-      if (shopPosTransactiionSection)
-        shopPosTransactiionSection.classList.add('hidden');
-      if (shopAdminWithdrawalsSection)
-        shopAdminWithdrawalsSection.classList.add('hidden');
-      if (shopSalesTransactiionSection)
-        shopSalesTransactiionSection.classList.add('hidden');
-
-      // POS Transactions
-      if (selectedValue === `pos_report_${shop.id}`) {
-        if (shopPosTransactiionSection)
-          shopPosTransactiionSection.classList.remove('hidden');
-        if (shopAdminWithdrawalsSection)
-          shopAdminWithdrawalsSection.classList.remove('hidden');
-
-        if (
-          servicePermission === 'POS_TRANSACTIONS' ||
-          servicePermission === 'BOTH'
-        ) {
-          if (
-            shopPosTransactiionSection &&
-            shopPosTransactiionSection.dataset.loaded !== 'true'
-          ) {
-            await renderPosTable({
-              page: shopPageTracker[shopId],
-              limit,
-              filters,
-              shopId,
-              tableBodyId: `#pos-tbody-${shopId}`,
-              loadMoreButton: document.getElementById(
-                `loadMoreButton_admin_${shopId}`
-              ),
-            });
-
-            await renderAdminWithdrawalsTable({
-              filters,
-              shopId,
-              tableBodyId: `#adminWithdrawalsTableBody-${shopId}`,
-              loadMoreButton: document.getElementById(
-                `adminWithdrawalLoadMoreButton_admin_${shopId}`
-              ),
-            });
-
-            //  await renderPosAnalyticsTable({
-            //    filters,
-            //    shopId,
-            //    tableBodyId: `#analyticsTableBody-${shopId}`,
-            //  });
-
-            //  await renderFinancialSummaryTable({
-            //    filters,
-            //    shopId,
-            //    tableBodyId: `#financialSummaryBody-${shopId}`,
-            //  });
-
-            shopPosTransactiionSection.dataset.loaded = 'true';
-          }
-        }
-      }
-
-      // Sales Transactions - ADMIN
-      if (selectedValue === `sales_report_${shop.id}`) {
-        if (shopSalesTransactiionSection)
-          shopSalesTransactiionSection.classList.remove('hidden');
-        if (
-          servicePermission === 'INVENTORY_SALES' ||
-          servicePermission === 'BOTH'
-        ) {
-          if (
-            shopSalesTransactiionSection &&
-            shopSalesTransactiionSection.dataset.loaded !== 'true'
-          ) {
-            await renderSalesTable({
-              page: shopPageTracker[shopId],
-              limit,
-              filters,
-              shopId,
-              tableBodyId: `#sale-tbody-${shopId}`,
-              loadMoreButton: document.getElementById(
-                `loadMoreSaleButton_admin_${shopId}`
-              ),
-            });
-
-            shopSalesTransactiionSection.dataset.loaded = 'true';
-
-            // Render Daily sales Summary
-            const dailyFilters = getDailySummaryFilters('admin', shopId);
-            currentDailySalesFiltersByShop[shopId] = dailyFilters;
-
-            const { dailySummaryDate } = dailyFilters;
-
-            await renderDailySummary(shopId, dailySummaryDate);
-
-            // Render Monthly sales Summary
-            const monthlyFilters = getMonthlySummaryFilters('admin', shopId);
-            currentMonthlySalesFiltersByShop[shopId] = monthlyFilters;
-
-            //  console.log(monthlyFilters);
-
-            const { monthlySummaryMonth, monthlySummaryYear } = monthlyFilters;
-            let month = monthlySummaryMonth;
-            let year = monthlySummaryYear;
-
-            await renderMonthlySummary(year, month, shopId);
-
-            //  const searchSellProdutItem = document.getElementById(
-            //    isAdmin ? `adminSearchSellProdutItem_${shopId}` : 'searchSellProdutItem'
-            //  );
-
-            //  const sellProductCategorySection = document.querySelector(
-            //    isAdmin
-            //      ? '.adminSellProductCategory-section'
-            //      : '.sellProductCategory-section'
-            //  );
-
-            const sellProductCategorySection = document.querySelector(
-              '.adminSellProductCategory-section'
-            );
-
-            const sellProductName = document.querySelector(
-              isAdmin ? '.adminSellProductName' : '.sellProductName'
-            );
-
-            const autocompleteList = document.getElementById(
-              isAdmin ? 'adminAutocompleteList' : 'autocompleteList'
-            );
-
-            const productBoughtPrice = document.getElementById(
-              isAdmin ? 'adminProductBoughtPrice' : 'productBoughtPrice'
-            );
-            const itemSellingprice = document.getElementById(
-              isAdmin ? 'adminItemSellingPrice' : 'itemSellingPrice'
-            );
-            const itemQuantityAvailable = document.getElementById(
-              isAdmin ? 'adminItemQuantityAvailable' : 'itemQuantityAvailable'
-            );
-
-            // Re-fetch products and categories
-            displayAllProducts(shopId);
-            displayAllCategories(shopId);
-
-            const adminSellProductSearchSection = document.querySelector(
-              '.adminSellProductSearch-section'
-            );
-            const adminSellProductCategorySection = document.querySelector(
-              '.adminSellProductCategory-section'
-            );
-            const adminSellProductName = document.querySelector(
-              '.adminSellProductName'
-            );
-            const adminAutocompleteList = document.getElementById(
-              'adminAutocompleteList'
-            );
-
-            document.addEventListener('DOMContentLoaded', () => {
-              if (adminSellProductSearchSection)
-                adminSellProductSearchSection.style.display = 'none';
-              if (adminSellProductCategorySection)
-                adminSellProductCategorySection.style.display = 'none';
-              if (adminSellProductName)
-                adminSellProductName.style.display = 'none';
-              if (adminAutocompleteList)
-                adminAutocompleteList.style.display = 'none';
-            });
-
-            await fetchAllCategories(shopId);
-            await fetchAllProducts(shopId);
-
-            // JS for Tabs and Charts
-            const tabs = document.querySelectorAll(`.tab-btn_${shopId}`);
-            const contents = document.querySelectorAll(
-              `.tab-content_${shopId}`
-            );
-
-            tabs.forEach((btn) => {
-              btn.addEventListener('click', () => {
-                tabs.forEach((b) => b.classList.remove('active'));
-                contents.forEach((c) => c.classList.remove('active'));
-
-                btn.classList.add('active');
-                //   document.getElementById(btn.dataset.tab).classList.add('active');
-
-                const targetId = btn.dataset.tab;
-                const targetContent = document.getElementById(targetId);
-
-                if (targetContent) {
-                  targetContent.classList.add('active');
-                } else {
-                  console.warn(`Tab content with ID "${targetId}" not found.`);
-                }
-              });
-            });
-
-            const reportStaffDropdown = document.getElementById(
-              `reportStaffDropdown_admin_${shopId}`
-            );
-
-            // Update Staff Sales Report
-
-            async function loadStaffDropdown() {
-              try {
-                showGlobalLoader();
-                const staffData = await checkAndPromptCreateStaff();
-                //  console.log('Staff Data', staffData);
-                const staffDataList = staffData?.data.users;
-
-                //   console.log(staffData);
-
-                populateBusinessStaffDropdown(
-                  staffDataList,
-                  `reportStaffDropdown_admin_${shopId}`
-                );
-                hideGlobalLoader();
-              } catch (err) {
-                hideGlobalLoader();
-                console.error('Failed to load dropdown:', err.message);
-              }
-            }
-
-            loadStaffDropdown();
-
-            // Staff Fiter logic
-            const dropdown = document.getElementById(
-              `reportStaffTimeframeDropdown_admin_${shopId}`
-            );
-            const container = document.getElementById(
-              `timeframeInputs_admin_${shopId}`
-            );
-
-            const applyFilterBtn = document.getElementById(
-              `applyFilterBtn_admin_${shopId}`
-            );
-
-            const resetFilterBtn = document.getElementById(
-              `resetFilterBtn_admin_${shopId}`
-            );
-
-            if (dropdown) {
-              dropdown.addEventListener('change', (e) => {
-                const selected = e.target.value;
-
-                // Hide all inputs first
-                container
-                  .querySelectorAll('.timeframe-group')
-                  .forEach((div) => {
-                    div.classList.add('hidden');
-                  });
-
-                // Show relevant inputs
-                container
-                  .querySelector(`.${selected}-input`)
-                  ?.classList.remove('hidden');
-
-                applyFilterBtn?.classList.remove('hidden');
-                resetFilterBtn?.classList.remove('hidden');
-              });
-            }
-
-            applyFilterBtn?.addEventListener('click', () => {
-              if (fullStaffSalesList.length > 0) {
-                filterAndRenderStaffSales(fullStaffSalesList, null, shopId);
-              }
-            });
-
-            resetFilterBtn?.addEventListener('click', () => {
-              resetStaffSalesFilter(shopId);
-            });
-
-            function resetStaffSalesFilter(shopId) {
-              console.log('reached');
-              const timeframeDropdown = document.querySelector(
-                `#reportStaffTimeframeDropdown_admin_${shopId}`
-              );
-
-              // Reset the dropdown selection
-              //  timeframeDropdown.value = 'none'; // or use the value of your "Select timeframe" default
-
-              // Optionally clear date inputs too
-              document.querySelector('#dailyInput').value = '';
-              document.querySelector('#weeklyInput').value = '';
-              document.querySelector('#monthlyInput').value = '';
-              document.querySelector('#customStartInput').value = '';
-              document.querySelector('#customEndInput').value = '';
-
-              // Show the original full sales list again (unfiltered)
-              updateStaffSalesData(fullStaffSalesList, null, shopId);
-            }
-
-            let fullStaffSalesList = [];
-
-            reportStaffDropdown.addEventListener('change', async () => {
-              const staffId = reportStaffDropdown.value;
-              const staffSalesResponse = await getSalesByStaff(staffId);
-
-              if (!staffSalesResponse) {
-                hideGlobalLoader();
-                console.error('Error receiving Staff Sales Data');
-                showToast('fail', `❎ ${staffSalesResponse.message}`);
-                return;
-              }
-
-              const staffSalesDetails = staffSalesResponse.data;
-              fullStaffSalesList = staffSalesDetails.sales;
-              const staffSalesSummary = staffSalesDetails.summary;
-
-              console.log(fullStaffSalesList); // This is currently ogging correctly
-
-              const selectedTimeframe = document.querySelector(
-                `#reportStaffTimeframeDropdown_admin_${shopId}`
-              ).value;
-
-              if (!selectedTimeframe || selectedTimeframe === 'none') {
-                // Show all sales
-                updateStaffSalesData(
-                  fullStaffSalesList,
-                  staffSalesSummary,
-                  shopId
-                );
-              } else {
-                // Filter based on selected timeframe
-                filterAndRenderStaffSales(
-                  fullStaffSalesList,
-                  staffSalesSummary,
-                  shopId
-                );
-              }
-            });
-
-            updatePartialPaymentForm(renderSalesTable, [
-              {
-                page: shopPageTracker[shopId],
-                limit,
-                filters,
-                shopId,
-                tableBodyId: `#sale-tbody-${shopId}`,
-                loadMoreButton: document.getElementById(
-                  `loadMoreSaleButton_admin_${shopId}`
-                ),
-              },
-            ]);
-          }
-        }
-      }
-
-      // Admin POS Filter Logic Start
-      if (selectedValue === `pos_report_${shop.id}`) {
-        if (
-          servicePermission === 'POS_TRANSACTIONS' ||
-          servicePermission === 'BOTH'
-        ) {
-          // Admin POS Filter Logic
-
-          setupPosFilters({
-            shopId: shop.id,
-            shopPageTracker,
-            currentFiltersByShop,
-            limit,
-            renderPosTableFn: renderPosTable,
-          });
-
-          setupAdminWithdrawalsFilters({
-            shopId: shop.id,
-            currentFiltersByShop,
-            renderAdminWithdrawalsTableFn: renderAdminWithdrawalsTable,
-            tableBodyId: `#adminWithdrawalsTableBody-${shopId}`,
-            loadMoreButton: document.getElementById(
-              `adminWithdrawalLoadMoreButton_admin_${shopId}`
-            ),
-          });
-
-          // setupPosAnalyticsFilters({
-          //   shopId: shop.id,
-          //   currentFiltersByShop,
-          //   renderPosAnalyticsTableFn: renderPosAnalyticsTable,
-          // });
-
-          // setupFinancialSummaryFilters({
-          //   shopId: shop.id,
-          //   currentFiltersByShop,
-          //   renderFinancialSummaryTableFn: renderFinancialSummaryTable,
-          // });
-        }
-      }
-      // Admin POS Filter Logic End
-
-      if (selectedValue === `sales_report_${shop.id}`) {
-        if (
-          servicePermission === 'INVENTORY_SALES' ||
-          servicePermission === 'BOTH'
-        ) {
-          // Admin Sales Filter Logic
-
-          setupSalesFilters({
-            shopId: shop.id,
-            shopPageTracker,
-            currentSalesFiltersByShop,
-            currentDailySalesFiltersByShop,
-            currentMonthlySalesFiltersByShop,
-            limit,
-            renderSalesTableFn: renderSalesTable,
-            renderDailySummaryFn: renderDailySummary,
-            renderMonthlySummaryFn: renderMonthlySummary,
-          });
-        }
-      }
+      console.log(e.value);
     });
 
     // ${
@@ -1171,17 +754,64 @@ if (isAdmin) {
     if (container) container.appendChild(accordion);
     if (container) container.dataset.shopId;
 
-    // Hide all report sections on load
-    const posSection = accordion.querySelector(`#shop-report-${shopId}`);
-    const salesSection = accordion.querySelector(`#shopSales-report-${shopId}`);
-    const adminWithdrawalsSection = accordion.querySelector(
-      `#shopAdminWithdrawals-report-${shopId}`
-    );
+    // Admin POS Filter Logic Start
 
-    if (posSection) posSection.classList.add('hidden');
-    if (salesSection) salesSection.classList.add('hidden');
-    if (adminWithdrawalsSection)
-      adminWithdrawalsSection.classList.add('hidden');
+    if (
+      servicePermission === 'POS_TRANSACTIONS' ||
+      servicePermission === 'BOTH'
+    ) {
+      // Admin POS Filter Logic
+
+      setupPosFilters({
+        shopId: shop.id,
+        shopPageTracker,
+        currentFiltersByShop,
+        limit,
+        renderPosTableFn: renderPosTable,
+      });
+
+      setupAdminWithdrawalsFilters({
+        shopId: shop.id,
+        currentFiltersByShop,
+        renderAdminWithdrawalsTableFn: renderAdminWithdrawalsTable,
+        tableBodyId: `#adminWithdrawalsTableBody-${shopId}`,
+        loadMoreButton: document.getElementById(
+          `adminWithdrawalLoadMoreButton_admin_${shopId}`
+        ),
+      });
+
+      // setupPosAnalyticsFilters({
+      //   shopId: shop.id,
+      //   currentFiltersByShop,
+      //   renderPosAnalyticsTableFn: renderPosAnalyticsTable,
+      // });
+
+      // setupFinancialSummaryFilters({
+      //   shopId: shop.id,
+      //   currentFiltersByShop,
+      //   renderFinancialSummaryTableFn: renderFinancialSummaryTable,
+      // });
+    }
+    // Admin POS Filter Logic End
+
+    if (
+      servicePermission === 'INVENTORY_SALES' ||
+      servicePermission === 'BOTH'
+    ) {
+      // Admin Sales Filter Logic
+
+      setupSalesFilters({
+        shopId: shop.id,
+        shopPageTracker,
+        currentSalesFiltersByShop,
+        currentDailySalesFiltersByShop,
+        currentMonthlySalesFiltersByShop,
+        limit,
+        renderSalesTableFn: renderSalesTable,
+        renderDailySummaryFn: renderDailySummary,
+        renderMonthlySummaryFn: renderMonthlySummary,
+      });
+    }
 
     const filters = getFilters('admin', shop.id);
     const salesFilters = getSalesFilters('admin', shop.id);
@@ -1223,6 +853,334 @@ if (isAdmin) {
       currentFiltersByShop[shopId] = filters;
 
       shopPageTracker[shopId] = 1;
+
+      const shopPosTransactiionSection = document.getElementById(
+        `shop-report-${shopId}`
+      );
+      const shopSalesTransactiionSection = document.getElementById(
+        `shopSales-report-${shopId}`
+      );
+
+      // POS Transactions
+      if (
+        servicePermission === 'POS_TRANSACTIONS' ||
+        servicePermission === 'BOTH'
+      ) {
+        if (
+          shopPosTransactiionSection &&
+          shopPosTransactiionSection.dataset.loaded !== 'true'
+        ) {
+          await renderPosTable({
+            page: shopPageTracker[shopId],
+            limit,
+            filters,
+            shopId,
+            tableBodyId: `#pos-tbody-${shopId}`,
+            loadMoreButton: document.getElementById(
+              `loadMoreButton_admin_${shopId}`
+            ),
+          });
+
+          await renderAdminWithdrawalsTable({
+            filters,
+            shopId,
+            tableBodyId: `#adminWithdrawalsTableBody-${shopId}`,
+            loadMoreButton: document.getElementById(
+              `adminWithdrawalLoadMoreButton_admin_${shopId}`
+            ),
+          });
+
+          //  await renderPosAnalyticsTable({
+          //    filters,
+          //    shopId,
+          //    tableBodyId: `#analyticsTableBody-${shopId}`,
+          //  });
+
+          //  await renderFinancialSummaryTable({
+          //    filters,
+          //    shopId,
+          //    tableBodyId: `#financialSummaryBody-${shopId}`,
+          //  });
+
+          shopPosTransactiionSection.dataset.loaded = 'true';
+        }
+      }
+
+      // Sales Transactions - ADMIN
+      if (
+        servicePermission === 'INVENTORY_SALES' ||
+        servicePermission === 'BOTH'
+      ) {
+        if (
+          shopSalesTransactiionSection &&
+          shopSalesTransactiionSection.dataset.loaded !== 'true'
+        ) {
+          await renderSalesTable({
+            page: shopPageTracker[shopId],
+            limit,
+            filters,
+            shopId,
+            tableBodyId: `#sale-tbody-${shopId}`,
+            loadMoreButton: document.getElementById(
+              `loadMoreSaleButton_admin_${shopId}`
+            ),
+          });
+
+          shopSalesTransactiionSection.dataset.loaded = 'true';
+
+          // Render Daily sales Summary
+          const dailyFilters = getDailySummaryFilters('admin', shopId);
+          currentDailySalesFiltersByShop[shopId] = dailyFilters;
+
+          const { dailySummaryDate } = dailyFilters;
+
+          await renderDailySummary(shopId, dailySummaryDate);
+
+          // Render Monthly sales Summary
+          const monthlyFilters = getMonthlySummaryFilters('admin', shopId);
+          currentMonthlySalesFiltersByShop[shopId] = monthlyFilters;
+
+          //  console.log(monthlyFilters);
+
+          const { monthlySummaryMonth, monthlySummaryYear } = monthlyFilters;
+          let month = monthlySummaryMonth;
+          let year = monthlySummaryYear;
+
+          await renderMonthlySummary(year, month, shopId);
+
+          //  const searchSellProdutItem = document.getElementById(
+          //    isAdmin ? `adminSearchSellProdutItem_${shopId}` : 'searchSellProdutItem'
+          //  );
+
+          //  const sellProductCategorySection = document.querySelector(
+          //    isAdmin
+          //      ? '.adminSellProductCategory-section'
+          //      : '.sellProductCategory-section'
+          //  );
+
+          const sellProductCategorySection = document.querySelector(
+            '.adminSellProductCategory-section'
+          );
+
+          const sellProductName = document.querySelector(
+            isAdmin ? '.adminSellProductName' : '.sellProductName'
+          );
+
+          const autocompleteList = document.getElementById(
+            isAdmin ? 'adminAutocompleteList' : 'autocompleteList'
+          );
+
+          const productBoughtPrice = document.getElementById(
+            isAdmin ? 'adminProductBoughtPrice' : 'productBoughtPrice'
+          );
+          const itemSellingprice = document.getElementById(
+            isAdmin ? 'adminItemSellingPrice' : 'itemSellingPrice'
+          );
+          const itemQuantityAvailable = document.getElementById(
+            isAdmin ? 'adminItemQuantityAvailable' : 'itemQuantityAvailable'
+          );
+
+          // Re-fetch products and categories
+          displayAllProducts(shopId);
+          displayAllCategories(shopId);
+
+          const adminSellProductSearchSection = document.querySelector(
+            '.adminSellProductSearch-section'
+          );
+          const adminSellProductCategorySection = document.querySelector(
+            '.adminSellProductCategory-section'
+          );
+          const adminSellProductName = document.querySelector(
+            '.adminSellProductName'
+          );
+          const adminAutocompleteList = document.getElementById(
+            'adminAutocompleteList'
+          );
+
+          document.addEventListener('DOMContentLoaded', () => {
+            if (adminSellProductSearchSection)
+              adminSellProductSearchSection.style.display = 'none';
+            if (adminSellProductCategorySection)
+              adminSellProductCategorySection.style.display = 'none';
+            if (adminSellProductName)
+              adminSellProductName.style.display = 'none';
+            if (adminAutocompleteList)
+              adminAutocompleteList.style.display = 'none';
+          });
+
+          await fetchAllCategories(shopId);
+          await fetchAllProducts(shopId);
+
+          // JS for Tabs and Charts
+          const tabs = document.querySelectorAll(`.tab-btn_${shopId}`);
+          const contents = document.querySelectorAll(`.tab-content_${shopId}`);
+
+          tabs.forEach((btn) => {
+            btn.addEventListener('click', () => {
+              tabs.forEach((b) => b.classList.remove('active'));
+              contents.forEach((c) => c.classList.remove('active'));
+
+              btn.classList.add('active');
+              //   document.getElementById(btn.dataset.tab).classList.add('active');
+
+              const targetId = btn.dataset.tab;
+              const targetContent = document.getElementById(targetId);
+
+              if (targetContent) {
+                targetContent.classList.add('active');
+              } else {
+                console.warn(`Tab content with ID "${targetId}" not found.`);
+              }
+            });
+          });
+
+          const reportStaffDropdown = document.getElementById(
+            `reportStaffDropdown_admin_${shopId}`
+          );
+
+          // Update Staff Sales Report
+
+          async function loadStaffDropdown() {
+            try {
+              showGlobalLoader();
+              const staffData = await checkAndPromptCreateStaff();
+              //  console.log('Staff Data', staffData);
+              const staffDataList = staffData?.data.users;
+
+              //   console.log(staffData);
+
+              populateBusinessStaffDropdown(
+                staffDataList,
+                `reportStaffDropdown_admin_${shopId}`
+              );
+              hideGlobalLoader();
+            } catch (err) {
+              hideGlobalLoader();
+              console.error('Failed to load dropdown:', err.message);
+            }
+          }
+
+          loadStaffDropdown();
+
+          // Staff Fiter logic
+          const dropdown = document.getElementById(
+            `reportStaffTimeframeDropdown_admin_${shopId}`
+          );
+          const container = document.getElementById(
+            `timeframeInputs_admin_${shopId}`
+          );
+
+          const applyFilterBtn = document.getElementById(
+            `applyFilterBtn_admin_${shopId}`
+          );
+
+          const resetFilterBtn = document.getElementById(
+            `resetFilterBtn_admin_${shopId}`
+          );
+
+          if (dropdown) {
+            dropdown.addEventListener('change', (e) => {
+              const selected = e.target.value;
+
+              // Hide all inputs first
+              container.querySelectorAll('.timeframe-group').forEach((div) => {
+                div.classList.add('hidden');
+              });
+
+              // Show relevant inputs
+              container
+                .querySelector(`.${selected}-input`)
+                ?.classList.remove('hidden');
+
+              applyFilterBtn?.classList.remove('hidden');
+              resetFilterBtn?.classList.remove('hidden');
+            });
+          }
+
+          applyFilterBtn?.addEventListener('click', () => {
+            if (fullStaffSalesList.length > 0) {
+              filterAndRenderStaffSales(fullStaffSalesList, null, shopId);
+            }
+          });
+
+          resetFilterBtn?.addEventListener('click', () => {
+            resetStaffSalesFilter(shopId);
+          });
+
+          function resetStaffSalesFilter(shopId) {
+            console.log('reached');
+            const timeframeDropdown = document.querySelector(
+              `#reportStaffTimeframeDropdown_admin_${shopId}`
+            );
+
+            // Reset the dropdown selection
+            //  timeframeDropdown.value = 'none'; // or use the value of your "Select timeframe" default
+
+            // Optionally clear date inputs too
+            document.querySelector('#dailyInput').value = '';
+            document.querySelector('#weeklyInput').value = '';
+            document.querySelector('#monthlyInput').value = '';
+            document.querySelector('#customStartInput').value = '';
+            document.querySelector('#customEndInput').value = '';
+
+            // Show the original full sales list again (unfiltered)
+            updateStaffSalesData(fullStaffSalesList, null, shopId);
+          }
+
+          let fullStaffSalesList = [];
+
+          reportStaffDropdown.addEventListener('change', async () => {
+            const staffId = reportStaffDropdown.value;
+            const staffSalesResponse = await getSalesByStaff(staffId);
+
+            if (!staffSalesResponse) {
+              hideGlobalLoader();
+              console.error('Error receiving Staff Sales Data');
+              showToast('fail', `❎ ${staffSalesResponse.message}`);
+              return;
+            }
+
+            const staffSalesDetails = staffSalesResponse.data;
+            fullStaffSalesList = staffSalesDetails.sales;
+            const staffSalesSummary = staffSalesDetails.summary;
+
+            console.log(fullStaffSalesList); // This is currently ogging correctly
+
+            const selectedTimeframe = document.querySelector(
+              `#reportStaffTimeframeDropdown_admin_${shopId}`
+            ).value;
+
+            if (!selectedTimeframe || selectedTimeframe === 'none') {
+              // Show all sales
+              updateStaffSalesData(
+                fullStaffSalesList,
+                staffSalesSummary,
+                shopId
+              );
+            } else {
+              // Filter based on selected timeframe
+              filterAndRenderStaffSales(
+                fullStaffSalesList,
+                staffSalesSummary,
+                shopId
+              );
+            }
+          });
+
+          updatePartialPaymentForm(renderSalesTable, [
+            {
+              page: shopPageTracker[shopId],
+              limit,
+              filters,
+              shopId,
+              tableBodyId: `#sale-tbody-${shopId}`,
+              loadMoreButton: document.getElementById(
+                `loadMoreSaleButton_admin_${shopId}`
+              ),
+            },
+          ]);
+        }
+      }
     });
 
   //   renderStaffPerformanceTable();
