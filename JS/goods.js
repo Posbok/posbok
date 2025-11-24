@@ -2415,9 +2415,9 @@ export async function renderInventoryLogTable({ filters, shopId }) {
     console.log(shopInventoryLogs);
 
     if (shopInventoryLogs.length === 0) {
-      const searchSection = document.querySelector(`.search-section_${shopId}`);
+      // const searchSection = document.querySelector(`.search-section_${shopId}`);
 
-      searchSection.style.display = 'none';
+      // searchSection.style.display = 'none';
 
       inventoryLogTableBody.innerHTML =
         '<tr class="loading-row"><td colspan="11" class="table-error-text ">No Shop Inventory Logs Available.</td></tr>';
