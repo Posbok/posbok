@@ -244,6 +244,8 @@ body {
    // top: 3rem;
 }
 
+
+
 // // Toast fade in
 // @keyframes fadein {
 //    from {
@@ -270,6 +272,19 @@ body {
 //    }
 // }
 
+::-webkit-scrollbar {
+   width: 1.3rem;
+}
+
+::-webkit-scrollbar-thumb {
+   border-radius: 1rem;
+   background-color: $color-grey-dark-2;
+
+}
+
+::-webkit-scrollbar-track {
+   background-color: $color-grey-light-1;
+}
 
 
 @media print {
