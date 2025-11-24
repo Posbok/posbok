@@ -2488,6 +2488,15 @@ export function getAdminInventoryTableHtml(shop) {
                   Shop inventory
                </h2>
 
+                           <div class="search-section_${shop.id} mb-4">
+
+                  <div class="inventory-method-form_input ml-1 mr-1">
+                     <label for="searchProdutInventory_${shop.id}">Search Products:</label>
+                     <input type="search" id="searchProdutInventory_${shop.id}" class="searchProductInput"
+                        placeholder="Search Product Name or Description ">
+                  </div>
+               </div>
+
                <div>
                   <h2 class="heading-subtext ">Total Products: <span class="totalProductsCount_${shop.id}">0</span></h2>
 
@@ -2499,14 +2508,7 @@ export function getAdminInventoryTableHtml(shop) {
 
                </div>
 
-               <div class="search-section_${shop.id} mb-2">
-
-                  <div class="inventory-method-form_input ml-1 mr-1">
-                     <label for="searchProdutInventory_${shop.id}">Search Products:</label>
-                     <input type="search" id="searchProdutInventory_${shop.id}" class="searchProductInput"
-                        placeholder="Search Product Name or Description ">
-                  </div>
-               </div>
+   
 
                <div class="table-header">
                   <!-- <h2 class="heading-subtext"> inventory </h2> -->
