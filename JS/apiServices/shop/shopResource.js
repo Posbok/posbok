@@ -143,12 +143,16 @@ export async function checkAndPromptCreateShop() {
       return;
     }
 
-    const fetchedData = await safeFetch(`${baseUrl}/api/shop`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${userToken}`,
-      },
-    });
+    //  const fetchedData = await safeFetch(`${baseUrl}/api/shop`, {
+    const fetchedData = await safeFetch(
+      `${baseUrl}/api/business/${businessId}/shops`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
 
     let userShops = [];
     let enrichedShopData = [];
