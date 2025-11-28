@@ -41,6 +41,8 @@ import {
   renderPosTable,
   renderSalesTable,
   getAdminWithdrawalsHtml,
+  getBusinessDaySummaryHtml,
+  renderBusinessDaySummariesTable,
 } from './posAndSalesReportAccordion';
 import { checkAndPromptCreateStaff } from './apiServices/user/userResource';
 import {
@@ -127,6 +129,18 @@ function getAnalyticsFilters(role, shopId) {
 }
 
 function getFinancialSummaryFilters(role, shopId) {
+  const suffix = role === 'admin' ? `${role}_${shopId}` : role;
+
+  return {
+    date_from:
+      document.getElementById(`financialSummaryDateFrom_${suffix}`)?.value ||
+      '',
+    date_to:
+      document.getElementById(`financialSummaryDateTo_${suffix}`)?.value || '',
+  };
+}
+
+function getBusinessDaySummariesFilters(role, shopId) {
   const suffix = role === 'admin' ? `${role}_${shopId}` : role;
 
   return {
@@ -466,6 +480,72 @@ function setupFinancialSummaryFilters({
   });
 }
 
+function setupBusinessDaysSummariesFilters({
+  shopId,
+  currentFiltersByShop,
+  renderBusinessDaySummariesTableFn,
+}) {
+  const applyBtn = document.getElementById(
+    `applyBusinessDaySummariesTableFiltersBtn_admin_${shopId}`
+  );
+  const resetBtn = document.getElementById(
+    `resetBusinessDaySummariesTableFiltersBtn_admin_${shopId}`
+  );
+
+  const loadMoreBtn = document.getElementById(
+    `adminBusinessDaySummariesLoadMoreButton_admin_${shopId}`
+  );
+
+  if (!loadMoreBtn) return;
+
+  if (!applyBtn || !resetBtn) return;
+
+  // Apply Filters
+  applyBtn.addEventListener('click', () => {
+    const filters = getBusinessDaySummariesFilters('admin', shopId);
+    currentFiltersByShop[shopId] = filters;
+
+    renderBusinessDaySummariesTableFn({
+      filters,
+      shopId,
+      tableBodyId: `#financialSummaryBody-${shopId}`,
+      append: false,
+    });
+  });
+
+  // Reset Filters
+  resetBtn.addEventListener('click', () => {
+    const role = 'admin';
+
+    resetFinancialSummaryFilters(role, shopId);
+    const filters = getFinancialSummaryFilters(role, shopId);
+    currentFiltersByShop[shopId] = filters;
+
+    renderBusinessDaySummariesTableFn({
+      filters,
+      shopId,
+      tableBodyId: `#financialSummaryBody-${shopId}`,
+      append: false,
+    });
+  });
+
+  loadMoreBtn.addEventListener('click', () => {
+    const nextPage = ++shopPageTracker[shopId];
+    const filters = currentFiltersByShop[shopId] || {};
+
+    renderBusinessDaySummariesTableFn({
+      page: nextPage,
+      filters,
+      shopId,
+      tableBodyId,
+      loadMoreButton: document.getElementById(
+        `resetBusinessDaySummariesTableFiltersBtn_admin_${shopId}`
+      ),
+      append: true,
+    });
+  });
+}
+
 function setupSalesFilters({
   shopId,
   shopPageTracker,
@@ -729,6 +809,12 @@ if (isAdmin) {
                        : ''
                    }
                    ${
+                     servicePermission === 'POS_TRANSACTIONS' ||
+                     servicePermission === 'BOTH'
+                       ? getBusinessDaySummaryHtml(shop)
+                       : ''
+                   }
+                   ${
                      servicePermission === 'INVENTORY_SALES' ||
                      servicePermission === 'BOTH'
                        ? getAdminSalesReportHtml(shop)
@@ -751,6 +837,9 @@ if (isAdmin) {
       const shopAdminWithdrawalsSection = accordion.querySelector(
         `#shopAdminWithdrawals-report-${shopId}`
       );
+      const shopBusinessDaySummariesSection = accordion.querySelector(
+        `#shopBusinessDaySummaries-report-${shopId}`
+      );
 
       const shopSalesTransactiionSection = document.getElementById(
         `shopSales-report-${shopId}`
@@ -760,6 +849,9 @@ if (isAdmin) {
         shopPosTransactiionSection.classList.add('hidden');
       if (shopAdminWithdrawalsSection)
         shopAdminWithdrawalsSection.classList.add('hidden');
+      if (shopBusinessDaySummariesSection)
+        shopBusinessDaySummariesSection.classList.add('hidden');
+
       if (shopSalesTransactiionSection)
         shopSalesTransactiionSection.classList.add('hidden');
 
@@ -769,6 +861,8 @@ if (isAdmin) {
           shopPosTransactiionSection.classList.remove('hidden');
         if (shopAdminWithdrawalsSection)
           shopAdminWithdrawalsSection.classList.remove('hidden');
+        if (shopBusinessDaySummariesSection)
+          shopBusinessDaySummariesSection.classList.remove('hidden');
 
         if (
           servicePermission === 'POS_TRANSACTIONS' ||
@@ -795,6 +889,15 @@ if (isAdmin) {
               tableBodyId: `#adminWithdrawalsTableBody-${shopId}`,
               loadMoreButton: document.getElementById(
                 `adminWithdrawalLoadMoreButton_admin_${shopId}`
+              ),
+            });
+
+            await renderBusinessDaySummariesTable({
+              filters,
+              shopId,
+              tableBodyId: `#businessDaySummariesTableBody-${shopId}`,
+              loadMoreButton: document.getElementById(
+                `adminBusinessDaySummariesLoadMoreButton_admin_${shopId}`
               ),
             });
 
@@ -1125,6 +1228,12 @@ if (isAdmin) {
             ),
           });
 
+          setupBusinessDaysSummariesFilters({
+            shopId: shop.id,
+            currentFiltersByShop,
+            renderBusinessDaySummariesTableFn: renderBusinessDaySummariesTable,
+          });
+
           // setupPosAnalyticsFilters({
           //   shopId: shop.id,
           //   currentFiltersByShop,
@@ -1184,11 +1293,16 @@ if (isAdmin) {
     const adminWithdrawalsSection = accordion.querySelector(
       `#shopAdminWithdrawals-report-${shopId}`
     );
+    const businessDaySummariesSection = accordion.querySelector(
+      `#shopBusinessDaySummaries-report-${shopId}`
+    );
 
     if (posSection) posSection.classList.add('hidden');
     if (salesSection) salesSection.classList.add('hidden');
     if (adminWithdrawalsSection)
       adminWithdrawalsSection.classList.add('hidden');
+    if (businessDaySummariesSection)
+      businessDaySummariesSection.classList.add('hidden');
 
     const filters = getFilters('admin', shop.id);
     const salesFilters = getSalesFilters('admin', shop.id);

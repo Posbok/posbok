@@ -982,3 +982,47 @@ export async function clearDashboardFieldApi(clearDashboardFieldDetails) {
     throw error;
   }
 }
+
+export async function getBusinessDaySummaries({
+  shopId,
+  page = 1,
+  limit = 1,
+  filters = {},
+}) {
+  try {
+    const queryParams = new URLSearchParams({
+      shop_id: shopId,
+      page,
+      limit,
+    });
+
+    if (filters.date_from) queryParams.append('date_from', filters.date_from);
+    if (filters.date_to) queryParams.append('date_to', filters.date_to);
+
+    //  console.log(queryParams.toString());
+
+    showGlobalLoader();
+    const posFinancialSummaryData = await safeFetch(
+      `${baseUrl}/api/pos/admin/business-day-summaries?${queryParams.toString()}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    if (posFinancialSummaryData) {
+      // showToast('success', `✅ ${posFinancialSummaryData.message}`);
+      hideGlobalLoader();
+    }
+
+    //  console.log('posFinancialSummaryData', posFinancialSummaryData);
+
+    return posFinancialSummaryData;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error receiving Financial Summary:', error);
+    throw error;
+  }
+}

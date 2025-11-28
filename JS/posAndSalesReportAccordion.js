@@ -2,6 +2,7 @@ import config from '../config';
 import {
   deletePosTransaction,
   getAdminWithdrawals,
+  getBusinessDaySummaries,
   getFinancialSummary,
   getPosAnalytics,
   getPosTransactions,
@@ -1072,6 +1073,101 @@ export function getAdminWithdrawalsHtml(shop) {
    `;
 }
 
+export function getBusinessDaySummaryHtml(shop) {
+  //   console.log('adminWithdrawals Report');
+  return `
+     
+         <!-- Business Day Summary Table HTML starts Here -->
+         <div id="shopBusinessDaySummaries-report-${shop.id}" class="reports card" data-loaded="false">
+
+            <div class="reports">
+               <div class="reports-method">
+                  <h2 class="heading-text mb-2">
+                    Business Day Summary Report
+                  </h2>
+
+                    <h2 class="filter-heading heading-subtext mb-2">Filter  Financial Summary </h2>
+
+                  <div class="filter-section mb-2">
+
+                     <div class="pos-method-form_input">
+                        <label for="businessDaySummariesTableDateFrom_admin_${shop.id}">Start Date:</label>
+
+                        <input type="date" id="businessDaySummariesTableDateFrom_admin_${shop.id}">
+                     </div>
+
+                     <div class="pos-method-form_input">
+                        <label for="businessDaySummariesTableDateTo_admin_${shop.id}">End Date:</label>
+
+                        <input type="date" id="businessDaySummariesTableDateTo_admin_${shop.id}">
+                     </div>
+
+                     <div class="filter-buttons">
+                        <button id="applyBusinessDaySummariesTableFiltersBtn_admin_${shop.id}" class="hero-btn-dark">Apply
+                           Filters</button>
+                        <button id="resetBusinessDaySummariesTableFiltersBtn_${shop.id}" class="hero-btn-outline">Reset</button>
+                     </div>
+
+                  </div>
+
+                  <!-- <div id="transactionList" class="transaction-list mb-3"></div> -->
+
+                  <div class="table-header">
+                     <!-- <h2 class="heading-subtext"> POS </h2> -->
+                  </div>
+
+                  <div class="reports-table-container">
+
+                     <table class="reports-table businessDaySummariesTable_admin_${shop.id}">
+                        <thead>
+                           <tr class="table-header-row">
+                              <th class="py-1">S/N</th>
+                              <th class="py-1">Business Day</th>
+                              <th class="py-1">Total POS Capital</th>
+                              <th class="py-1">Total Withdrawals</th>
+                              <th class="py-1">Charges (Cash)</th>
+                              <th class="py-1">Charges (Machine)</th>
+                              <th class="py-1">Total POS Charges</th>
+                              <th class="py-1">Deposit</th>
+                              <th class="py-1">Bill Payment (Cash)</th>
+                              <th class="py-1">Total Cash At Hand</th>
+                              <th class="py-1">Cash At Hand</th>
+                              <th class="py-1">Cash In Machine</th>
+                              <th class="py-1">Total Fees</th>
+                              <th class="py-1">Total Machine Fee</th>
+                              <th class="py-1">Total Tax Fee</th>
+                              <th class="py-1">Total Transfer Fee</th>
+                              <th class="py-1">Opening Cash</th>
+                              <th class="py-1">Closing Cash</th>
+                              <th class="py-1">Total Admin Withdrawal (Machine)</th>
+                              <th class="py-1">Total Admin Withdrawal (Hand)</th>
+                              <th class="py-1">Closed By</th>
+                           </tr>
+                        </thead>
+
+                        <tbody id="businessDaySummariesTableBody-${shop.id}">
+
+                        </tbody>
+
+                     </table>
+
+                               <div id="loadMoreButtonDiv_admin" class=" center-button mt-2">
+
+                              <button id="adminBusinessDaySummariesLoadMoreButton_admin_${shop.id}" class=" hero-btn-dark load-more-button">Load
+                                 More</button>
+                              <!-- <button id="loadMoreButton" class="">Load More</button> -->
+                           </div>
+
+                  </div>
+
+               </div>
+            </div>
+         </div>
+
+         <!-- Business Day Summaries Table HTML Ends Here -->
+   `;
+}
+
 export function getAdminAnalyticsHtml(shop) {
   //   console.log('Analytics Report');
   return `
@@ -1394,6 +1490,65 @@ export function getAdminWithdrawalsList(
       <td class="py-1">₦${formatAmountWithCommas(amount)}</td>
       <td class="py-1">${business_day}</td>
       <td class="py-1">${formatDateTimeReadable(created_at)}</td>
+              
+   `;
+}
+
+export function getBusinessDaySummariesList(
+  index,
+  id,
+  business_id,
+  shop_id,
+  business_day_date,
+  total_pos_capital,
+  total_withdrawals,
+  charges_cash,
+  charges_machine,
+  total_pos_charges,
+  total_fees,
+  deposit,
+  billpayment_cash,
+  cash_in_machine,
+  total_cash_at_hand,
+  cash_at_hand,
+  total_machine_fee,
+  total_tax_fee,
+  total_transfer_fee,
+  opening_cash,
+  closing_cash,
+  total_admin_withdrawal_machine,
+  total_admin_withdrawal_cash_at_hand,
+  closed_by,
+  closedByName,
+  shopName
+) {
+  console.log(cash_at_hand);
+  return `
+      <td class="py-1">${index + 1}</td>
+      <td class="py-1">${business_day_date}</td>
+      <td class="py-1">₦${formatAmountWithCommas(total_pos_capital)}</td>
+      <td class="py-1">₦${formatAmountWithCommas(total_withdrawals)}</td>
+      <td class="py-1">₦${formatAmountWithCommas(charges_cash)}</td>
+      <td class="py-1">₦${formatAmountWithCommas(charges_machine)}</td>
+      <td class="py-1">₦${formatAmountWithCommas(total_pos_charges)}</td>
+      <td class="py-1">₦${formatAmountWithCommas(deposit)}</td>
+      <td class="py-1">₦${formatAmountWithCommas(billpayment_cash)}</td>
+      <td class="py-1">₦${formatAmountWithCommas(total_cash_at_hand)}</td>
+      <td class="py-1">₦${formatAmountWithCommas(cash_at_hand)}</td>
+      <td class="py-1">₦${formatAmountWithCommas(cash_in_machine)}</td>
+      <td class="py-1">₦${formatAmountWithCommas(total_fees)}</td>
+      <td class="py-1">₦${formatAmountWithCommas(total_machine_fee)}</td>
+      <td class="py-1">₦${formatAmountWithCommas(total_tax_fee)}</td>
+      <td class="py-1">₦${formatAmountWithCommas(total_transfer_fee)}</td>
+       <td class="py-1">₦${formatAmountWithCommas(opening_cash)}</td>
+       <td class="py-1">₦${formatAmountWithCommas(closing_cash)}</td>
+       <td class="py-1">₦${formatAmountWithCommas(
+         total_admin_withdrawal_machine
+       )}</td>
+       <td class="py-1">₦${formatAmountWithCommas(
+         total_admin_withdrawal_cash_at_hand
+       )}</td>
+      <td class="py-1">${closedByName}</td>
               
    `;
 }
@@ -1957,6 +2112,179 @@ export async function renderAdminWithdrawalsTable({
       console.error('Error rendering Admin Withdrawals Data:', error);
       adminWithdrawalsTableBody.innerHTML =
         '<tr><td colspan="12" class="table-error-text">Error loading Admin Withdrawals Data.</td></tr>';
+    }
+  }
+}
+
+let allBusinessDaySummaries = [];
+let total_records;
+let total_pages;
+let current_page;
+
+export async function renderBusinessDaySummariesTable({
+  page = 1,
+  filters,
+  shopId,
+  tableBodyId,
+  loadMoreButton,
+  append = false,
+}) {
+  if (
+    servicePermission === 'POS_TRANSACTIONS' ||
+    servicePermission === 'BOTH'
+  ) {
+    const businessDaySummariesTableBody = document.querySelector(tableBodyId);
+
+    if (!businessDaySummariesTableBody) {
+      console.error('Error: Business Day Summaries Table body not found');
+      return;
+    }
+
+    try {
+      let loadingRow = document.querySelector('.loading-row');
+      // console.log('loading', loadingRow);
+      if (!loadingRow) {
+        loadingRow = document.createElement('tr');
+        loadingRow.className = 'loading-row';
+        loadingRow.innerHTML = `<td colspan="12" class="table-loading-text">Loading Business Day Summaries  Data...</td>`;
+        businessDaySummariesTableBody.appendChild(loadingRow);
+      }
+
+      loadMoreButton.style.display = 'none';
+
+      // Build query with filters
+      const queryParams = new URLSearchParams({
+        shopId: shopId,
+        page,
+      });
+
+      // console.log('queryParams', queryParams);
+
+      if (filters.date_from) queryParams.append('date_from', filters.date_from);
+      if (filters.date_to) queryParams.append('date_to', filters.date_to);
+      if (filters.group_by) queryParams.append('group_by', filters.group_by);
+      if (filters.transaction_type)
+        queryParams.append('transaction_type', filters.transaction_type);
+
+      const result = await getBusinessDaySummaries({
+        shopId,
+        page,
+        filters,
+      });
+
+      console.log(result);
+
+      if (!result) throw new Error(result.message || 'Failed to fetch');
+
+      const businessDaySummaries = result.data;
+      total_pages = result.pagination.total_pages;
+      total_records = result.pagination.total_records;
+      current_page = result.pagination.current_page;
+
+      if (page === 1) {
+        allBusinessDaySummaries = [];
+      }
+
+      if (businessDaySummaries.length === 0 && current_page === 1) {
+        businessDaySummariesTableBody.innerHTML =
+          '<tr class="loading-row"><td colspan="12" class="table-error-text ">No Business Day Summaries Data Available.</td></tr>';
+        return;
+      }
+
+      businessDaySummaries.forEach((transaction) => {
+        if (!allBusinessDaySummaries.some((t) => t.id === transaction.id)) {
+          allBusinessDaySummaries.push(transaction);
+        }
+      });
+
+      // Clear the table body and render all accumulated transactions
+      if (!append) {
+        businessDaySummariesTableBody.innerHTML = '';
+      }
+      businessDaySummariesTableBody.innerHTML = '';
+
+      allBusinessDaySummaries.forEach((businessDaySummary, index) => {
+        //  console.log(businessDaySummary);
+        const {
+          id,
+          business_id,
+          shop_id,
+          business_day_date,
+          total_pos_capital,
+          total_withdrawals,
+          charges_cash,
+          charges_machine,
+          total_pos_charges,
+          total_fees,
+          deposit,
+          billpayment_cash,
+          cash_in_machine,
+          total_cash_at_hand,
+          cash_at_hand,
+          total_machine_fee,
+          total_tax_fee,
+          total_transfer_fee,
+          opening_cash,
+          closing_cash,
+          total_admin_withdrawal_machine,
+          total_admin_withdrawal_cash_at_hand,
+          closed_by,
+          Shop,
+          ClosedBy,
+        } = businessDaySummary;
+
+        const closedByName = `${ClosedBy.first_name} ${ClosedBy.last_name}`;
+        const shopName = Shop.shop_name;
+
+        console.log(cash_at_hand);
+
+        const row = document.createElement('tr');
+        row.classList.add('table-body-row');
+
+        row.innerHTML = getBusinessDaySummariesList(
+          index,
+          id,
+          business_id,
+          shop_id,
+          business_day_date,
+          total_pos_capital,
+          total_withdrawals,
+          charges_cash,
+          charges_machine,
+          total_pos_charges,
+          total_fees,
+          deposit,
+          billpayment_cash,
+          cash_in_machine,
+          total_cash_at_hand,
+          cash_at_hand,
+          total_machine_fee,
+          total_tax_fee,
+          total_transfer_fee,
+          opening_cash,
+          closing_cash,
+          total_admin_withdrawal_machine,
+          total_admin_withdrawal_cash_at_hand,
+          closed_by,
+          closedByName,
+          shopName
+        );
+
+        console.log(cash_at_hand);
+
+        businessDaySummariesTableBody.appendChild(row);
+      });
+
+      // Handle Load More button visibility
+      if (current_page >= total_pages) {
+        loadMoreButton.style.display = 'none';
+      } else {
+        loadMoreButton.style.display = 'block';
+      }
+    } catch (error) {
+      console.error('Error rendering Business Day Summaries Data:', error);
+      businessDaySummariesTableBody.innerHTML =
+        '<tr><td colspan="12" class="table-error-text">Error loading Business Day Summaries Data.</td></tr>';
     }
   }
 }

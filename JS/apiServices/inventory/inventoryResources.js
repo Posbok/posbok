@@ -126,7 +126,7 @@ export async function createProduct(shopId, productDetails) {
   try {
     //  console.log('Sending POST request...');
     const fetchedData = await safeFetch(
-      `${baseUrl}/api/inventory/shops/${shopId}/products`,
+      `${baseUrl}/api/inventory/shops/${shopId}/products-with-inventory`,
       {
         method: 'POST',
         headers: {
