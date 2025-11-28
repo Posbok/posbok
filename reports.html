@@ -396,8 +396,17 @@
       <!-- REPORTS - STAFF -->
       <div class="staffContainer staff-view">
 
+         <div class="pos-method-form_input ml-2 mb-6 staffSelectReport">
+            <label for="transactionType">Select Report Type:</label>
+            <select id="adminTransactionType" name="transactionType" required>
+               <option value="">Select Report Type</option>
+               <option value="pos_report">POS Report</option>
+               <option value="sales_report">Sales Report</option>
+            </select>
+         </div>
+
          <!-- POS TABLE - STAFF -->
-         <div class="reports card mb-1 staffPosReportDiv">
+         <div class="reports card mb-1 staffPosReportDiv hidden">
             <div class="reports-method">
                <h2 class="heading-text mb-2">
                   POS Reports
@@ -570,7 +579,7 @@
          </div>
 
          <!-- Admin Withdrawal TABLE - STAFF -->
-         <div class="reports card  mt-4 mb-4  staffAdminWithdrawalReportDiv">
+         <div class="reports card  mt-4 mb-4  staffAdminWithdrawalReportDiv hidden">
             <div class="reports-method">
                <h2 class="heading-text mb-2">
                   Admin Withdrawal Reports
@@ -667,7 +676,7 @@
          </div>
 
          <!-- SOLD TABLE - STAFF -->
-         <div class="reports card mt-4 mb-4 staffSalesReportDiv">
+         <div class="reports card mt-4 mb-4 staffSalesReportDiv hidden">
             <div class="reports-method">
                <h2 class="heading-text mb-2">
                   Sales Reports
