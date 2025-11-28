@@ -202,7 +202,7 @@ export async function getProductInventory(shopId) {
     //  console.log('Response received...');
 
     if (productInventoryData) {
-      // console.log(productInventoryData);
+      console.log(productInventoryData);
       hideGlobalLoader();
     }
 
@@ -504,14 +504,14 @@ export async function getExportStockTakingData(shopId, format = '') {
   console.log(shopId);
   try {
     const queryParams = new URLSearchParams({
-      shop_id: shopId,
+      // shop_id: shopId,
     });
     if (format) queryParams.append('format', format);
 
     showGlobalLoader();
 
     const response = await fetch(
-      `${baseUrl}/api/stock/stock-taking/export?${queryParams.toString()}`,
+      `${baseUrl}/api/stock/stock-taking/${shopId}/export?${queryParams.toString()}`,
       {
         method: 'GET',
         headers: {

@@ -697,7 +697,7 @@ export function bindOpenBusinessDayFormListener() {
           ? Number(businessDayShopDropdown.value)
           : Number(shopId),
         amount: Number(getAmountForSubmission(openPosCapitalAmount)),
-        notes: openingNotes,
+        //   notes: openingNotes,
       };
 
       // console.log('Opening Business Day with:', openBusinessDayDetails);
@@ -706,7 +706,7 @@ export function bindOpenBusinessDayFormListener() {
         '.openBusinessDaySubmitBtn'
       );
 
-      console.log(submitBusinessDay);
+      // console.log(submitBusinessDay);
 
       try {
         showGlobalLoader();

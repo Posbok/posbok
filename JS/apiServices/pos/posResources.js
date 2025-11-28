@@ -228,8 +228,8 @@ export async function openBusinessDay(openBusinessDayDetails) {
     console.log('Sending POST request...');
 
     const openBusinessDayData = await safeFetch(
-      `${baseUrl}/api/business-day/open`,
-      // `${baseUrl}/api/pos/business-day/`,
+      // `${baseUrl}/api/business-day/open`,
+      `${baseUrl}/api/pos/business-day/`,
       {
         method: 'POST',
         headers: {
@@ -320,7 +320,7 @@ export async function addPosCapital(posCapitalDetails) {
     }
 
     //  isStaff ? initAccountOverview() : '';
-    initAccountOverview();
+    //  initAccountOverview();
 
     return addPosCapitalData;
   } catch (error) {
@@ -530,7 +530,7 @@ export async function deletePosTransaction(transactionId) {
 export async function getAdminWithdrawals({ shopId, page = 1, filters = {} }) {
   try {
     const queryParams = new URLSearchParams({
-      shop_id: shopId,
+      shopId: shopId,
       page,
     });
 
@@ -540,7 +540,9 @@ export async function getAdminWithdrawals({ shopId, page = 1, filters = {} }) {
     if (filters.transaction_type)
       queryParams.append('transaction_type', filters.transaction_type);
 
-    //  console.log(queryParams.toString());
+    console.log(queryParams.toString());
+
+    console.log(`${baseUrl}/api/admin/withdrawals?${queryParams.toString()}`);
 
     showGlobalLoader();
     const adminWithdrawalsData = await safeFetch(

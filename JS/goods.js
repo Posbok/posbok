@@ -1320,7 +1320,7 @@ export function bindUpdateProductFormListener() {
   const form = document.querySelector('.updateProductModal');
   if (!form) return;
 
-  console.log(form);
+  //   console.log(form);
 
   if (form) {
     form.addEventListener('submit', async function (e) {

@@ -192,6 +192,7 @@ export function bindDepositPosCapitalFormListener() {
         const addPosCapitalData = await addPosCapital(posCapitalDetails);
 
         if (addPosCapitalData) {
+          console.log('Started here?');
           initAccountOverview();
           showToast('success', `✅ ${addPosCapitalData.message}`);
           console.log('POS Capital Funding', addPosCapitalData);
