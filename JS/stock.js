@@ -623,7 +623,7 @@ export function openAddStockModalBtn() {
   addStockItemForm();
 }
 
-export function openRetockProductModalBtn() {
+export function openRestockProductModalBtn() {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
   const restockItemContainer = document.querySelector('.restock');
@@ -648,8 +648,8 @@ document.addEventListener('DOMContentLoaded', () => {
     ?.addEventListener('click', openAddStockModalBtn);
 
   document
-    .querySelector('#openRetockProductModalBtn')
-    ?.addEventListener('click', openRetockProductModalBtn);
+    .querySelector('#openRestockProductModalBtn')
+    ?.addEventListener('click', openRestockProductModalBtn);
 
   //   document
   //     .querySelector('#openUpdateStockBtn')

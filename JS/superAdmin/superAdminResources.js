@@ -379,7 +379,7 @@ export async function getSuperAdminNotices(page = 1, limit = 5) {
 
     showGlobalLoader();
     const superAdminNotices = await safeFetch(
-      `${baseUrl}/api/super-admin/business-notices?${queryParams.toString()}`, // 👈 Use queryParams
+      `${baseUrl}/api/super-admin/business-notices?${queryParams.toString()}`,
       {
         method: 'GET',
         headers: {

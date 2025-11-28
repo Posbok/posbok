@@ -1,10 +1,15 @@
 import config from '../config';
 import './script.js';
-import { getPosTransactions } from './apiServices/pos/posResources';
+import {
+  getAdminWithdrawals,
+  getPosTransactions,
+} from './apiServices/pos/posResources';
 import { checkAndPromptCreateShop } from './apiServices/shop/shopResource';
 import {
   clearReceiptDiv,
+  formatAdminWithdrawalType,
   formatAmountWithCommas,
+  formatDateTimeReadable,
   formatSaleStatus,
   formatTransactionType,
   getFilterDates,
@@ -83,6 +88,7 @@ if (isAdmin) {
 
 // JS to Render saved POS from Database to help with Load More features of the transactions.
 let allPosTransactions = [];
+let allAdminWithdrawals = [];
 let allSalesReport = [];
 
 // Pagination control for load more
@@ -91,6 +97,7 @@ let shopPageTracker = {};
 // let shopPageTracker = {};
 let totalItems;
 let totalPages;
+let itemsPerPage;
 let pageSize = 10;
 let limit = pageSize;
 let currentFilters = {};
@@ -1483,7 +1490,7 @@ if (isStaff) {
           console.log(transactions);
 
           transactions.forEach((posTransaction) => {
-            console.log(posTransaction);
+            // console.log(posTransaction);
             const {
               transaction_type,
               amount,
@@ -1575,6 +1582,132 @@ if (isStaff) {
       }
     }
 
+    async function renderStaffAdminWithdrawalTable(
+      page = 1,
+      pageSize,
+      filters = {},
+      role = 'staff'
+    ) {
+      const adminWithdrawalsTableBody = document.querySelector(
+        `.adminWithdrawalTableDisplay_${role} tbody`
+      );
+
+      if (!adminWithdrawalsTableBody) {
+        console.error('Admin Withdrawal Error: Table body not found');
+        return;
+      }
+
+      try {
+        let loadingRow = document.querySelector('.loading-row');
+        if (!loadingRow) {
+          loadingRow = document.createElement('tr');
+          loadingRow.className = 'loading-row';
+          loadingRow.innerHTML = `<td colspan="11" class="table-loading-text">Loading transactions...</td>`;
+          adminWithdrawalsTableBody.appendChild(loadingRow);
+        }
+
+        loadMoreButton.style.display = 'none';
+
+        // Build query with filters
+        const queryParams = new URLSearchParams({
+          shopId: shopId,
+          page,
+          limit: pageSize,
+        });
+
+        if (filters.startDate)
+          queryParams.append('startDate', filters.startDate);
+        if (filters.endDate) queryParams.append('endDate', filters.endDate);
+        if (filters.type) queryParams.append('type', filters.type);
+        if (filters.status) queryParams.append('status', filters.status);
+
+        const result = await getAdminWithdrawals({
+          shopId,
+          page,
+          filters,
+        });
+
+        console.log('getAdminWithdrawals result', result);
+
+        if (!result)
+          throw new Error(
+            result.message || 'Failed to fetch Admin Withdrawals'
+          );
+
+        const adminWithdrawals = result.data.withdrawals;
+        totalPages = result.data.pagination.totalPages;
+        totalItems = result.data.pagination.totalItems;
+        currentPage = result.data.pagination.currentPage;
+        itemsPerPage = result.data.pagination.itemsPerPage;
+
+        // Only reset array if starting from page 1
+        if (page === 1) {
+          allAdminWithdrawals = [];
+        }
+
+        if (adminWithdrawals.length === 0 && currentPage === 1) {
+          adminWithdrawalsTableBody.innerHTML =
+            '<tr class="loading-row"><td colspan="12" class="table-error-text ">No Admin Withdrawals Data Available.</td></tr>';
+          return;
+        }
+
+        adminWithdrawals.forEach((transaction) => {
+          if (!allAdminWithdrawals.some((t) => t.id === transaction.id)) {
+            allAdminWithdrawals.push(transaction);
+          }
+        });
+
+        // Clear the table body and render all accumulated transactions
+        adminWithdrawalsTableBody.innerHTML = '';
+
+        allAdminWithdrawals.forEach((posTransaction, index) => {
+          //  console.log(posTransaction);
+          const {
+            business_id,
+            shop_id,
+            withdrawal_source,
+            amount,
+            transfer_fee,
+            business_day,
+            created_by,
+            created_at,
+            creator,
+          } = posTransaction;
+
+          const creatorName = `${creator.first_name} ${creator.last_name}`;
+
+          const row = document.createElement('tr');
+          row.classList.add('table-body-row');
+
+          row.innerHTML = `
+                <td class="py-1">${index + 1}</td>
+                <td class="py-1">${creatorName}</td>
+                <td class="py-1">${formatAdminWithdrawalType(
+                  withdrawal_source
+                )}</td>
+                <td class="py-1">₦${formatAmountWithCommas(amount)}</td>
+                <td class="py-1">${business_day}</td>
+                <td class="py-1">${formatDateTimeReadable(created_at)}</td>
+                        
+             `;
+
+          adminWithdrawalsTableBody.appendChild(row);
+        });
+
+        // Handle Load More button visibility
+        if (currentPage >= totalPages) {
+          loadMoreButton.style.display = 'none';
+        } else {
+          loadMoreButton.style.display = 'block';
+        }
+      } catch (error) {
+        console.error('Error rendering transactions:', error);
+        adminWithdrawalsTableBody.innerHTML =
+          '<tr><td colspan="6" class="table-error-text">Error loading transactions.</td></tr>';
+      }
+    }
+
+    renderStaffAdminWithdrawalTable();
     renderStaffPosTable();
   }
 
