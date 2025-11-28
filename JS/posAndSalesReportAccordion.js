@@ -1522,7 +1522,6 @@ export function getBusinessDaySummariesList(
   closedByName,
   shopName
 ) {
-  console.log(cash_at_hand);
   return `
       <td class="py-1">${index + 1}</td>
       <td class="py-1">${business_day_date}</td>
@@ -2038,7 +2037,7 @@ export async function renderAdminWithdrawalsTable({
         filters,
       });
 
-      console.log(result);
+      // console.log(result);
 
       if (!result) throw new Error(result.message || 'Failed to fetch');
 
@@ -2162,9 +2161,6 @@ export async function renderBusinessDaySummariesTable({
 
       if (filters.date_from) queryParams.append('date_from', filters.date_from);
       if (filters.date_to) queryParams.append('date_to', filters.date_to);
-      if (filters.group_by) queryParams.append('group_by', filters.group_by);
-      if (filters.transaction_type)
-        queryParams.append('transaction_type', filters.transaction_type);
 
       const result = await getBusinessDaySummaries({
         shopId,
@@ -2236,8 +2232,6 @@ export async function renderBusinessDaySummariesTable({
         const closedByName = `${ClosedBy.first_name} ${ClosedBy.last_name}`;
         const shopName = Shop.shop_name;
 
-        console.log(cash_at_hand);
-
         const row = document.createElement('tr');
         row.classList.add('table-body-row');
 
@@ -2269,8 +2263,6 @@ export async function renderBusinessDaySummariesTable({
           closedByName,
           shopName
         );
-
-        console.log(cash_at_hand);
 
         businessDaySummariesTableBody.appendChild(row);
       });

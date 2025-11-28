@@ -145,10 +145,11 @@ function getBusinessDaySummariesFilters(role, shopId) {
 
   return {
     date_from:
-      document.getElementById(`financialSummaryDateFrom_${suffix}`)?.value ||
-      '',
+      document.getElementById(`businessDaySummariesTableDateFrom_${suffix}`)
+        ?.value || '',
     date_to:
-      document.getElementById(`financialSummaryDateTo_${suffix}`)?.value || '',
+      document.getElementById(`businessDaySummariesTableDateTo_${suffix}`)
+        ?.value || '',
   };
 }
 
@@ -222,6 +223,15 @@ function resetFinancialSummaryFilters(role, shopId) {
 
   document.getElementById(`financialSummaryDateFrom_${suffix}`).value = '';
   document.getElementById(`financialSummaryDateTo_${suffix}`).value = '';
+}
+
+function resetBusinessDaySummariesFilters(role, shopId) {
+  const suffix = role === 'admin' ? `${role}_${shopId}` : role;
+
+  document.getElementById(`businessDaySummariesTableDateFrom_${suffix}`).value =
+    '';
+  document.getElementById(`businessDaySummariesTableDateTo_${suffix}`).value =
+    '';
 }
 
 function getSalesFilters(role, shopId) {
@@ -489,16 +499,14 @@ function setupBusinessDaysSummariesFilters({
     `applyBusinessDaySummariesTableFiltersBtn_admin_${shopId}`
   );
   const resetBtn = document.getElementById(
-    `resetBusinessDaySummariesTableFiltersBtn_admin_${shopId}`
+    `resetBusinessDaySummariesTableFiltersBtn_${shopId}`
   );
 
   const loadMoreBtn = document.getElementById(
     `adminBusinessDaySummariesLoadMoreButton_admin_${shopId}`
   );
 
-  if (!loadMoreBtn) return;
-
-  if (!applyBtn || !resetBtn) return;
+  if (!applyBtn || !resetBtn || !loadMoreBtn) return;
 
   // Apply Filters
   applyBtn.addEventListener('click', () => {
@@ -506,9 +514,13 @@ function setupBusinessDaysSummariesFilters({
     currentFiltersByShop[shopId] = filters;
 
     renderBusinessDaySummariesTableFn({
+      // page,
       filters,
       shopId,
-      tableBodyId: `#financialSummaryBody-${shopId}`,
+      tableBodyId: `#businessDaySummariesTableBody-${shopId}`,
+      loadMoreButton: document.getElementById(
+        `adminBusinessDaySummariesLoadMoreButton_admin_${shopId}`
+      ),
       append: false,
     });
   });
@@ -517,14 +529,18 @@ function setupBusinessDaysSummariesFilters({
   resetBtn.addEventListener('click', () => {
     const role = 'admin';
 
-    resetFinancialSummaryFilters(role, shopId);
-    const filters = getFinancialSummaryFilters(role, shopId);
+    resetBusinessDaySummariesFilters(role, shopId);
+    const filters = getBusinessDaySummariesFilters(role, shopId);
     currentFiltersByShop[shopId] = filters;
 
     renderBusinessDaySummariesTableFn({
+      // page,
       filters,
       shopId,
-      tableBodyId: `#financialSummaryBody-${shopId}`,
+      tableBodyId: `#businessDaySummariesTableBody-${shopId}`,
+      loadMoreButton: document.getElementById(
+        `adminBusinessDaySummariesLoadMoreButton_admin_${shopId}`
+      ),
       append: false,
     });
   });
@@ -537,9 +553,9 @@ function setupBusinessDaysSummariesFilters({
       page: nextPage,
       filters,
       shopId,
-      tableBodyId,
+      tableBodyId: `#businessDaySummariesTableBody-${shopId}`,
       loadMoreButton: document.getElementById(
-        `resetBusinessDaySummariesTableFiltersBtn_admin_${shopId}`
+        `adminBusinessDaySummariesLoadMoreButton_admin_${shopId}`
       ),
       append: true,
     });
