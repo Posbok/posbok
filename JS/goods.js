@@ -1631,6 +1631,50 @@ export function bindDeleteProductFormListener() {
   }
 }
 
+export function bindDeleteCategoryFormListener() {
+  const form = document.querySelector('.deleteCategoryContainerModal');
+  if (!form) return;
+
+  const deleteCategoryButton = form.querySelector('.deleteCategoryButton');
+  const cancelButton = form.querySelector('.cancel-close');
+
+  if (!form.dataset.bound) {
+    form.dataset.bound = true;
+
+    cancelButton?.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeModal();
+    });
+
+    deleteCategoryButton?.addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      const shopId = form.dataset.shopId;
+      const categoryId = form.dataset.categoryId;
+
+      if (!shopId) {
+        showToast('fail', '❎ No shop ID found.');
+        return;
+      }
+      if (!categoryId) {
+        showToast('fail', '❎ No Category ID found.');
+        return;
+      }
+
+      try {
+        showBtnLoader(deleteCategoryButton);
+        await deleteCategory(categoryId, shopId);
+        hideBtnLoader(deleteCategoryButton);
+        closeModal();
+        showToast('success', '✅ Category deleted successfully.');
+      } catch (err) {
+        hideBtnLoader(deleteCategoryButton);
+        showToast('fail', `❎ ${err.message}`);
+      }
+    });
+  }
+}
+
 // Delete Category
 export function deleteCategoryForm(category, categoryId) {
   const form = document.querySelector('.deleteCategoryContainerModal');

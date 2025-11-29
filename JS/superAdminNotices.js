@@ -8,6 +8,7 @@ import {
 import './script.js';
 import { closeModal, showToast } from './script.js';
 import {
+  deleteNotice,
   getSuperAdminNotices,
   notifyBusiness,
 } from './superAdmin/superAdminResources.js';
@@ -45,6 +46,7 @@ if (isSuperAdmin && isSuperAdminNoticePage) {
       ?.addEventListener('click', openNotifyAllBusinessModal_2);
 
     bindNotifyAllBusinessFormListener_2();
+    bindDeleteNoticeFormListener();
   });
 }
 
@@ -57,7 +59,7 @@ function handleLoadMore() {
   //   );
 
   superAdminNoticesContainer.innerHTML =
-    '<p class="table-error-text">XXXXXXX loading notices.</p>';
+    '<p class="table-error-text">Loading notices...</p>';
 
   loadSuperAdminNotices(superAdminNoticesPageTracker, NOTICES_LIMIT_PER_PAGE, {
     append: true,
@@ -129,7 +131,7 @@ function renderSuperAdminNotices(notices) {
     const senderName = `${SentBy.first_name} ${SentBy.last_name}`;
 
     const noticeHTML = `
-      <div class="message-card message-card_${id}" data-notice-id="${id}">
+      <div class="message-card message-card_${id}" data-notice-id="${id}" data-notice-title="${title}">
         <div class="user-inbox">
           <div class="user-inbox_header">
             <div>
@@ -154,10 +156,8 @@ function renderSuperAdminNotices(notices) {
           </div>
 
           <div class="user-inbox_actions">
-            <button class="hero-btn-outline deleteNoticeBtn" data-notice-id="${id}" title="Mark as read">
-              <i class="fa-solid fa-envelope-circle-check"></i>
-            </button>
-            <button class="hero-btn-outline deleteNoticeBtn" data-notice-id="${id}" title="Delete Notice">
+       
+            <button class="hero-btn-outline deleteNoticeBtn" data-notice-id="${id}"  title="Delete Notice">
               <i class="fa-solid fa-trash-can"></i>
             </button>
           </div>
@@ -171,16 +171,39 @@ function renderSuperAdminNotices(notices) {
 
     // **Attach the listener here**
     card.addEventListener('click', (e) => {
-      console.log('object');
-      // Ignore clicks on buttons
       if (e.target.closest('.hero-btn-outline')) return;
 
       const noticeId = card.dataset.noticeId;
       openNoticeFullMessageModal(noticeId);
     });
 
+    const deleteNoticeBtn = card.querySelector('.deleteNoticeBtn');
+
+    deleteNoticeBtn.addEventListener('click', async function (e) {
+      e.stopPropagation();
+
+      const noticeId = card.dataset.noticeId;
+      const noticeTitle = card.dataset.noticeTitle;
+
+      openDeleteNoticeContainer(noticeTitle, noticeId);
+    });
+
     superAdminNoticesContainer.appendChild(card);
   });
+}
+
+function openDeleteNoticeContainer(noticeTitle, noticeId) {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const deleteNoticeContainer = document.querySelector(
+    '.deleteNoticeContainer'
+  );
+
+  if (deleteNoticeContainer) deleteNoticeContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  deleteNoticeForm(noticeTitle, noticeId);
 }
 
 function openNoticeFullMessageModal(noticeId) {
@@ -222,19 +245,12 @@ export function displayfullNotice(noticeId) {
   const form = document.querySelector('.messageDisplayModalContainer');
   if (!form) return;
 
-  console.log('Code got here');
-
   const titleEl = document.querySelector('.open-inbox_tab-title');
   const senderEl = document.querySelector('.open-inbox_tab-name');
   const messageEl = document.querySelector('.open-inbox_tab-text--full');
   const timeEl = document.querySelector('.open-inbox_info-time');
   const dateEl = document.querySelector('.open-inbox_info-date');
 
-  console.log(titleEl, senderEl, messageEl, timeEl, dateEl);
-
-  // Find matching notice from already loaded array
-  console.log(allSuperAdminNotices);
-  console.log(noticeId);
   const selected = allSuperAdminNotices.find((n) => n.id == noticeId);
 
   console.log(selected);
@@ -248,6 +264,17 @@ export function displayfullNotice(noticeId) {
   messageEl.textContent = selected.message;
   timeEl.textContent = new Date(selected.created_at).toLocaleTimeString();
   dateEl.textContent = new Date(selected.created_at).toLocaleDateString();
+}
+
+// Delete Notice
+export function deleteNoticeForm(noticeTitle, noticeId) {
+  const form = document.querySelector('.deleteNoticeContainerModal');
+  if (!form) return;
+
+  form.dataset.noticeId = noticeId;
+
+  document.getElementById('confirmation-text-2').textContent =
+    noticeTitle || '';
 }
 
 export function bindNotifyAllBusinessFormListener_2() {
@@ -327,6 +354,55 @@ export function bindNotifyAllBusinessFormListener_2() {
         );
       } catch (err) {
         hideBtnLoader(notifyAllBusinessButton);
+        showToast('fail', `❎ ${err.message}`);
+      }
+    });
+  }
+}
+
+export function bindDeleteNoticeFormListener() {
+  const form = document.querySelector('.deleteNoticeContainerModal');
+  if (!form) return;
+
+  const deleteNoticeButton = form.querySelector('.deleteNoticeButton');
+  const cancelButton = form.querySelector('.cancel-close');
+
+  if (!form.dataset.bound) {
+    form.dataset.bound = true;
+
+    cancelButton?.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeModal();
+    });
+
+    deleteNoticeButton?.addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      const noticeId = form.dataset.noticeId;
+
+      if (!noticeId) {
+        showToast('fail', '❎ No Notice ID found.');
+        return;
+      }
+
+      try {
+        showBtnLoader(deleteNoticeButton);
+        const returnedDeleteNotice = await deleteNotice(noticeId);
+
+        hideBtnLoader(deleteNoticeButton);
+        closeModal();
+
+        showToast(
+          'success',
+          returnedDeleteNotice.message ||
+            '✅ Notice deleted successfully XXXXX.'
+        );
+        await loadSuperAdminNotices(
+          superAdminNoticesPageTracker,
+          NOTICES_LIMIT_PER_PAGE
+        );
+      } catch (err) {
+        hideBtnLoader(deleteNoticeButton);
         showToast('fail', `❎ ${err.message}`);
       }
     });

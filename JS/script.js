@@ -919,6 +919,9 @@ export function closeModal() {
   const deleteCategoryContainer = document.querySelector(
     '.deleteCategoryContainer'
   );
+  const deleteNoticeContainer = document.querySelector(
+    '.deleteNoticeContainer'
+  );
   const saleDetails = document.querySelector('.saleDetails');
 
   const getBarcodeImageContainer = document.querySelector(
@@ -1203,6 +1206,10 @@ export function closeModal() {
 
   if (deleteCategoryContainer) {
     deleteCategoryContainer.classList.remove('active');
+  }
+
+  if (deleteNoticeContainer) {
+    deleteNoticeContainer.classList.remove('active');
   }
 
   if (saleDetails) {

@@ -2,7 +2,7 @@ import config from '../../config.js';
 import { safeFetch } from '../apiServices/utility/safeFetch.js';
 
 import { hideGlobalLoader, showGlobalLoader } from '../helper/helper.js';
-import { closeModal } from '../script.js';
+import { closeModal, showToast } from '../script.js';
 import { populateAllBusinessesTable } from '../superAdmin.js';
 
 const baseUrl = config.baseUrl;
@@ -436,6 +436,38 @@ export async function getSuperAdminNotices(page = 1, limit = 5) {
   } catch (error) {
     hideGlobalLoader();
     console.error('Error receiving Super Admin Notices:', error);
+    throw error;
+  }
+}
+
+export async function deleteNotice(noticeId) {
+  try {
+    //  console.log('Sending POST request...');
+
+    showGlobalLoader();
+
+    const fetchedData = await safeFetch(
+      `${baseUrl}/api/super-admin/business-notices/${noticeId}`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    if (fetchedData) {
+      // console.log('Notice deleted successfully:', fetchedData);
+      showToast('success', `✅ ${fetchedData.message}`);
+      // await renderProductInventoryTable(shopId); // Refresh list or update UI
+      hideGlobalLoader();
+    }
+
+    return fetchedData;
+  } catch (error) {
+    hideGlobalLoader();
+    //  console.error('Error deleting Notice', error);
+    showToast('error', '❌ Failed to delete Notice');
     throw error;
   }
 }
