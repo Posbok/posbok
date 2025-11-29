@@ -1883,7 +1883,7 @@ body.authentication {
   max-width: 100rem;
   max-height: 85vh;
   height: auto;
-  z-index: 10000;
+  z-index: 999999999999;
   transition: opacity .3s ease-in-out, visibility .3s ease-in-out;
   overflow-y: auto; }
   .modal .heading-subtext {
@@ -2217,8 +2217,8 @@ body.authentication {
   border-bottom: 1px solid #0F7A89;
   border-right: 1px solid #0F7A89;
   border-bottom-right-radius: 2.5rem;
-  padding: 1rem .5rem 2rem 1rem;
-  width: 95%;
+  padding: 4rem .5rem 2rem 1rem;
+  width: 90%;
   margin-bottom: 2rem;
   box-shadow: rgba(0, 0, 0, 0.2) -2px 4px 11px;
   cursor: pointer; }
@@ -2254,7 +2254,7 @@ body.authentication {
     .message-card .user-inbox_info {
       position: absolute;
       right: 1rem;
-      top: -5px;
+      top: -20px;
       width: max-content;
       text-align: right;
       font-size: 1rem; }
