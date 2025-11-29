@@ -29,3 +29,10 @@
       }
    }
 }
+
+.addUser-form,
+.signup-form {
+   &_input {
+      margin-top: 2rem;
+   }
+}

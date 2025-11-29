@@ -31,6 +31,8 @@
    <!-- <script defer type="module" src="JS/script.js"></script> -->
    <!-- <script defer type="module" src="JS/login.js"></script> -->
 
+   <script defer type="module" src="JS/apiServices/utility/nigerianLocations.js"></script>
+
    <script src="/dist/main.bundle.js" defer></script>
    <script src="/dist/signup.bundle.js" defer></script>
 
@@ -70,13 +72,6 @@
                   <input id="lastName" type="text" placeholder="Enter Last Name" name="lastName" required>
                </div>
 
-               <!-- Residential Address -->
-               <div class="signup-form_input">
-                  <label for="residentialAddress">Residential Address </label>
-
-                  <input id="residentialAddress" type="text" placeholder="Enter Residential Address"
-                     name="residentialAddress" required>
-               </div>
 
                <!-- Date of Birth -->
                <div class="signup-form_input">
@@ -89,18 +84,46 @@
                </div>
 
                <!-- State of Origin -->
-               <div class="signup-form_input">
+               <!-- <div class="signup-form_input">
                   <label for="stateOfOrigin">State Of Origin </label>
 
                   <input id="stateOfOrigin" type="text" placeholder="Enter State of Origin" name="stateOfOrigin"
                      required>
+               </div> -->
+
+               <!-- L.G.A -->
+               <!-- <div class="signup-form_input">
+                  <label for="lga">L.G.A </label>
+
+                  <input id="lga" type="text" placeholder="Enter L.G.A" name="lga" required>
+               </div> -->
+
+               <!-- State of Origin -->
+               <div class="signup-form_input">
+                  <label for="stateOfOrigin">State Of Origin</label>
+
+                  <select id="stateOfOrigin" name="stateOfOrigin" required>
+                     <option value="">Select State</option>
+                  </select>
                </div>
 
                <!-- L.G.A -->
                <div class="signup-form_input">
-                  <label for="lga">L.G.A </label>
+                  <label for="lga">L.G.A</label>
 
-                  <input id="lga" type="text" placeholder="Enter L.G.A" name="lga" required>
+                  <select id="lga" name="lga" required>
+                     <option value="">Select LGA</option>
+                  </select>
+               </div>
+
+
+
+               <!-- Residential Address -->
+               <div class="signup-form_input">
+                  <label for="address">Residential Address </label>
+
+                  <input id="residentialAddress" type="text" placeholder="Enter Residential Address"
+                     name="residentialAddress" required>
                </div>
 
                <!-- Email -->

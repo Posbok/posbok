@@ -32,6 +32,8 @@
    <!-- <script defer type="module" src="JS/script.js"></script>
    <script defer type="module" src="JS/goods.js"></script> -->
 
+   <script defer type="module" src="JS/apiServices/utility/nigerianLocations.js"></script>
+
    <!-- <script src="dist/main.bundle.js" defer></script> -->
    <script src="dist/staff.bundle.js" defer></script>
 
@@ -289,12 +291,6 @@
             <input id="staffLastName" type="text" placeholder="Enter LastName" name="staffLastName" required>
          </div>
 
-         <!-- staff Address -->
-         <div class="addUser-form_input">
-            <label for="staffAddress">Staff Address</label>
-
-            <input id="staffAddress" type="text" placeholder="Enter Staff Address" name="staffAddress" required>
-         </div>
 
          <!-- Date of Birth -->
          <div class="addUser-form_input">
@@ -308,19 +304,46 @@
          </div>
 
          <!-- State of origin -->
-         <div class="addUser-form_input">
+         <!-- <div class="addUser-form_input">
             <label for="staffStateOfOrigin">State Of Origin</label>
 
             <input id="staffStateOfOrigin" type="text" placeholder="Enter State of Origin" name="staffStateOfOrigin"
                required>
+         </div> -->
+
+         <!-- LGA -->
+         <!-- <div class="addUser-form_input">
+            <label for="staffLga">LGA</label>
+
+            <input id="staffLga" type="text" placeholder="Enter LGA" name="staffLga" required>
+         </div> -->
+
+         <!-- State of origin -->
+         <div class="addUser-form_input">
+            <label for="staffStateOfOrigin">State Of Origin</label>
+
+            <select id="staffStateOfOrigin" name="staffStateOfOrigin" required>
+               <option value="">Select State</option>
+            </select>
          </div>
 
          <!-- LGA -->
          <div class="addUser-form_input">
             <label for="staffLga">LGA</label>
 
-            <input id="staffLga" type="text" placeholder="Enter LGA" name="staffLga" required>
+            <select id="staffLga" name="staffLga" required>
+               <option value="">Select LGA</option>
+            </select>
          </div>
+
+
+         <!-- staff Address -->
+         <div class="addUser-form_input">
+            <label for="staffAddress">Staff Address</label>
+
+            <input id="staffAddress" type="text" placeholder="Enter Staff Address" name="staffAddress" required>
+         </div>
+
 
          <!-- Staff Phone Number -->
          <div class="addUser-form_input">

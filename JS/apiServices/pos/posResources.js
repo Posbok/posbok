@@ -984,14 +984,14 @@ export async function clearDashboardFieldApi(clearDashboardFieldDetails) {
 export async function getBusinessDaySummaries({
   shopId,
   page = 1,
-  limit = 1,
+  //   limit = 1,
   filters = {},
 }) {
   try {
     const queryParams = new URLSearchParams({
       shop_id: shopId,
       page,
-      limit,
+      // limit,
     });
 
     if (filters.date_from) queryParams.append('date_from', filters.date_from);

@@ -7,7 +7,10 @@ import {
   redirectWithDelay,
   showToast,
 } from './script';
-import { registerAdmin, registerBusiness } from './apiServices/authentication/registrationResource.js';
+import {
+  registerAdmin,
+  registerBusiness,
+} from './apiServices/authentication/registrationResource.js';
 
 // Create Business Registration Form
 const createbusinessForm = document.getElementById('createbusinessForm');

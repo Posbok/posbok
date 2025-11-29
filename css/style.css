@@ -1665,6 +1665,10 @@ body.authentication {
     .inventory-method-form .hero-btn-dark {
       margin-top: 3rem; }
 
+.addUser-form_input,
+.signup-form_input {
+  margin-top: 2rem; }
+
 .sellProduct,
 .sellStock,
 .adminSellProduct {
