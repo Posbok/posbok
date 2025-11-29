@@ -955,6 +955,9 @@ export function closeModal() {
   const restrictBusinessContainer = document.querySelector(
     '.restrictBusinessContainer'
   );
+  const unrestrictBusinessContainer = document.querySelector(
+    '.unrestrictBusinessContainer'
+  );
   const notifyBusinessContainer = document.querySelector(
     '.notifyBusinessContainer'
   );
@@ -1035,6 +1038,10 @@ export function closeModal() {
 
   if (restrictBusinessContainer) {
     restrictBusinessContainer.classList.remove('active');
+  }
+
+  if (unrestrictBusinessContainer) {
+    unrestrictBusinessContainer.classList.remove('active');
   }
 
   if (activateBusinessContainer) {

@@ -19,6 +19,7 @@ import {
   getPlatformStatistics,
   notifyBusiness,
   restrictBusiness,
+  unRestrictBusiness,
   updateBusinessDetails,
 } from './superAdmin/superAdminResources.js';
 
@@ -324,6 +325,97 @@ export function bindRestrictBusinessFormListener() {
         );
       } catch (err) {
         hideBtnLoader(restrictBusinessButton);
+        showToast('fail', `❎ ${err.message}`);
+      }
+    });
+  }
+}
+
+// Unrestrict Business
+export function openUnrestrictBusinessModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const unrestrictBusinessContainer = document.querySelector(
+    '.unrestrictBusinessContainer'
+  );
+
+  if (unrestrictBusinessContainer)
+    unrestrictBusinessContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
+export function unrestrictBusinessForm(business) {
+  const form = document.querySelector('.unrestrictBusinessContainerModal');
+  if (!form) return;
+
+  form.dataset.businessId = business.id;
+
+  form.querySelector('#confirmation-text-2').textContent =
+    business.business_name;
+}
+
+export function bindUnrestrictBusinessFormListener() {
+  const form = document.querySelector('.unrestrictBusinessContainerModal');
+  if (!form) return;
+
+  const unrestrictBusinessButton = form.querySelector(
+    '.unrestrictBusinessButton'
+  );
+  const cancelButton = form.querySelector('.cancel-close');
+
+  if (!form.dataset.bound) {
+    form.dataset.bound = true;
+
+    cancelButton?.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeModal();
+    });
+
+    unrestrictBusinessButton?.addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      const businessId = form.dataset.businessId;
+
+      if (!businessId) {
+        showToast('fail', '❎ No Business ID found.');
+        return;
+      }
+
+      const businessunRestrictionDetails = {
+        business_id: Number(businessId),
+      };
+
+      console.log(
+        'Submitting Business Unrestriction Details with:',
+        businessunRestrictionDetails
+      );
+
+      try {
+        showBtnLoader(unrestrictBusinessButton);
+        const unrestrictBusinessData = await unRestrictBusiness(
+          businessunRestrictionDetails
+        );
+
+        if (!unrestrictBusinessData) {
+          console.error('fail', unrestrictBusinessData.message);
+          return;
+        }
+
+        console.log(unrestrictBusinessData);
+
+        hideBtnLoader(unrestrictBusinessButton);
+        closeModal();
+        loadPlatformStatisticsDashboard();
+        await populateAllBusinessesTable({ page: 1, filters: currentFilter });
+        clearFormInputs();
+        showToast(
+          'success',
+          `✅ ${unrestrictBusinessData.message}` ||
+            '✅ Business Unestricted successfully.'
+        );
+      } catch (err) {
+        hideBtnLoader(unrestrictBusinessButton);
         showToast('fail', `❎ ${err.message}`);
       }
     });
@@ -872,6 +964,7 @@ document.addEventListener('DOMContentLoaded', () => {
   bindRenderBusinessDetailById(); // Only once
   bindActivateBusinessFormListener();
   bindRestrictBusinessFormListener();
+  bindUnrestrictBusinessFormListener();
   bindNotifyBusinessFormListener();
   bindNotifyAllBusinessFormListener();
   bindDeleteBusinessFormListener();
@@ -1052,6 +1145,10 @@ export async function populateAllBusinessesTable({
                            <i class="fa-solid fa-user-lock"></i>
                         </button>
 
+                        <button class="hero-btn-outline unrestrictBusinessButton" data-business-id="${businessId}" title="Unrestrict Business">
+                           <i class="fa-solid fa-user-check"></i>
+                        </button>
+
                         <button class="hero-btn-outline notifyBusinessButton" data-business-id="${businessId}" title="Send Message">
                            <i class="fa-solid fa-paper-plane"></i>
                         </button>
@@ -1143,6 +1240,40 @@ export async function populateAllBusinessesTable({
             hideGlobalLoader();
             openRestrictBusinessModal(); // Show modal after data is ready
             restrictBusinessForm(businessDetail.data);
+          } else {
+            hideGlobalLoader();
+            showToast('fail', '❌ Failed to fetch Business details.');
+          }
+        }
+      });
+
+      // Unrestrict Business
+      const unrestrictBusinessButton = row.querySelector(
+        '.unrestrictBusinessButton'
+      );
+
+      unrestrictBusinessButton?.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        showGlobalLoader();
+
+        const businessId = unrestrictBusinessButton.dataset.businessId;
+
+        const unrestrictBusinessContainer = document.querySelector(
+          '.unrestrictBusinessContainer'
+        );
+
+        if (unrestrictBusinessContainer) {
+          // Store businessId in modal container for reference
+          unrestrictBusinessContainer.dataset.businessId = businessId;
+
+          // Fetch Shop detail
+          const businessDetail = await getBusinessDetailById(businessId);
+
+          // Call function to prefill modal inputs
+          if (businessDetail?.data) {
+            hideGlobalLoader();
+            openUnrestrictBusinessModal(); // Show modal after data is ready
+            unrestrictBusinessForm(businessDetail.data);
           } else {
             hideGlobalLoader();
             showToast('fail', '❌ Failed to fetch Business details.');
