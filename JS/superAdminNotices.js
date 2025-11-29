@@ -129,7 +129,7 @@ function renderSuperAdminNotices(notices) {
     const senderName = `${SentBy.first_name} ${SentBy.last_name}`;
 
     const noticeHTML = `
-      <div class="message-card">
+      <div class="message-card message-card_${id}" data-notice-id="${id}">
         <div class="user-inbox">
           <div class="user-inbox_header">
             <div>
@@ -165,12 +165,37 @@ function renderSuperAdminNotices(notices) {
       </div>
     `;
 
-    // Convert string → DOM node
     const wrapper = document.createElement('div');
     wrapper.innerHTML = noticeHTML;
+    const card = wrapper.firstElementChild;
 
-    superAdminNoticesContainer.appendChild(wrapper.firstElementChild);
+    // **Attach the listener here**
+    card.addEventListener('click', (e) => {
+      console.log('object');
+      // Ignore clicks on buttons
+      if (e.target.closest('.hero-btn-outline')) return;
+
+      const noticeId = card.dataset.noticeId;
+      openNoticeFullMessageModal(noticeId);
+    });
+
+    superAdminNoticesContainer.appendChild(card);
   });
+}
+
+function openNoticeFullMessageModal(noticeId) {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const messageDisplayModalContainer = document.querySelector(
+    '.messageDisplayModalContainer'
+  );
+
+  if (messageDisplayModalContainer)
+    messageDisplayModalContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  displayfullNotice(noticeId);
 }
 
 export function openNotifyAllBusinessModal_2() {
@@ -193,11 +218,41 @@ export function notifyAllBusinessForm_2() {
   if (!form) return;
 }
 
+export function displayfullNotice(noticeId) {
+  const form = document.querySelector('.messageDisplayModalContainer');
+  if (!form) return;
+
+  console.log('Code got here');
+
+  const titleEl = document.querySelector('.open-inbox_tab-title');
+  const senderEl = document.querySelector('.open-inbox_tab-name');
+  const messageEl = document.querySelector('.open-inbox_tab-text--full');
+  const timeEl = document.querySelector('.open-inbox_info-time');
+  const dateEl = document.querySelector('.open-inbox_info-date');
+
+  console.log(titleEl, senderEl, messageEl, timeEl, dateEl);
+
+  // Find matching notice from already loaded array
+  console.log(allSuperAdminNotices);
+  console.log(noticeId);
+  const selected = allSuperAdminNotices.find((n) => n.id == noticeId);
+
+  console.log(selected);
+  if (!selected) return;
+
+  // Update modal content
+  senderEl.textContent = `${selected.SentBy.first_name} ${selected.SentBy.last_name}`;
+  titleEl.textContent = `${selected.notice_type.toUpperCase()}: ${
+    selected.title
+  }`;
+  messageEl.textContent = selected.message;
+  timeEl.textContent = new Date(selected.created_at).toLocaleTimeString();
+  dateEl.textContent = new Date(selected.created_at).toLocaleDateString();
+}
+
 export function bindNotifyAllBusinessFormListener_2() {
   const form = document.querySelector('.notifyAllBusinessContainerModal_2');
   if (!form) return;
-
-  console.log(form);
 
   const notifyAllBusinessButton = form.querySelector(
     '.notifyAllBusinessButton_2'
