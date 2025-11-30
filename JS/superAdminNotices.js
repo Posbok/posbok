@@ -136,9 +136,12 @@ function renderSuperAdminNotices(notices) {
       notice_type,
       business_id,
       SentBy,
+      BusinessDetails,
       is_read,
     } = notice;
     const senderName = `${SentBy.first_name} ${SentBy.last_name}`;
+
+    const businessName = BusinessDetails.business_name;
 
     const noticeHTML = `
       <div class="message-card message-card_${id} ${
@@ -149,6 +152,7 @@ function renderSuperAdminNotices(notices) {
             <div>
               <h2 class="heading-subtext"><span class="user-inbox_tab-name">${senderName}</span></h2>
               <h4 class="heading-minitext"><span class="user-inbox_tab-title">${notice_type.toUpperCase()}: ${title}</span></h4>
+              <h4 class="heading-minitext"><span class="user-inbox_tab-businessName">Business Name: ${businessName}</span></h4>
             </div>
           </div>
 
@@ -265,6 +269,7 @@ export function displayfullNotice(noticeId) {
 
   const titleEl = document.querySelector('.open-inbox_tab-title');
   const senderEl = document.querySelector('.open-inbox_tab-name');
+  const businessNameEl = document.querySelector('.open-inbox_tab-businessName');
   const messageEl = document.querySelector('.open-inbox_tab-text--full');
   const timeEl = document.querySelector('.open-inbox_info-time');
   const dateEl = document.querySelector('.open-inbox_info-date');
@@ -276,6 +281,7 @@ export function displayfullNotice(noticeId) {
 
   // Update modal content
   senderEl.textContent = `${selected.SentBy.first_name} ${selected.SentBy.last_name}`;
+  businessNameEl.textContent = selected.BusinessDetails.business_name;
   titleEl.textContent = `${selected.notice_type.toUpperCase()}: ${
     selected.title
   }`;

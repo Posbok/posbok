@@ -1876,6 +1876,8 @@ export async function loadBusinessNotices(
       }
     });
 
+    displayMostRecentBusinessNoticeInPopup(notices);
+
     // 3. Render All Accumulated Notices
     renderBusinessNotices(allBusinessNotices);
 
@@ -1895,6 +1897,21 @@ export async function loadBusinessNotices(
         '<p class="table-error-text">Error loading business notices.</p>';
     }
   }
+}
+
+function displayMostRecentBusinessNoticeInPopup(notices) {
+  if (notices.length === 0) return;
+  const mostRecentNotice = notices[0]; // Assuming the first notice is the most recent
+
+  const noticeId = mostRecentNotice.id;
+
+  if (!mostRecentNotice.is_read) {
+    openBusinessNoticeFullMessageModal(noticeId);
+  } else {
+    return;
+  }
+
+  console.log(mostRecentNotice);
 }
 
 function renderBusinessNotices(notices) {

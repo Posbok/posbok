@@ -217,6 +217,39 @@ export async function unRestrictBusiness(businessUnrestrictionDetails) {
   }
 }
 
+export async function notifyAllBusinesess(businessNotificationDetails) {
+  try {
+    //  showGlobalLoader();
+    const notifyBusinessData = await safeFetch(
+      `${baseUrl}/api/super-admin/send-notice`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(businessNotificationDetails),
+      }
+    );
+
+    if (notifyBusinessData) {
+      // console.log('Business Subscription restrictd successfully:', notifyBusinessData);
+      // showToast('success', `✅ ${notifyBusinessData.message}`);
+      closeModal();
+    }
+
+    //  console.log('notifyBusinessData received...');
+
+    //  console.log('notifyBusinessData:', notifyBusinessData);
+    //  hideGlobalLoader();
+    return notifyBusinessData;
+  } catch (error) {
+    //  hideGlobalLoader();
+    console.error('Error Restricting Business:', error.message);
+    throw error;
+  }
+}
+
 export async function notifyBusiness(businessNotificationDetails) {
   try {
     //  showGlobalLoader();

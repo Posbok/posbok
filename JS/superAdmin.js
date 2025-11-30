@@ -505,7 +505,7 @@ export function bindNotifyBusinessFormListener() {
       }
 
       const businessNotificationDetails = {
-        business_ids: [Number(businessId)],
+        business_id: Number(businessId),
         title: notificationTitleInput,
         message: notificationMessageInput,
         notice_type: notificationType,
