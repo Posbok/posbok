@@ -131,8 +131,12 @@
 
          <div class="main-heading_left">
 
-            <button class="hero-btn-dark logoutButton">LOGOUT</button>
+            <div class="notificatinoIconDiv mr-2">
+               <i class="fa-regular fa-bell icon main-heading-notification "></i>
+               <span class="notification-counter"></span>
+            </div>
 
+            <button class="hero-btn-dark logoutButton">LOGOUT</button>
             <div class="profileIconDiv mr-2">
 
                <i class="fa-solid fa-circle-user main-heading-profile--image"></i>
@@ -682,6 +686,71 @@
          </div>
 
       </div>
+
+   </div>
+
+
+   <!-- Notification Slider -->
+   <div class="notification-slider-overlay "></div>
+
+   <div class="notification-slider-content ">
+      <div class="notificationSlider-wrapper">
+
+         <!-- Notification View -->
+         <div class="notification-view ">
+            <div class="notification-slider-header">
+               <h2 class="heading-text">Your notifications</h2>
+               <div class="close closeModal close-notification-btn" id="">&times;</div>
+            </div>
+            <div class="chats mt-2">
+
+
+            </div>
+
+            <div id="loadMoreButtonDiv" class=" center-button mt-2">
+
+               <button id="businessNoticesLoadMoreButton" class=" hero-btn-dark load-more-button">Load
+                  More</button>
+            </div>
+         </div>
+
+      </div>
+   </div>
+
+
+   <!--  Display Full  Notice / Message -->
+   <div class="modal-form messageDisplayModal">
+      <div class="card messageDisplayModalContainer modal " style="padding-right: 5rem;
+      ">
+
+         <div class="open-inbox">
+            <div class="open-inbox_header">
+
+               <div>
+                  <h2 class=" heading-subtext"> <span class="open-inbox_tab-name"></span> </h2>
+                  <h4 class="heading-minitext"><span class="open-inbox_tab-title">
+                     </span>
+                  </h4>
+               </div>
+            </div>
+
+            <div class="open-inbox_tab">
+               <p class="heading-minitext open-inbox_tab-text--full">
+               </p>
+            </div>
+
+            <div class="open-inbox_info">
+               <p class="open-inbox_info-time"></p>
+               <p class="open-inbox_info-date"></p>
+            </div>
+
+
+
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+
 
    </div>
 

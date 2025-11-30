@@ -1809,7 +1809,7 @@ const businessNoticesContainer = document.querySelector('.chats'); // The contai
 const loadMoreBtn = document.getElementById('businessNoticesLoadMoreButton');
 
 if (isAdmin || isStaff) {
-  //   loadBusinessNotices(businessNoticesPageTracker, NOTICES_LIMIT_PER_PAGE);
+  loadBusinessNotices(businessNoticesPageTracker, NOTICES_LIMIT_PER_PAGE);
 
   if (loadMoreBtn) {
     loadMoreBtn.addEventListener('click', () => {
@@ -1854,6 +1854,13 @@ export async function loadBusinessNotices(
     const { notices, pagination } = result.data;
 
     const totalPages = pagination.totalPages;
+    const totalItems = pagination.totalItems;
+
+    const notificationCounter = document.querySelector('.notification-counter');
+
+    if (notificationCounter) {
+      notificationCounter.textContent = totalItems;
+    }
 
     // 1. Handle Initial Load (page 1)
     if (page === 1) {

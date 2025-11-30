@@ -1555,12 +1555,15 @@ button:disabled:hover {
         .main-heading_left .profileIconDiv .notification-counter,
         .main-heading_left .profileIconDiv .cart-counter {
           position: absolute;
-          top: -1.4rem;
-          right: -1rem;
           font-size: 1.2rem;
           font-weight: 600;
           color: #205329;
           border-radius: 100px; }
+        .main-heading_left .notificatinoIconDiv .notification-counter,
+        .main-heading_left .cartIconDiv .notification-counter,
+        .main-heading_left .profileIconDiv .notification-counter {
+          top: -1rem;
+          right: -0.5rem; }
       .main-heading_left .main-heading-profile--image {
         font-size: 4rem !important;
         border-radius: 100px;
