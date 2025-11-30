@@ -10,6 +10,7 @@ import { closeModal, showToast } from './script.js';
 import {
   deleteNotice,
   getSuperAdminNotices,
+  markAsReadApi,
   notifyBusiness,
 } from './superAdmin/superAdminResources.js';
 
@@ -25,7 +26,7 @@ const isSuperAdminNoticePage = document.body.classList.contains(
 
 let allSuperAdminNotices = [];
 let superAdminNoticesPageTracker = 1; // Start on page 1
-const NOTICES_LIMIT_PER_PAGE = 5; // Use a constant for the limit
+const NOTICES_LIMIT_PER_PAGE = 2; // Use a constant for the limit
 
 // DOM Selectors (Moved to where they are needed)
 const superAdminNoticesContainer = document.querySelector('.chats'); // The container for the notices
@@ -47,6 +48,7 @@ if (isSuperAdmin && isSuperAdminNoticePage) {
 
     bindNotifyAllBusinessFormListener_2();
     bindDeleteNoticeFormListener();
+    bindMarkAsReadFormListener();
   });
 }
 
@@ -126,12 +128,22 @@ function renderSuperAdminNotices(notices) {
   }
 
   notices.forEach((notice) => {
-    const { id, title, message, created_at, notice_type, business_id, SentBy } =
-      notice;
+    const {
+      id,
+      title,
+      message,
+      created_at,
+      notice_type,
+      business_id,
+      SentBy,
+      is_read,
+    } = notice;
     const senderName = `${SentBy.first_name} ${SentBy.last_name}`;
 
     const noticeHTML = `
-      <div class="message-card message-card_${id}" data-notice-id="${id}" data-notice-title="${title}">
+      <div class="message-card message-card_${id} ${
+      is_read ? '' : 'unread'
+    } "  data-notice-id="${id}" data-notice-title="${title}">
         <div class="user-inbox">
           <div class="user-inbox_header">
             <div>
@@ -157,12 +169,18 @@ function renderSuperAdminNotices(notices) {
 
           <div class="user-inbox_actions">
        
+            <button class="hero-btn-outline markAsReadBtn" data-notice-id="${id}"  title="Mark as Read">
+             <i class="fa-solid fa-envelope-circle-check"></i>
+            </button>
+       
             <button class="hero-btn-outline deleteNoticeBtn" data-notice-id="${id}"  title="Delete Notice">
               <i class="fa-solid fa-trash-can"></i>
             </button>
           </div>
         </div>
       </div>
+
+    
     `;
 
     const wrapper = document.createElement('div');
@@ -175,6 +193,17 @@ function renderSuperAdminNotices(notices) {
 
       const noticeId = card.dataset.noticeId;
       openNoticeFullMessageModal(noticeId);
+    });
+
+    const markAsReadBtn = card.querySelector('.markAsReadBtn');
+
+    markAsReadBtn.addEventListener('click', async function (e) {
+      e.stopPropagation();
+
+      const noticeId = card.dataset.noticeId;
+      const noticeTitle = card.dataset.noticeTitle;
+
+      openMarkAsReadContainer(noticeTitle, noticeId);
     });
 
     const deleteNoticeBtn = card.querySelector('.deleteNoticeBtn');
@@ -192,34 +221,7 @@ function renderSuperAdminNotices(notices) {
   });
 }
 
-function openDeleteNoticeContainer(noticeTitle, noticeId) {
-  const main = document.querySelector('.main');
-  const sidebar = document.querySelector('.sidebar');
-  const deleteNoticeContainer = document.querySelector(
-    '.deleteNoticeContainer'
-  );
-
-  if (deleteNoticeContainer) deleteNoticeContainer.classList.add('active');
-  if (main) main.classList.add('blur');
-  if (sidebar) sidebar.classList.add('blur');
-
-  deleteNoticeForm(noticeTitle, noticeId);
-}
-
-function openNoticeFullMessageModal(noticeId) {
-  const main = document.querySelector('.main');
-  const sidebar = document.querySelector('.sidebar');
-  const messageDisplayModalContainer = document.querySelector(
-    '.messageDisplayModalContainer'
-  );
-
-  if (messageDisplayModalContainer)
-    messageDisplayModalContainer.classList.add('active');
-  if (main) main.classList.add('blur');
-  if (sidebar) sidebar.classList.add('blur');
-
-  displayfullNotice(noticeId);
-}
+// Notify All business
 
 export function openNotifyAllBusinessModal_2() {
   const main = document.querySelector('.main');
@@ -239,6 +241,22 @@ export function openNotifyAllBusinessModal_2() {
 export function notifyAllBusinessForm_2() {
   const form = document.querySelector('.notifyAllBusinessContainerModal_2');
   if (!form) return;
+}
+
+// DIsplay Full Message
+function openNoticeFullMessageModal(noticeId) {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const messageDisplayModalContainer = document.querySelector(
+    '.messageDisplayModalContainer'
+  );
+
+  if (messageDisplayModalContainer)
+    messageDisplayModalContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  displayfullNotice(noticeId);
 }
 
 export function displayfullNotice(noticeId) {
@@ -264,17 +282,6 @@ export function displayfullNotice(noticeId) {
   messageEl.textContent = selected.message;
   timeEl.textContent = new Date(selected.created_at).toLocaleTimeString();
   dateEl.textContent = new Date(selected.created_at).toLocaleDateString();
-}
-
-// Delete Notice
-export function deleteNoticeForm(noticeTitle, noticeId) {
-  const form = document.querySelector('.deleteNoticeContainerModal');
-  if (!form) return;
-
-  form.dataset.noticeId = noticeId;
-
-  document.getElementById('confirmation-text-2').textContent =
-    noticeTitle || '';
 }
 
 export function bindNotifyAllBusinessFormListener_2() {
@@ -360,6 +367,31 @@ export function bindNotifyAllBusinessFormListener_2() {
   }
 }
 
+// Delete Notice
+function openDeleteNoticeContainer(noticeTitle, noticeId) {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const deleteNoticeContainer = document.querySelector(
+    '.deleteNoticeContainer'
+  );
+
+  if (deleteNoticeContainer) deleteNoticeContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  deleteNoticeForm(noticeTitle, noticeId);
+}
+
+export function deleteNoticeForm(noticeTitle, noticeId) {
+  const form = document.querySelector('.deleteNoticeContainerModal');
+  if (!form) return;
+
+  form.dataset.noticeId = noticeId;
+
+  document.getElementById('confirmation-text-2').textContent =
+    noticeTitle || '';
+}
+
 export function bindDeleteNoticeFormListener() {
   const form = document.querySelector('.deleteNoticeContainerModal');
   if (!form) return;
@@ -394,8 +426,7 @@ export function bindDeleteNoticeFormListener() {
 
         showToast(
           'success',
-          returnedDeleteNotice.message ||
-            '✅ Notice deleted successfully XXXXX.'
+          returnedDeleteNotice.message || '✅ Notice deleted successfully.'
         );
         await loadSuperAdminNotices(
           superAdminNoticesPageTracker,
@@ -409,9 +440,81 @@ export function bindDeleteNoticeFormListener() {
   }
 }
 
+// Mark as Read Notice
+function openMarkAsReadContainer(noticeTitle, noticeId) {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const markAsReadContainer = document.querySelector('.markAsReadContainer');
+
+  if (markAsReadContainer) markAsReadContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  markAsReadForm(noticeTitle, noticeId);
+}
+
+export function markAsReadForm(noticeTitle, noticeId) {
+  const form = document.querySelector('.markAsReadContainerModal');
+  if (!form) return;
+
+  form.dataset.noticeId = noticeId;
+
+  document.getElementById('confirmation-text-3').textContent =
+    noticeTitle || '';
+}
+
+export function bindMarkAsReadFormListener() {
+  const form = document.querySelector('.markAsReadContainerModal');
+  if (!form) return;
+
+  const markAsReadButton = form.querySelector('.markAsReadButton');
+  const cancelButton = form.querySelector('.cancel-close');
+
+  if (!form.dataset.bound) {
+    form.dataset.bound = true;
+
+    cancelButton?.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeModal();
+    });
+
+    markAsReadButton?.addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      const noticeId = form.dataset.noticeId;
+
+      if (!noticeId) {
+        showToast('fail', '❎ No Notice ID found.');
+        return;
+      }
+
+      try {
+        showBtnLoader(markAsReadButton);
+        const markAsReadResponse = await markAsReadApi(noticeId);
+        console.log(markAsReadResponse);
+
+        hideBtnLoader(markAsReadButton);
+        closeModal();
+
+        showToast(
+          'success',
+          markAsReadResponse.message || '✅ Notice Marked as Read successfully.'
+        );
+        await loadSuperAdminNotices(
+          superAdminNoticesPageTracker,
+          NOTICES_LIMIT_PER_PAGE
+        );
+      } catch (err) {
+        hideBtnLoader(markAsReadButton);
+        showToast('fail', `❎ ${err.message}`);
+      }
+    });
+  }
+}
+
 // Function to extract the first 20 words from a text
 
-function getFirst20Words(text = '') {
+export function getFirst20Words(text = '') {
   if (typeof text !== 'string') return '';
 
   // Normalize line breaks & multiple spaces

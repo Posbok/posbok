@@ -115,6 +115,7 @@
    }
 }
 
+.notification-slider-overlay,
 .cart-slider-overlay,
 .profile-slider-overlay {
    // position: fixed;
@@ -147,6 +148,7 @@
    }
 }
 
+.notification-slider-content,
 .cart-slider-content,
 .profile-slider-content {
    // display: none;
@@ -193,7 +195,7 @@
    //    right: 0;
    //    opacity: 1;
    // }
-
+   .notificationSlider-wrapper,
    .slider-wrapper {
       display: flex;
       width: 700px;
@@ -201,6 +203,7 @@
 
       .cart-view,
       .updatePassword-view,
+      .notification-view,
       .profile-view,
       .checkout-view {
          width: 350px;
@@ -217,6 +220,7 @@
          padding: 1.5rem;
       }
 
+      .notification-view,
       .checkout-view,
       .updatePassword-view,
       .profile-view {
@@ -245,6 +249,7 @@
       }
    }
 
+   .notification-slider-header,
    .cart-slider-header,
    .profile-slider-header {
       display: flex;

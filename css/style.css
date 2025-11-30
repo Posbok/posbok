@@ -1518,25 +1518,41 @@ button:disabled:hover {
           font-size: 1.16rem; } }
       .main-heading_left .logoutButton {
         margin-bottom: 0; }
+      .main-heading_left .notificatinoIconDiv,
       .main-heading_left .cartIconDiv,
       .main-heading_left .profileIconDiv {
         position: relative;
         display: flex; }
+        .main-heading_left .notificatinoIconDiv:hover,
         .main-heading_left .cartIconDiv:hover,
         .main-heading_left .profileIconDiv:hover {
           cursor: pointer; }
+        .main-heading_left .notificatinoIconDiv .main-heading-notification,
+        .main-heading_left .notificatinoIconDiv .main-heading-cart,
+        .main-heading_left .notificatinoIconDiv .main-heading-profile--image,
+        .main-heading_left .cartIconDiv .main-heading-notification,
         .main-heading_left .cartIconDiv .main-heading-cart,
         .main-heading_left .cartIconDiv .main-heading-profile--image,
+        .main-heading_left .profileIconDiv .main-heading-notification,
         .main-heading_left .profileIconDiv .main-heading-cart,
         .main-heading_left .profileIconDiv .main-heading-profile--image {
           font-size: 3rem;
           border-radius: 100px; }
+          .main-heading_left .notificatinoIconDiv .main-heading-notification:hover,
+          .main-heading_left .notificatinoIconDiv .main-heading-cart:hover,
+          .main-heading_left .notificatinoIconDiv .main-heading-profile--image:hover,
+          .main-heading_left .cartIconDiv .main-heading-notification:hover,
           .main-heading_left .cartIconDiv .main-heading-cart:hover,
           .main-heading_left .cartIconDiv .main-heading-profile--image:hover,
+          .main-heading_left .profileIconDiv .main-heading-notification:hover,
           .main-heading_left .profileIconDiv .main-heading-cart:hover,
           .main-heading_left .profileIconDiv .main-heading-profile--image:hover {
             transform: scale(1.03); }
+        .main-heading_left .notificatinoIconDiv .notification-counter,
+        .main-heading_left .notificatinoIconDiv .cart-counter,
+        .main-heading_left .cartIconDiv .notification-counter,
         .main-heading_left .cartIconDiv .cart-counter,
+        .main-heading_left .profileIconDiv .notification-counter,
         .main-heading_left .profileIconDiv .cart-counter {
           position: absolute;
           top: -1.4rem;
@@ -1954,6 +1970,7 @@ body.authentication {
   .sidebar.blur::before {
     background-color: none; } }
 
+.notification-slider-overlay,
 .cart-slider-overlay,
 .profile-slider-overlay {
   position: fixed;
@@ -1966,11 +1983,13 @@ body.authentication {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.4s ease-in-out; }
+  .notification-slider-overlay.visible,
   .cart-slider-overlay.visible,
   .profile-slider-overlay.visible {
     opacity: 1;
     pointer-events: all; }
 
+.notification-slider-content,
 .cart-slider-content,
 .profile-slider-content {
   position: fixed;
@@ -1988,37 +2007,86 @@ body.authentication {
   opacity: 0;
   pointer-events: none;
   transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out; }
+  .notification-slider-content.open,
   .cart-slider-content.open,
   .profile-slider-content.open {
     transform: translateX(0);
     opacity: 1;
     pointer-events: all; }
+  .notification-slider-content .notificationSlider-wrapper,
+  .notification-slider-content .slider-wrapper,
+  .cart-slider-content .notificationSlider-wrapper,
   .cart-slider-content .slider-wrapper,
+  .profile-slider-content .notificationSlider-wrapper,
   .profile-slider-content .slider-wrapper {
     display: flex;
     width: 700px;
     transition: transform 0.4s ease-in-out; }
+    .notification-slider-content .notificationSlider-wrapper .cart-view,
+    .notification-slider-content .notificationSlider-wrapper .updatePassword-view,
+    .notification-slider-content .notificationSlider-wrapper .notification-view,
+    .notification-slider-content .notificationSlider-wrapper .profile-view,
+    .notification-slider-content .notificationSlider-wrapper .checkout-view,
+    .notification-slider-content .slider-wrapper .cart-view,
+    .notification-slider-content .slider-wrapper .updatePassword-view,
+    .notification-slider-content .slider-wrapper .notification-view,
+    .notification-slider-content .slider-wrapper .profile-view,
+    .notification-slider-content .slider-wrapper .checkout-view,
+    .cart-slider-content .notificationSlider-wrapper .cart-view,
+    .cart-slider-content .notificationSlider-wrapper .updatePassword-view,
+    .cart-slider-content .notificationSlider-wrapper .notification-view,
+    .cart-slider-content .notificationSlider-wrapper .profile-view,
+    .cart-slider-content .notificationSlider-wrapper .checkout-view,
     .cart-slider-content .slider-wrapper .cart-view,
     .cart-slider-content .slider-wrapper .updatePassword-view,
+    .cart-slider-content .slider-wrapper .notification-view,
     .cart-slider-content .slider-wrapper .profile-view,
     .cart-slider-content .slider-wrapper .checkout-view,
+    .profile-slider-content .notificationSlider-wrapper .cart-view,
+    .profile-slider-content .notificationSlider-wrapper .updatePassword-view,
+    .profile-slider-content .notificationSlider-wrapper .notification-view,
+    .profile-slider-content .notificationSlider-wrapper .profile-view,
+    .profile-slider-content .notificationSlider-wrapper .checkout-view,
     .profile-slider-content .slider-wrapper .cart-view,
     .profile-slider-content .slider-wrapper .updatePassword-view,
+    .profile-slider-content .slider-wrapper .notification-view,
     .profile-slider-content .slider-wrapper .profile-view,
     .profile-slider-content .slider-wrapper .checkout-view {
       width: 350px;
       padding: 2.5rem 1.5rem;
       box-sizing: border-box; }
+    .notification-slider-content .notificationSlider-wrapper .cart-view,
+    .notification-slider-content .slider-wrapper .cart-view,
+    .cart-slider-content .notificationSlider-wrapper .cart-view,
     .cart-slider-content .slider-wrapper .cart-view,
+    .profile-slider-content .notificationSlider-wrapper .cart-view,
     .profile-slider-content .slider-wrapper .cart-view {
       display: flex;
       flex-direction: column;
       height: 100vh;
       box-sizing: border-box;
       padding: 1.5rem; }
+    .notification-slider-content .notificationSlider-wrapper .notification-view,
+    .notification-slider-content .notificationSlider-wrapper .checkout-view,
+    .notification-slider-content .notificationSlider-wrapper .updatePassword-view,
+    .notification-slider-content .notificationSlider-wrapper .profile-view,
+    .notification-slider-content .slider-wrapper .notification-view,
+    .notification-slider-content .slider-wrapper .checkout-view,
+    .notification-slider-content .slider-wrapper .updatePassword-view,
+    .notification-slider-content .slider-wrapper .profile-view,
+    .cart-slider-content .notificationSlider-wrapper .notification-view,
+    .cart-slider-content .notificationSlider-wrapper .checkout-view,
+    .cart-slider-content .notificationSlider-wrapper .updatePassword-view,
+    .cart-slider-content .notificationSlider-wrapper .profile-view,
+    .cart-slider-content .slider-wrapper .notification-view,
     .cart-slider-content .slider-wrapper .checkout-view,
     .cart-slider-content .slider-wrapper .updatePassword-view,
     .cart-slider-content .slider-wrapper .profile-view,
+    .profile-slider-content .notificationSlider-wrapper .notification-view,
+    .profile-slider-content .notificationSlider-wrapper .checkout-view,
+    .profile-slider-content .notificationSlider-wrapper .updatePassword-view,
+    .profile-slider-content .notificationSlider-wrapper .profile-view,
+    .profile-slider-content .slider-wrapper .notification-view,
     .profile-slider-content .slider-wrapper .checkout-view,
     .profile-slider-content .slider-wrapper .updatePassword-view,
     .profile-slider-content .slider-wrapper .profile-view {
@@ -2028,15 +2096,41 @@ body.authentication {
       overflow-y: auto;
       box-sizing: border-box;
       padding: 2.5rem 1.5rem; }
+      .notification-slider-content .notificationSlider-wrapper .notification-view .hero-btn-dark,
+      .notification-slider-content .notificationSlider-wrapper .checkout-view .hero-btn-dark,
+      .notification-slider-content .notificationSlider-wrapper .updatePassword-view .hero-btn-dark,
+      .notification-slider-content .notificationSlider-wrapper .profile-view .hero-btn-dark,
+      .notification-slider-content .slider-wrapper .notification-view .hero-btn-dark,
+      .notification-slider-content .slider-wrapper .checkout-view .hero-btn-dark,
+      .notification-slider-content .slider-wrapper .updatePassword-view .hero-btn-dark,
+      .notification-slider-content .slider-wrapper .profile-view .hero-btn-dark,
+      .cart-slider-content .notificationSlider-wrapper .notification-view .hero-btn-dark,
+      .cart-slider-content .notificationSlider-wrapper .checkout-view .hero-btn-dark,
+      .cart-slider-content .notificationSlider-wrapper .updatePassword-view .hero-btn-dark,
+      .cart-slider-content .notificationSlider-wrapper .profile-view .hero-btn-dark,
+      .cart-slider-content .slider-wrapper .notification-view .hero-btn-dark,
       .cart-slider-content .slider-wrapper .checkout-view .hero-btn-dark,
       .cart-slider-content .slider-wrapper .updatePassword-view .hero-btn-dark,
       .cart-slider-content .slider-wrapper .profile-view .hero-btn-dark,
+      .profile-slider-content .notificationSlider-wrapper .notification-view .hero-btn-dark,
+      .profile-slider-content .notificationSlider-wrapper .checkout-view .hero-btn-dark,
+      .profile-slider-content .notificationSlider-wrapper .updatePassword-view .hero-btn-dark,
+      .profile-slider-content .notificationSlider-wrapper .profile-view .hero-btn-dark,
+      .profile-slider-content .slider-wrapper .notification-view .hero-btn-dark,
       .profile-slider-content .slider-wrapper .checkout-view .hero-btn-dark,
       .profile-slider-content .slider-wrapper .updatePassword-view .hero-btn-dark,
       .profile-slider-content .slider-wrapper .profile-view .hero-btn-dark {
         margin-top: 3rem; }
+    .notification-slider-content .notificationSlider-wrapper .checkout-view button#backToCart,
+    .notification-slider-content .notificationSlider-wrapper .updatePassword-view button#backToProfile,
+    .notification-slider-content .slider-wrapper .checkout-view button#backToCart,
+    .notification-slider-content .slider-wrapper .updatePassword-view button#backToProfile,
+    .cart-slider-content .notificationSlider-wrapper .checkout-view button#backToCart,
+    .cart-slider-content .notificationSlider-wrapper .updatePassword-view button#backToProfile,
     .cart-slider-content .slider-wrapper .checkout-view button#backToCart,
     .cart-slider-content .slider-wrapper .updatePassword-view button#backToProfile,
+    .profile-slider-content .notificationSlider-wrapper .checkout-view button#backToCart,
+    .profile-slider-content .notificationSlider-wrapper .updatePassword-view button#backToProfile,
     .profile-slider-content .slider-wrapper .checkout-view button#backToCart,
     .profile-slider-content .slider-wrapper .updatePassword-view button#backToProfile {
       background: none;
@@ -2046,34 +2140,61 @@ body.authentication {
       color: #205329;
       cursor: pointer;
       margin-bottom: 1rem; }
+  .notification-slider-content .notification-slider-header,
+  .notification-slider-content .cart-slider-header,
+  .notification-slider-content .profile-slider-header,
+  .cart-slider-content .notification-slider-header,
   .cart-slider-content .cart-slider-header,
   .cart-slider-content .profile-slider-header,
+  .profile-slider-content .notification-slider-header,
   .profile-slider-content .cart-slider-header,
   .profile-slider-content .profile-slider-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem; }
+    .notification-slider-content .notification-slider-header .heading-text,
+    .notification-slider-content .cart-slider-header .heading-text,
+    .notification-slider-content .profile-slider-header .heading-text,
+    .cart-slider-content .notification-slider-header .heading-text,
     .cart-slider-content .cart-slider-header .heading-text,
     .cart-slider-content .profile-slider-header .heading-text,
+    .profile-slider-content .notification-slider-header .heading-text,
     .profile-slider-content .cart-slider-header .heading-text,
     .profile-slider-content .profile-slider-header .heading-text {
       margin: 0;
       color: inherit; }
+    .notification-slider-content .notification-slider-header.heading-minitext,
+    .notification-slider-content .cart-slider-header.heading-minitext,
+    .notification-slider-content .profile-slider-header.heading-minitext,
+    .cart-slider-content .notification-slider-header.heading-minitext,
     .cart-slider-content .cart-slider-header.heading-minitext,
     .cart-slider-content .profile-slider-header.heading-minitext,
+    .profile-slider-content .notification-slider-header.heading-minitext,
     .profile-slider-content .cart-slider-header.heading-minitext,
     .profile-slider-content .profile-slider-header.heading-minitext {
       color: #205329; }
+    .notification-slider-content .notification-slider-header .close-cart-btn,
+    .notification-slider-content .notification-slider-header .close-profile-btn,
+    .notification-slider-content .cart-slider-header .close-cart-btn,
+    .notification-slider-content .cart-slider-header .close-profile-btn,
+    .notification-slider-content .profile-slider-header .close-cart-btn,
+    .notification-slider-content .profile-slider-header .close-profile-btn,
+    .cart-slider-content .notification-slider-header .close-cart-btn,
+    .cart-slider-content .notification-slider-header .close-profile-btn,
     .cart-slider-content .cart-slider-header .close-cart-btn,
     .cart-slider-content .cart-slider-header .close-profile-btn,
     .cart-slider-content .profile-slider-header .close-cart-btn,
     .cart-slider-content .profile-slider-header .close-profile-btn,
+    .profile-slider-content .notification-slider-header .close-cart-btn,
+    .profile-slider-content .notification-slider-header .close-profile-btn,
     .profile-slider-content .cart-slider-header .close-cart-btn,
     .profile-slider-content .cart-slider-header .close-profile-btn,
     .profile-slider-content .profile-slider-header .close-cart-btn,
     .profile-slider-content .profile-slider-header .close-profile-btn {
       position: relative; }
+  .notification-slider-content .profile-items-container,
+  .notification-slider-content .cart-items-container,
   .cart-slider-content .profile-items-container,
   .cart-slider-content .cart-items-container,
   .profile-slider-content .profile-items-container,
@@ -2081,6 +2202,8 @@ body.authentication {
     flex: 1;
     overflow-y: auto;
     margin-bottom: 1rem; }
+  .notification-slider-content .cart-item,
+  .notification-slider-content .profile-item,
   .cart-slider-content .cart-item,
   .cart-slider-content .profile-item,
   .profile-slider-content .cart-item,
@@ -2090,6 +2213,10 @@ body.authentication {
     border-radius: 10px;
     margin-bottom: 0.5rem;
     transition: background-color 0.3s ease; }
+    .notification-slider-content .cart-item .remove-item-btn,
+    .notification-slider-content .cart-item .unit-price,
+    .notification-slider-content .profile-item .remove-item-btn,
+    .notification-slider-content .profile-item .unit-price,
     .cart-slider-content .cart-item .remove-item-btn,
     .cart-slider-content .cart-item .unit-price,
     .cart-slider-content .profile-item .remove-item-btn,
@@ -2099,22 +2226,32 @@ body.authentication {
     .profile-slider-content .profile-item .remove-item-btn,
     .profile-slider-content .profile-item .unit-price {
       transition: color 0.3s ease; }
+    .notification-slider-content .cart-item .naira-input-container,
+    .notification-slider-content .profile-item .naira-input-container,
     .cart-slider-content .cart-item .naira-input-container,
     .cart-slider-content .profile-item .naira-input-container,
     .profile-slider-content .cart-item .naira-input-container,
     .profile-slider-content .profile-item .naira-input-container {
       width: min-content; }
+      .notification-slider-content .cart-item .naira-input-container .unit-price-input,
+      .notification-slider-content .profile-item .naira-input-container .unit-price-input,
       .cart-slider-content .cart-item .naira-input-container .unit-price-input,
       .cart-slider-content .profile-item .naira-input-container .unit-price-input,
       .profile-slider-content .cart-item .naira-input-container .unit-price-input,
       .profile-slider-content .profile-item .naira-input-container .unit-price-input {
         width: 12rem; }
+    .notification-slider-content .cart-item:hover,
+    .notification-slider-content .profile-item:hover,
     .cart-slider-content .cart-item:hover,
     .cart-slider-content .profile-item:hover,
     .profile-slider-content .cart-item:hover,
     .profile-slider-content .profile-item:hover {
       background-color: #0F7A89;
       color: #fff; }
+      .notification-slider-content .cart-item:hover .remove-item-btn,
+      .notification-slider-content .cart-item:hover .unit-price,
+      .notification-slider-content .profile-item:hover .remove-item-btn,
+      .notification-slider-content .profile-item:hover .unit-price,
       .cart-slider-content .cart-item:hover .remove-item-btn,
       .cart-slider-content .cart-item:hover .unit-price,
       .cart-slider-content .profile-item:hover .remove-item-btn,
@@ -2124,6 +2261,8 @@ body.authentication {
       .profile-slider-content .profile-item:hover .remove-item-btn,
       .profile-slider-content .profile-item:hover .unit-price {
         color: #fff !important; }
+    .notification-slider-content .cart-item .item-header,
+    .notification-slider-content .profile-item .item-header,
     .cart-slider-content .cart-item .item-header,
     .cart-slider-content .profile-item .item-header,
     .profile-slider-content .cart-item .item-header,
@@ -2131,11 +2270,15 @@ body.authentication {
       display: flex;
       justify-content: space-between;
       align-items: center; }
+      .notification-slider-content .cart-item .item-header .item-name,
+      .notification-slider-content .profile-item .item-header .item-name,
       .cart-slider-content .cart-item .item-header .item-name,
       .cart-slider-content .profile-item .item-header .item-name,
       .profile-slider-content .cart-item .item-header .item-name,
       .profile-slider-content .profile-item .item-header .item-name {
         font-weight: bold; }
+      .notification-slider-content .cart-item .item-header .remove-item-btn,
+      .notification-slider-content .profile-item .item-header .remove-item-btn,
       .cart-slider-content .cart-item .item-header .remove-item-btn,
       .cart-slider-content .profile-item .item-header .remove-item-btn,
       .profile-slider-content .cart-item .item-header .remove-item-btn,
@@ -2146,6 +2289,8 @@ body.authentication {
         font-size: 2rem;
         padding: 1rem;
         cursor: pointer; }
+    .notification-slider-content .cart-item .item-details,
+    .notification-slider-content .profile-item .item-details,
     .cart-slider-content .cart-item .item-details,
     .cart-slider-content .profile-item .item-details,
     .profile-slider-content .cart-item .item-details,
@@ -2154,18 +2299,24 @@ body.authentication {
       justify-content: space-between;
       align-items: center;
       margin-top: 0.3rem; }
+      .notification-slider-content .cart-item .item-details .unit-price,
+      .notification-slider-content .profile-item .item-details .unit-price,
       .cart-slider-content .cart-item .item-details .unit-price,
       .cart-slider-content .profile-item .item-details .unit-price,
       .profile-slider-content .cart-item .item-details .unit-price,
       .profile-slider-content .profile-item .item-details .unit-price {
         font-size: 1.2rem;
         color: #666; }
+      .notification-slider-content .cart-item .item-details .quantity-control,
+      .notification-slider-content .profile-item .item-details .quantity-control,
       .cart-slider-content .cart-item .item-details .quantity-control,
       .cart-slider-content .profile-item .item-details .quantity-control,
       .profile-slider-content .cart-item .item-details .quantity-control,
       .profile-slider-content .profile-item .item-details .quantity-control {
         display: flex;
         align-items: center; }
+        .notification-slider-content .cart-item .item-details .quantity-control button,
+        .notification-slider-content .profile-item .item-details .quantity-control button,
         .cart-slider-content .cart-item .item-details .quantity-control button,
         .cart-slider-content .profile-item .item-details .quantity-control button,
         .profile-slider-content .cart-item .item-details .quantity-control button,
@@ -2176,12 +2327,16 @@ body.authentication {
           background: #ddd;
           border: none;
           cursor: pointer; }
+        .notification-slider-content .cart-item .item-details .quantity-control span,
+        .notification-slider-content .profile-item .item-details .quantity-control span,
         .cart-slider-content .cart-item .item-details .quantity-control span,
         .cart-slider-content .profile-item .item-details .quantity-control span,
         .profile-slider-content .cart-item .item-details .quantity-control span,
         .profile-slider-content .profile-item .item-details .quantity-control span {
           padding: 0 10px;
           font-size: 1.2rem; }
+  .notification-slider-content .cart-footer,
+  .notification-slider-content .profile-footer,
   .cart-slider-content .cart-footer,
   .cart-slider-content .profile-footer,
   .profile-slider-content .cart-footer,
@@ -2189,11 +2344,14 @@ body.authentication {
     margin-top: 1rem;
     padding-top: 1rem;
     border-top: 1px solid #ddd; }
+    .notification-slider-content .cart-footer .cart-total,
+    .notification-slider-content .profile-footer .cart-total,
     .cart-slider-content .cart-footer .cart-total,
     .cart-slider-content .profile-footer .cart-total,
     .profile-slider-content .cart-footer .cart-total,
     .profile-slider-content .profile-footer .cart-total {
       margin-bottom: 1rem; }
+  .notification-slider-content .center-text,
   .cart-slider-content .center-text,
   .profile-slider-content .center-text {
     text-align: center !important;
@@ -2212,6 +2370,89 @@ body.authentication {
     text-align: center;
     font-size: 1.8rem;
     margin-top: 3rem; }
+
+.user-message-card {
+  border-bottom: 1px solid #0F7A89;
+  border-right: 1px solid #0F7A89;
+  border-bottom-right-radius: 2.5rem;
+  padding: 1rem .5rem 2rem 1rem;
+  width: 100%;
+  margin-bottom: 2rem;
+  box-shadow: rgba(0, 0, 0, 0.2) -2px 4px 11px;
+  cursor: pointer; }
+  .user-message-card:last-child {
+    margin-bottom: 3rem; }
+  .user-message-card.unread {
+    background-color: #dcf5e0; }
+  .user-message-card .user-inbox {
+    align-items: center;
+    position: relative; }
+    .user-message-card .user-inbox_header {
+      display: flex;
+      align-items: center;
+      gap: 2rem; }
+    .user-message-card .user-inbox .user-image {
+      margin-top: 1rem;
+      width: 5rem;
+      height: 5rem;
+      border-radius: 100%;
+      object-fit: cover; }
+    .user-message-card .user-inbox_tab {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: .3rem; }
+      .user-message-card .user-inbox_tab-name {
+        margin-top: 3rem; }
+      .user-message-card .user-inbox_tab-subject {
+        font-size: 1.3rem;
+        font-weight: 400; }
+      .user-message-card .user-inbox_tab-text {
+        font-weight: 300; }
+    .user-message-card .user-inbox_info {
+      position: absolute;
+      right: 1rem;
+      top: -20px;
+      width: max-content;
+      text-align: right;
+      font-size: 1rem; }
+      .user-message-card .user-inbox_info-time, .user-message-card .user-inbox_info-date {
+        font-size: 1.3rem; }
+    .user-message-card .user-inbox_actions {
+      position: absolute;
+      right: -5rem;
+      top: 0rem;
+      width: max-content;
+      text-align: right;
+      font-size: 2.5rem;
+      color: #0F7A89;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem; }
+      .user-message-card .user-inbox_actions .hero-btn-outline {
+        font-size: 1.2rem;
+        padding: 1rem; }
+    .user-message-card .user-inbox .inbox-actions.user {
+      background-color: rgba(19, 63, 68, 0.8); }
+    .user-message-card .user-inbox .inbox-actions {
+      background-color: rgba(15, 122, 137, 0.8);
+      padding: 2rem 0rem;
+      color: #fff;
+      width: 35%;
+      margin-bottom: 1rem;
+      position: absolute;
+      top: -1.6rem;
+      right: -0.6rem;
+      backdrop-filter: blur(5px);
+      box-shadow: rgba(0, 0, 0, 0.5) -2px 4px 11px;
+      z-index: 100;
+      text-align: center;
+      display: none; }
+      .user-message-card .user-inbox .inbox-actions_btns {
+        font-size: 1.2rem;
+        font-weight: 500;
+        border-bottom: 1px solid #0F7A89;
+        padding: 1rem 0 1rem 0; }
 
 .message-card {
   border-bottom: 1px solid #0F7A89;

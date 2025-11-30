@@ -440,6 +440,48 @@ export async function getSuperAdminNotices(page = 1, limit = 5) {
   }
 }
 
+export async function getbusinessNotices(page = 1, limit = 5) {
+  const businessNoticesContainer = document.querySelector('.chats');
+
+  businessNoticesContainer.innerHTML =
+    '<p class="table-error-text">Loading Notices...</p>';
+
+  try {
+    const queryParams = new URLSearchParams({
+      page, // 👈 New: Pass the current page number
+      limit, // 👈 New: Pass the limit per page
+    });
+
+    showGlobalLoader();
+    const businessNotices = await safeFetch(
+      `${baseUrl}/api/admin/business-notices?${queryParams.toString()}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    if (businessNotices) {
+      businessNoticesContainer.innerHTML = '';
+      hideGlobalLoader();
+    }
+
+    console.log('businessNotices Data:', businessNotices);
+
+    if (!businessNotices?.data) {
+      throw new Error('Failed to fetch notices or invalid data structure.');
+    }
+
+    return businessNotices;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error receiving Business  Notices:', error);
+    throw error;
+  }
+}
+
 export async function deleteNotice(noticeId) {
   try {
     //  console.log('Sending POST request...');
@@ -468,6 +510,38 @@ export async function deleteNotice(noticeId) {
     hideGlobalLoader();
     //  console.error('Error deleting Notice', error);
     showToast('error', '❌ Failed to delete Notice');
+    throw error;
+  }
+}
+
+export async function markAsReadApi(noticeId) {
+  try {
+    //  console.log('Sending POST request...');
+
+    showGlobalLoader();
+
+    const fetchedData = await safeFetch(
+      `${baseUrl}/api/super-admin/business-notices/${noticeId}/read`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    if (fetchedData) {
+      // console.log('Notice deleted successfully:', fetchedData);
+      showToast('success', `✅ ${fetchedData.message}`);
+      // await renderProductInventoryTable(shopId); // Refresh list or update UI
+      hideGlobalLoader();
+    }
+
+    return fetchedData;
+  } catch (error) {
+    hideGlobalLoader();
+    //  console.error('Error deleting Notice', error);
+    showToast('error', '❌ Failed to Mark Notice As Read');
     throw error;
   }
 }

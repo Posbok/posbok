@@ -50,6 +50,8 @@ import {
 } from './apiServices/inventory/inventoryResources.js';
 import { renderStaffPerformanceTable } from './apiServices/utility/businessReport.js';
 import { logoutUser } from './apiServices/authentication/loginResource.js';
+import { getbusinessNotices } from './superAdmin/superAdminResources.js';
+import { getFirst20Words } from './superAdminNotices.js';
 
 const userData = config.userData;
 const dummyShopId = config.dummyShopId;
@@ -196,12 +198,28 @@ export function showToast(type, message) {
 
 document.addEventListener('DOMContentLoaded', function () {
   const profileIcon = document.querySelector('.profileIconDiv');
+  const notificationIcon = document.querySelector('.notificatinoIconDiv');
+
   const profileSliderOverlay = document.querySelector(
     '.profile-slider-overlay'
   );
-  const profileSlider = document.querySelector('.profile-slider-content');
-  const closeProfileBtn = document.querySelector('.close-profile-btn');
+  const notificationSliderOverlay = document.querySelector(
+    '.notification-slider-overlay'
+  );
 
+  const profileSlider = document.querySelector('.profile-slider-content');
+  const notificationSlider = document.querySelector(
+    '.notification-slider-content'
+  );
+
+  const closeProfileBtn = document.querySelector('.close-profile-btn');
+  const closeNotificationBtn = document.querySelector(
+    '.close-notification-btn'
+  );
+
+  const notificationSliderWrapper = document.querySelector(
+    '.notificationSlider-wrapper'
+  );
   const sliderWrapper = document.querySelector('.slider-wrapper');
 
   //   profileIcon?.click();
@@ -226,6 +244,31 @@ document.addEventListener('DOMContentLoaded', function () {
     profileSlider?.classList.remove('open');
     profileSliderOverlay?.classList.remove('visible');
   });
+
+  // OpenNotification Slider
+
+  if (isAdmin || isStaff) {
+    notificationIcon?.addEventListener('click', async () => {
+      console.log('object');
+      showGlobalLoader();
+      notificationSlider.classList.add('open');
+      notificationSliderOverlay.classList.add('visible');
+      notificationSliderWrapper.style.transform = 'translateX(0%)'; // Always reset toprofile View
+      loadBusinessNotices(businessNoticesPageTracker, NOTICES_LIMIT_PER_PAGE);
+      //  hideGlobalLoader();
+    });
+
+    // Close profile Slider
+    closeNotificationBtn?.addEventListener('click', () => {
+      notificationSlider?.classList.remove('open');
+      notificationSliderOverlay?.classList.remove('visible');
+    });
+
+    notificationSliderOverlay?.addEventListener('click', () => {
+      notificationSlider?.classList.remove('open');
+      notificationSliderOverlay?.classList.remove('visible');
+    });
+  }
 });
 
 export async function renderUserprofileDetails() {
@@ -922,6 +965,7 @@ export function closeModal() {
   const deleteNoticeContainer = document.querySelector(
     '.deleteNoticeContainer'
   );
+  const markAsReadContainer = document.querySelector('.markAsReadContainer');
   const saleDetails = document.querySelector('.saleDetails');
 
   const getBarcodeImageContainer = document.querySelector(
@@ -1210,6 +1254,10 @@ export function closeModal() {
 
   if (deleteNoticeContainer) {
     deleteNoticeContainer.classList.remove('active');
+  }
+
+  if (markAsReadContainer) {
+    markAsReadContainer.classList.remove('active');
   }
 
   if (saleDetails) {
@@ -1717,3 +1765,198 @@ if (useBusinessInfoCheckbox) {
 }
 
 // renderStaffPerformanceTable();
+
+// BUsiness notice Retrieval
+
+let allBusinessNotices = [];
+let businessNoticesPageTracker = 1; // Start on page 1
+const NOTICES_LIMIT_PER_PAGE = 2; // Use a constant for the limit
+
+// DOM Selectors (Moved to where they are needed)
+const businessNoticesContainer = document.querySelector('.chats'); // The container for the notices
+const loadMoreBtn = document.getElementById('businessNoticesLoadMoreButton');
+
+if (isAdmin || isStaff) {
+  loadBusinessNotices(businessNoticesPageTracker, NOTICES_LIMIT_PER_PAGE);
+
+  if (loadMoreBtn) {
+    loadMoreBtn.addEventListener('click', () => {
+      handleLoadMore();
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    document
+      .querySelector('#notifyAllBusinessesModalBtn')
+      ?.addEventListener('click', openNotifyAllBusinessModal_2);
+  });
+}
+
+function handleLoadMore() {
+  // Increment the tracker *before* calling the load function
+  businessNoticesPageTracker++;
+  //   console.log(
+  //     'Clicked Load more. Requesting page:',
+  //     businessNoticesPageTracker
+  //   );
+
+  businessNoticesContainer.innerHTML =
+    '<p class="table-error-text">Loading Business Notices...</p>';
+
+  loadBusinessNotices(businessNoticesPageTracker, NOTICES_LIMIT_PER_PAGE, {
+    append: true,
+  });
+}
+
+// The primary function to fetch and render notices.
+export async function loadBusinessNotices(
+  page,
+  limit,
+  options = { append: false }
+) {
+  const { append } = options;
+  if (!businessNoticesContainer) return;
+
+  try {
+    const result = await getbusinessNotices(page, limit);
+    const { notices, pagination } = result.data;
+
+    const totalPages = pagination.totalPages;
+
+    // 1. Handle Initial Load (page 1)
+    if (page === 1) {
+      allBusinessNotices = []; // Clear old data
+      businessNoticesContainer.innerHTML = ''; // Clear existing DOM (including dummy/initial HTML)
+    }
+
+    // 2. Accumulate New Notices
+    notices.forEach((notice) => {
+      // Check if the notice is already in the array (to prevent duplicates)
+      if (!allBusinessNotices.some((n) => n.id === notice.id)) {
+        allBusinessNotices.push(notice);
+      }
+    });
+
+    // 3. Render All Accumulated Notices
+    renderBusinessNotices(allBusinessNotices);
+
+    // 4. Update Load More Button Visibility
+    if (loadMoreBtn) {
+      if (businessNoticesPageTracker >= totalPages) {
+        loadMoreBtn.style.display = 'none'; // Hide the button
+      } else {
+        loadMoreBtn.style.display = 'block'; // Show the button
+      }
+    }
+  } catch (error) {
+    console.error('Error loading business Notices:', error);
+    // Display an error message if loading page 1 failed
+    if (page === 1) {
+      businessNoticesContainer.innerHTML =
+        '<p class="table-error-text">Error loading business notices.</p>';
+    }
+  }
+}
+
+function renderBusinessNotices(notices) {
+  if (!businessNoticesContainer) return;
+
+  if (notices.length === 0) {
+    businessNoticesContainer.innerHTML =
+      '<p class="table-error-text">No Business Notices Available.</p>';
+    return;
+  }
+
+  notices.forEach((notice) => {
+    const {
+      id,
+      title,
+      message,
+      created_at,
+      notice_type,
+      business_id,
+      SentBy,
+      is_read,
+    } = notice;
+    const senderName = `${SentBy.first_name} ${SentBy.last_name}`;
+
+    const noticeHTML = `
+         <div class="user-message-card message-card_${id} ${
+      is_read ? '' : 'unread'
+    } " data-notice-id="${id}" data-notice-title="${title}">
+               <div class="user-inbox">
+                  <div class="user-inbox_header">
+                     <div>
+
+                        <h4 class="heading-minitext"><span class="user-inbox_tab-title">${notice_type.toUpperCase()}:
+                              ${title}</span></h4>
+                     </div>
+                  </div>
+
+                  <div class="user-inbox_tab">
+                     <p class="heading-minitext user-inbox_tab-text">
+                        ${getFirst20Words(message)}
+                     </p>
+                  </div>
+
+               </div>
+            </div>
+
+    
+    `;
+
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = noticeHTML;
+    const card = wrapper.firstElementChild;
+
+    // **Attach the listener here**
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('.hero-btn-outline')) return;
+
+      const noticeId = card.dataset.noticeId;
+      openBusinessNoticeFullMessageModal(noticeId);
+    });
+    businessNoticesContainer.appendChild(card);
+  });
+}
+
+// DIsplay Full Message
+function openBusinessNoticeFullMessageModal(noticeId) {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const messageDisplayModalContainer = document.querySelector(
+    '.messageDisplayModalContainer'
+  );
+
+  if (messageDisplayModalContainer)
+    messageDisplayModalContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  displayfullNotice(noticeId);
+}
+
+export function displayfullNotice(noticeId) {
+  const form = document.querySelector('.messageDisplayModalContainer');
+  if (!form) return;
+
+  const titleEl = document.querySelector('.open-inbox_tab-title');
+  const senderEl = document.querySelector('.open-inbox_tab-name');
+  const messageEl = document.querySelector('.open-inbox_tab-text--full');
+  const timeEl = document.querySelector('.open-inbox_info-time');
+  const dateEl = document.querySelector('.open-inbox_info-date');
+
+  const selected = allBusinessNotices.find((n) => n.id == noticeId);
+
+  console.log(selected);
+  if (!selected) return;
+
+  // Update modal content
+  senderEl.textContent = `${selected.SentBy.first_name} ${selected.SentBy.last_name}`;
+  titleEl.textContent = `${selected.notice_type.toUpperCase()}: ${
+    selected.title
+  }`;
+  messageEl.textContent = selected.message;
+  timeEl.textContent = new Date(selected.created_at).toLocaleTimeString();
+  dateEl.textContent = new Date(selected.created_at).toLocaleDateString();
+}

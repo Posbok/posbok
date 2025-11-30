@@ -93,6 +93,7 @@
             margin-bottom: 0;
          }
 
+         .notificatinoIconDiv,
          .cartIconDiv,
          .profileIconDiv {
             position: relative;
@@ -103,6 +104,7 @@
             }
 
 
+            .main-heading-notification,
             .main-heading-cart,
             .main-heading-profile--image {
                font-size: 3rem;
@@ -116,6 +118,7 @@
 
             }
 
+            .notification-counter,
             .cart-counter {
                position: absolute;
                top: -1.4rem;
