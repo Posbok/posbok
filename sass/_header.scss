@@ -121,6 +121,8 @@
             .notification-counter,
             .cart-counter {
                position: absolute;
+               top: -1.4rem;
+               right: -1rem;
                font-size: 1.2rem;
                font-weight: 600;
                color: $color-secondary-dark;
