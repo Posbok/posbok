@@ -232,6 +232,9 @@
          box-sizing: border-box;
          padding: 2.5rem 1.5rem;
 
+         scrollbar-width: thin;
+         scrollbar-color: $color-grey-dark-2 $color-grey-light-1;
+
          .hero-btn-dark {
             margin-top: 3rem;
          }

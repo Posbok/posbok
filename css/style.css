@@ -2095,7 +2095,9 @@ body.authentication {
       max-height: 100dvh;
       overflow-y: auto;
       box-sizing: border-box;
-      padding: 2.5rem 1.5rem; }
+      padding: 2.5rem 1.5rem;
+      scrollbar-width: thin;
+      scrollbar-color: #133f44 #fff; }
       .notification-slider-content .notificationSlider-wrapper .notification-view .hero-btn-dark,
       .notification-slider-content .notificationSlider-wrapper .checkout-view .hero-btn-dark,
       .notification-slider-content .notificationSlider-wrapper .updatePassword-view .hero-btn-dark,
@@ -2750,7 +2752,7 @@ body.authentication {
 .inventory {
   height: min-content;
   color: #133f44;
-  scrollbar-width: auto;
+  scrollbar-width: thin;
   scrollbar-color: #133f44 #fff; }
   .reports-method,
   .goods-method,

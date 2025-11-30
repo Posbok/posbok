@@ -446,6 +446,10 @@ export async function getbusinessNotices(page = 1, limit = 5) {
   businessNoticesContainer.innerHTML =
     '<p class="table-error-text">Loading Notices...</p>';
 
+  const loadMoreBtn = document.getElementById('businessNoticesLoadMoreButton');
+
+  loadMoreBtn.style.display = 'none';
+
   try {
     const queryParams = new URLSearchParams({
       page, // 👈 New: Pass the current page number
@@ -522,6 +526,38 @@ export async function markAsReadApi(noticeId) {
 
     const fetchedData = await safeFetch(
       `${baseUrl}/api/super-admin/business-notices/${noticeId}/read`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    if (fetchedData) {
+      // console.log('Notice deleted successfully:', fetchedData);
+      showToast('success', `✅ ${fetchedData.message}`);
+      // await renderProductInventoryTable(shopId); // Refresh list or update UI
+      hideGlobalLoader();
+    }
+
+    return fetchedData;
+  } catch (error) {
+    hideGlobalLoader();
+    //  console.error('Error deleting Notice', error);
+    showToast('error', '❌ Failed to Mark Notice As Read');
+    throw error;
+  }
+}
+
+export async function businessMarkAsReadApi(noticeId) {
+  try {
+    //  console.log('Sending POST request...');
+
+    showGlobalLoader();
+
+    const fetchedData = await safeFetch(
+      `${baseUrl}/api/admin/business-notices/${noticeId}/read`,
       {
         method: 'PATCH',
         headers: {

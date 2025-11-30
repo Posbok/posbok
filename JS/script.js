@@ -50,7 +50,10 @@ import {
 } from './apiServices/inventory/inventoryResources.js';
 import { renderStaffPerformanceTable } from './apiServices/utility/businessReport.js';
 import { logoutUser } from './apiServices/authentication/loginResource.js';
-import { getbusinessNotices } from './superAdmin/superAdminResources.js';
+import {
+  businessMarkAsReadApi,
+  getbusinessNotices,
+} from './superAdmin/superAdminResources.js';
 import { getFirst20Words } from './superAdminNotices.js';
 
 const userData = config.userData;
@@ -251,7 +254,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (isAdmin || isStaff) {
     notificationIcon?.addEventListener('click', async () => {
-      console.log('object');
       showGlobalLoader();
       notificationSlider.classList.add('open');
       notificationSliderOverlay.classList.add('visible');
@@ -1800,14 +1802,14 @@ if (useBusinessInfoCheckbox) {
 
 let allBusinessNotices = [];
 let businessNoticesPageTracker = 1; // Start on page 1
-const NOTICES_LIMIT_PER_PAGE = 2; // Use a constant for the limit
+const NOTICES_LIMIT_PER_PAGE = 10; // Use a constant for the limit
 
 // DOM Selectors (Moved to where they are needed)
 const businessNoticesContainer = document.querySelector('.chats'); // The container for the notices
 const loadMoreBtn = document.getElementById('businessNoticesLoadMoreButton');
 
 if (isAdmin || isStaff) {
-  loadBusinessNotices(businessNoticesPageTracker, NOTICES_LIMIT_PER_PAGE);
+  //   loadBusinessNotices(businessNoticesPageTracker, NOTICES_LIMIT_PER_PAGE);
 
   if (loadMoreBtn) {
     loadMoreBtn.addEventListener('click', () => {
@@ -1958,11 +1960,14 @@ function renderBusinessNotices(notices) {
     );
 
     // **Attach the listener here**
-    card.addEventListener('click', (e) => {
+    card.addEventListener('click', async (e) => {
       if (e.target.closest('.hero-btn-outline')) return;
 
       const noticeId = card.dataset.noticeId;
       openBusinessNoticeFullMessageModal(noticeId);
+
+      // const markAsReadResponse = await businessMarkAsReadApi(noticeId);
+      // console.log(markAsReadResponse);
 
       fullNoticeModalClosed = true;
 
