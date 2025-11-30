@@ -137,10 +137,11 @@ export async function createProduct(shopId, productDetails) {
       }
     );
 
-    //  console.log('fetchedData received...');
+    //   console.log('fetchedData received...');
+    //  console.log('fetchedData:', fetchedData);
 
     if (fetchedData) {
-      console.log('Product added successfully:', fetchedData);
+      // console.log('Product added successfully:', fetchedData);
       // showToast('success', `✅ ${fetchedData.message}`);
       // Refresh the table list after successful configuration
       // getProductCategories();

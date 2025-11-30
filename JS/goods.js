@@ -632,6 +632,16 @@ export function createProductForm() {
       let finalSku_Barcode =
         addProductSku !== '' ? addProductSku : generateSKU(businessName);
 
+      // const addProductDetails = {
+      //   categoryId: Number(addProductCategory),
+      //   name: addProductName,
+      //   description: addProductDescription,
+      //   sku: finalSku_Barcode,
+      //   purchasePrice: Number(getAmountForSubmission(addProductBoughtPrice)),
+      //   sellingPrice: Number(getAmountForSubmission(addProductSellingPrice)),
+      //   barcode: finalSku_Barcode,
+      // };
+
       const addProductDetails = {
         categoryId: Number(addProductCategory),
         name: addProductName,
@@ -640,11 +650,7 @@ export function createProductForm() {
         purchasePrice: Number(getAmountForSubmission(addProductBoughtPrice)),
         sellingPrice: Number(getAmountForSubmission(addProductSellingPrice)),
         barcode: finalSku_Barcode,
-      };
-
-      const addInventoryDetails = {
-        quantity: Number(addProductQuantity),
-        productId: Number(addProductQuantity),
+        quantityInStock: Number(addProductQuantity),
       };
 
       const shopId = Number(inventoryShopDropdown);
@@ -656,15 +662,15 @@ export function createProductForm() {
         showBtnLoader(addProductModalBtn);
         const productData = await createProduct(shopId, addProductDetails);
 
-        //   if (!productData) {
-        //     showToast('fail', productData.message);
-        //     return;
-        //   }
+        //   console.log('productData received successfully:', productData);
 
-        //   console.log(productData);
+        if (!productData) {
+          showToast('fail', productData.message);
+          return;
+        }
 
-        const productId = productData?.data.id;
-        const productSku = productData?.data.sku;
+        const productId = productData?.data.product.id;
+        const productSku = productData?.data.product.sku;
 
         if (!productId) {
           hideBtnLoader(addProductModalBtn);
@@ -676,56 +682,35 @@ export function createProductForm() {
           productId: Number(productId),
         };
 
-        //   console.log('Adding Products with:', addProductDetails);
+        if (productData) {
+          console.log('productData received successfully:', productData);
 
-        try {
-          const inventoryData = await addInventory(addInventoryDetails, shopId);
+          handleBarcodeModeToast({
+            mode: 'barcodeMode',
+            finalSku_Barcode,
+            addProductName,
+            addedProductSku: productSku,
+          });
 
-          if (inventoryData) {
-            // console.log(inventoryData);
+          showToast('success', `✅ ${productData.message}`);
 
-            // console.log('Here?', productId);
-
-            handleBarcodeModeToast({
-              mode: 'barcodeMode',
-              finalSku_Barcode,
-              addProductName,
-              addedProductSku: productSku,
-            });
-
-            // showToast(
-            //   'success',
-            //   `✅ ${inventoryData.message} with Product ID: ${productId}`
-            // );
-            showToast('success', `✅ ${inventoryData.message}`);
-
-            closeModal();
-            clearFormInputs();
-            await renderProductInventoryTable(shopId);
-            const filters = getInventoryLogFilters('admin', shopId);
-            await renderInventoryLogTable({
-              filters,
-              shopId,
-              tableBody: `#inventoryLogBody-${shopId}`,
-            });
-          }
-        } catch (inventoryDataErr) {
-          showToast(
-            'fail',
-            `❎ ${inventoryDataErr.message || 'Failed to Add inventory'}`
-          );
-          console.error(
-            'Error During Inventory Adding:',
-            inventoryDataErr.message
-          );
+          closeModal();
+          clearFormInputs();
+          await renderProductInventoryTable(shopId);
+          const filters = getInventoryLogFilters('admin', shopId);
+          await renderInventoryLogTable({
+            filters,
+            shopId,
+            tableBody: `#inventoryLogBody-${shopId}`,
+          });
         }
-        hideBtnLoader(addProductModalBtn);
-        //   hideGlobalLoader();
       } catch (err) {
         hideBtnLoader(addProductModalBtn);
 
         console.error('Error Creating product:', err);
         showToast('fail', `❎ ${err.message}`);
+      } finally {
+        hideBtnLoader(addProductModalBtn);
       }
     });
   }
@@ -2485,9 +2470,7 @@ export async function renderInventoryLogTable({ filters, shopId }) {
 
       const performerName = shopInventoryLog.performer
         ? `${shopInventoryLog.performer.first_name} ${shopInventoryLog.performer.last_name}`
-        : 'Unknown';
-
-      console.log(action_type);
+        : 'ADMIN';
 
       const row = document.createElement('tr');
       row.classList.add('table-body-row');
