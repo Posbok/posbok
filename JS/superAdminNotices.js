@@ -26,7 +26,7 @@ const isSuperAdminNoticePage = document.body.classList.contains(
 
 let allSuperAdminNotices = [];
 let superAdminNoticesPageTracker = 1; // Start on page 1
-const NOTICES_LIMIT_PER_PAGE = 2; // Use a constant for the limit
+const NOTICES_LIMIT_PER_PAGE = 10; // Use a constant for the limit
 
 // DOM Selectors (Moved to where they are needed)
 const superAdminNoticesContainer = document.querySelector('.chats'); // The container for the notices
