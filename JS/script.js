@@ -198,21 +198,24 @@ export function showToast(type, message) {
 
 document.addEventListener('DOMContentLoaded', function () {
   const profileIcon = document.querySelector('.profileIconDiv');
-  const notificationIcon = document.querySelector('.notificatinoIconDiv');
-
   const profileSliderOverlay = document.querySelector(
     '.profile-slider-overlay'
   );
+  const profileSlider = document.querySelector('.profile-slider-content');
+  const closeProfileBtn = document.querySelector('.close-profile-btn');
+  const sliderWrapper = document.querySelector('.slider-wrapper');
+
+  // Notification
+  const notificationIcon = document.querySelector('.notificatinoIconDiv');
+
   const notificationSliderOverlay = document.querySelector(
     '.notification-slider-overlay'
   );
 
-  const profileSlider = document.querySelector('.profile-slider-content');
   const notificationSlider = document.querySelector(
     '.notification-slider-content'
   );
 
-  const closeProfileBtn = document.querySelector('.close-profile-btn');
   const closeNotificationBtn = document.querySelector(
     '.close-notification-btn'
   );
@@ -220,7 +223,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const notificationSliderWrapper = document.querySelector(
     '.notificationSlider-wrapper'
   );
-  const sliderWrapper = document.querySelector('.slider-wrapper');
 
   //   profileIcon?.click();
 
@@ -1269,6 +1271,34 @@ export function closeModal() {
   main.classList.remove('blur');
   if (sidebar) sidebar.classList.remove('blur');
   main.classList.remove('no-scroll');
+
+  if (isAdmin || isStaff) {
+    if (fullNoticeModalClosed) {
+      const notificationIcon = document.querySelector('.notificatinoIconDiv');
+
+      const notificationSliderOverlay = document.querySelector(
+        '.notification-slider-overlay'
+      );
+
+      const notificationSlider = document.querySelector(
+        '.notification-slider-content'
+      );
+
+      const closeNotificationBtn = document.querySelector(
+        '.close-notification-btn'
+      );
+
+      const notificationSliderWrapper = document.querySelector(
+        '.notificationSlider-wrapper'
+      );
+
+      notificationSlider.classList.add('open');
+      notificationSliderOverlay.classList.add('visible');
+      notificationSliderWrapper.style.transform = 'translateX(0%)';
+
+      fullNoticeModalClosed = false;
+    }
+  }
 }
 
 // JS for Date of Birth Input
@@ -1902,12 +1932,30 @@ function renderBusinessNotices(notices) {
                </div>
             </div>
 
-    
+
     `;
 
     const wrapper = document.createElement('div');
     wrapper.innerHTML = noticeHTML;
     const card = wrapper.firstElementChild;
+
+    const notificationIcon = document.querySelector('.notificatinoIconDiv');
+
+    const notificationSliderOverlay = document.querySelector(
+      '.notification-slider-overlay'
+    );
+
+    const notificationSlider = document.querySelector(
+      '.notification-slider-content'
+    );
+
+    const closeNotificationBtn = document.querySelector(
+      '.close-notification-btn'
+    );
+
+    const notificationSliderWrapper = document.querySelector(
+      '.notificationSlider-wrapper'
+    );
 
     // **Attach the listener here**
     card.addEventListener('click', (e) => {
@@ -1915,10 +1963,18 @@ function renderBusinessNotices(notices) {
 
       const noticeId = card.dataset.noticeId;
       openBusinessNoticeFullMessageModal(noticeId);
+
+      fullNoticeModalClosed = true;
+
+      notificationSlider.classList.remove('open');
+      notificationSliderOverlay.classList.remove('visible');
+      notificationSliderWrapper.style.transform = 'translateX(0%)';
     });
     businessNoticesContainer.appendChild(card);
   });
 }
+
+let fullNoticeModalClosed = false;
 
 // DIsplay Full Message
 function openBusinessNoticeFullMessageModal(noticeId) {
