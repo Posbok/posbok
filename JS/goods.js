@@ -2487,6 +2487,8 @@ export async function renderInventoryLogTable({ filters, shopId }) {
         ? `${shopInventoryLog.performer.first_name} ${shopInventoryLog.performer.last_name}`
         : 'Unknown';
 
+      console.log(action_type);
+
       const row = document.createElement('tr');
       row.classList.add('table-body-row');
       // row.classList.add(
@@ -2505,7 +2507,9 @@ export async function renderInventoryLogTable({ filters, shopId }) {
                   price
                 )}</td>
                 <td class="py-1 producCategory">${formatActionType(
-                  action_type
+                  action_type === 'restocked'
+                    ? 'New Product Added.'
+                    : action_type
                 )}</td>
                 <td class="py-1 producCategory">${performerName}</td>
                 <td class="py-1 productAmountBought">${formatDateTimeReadable(

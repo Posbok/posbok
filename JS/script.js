@@ -1486,6 +1486,7 @@ const reportsNav = document.getElementById('reportsNav');
 const manageNav = document.getElementById('manageNav');
 
 const invetoryNav = document.querySelector('.inventoryBtn');
+const warehouseNav = document.querySelector('.warehouseBtn');
 const posManagementNav = document.querySelector('.posManagementBtn');
 
 // Stop everything if no user is logged in
@@ -1636,15 +1637,18 @@ if (!userData) {
       if (sellIndexTab) sellIndexTab.style.display = 'block';
       if (sellNav) sellNav.style.display = 'block';
       if (invetoryNav) invetoryNav.classList.remove('hidden');
+      if (warehouseNav) warehouseNav.classList.remove('hidden');
     } else {
       if (sellIndexTab) sellIndexTab.style.display = 'none';
       if (sellNav) sellNav.style.display = 'none';
       if (invetoryNav) invetoryNav.classList.add('hidden');
+      if (warehouseNav) warehouseNav.classList.add('hidden');
     }
 
     if (servicePermission === 'BOTH') {
       if (posManagementNav) posManagementNav.classList.remove('hidden');
       if (invetoryNav) invetoryNav.classList.remove('hidden');
+      if (warehouseNav) warehouseNav.classList.remove('hidden');
     }
 
     const restrictedAdminPages = ['super-admin'];
