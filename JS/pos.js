@@ -43,6 +43,7 @@ import { populateGoodsShopDropdown } from './goods.js';
 import { checkAndPromptCreateShop } from './apiServices/shop/shopResource.js';
 import {
   initAccountOverview,
+  shopBalancesGlobal,
   updateCashInMachineUI,
 } from './apiServices/account/accountOverview.js';
 import { getBusinessSettings } from './apiServices/business/businessResource.js';
@@ -428,6 +429,8 @@ document.addEventListener('DOMContentLoaded', () => {
 //   }
 // });
 
+let posShopSummary;
+
 document.addEventListener('DOMContentLoaded', async () => {
   if (isStaff) {
     //  const businessDay = await getCurrentBusinessDay(staffShopId);
@@ -441,7 +444,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     //    return;
     //  }
     //  updateCashInMachineUI(openingCash);
-    initAccountOverview();
+    await initAccountOverview();
+    posShopSummary = shopBalancesGlobal;
   }
 
   if (isAdmin) {
@@ -483,7 +487,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         try {
           //  console.log('we are here');
-          initAccountOverview();
+          await initAccountOverview();
+
+          posShopSummary = shopBalancesGlobal;
+
+          console.log(posShopSummary);
         } catch (error) {
           console.error('Error fetching POS Summary Details:', error.message);
           showToast(
@@ -642,6 +650,10 @@ export async function handlePosFormSubmit() {
         isAdmin ? '#adminPosTransferFee' : '#posTransferFee'
       ).value;
 
+      const posMachineFeeInput = document.querySelector(
+        isAdmin ? '#adminPosMachineFee' : '#posMachineFee'
+      );
+
       // "transactionType" must be one of [WITHDRAWAL, DEPOSIT, WITHDRAWAL_TRANSFER, BILL_PAYMENT]
       const shopId = isAdmin ? Number(posShopDropdown) : Number(staffShopId);
 
@@ -697,16 +709,102 @@ export async function handlePosFormSubmit() {
 
         const businessDayVerified = await ensureBusinessDayOpen(shopId);
 
-        console.log(businessDayVerified);
+        //   console.log(businessDayVerified);
 
         if (!businessDayVerified) {
           hideBtnLoader(posSubmitButton);
           return;
         }
 
+        console.log(transactionType.toLowerCase() === 'withdrawal');
+        console.log(Number(getAmountForSubmission(amount)));
+        console.log(posShopSummary.cash_at_hand);
+        console.log(posShopSummary);
+
+        //   1: if withdrawal amount is greater than cash at hand, handle error by displaying fund pos capital
+
+        if (
+          transactionType.toLowerCase() === 'withdrawal' &&
+          Number(getAmountForSubmission(amount)) > posShopSummary.cash_at_hand
+        ) {
+          showToast(
+            'info',
+            `⛔ Deopsit POS Capital to proceed: Cannot withdraw more than ₦${formatAmountWithCommas(
+              posShopSummary.cash_at_hand
+            )}. `
+          );
+          console.log(`the amount is higher than the shop balance`);
+          hideBtnLoader(posSubmitButton);
+          return;
+        } else {
+          //  console.log('Proceed to create Withdrawal POS Transaction');
+        }
+
+        //   2: for withdrawal transaction by card, machine fee must be imputed if not entered display enter machine fee to perform transaction
+
+        // REQUIRE MACHINE FEE FOR: Withdrawal + Card
+        if (
+          transactionType.toLowerCase() === 'withdrawal' &&
+          paymentMethod.toLowerCase() === 'card'
+        ) {
+          if (
+            !posMachineFeeInput.value ||
+            posMachineFeeInput.value.trim() === ''
+          ) {
+            posMachineFeeInput.setAttribute('required', 'true');
+            posMachineFeeInput.reportValidity(); // triggers browser popup
+            hideBtnLoader(posSubmitButton);
+            return; // stop submission
+          }
+        } else {
+          // Remove required if not needed
+          posMachineFeeInput.removeAttribute('required');
+        }
+
+        //   3: if deposit transaction amount is greater than cash in machine return or display fund cash in machine
+
+        if (
+          transactionType.toLowerCase() === 'deposit' &&
+          Number(getAmountForSubmission(amount)) >
+            posShopSummary.cash_in_machine
+        ) {
+          showToast(
+            'info',
+            `⛔ Fund Cash in Machine to proceed: Cannot perform Deposit transaction more than ₦${formatAmountWithCommas(
+              posShopSummary.cash_in_machine
+            )}. `
+          );
+          console.log(`the amount is higher than the machine balance`);
+          hideBtnLoader(posSubmitButton);
+          return;
+        } else {
+          //  console.log('Proceed to create  Deposit Transaction');
+        }
+
+        // 4: if billpayment by cash transaction amount is greater than cash in machine return or display fund Cash in machine
+
+        if (
+          transactionType.toLowerCase() === 'bill_payment' &&
+          paymentMethod.toLowerCase() === 'cash' &&
+          Number(getAmountForSubmission(amount)) >
+            posShopSummary.cash_in_machine
+        ) {
+          showToast(
+            'info',
+            `⛔ Fund Cash in Machine to proceed: Cannot perform Bill Payment by Cash transaction more than ₦${formatAmountWithCommas(
+              posShopSummary.cash_in_machine
+            )}. `
+          );
+          console.log(`the amount is higher than the machine balance`);
+          hideBtnLoader(posSubmitButton);
+          return;
+        } else {
+          //  console.log('Proceed to create  Bill Payment by Cash Transaction');
+        }
+
         const posTransactionCreated = await createPosTransaction(posFormData);
 
-        //   console.log(posTransactionCreated);
+        console.log(posTransactionCreated);
 
         console.log(
           'POS transaction sent successfully:',

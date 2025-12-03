@@ -18,6 +18,8 @@ const businessId = parsedUserData?.businessId;
 
 const isStaff = parsedUserData?.accountType === 'STAFF';
 
+export let shopBalancesGlobal = [];
+
 export async function initAccountOverview() {
   showGlobalLoader();
   //   console.log('code got here');
@@ -77,6 +79,8 @@ export function updatePosSummaryDashboardUi(shopBalances, adminShopSelection) {
 
   //   console.log('Selected Shop ID:', selectedShopId);
   console.log('Selected Shop Balance:', balancePerShop);
+
+  shopBalancesGlobal = balancePerShop;
 
   const {
     billpayment_cash,
@@ -230,6 +234,8 @@ export function updatePosSummaryDashboardUi(shopBalances, adminShopSelection) {
   //       // admin_withdrawal_transfer || 0
   //       0
   //     );
+
+  return shopBalances;
 }
 
 export function updateCashInMachineUI(openingCash) {
