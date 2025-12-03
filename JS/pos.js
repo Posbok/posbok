@@ -729,7 +729,7 @@ export async function handlePosFormSubmit() {
         ) {
           showToast(
             'info',
-            `⛔ Deopsit POS Capital to proceed: Cannot withdraw more than ₦${formatAmountWithCommas(
+            `⛔ Deposit POS Capital to proceed: Cannot withdraw more than ₦${formatAmountWithCommas(
               posShopSummary.cash_at_hand
             )}. `
           );
