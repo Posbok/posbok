@@ -124,8 +124,6 @@ if (isAdmin) {
       const { enrichedShopData } = await checkAndPromptCreateShop();
       populateBusinessShopDropdown(enrichedShopData, 'businessDayShopDropdown');
 
-      console.log('object');
-
       populateBusinessShopDropdown(
         enrichedShopData,
         'adminDepositposCapitalShopDropdown'
