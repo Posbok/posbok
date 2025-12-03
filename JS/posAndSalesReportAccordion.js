@@ -337,7 +337,7 @@ export function getAdminSalesReportHtml(shop) {
   return `    
     <!-- Sales HTML starts Here -->
 
-          <div  id="shopSales-report-${shop.id}"  class=" reports " data-loaded="false" mt-4 mb-4 ">
+          <div  id="shopSales-report-${shop.id}"  class=" reports mt-4 mb-4 " data-loaded="false" >
 
            <div class="reports card">
          <div class="reports-method">
@@ -411,9 +411,9 @@ export function getAdminSalesReportHtml(shop) {
                         <th class="py-1">Amount</th>
                         <th class="py-1">Paid</th>
                         <th class="py-1">Balance</th>
-                        <th class="py-1">Payment Method</th>z
-                        <th class="py-1">Machine Fee</th>z
-                        <th class="py-1">Tax Fee</th>z
+                        <th class="py-1">Payment Method</th>
+                        <th class="py-1">Machine Fee</th>
+                        <th class="py-1">Tax Fee</th>
                         <th class="py-1">Date</th>
                         <th class="py-1">Remarks</th>
                         <th class="py-1">Status</th>

@@ -669,6 +669,54 @@
    </form>
 
 
+   <!-- Inform about Previous Day Status - Staff Pop up -->
+   <form class="modal-form informPreviousBusinessDayModal informPreviousBusinessDayContainer" name="modal">
+
+      <div class="card confirmation informPreviousBusinessDay modal ">
+         <h1 class="heading-text">Previous Business Day Detected</h1>
+         <h1 class="confirmation-text">You are currently on the previous business day: <span
+               id="confirmation-text_businessDay" style="color: red;"></span>. Do you want to continue with this
+            business day?
+         </h1>
+
+         <div class="confirmation-btn_container">
+
+            <button class="hero-btn-dark cancel-close">No, Close Business Day</button>
+
+            <button class="hero-btn-danger informPreviousBusinessDayBtn  mt-2 has-spinner" type="submit">
+               <span class="btn-text">Yes, Proceed</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+
+
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <!-- Inform about Previous Day Status - Admin Pop up -->
+   <form class="modal-form adminInformPreviousBusinessDayModal" name="modal">
+      <div class="card confirmation admin-inform-previous modal">
+         <h1 class="heading-text">Previous Business Days Detected</h1>
+
+         <div id="admin-business-day-list" class="shop-list"></div>
+
+         <div class="confirmation-btn_container">
+            <button class="hero-btn-dark cancel-close">Close Business Days</button>
+
+            <button class="hero-btn-danger adminProceedBtn mt-2 has-spinner" type="submit">
+               <span class="btn-text">Yes, Proceed Anyway</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal">&times;</div>
+      </div>
+   </form>
+
+
+
 
 
    <form class="modal-form createShopModal" name="modal" netlify>

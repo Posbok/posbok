@@ -917,6 +917,216 @@ document.addEventListener('DOMContentLoaded', () => {
   bindCloseBusinessDayFormListener(); // Only once
 });
 
+// Inform User on Previous Day Status
+
+async function checkPreviousBusinessDayStatus() {
+  try {
+    const { enrichedShopData } = await checkAndPromptCreateShop();
+    showGlobalLoader();
+    // populateBusinessShopDropdown(enrichedShopData, 'businessDayShopDropdown');
+
+    console.log('object', enrichedShopData);
+
+    if (isStaff) {
+      const response = await getCurrentBusinessDay(isStaff ? shopId : '');
+
+      const businessDay = response.data;
+
+      console.log('business Day', businessDay);
+
+      // Compare dates
+      const today = new Date().toISOString().split('T')[0];
+      const businessDayDate = businessDay.opening_time.split('T')[0];
+      console.log('XXX today', today);
+      console.log(' XXX businessDayDate', businessDayDate);
+
+      if (businessDay.is_open && businessDayDate !== today) {
+        // Show a confirmation dialog;
+
+        return await new Promise((resolve) => {
+          showGlobalLoader();
+          openInformPreviousBusinessDayModal(businessDayDate, shopId);
+          //  InformPreviousForm(businessDayDate, shopId);
+          bindInformPreviousBusinessDayFormListener(resolve);
+        });
+      }
+    }
+
+    if (isAdmin) {
+      const shopsNeedingAttention = [];
+
+      showGlobalLoader();
+
+      for (let shop of enrichedShopData) {
+        const response = await getCurrentBusinessDay(shop.id);
+        const businessDay = response.data;
+
+        console.log('business Day', response);
+        console.log('business Day', businessDay);
+
+        // If no business day exists, skip gracefully
+        if (!businessDay) {
+          continue;
+        }
+
+        const today = new Date().toISOString().split('T')[0];
+        const businessDayDate = businessDay.opening_time.split('T')[0];
+
+        if (businessDay.is_open && businessDayDate !== today) {
+          shopsNeedingAttention.push({
+            shopId: shop.id,
+            shopName: shop.shop_name,
+            businessDayDate,
+          });
+        }
+      }
+
+      console.log('Shops needing attention', shopsNeedingAttention);
+
+      if (shopsNeedingAttention.length > 0) {
+        showGlobalLoader();
+        openAdminPreviousBusinessDayModal(shopsNeedingAttention);
+
+        return await new Promise((resolve) => {
+          bindAdminPreviousBusinessDayFormListener(resolve);
+          //  hideGlobalLoader();
+        });
+      }
+    }
+  } catch (err) {
+    hideGlobalLoader();
+    console.error('Failed to Inform Business Day Data:', err.message);
+  } finally {
+    hideGlobalLoader();
+  }
+}
+
+// Previous vs Current Business Day Modals
+
+export function openInformPreviousBusinessDayModal(businessDayDate, shopId) {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const informPreviousBusinessDayContainer = document.querySelector(
+    '.informPreviousBusinessDay'
+  );
+
+  document.getElementById('confirmation-text_businessDay').textContent =
+    businessDayDate;
+
+  if (informPreviousBusinessDayContainer)
+    informPreviousBusinessDayContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
+export function openAdminPreviousBusinessDayModal(shops) {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const adminInfomrmodal = document.querySelector('.admin-inform-previous');
+
+  const container = document.getElementById('admin-business-day-list');
+  container.innerHTML = '';
+
+  shops.forEach((shop) => {
+    container.innerHTML += `
+          <div class="shop-item">
+             <p class="heading-subtext">${shop.shopName}  (<span class="old-date" style="color: red;">Opened: ${shop.businessDayDate}</span>)</p>  
+            
+          </div>
+        `;
+  });
+
+  if (adminInfomrmodal) adminInfomrmodal.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
+// Previous vs Current Business Day Actions
+
+export function bindInformPreviousBusinessDayFormListener(resolve) {
+  const form = document.querySelector('.informPreviousBusinessDayModal');
+  if (!form) return;
+
+  const proceedBtn = form.querySelector('.informPreviousBusinessDayBtn');
+  const cancelButton = form.querySelector('.cancel-close');
+  const closeModalIcon = form.querySelector('.closeModal');
+
+  //   hideGlobalLoader();
+
+  if (!form.dataset.bound) {
+    form.dataset.bound = true;
+
+    closeModalIcon?.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      resolve(false);
+      closeModal();
+      if (form) form.dataset.bound = '';
+      // redirectWithDelay('Homepage', 'index.html', 1500);
+    });
+
+    cancelButton?.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      resolve(false);
+      closeModal();
+      if (form) form.dataset.bound = '';
+      if (isAdmin) openAdminCloseBusinessDayModal();
+      if (isStaff) openCloseBusinessDayModal();
+      // redirectWithDelay('Homepage', 'index.html', 1500);
+    });
+
+    proceedBtn?.addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      resolve(true);
+      closeModal();
+
+      if (form) form.dataset.bound = '';
+    });
+  }
+}
+
+export function bindAdminPreviousBusinessDayFormListener(resolve) {
+  const modal = document.querySelector('.adminInformPreviousBusinessDayModal');
+  if (!modal) return;
+
+  const proceedBtn = modal.querySelector('.adminProceedBtn');
+  const cancelBtn = modal.querySelector('.cancel-close');
+  const closeIcon = modal.querySelector('.closeModal');
+
+  //   hideGlobalLoader();
+
+  if (modal.dataset.bound) return;
+  modal.dataset.bound = true;
+
+  proceedBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    resolve(true);
+    closeModal();
+    modal.dataset.bound = '';
+  });
+
+  cancelBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    resolve(false);
+    closeModal();
+    openAdminCloseBusinessDayModal();
+    modal.dataset.bound = '';
+  });
+
+  closeIcon?.addEventListener('click', (e) => {
+    e.preventDefault();
+    resolve(false);
+    closeModal();
+    modal.dataset.bound = '';
+  });
+}
+
+if (document.body.classList.contains('home')) {
+  checkPreviousBusinessDayStatus();
+}
+
 // JS For Modal
 
 const main = document.querySelector('.main');
@@ -1021,6 +1231,12 @@ export function closeModal() {
   const proceedWithPreviousBusinessDay = document.querySelector(
     '.proceedWithPreviousBusinessDay'
   );
+  const informPreviousBusinessDay = document.querySelector(
+    '.informPreviousBusinessDay'
+  );
+  const adminInformPreviousBusinessDayModal = document.querySelector(
+    '.admin-inform-previous'
+  );
   const exportBusinessesData = document.querySelector('.exportBusinessesData');
   const deleteStockCategoryContainer = document.querySelector(
     '.deleteStockCategoryContainer'
@@ -1074,6 +1290,14 @@ export function closeModal() {
 
   if (proceedWithPreviousBusinessDay) {
     proceedWithPreviousBusinessDay.classList.remove('active');
+  }
+
+  if (informPreviousBusinessDay) {
+    informPreviousBusinessDay.classList.remove('active');
+  }
+
+  if (adminInformPreviousBusinessDayModal) {
+    adminInformPreviousBusinessDayModal.classList.remove('active');
   }
   if (updateBusinessDataContainer) {
     updateBusinessDataContainer.classList.remove('active');
