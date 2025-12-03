@@ -997,7 +997,7 @@ export async function getBusinessDaySummaries({
     if (filters.date_from) queryParams.append('date_from', filters.date_from);
     if (filters.date_to) queryParams.append('date_to', filters.date_to);
 
-    console.log(queryParams.toString());
+    //  console.log(queryParams.toString());
 
     showGlobalLoader();
     const posFinancialSummaryData = await safeFetch(

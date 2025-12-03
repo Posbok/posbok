@@ -30,7 +30,7 @@ if (createbusinessForm) {
     const businessState = document.getElementById('businessState').value;
     const cacRegNo = document.getElementById('cacRegNo').value;
     const taxId = document.getElementById('taxId').value;
-    const nin = document.getElementById('nin').value;
+    //  const nin = document.getElementById('nin').value;
     const businessStaffSize =
       document.getElementById('businessStaffSize').value;
 
@@ -42,19 +42,19 @@ if (createbusinessForm) {
     );
     const businessTypeValue = businessType[0] || null;
 
-    const versionPreferenceCheckboxes = document.querySelectorAll(
-      'input[name="versionPreference"]:checked'
-    );
+    //  const versionPreferenceCheckboxes = document.querySelectorAll(
+    //    'input[name="versionPreference"]:checked'
+    //  );
 
-    const versionPreference = Array.from(versionPreferenceCheckboxes).map(
-      (cb) => cb.value
-    );
-    const versionPreferenceValue = versionPreference[0] || null;
+    //  const versionPreference = Array.from(versionPreferenceCheckboxes).map(
+    //    (cb) => cb.value
+    //  );
+    //  const versionPreferenceValue = versionPreference[0] || null;
 
-    if (nin.length !== 11) {
-      showToast('info', `ℹ️ NIN must be exactly 11 digits.`);
-      return;
-    }
+    //  if (nin.length !== 11) {
+    //    showToast('info', `ℹ️ NIN must be exactly 11 digits.`);
+    //    return;
+    //  }
 
     const businessDetails = {
       businessOwnerId: generatedBusinessOwnerId,
@@ -64,10 +64,10 @@ if (createbusinessForm) {
       stateOfOperation: businessState,
       cacRegNo,
       taxId,
-      nin,
+      // nin,
       businessType: businessTypeValue,
       staffSize: businessStaffSize,
-      versionPreference: versionPreferenceValue,
+      // versionPreference: versionPreferenceValue,
     };
 
     console.log('📦 Business Details:', businessDetails);

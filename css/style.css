@@ -1314,6 +1314,9 @@ button:disabled:hover {
 .hidden {
   display: none; }
 
+#text {
+  display: none; }
+
 .sidebar {
   grid-column: sidebar-start / sidebar-end;
   grid-row: rowOne-start / rowTwo-end;
