@@ -176,9 +176,9 @@ export function updatePosSummaryDashboardUi(shopBalances, adminShopSelection) {
   //   const adminWithdrawalsTransfer = document.getElementById(
   //     isStaff ? 'adminWithdrawalsTransfer' : 'adminWithdrawalsTransfer_admin'
   //   );
-  const currentBusinessDay = document.getElementById(
-    isStaff ? 'currentBusinessDay' : 'adminCurrentBusinessDay'
-  );
+  //   const currentBusinessDay = document.getElementById(
+  //     isStaff ? 'currentBusinessDay' : 'adminCurrentBusinessDay'
+  //   );
 
   if (totalPosCapital)
     totalPosCapital.innerHTML = formatAmountWithCommas(total_pos_capital || 0);
@@ -206,7 +206,7 @@ export function updatePosSummaryDashboardUi(shopBalances, adminShopSelection) {
   if (transferFe)
     transferFe.innerHTML = formatAmountWithCommas(total_transfer_fee || 0);
   if (totalFees) totalFees.innerHTML = formatAmountWithCommas(total_fees || 0);
-  if (currentBusinessDay) currentBusinessDay.innerHTML = current_business_day;
+  //   if (currentBusinessDay) currentBusinessDay.innerHTML = current_business_day;
 
   if (totalAdminWithdrawals)
     totalAdminWithdrawals.innerHTML = formatAmountWithCommas(

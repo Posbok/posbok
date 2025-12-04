@@ -2478,9 +2478,12 @@ export async function renderSalesTable({
   shopId,
   tableBodyId,
   loadMoreButton,
+  append = false,
 }) {
   if (servicePermission === 'INVENTORY_SALES' || servicePermission === 'BOTH') {
     //  console.log('🧪 Applied Filters:', filters);
+    console.log('loadMoreButton before hide:', loadMoreButton);
+
     const salesTableBody = document.querySelector(tableBodyId);
 
     if (!salesTableBody) {
@@ -2499,7 +2502,7 @@ export async function renderSalesTable({
       }
 
       loadMoreButton.style.display = 'none';
-
+      console.log('loadMoreButton after hide:', loadMoreButton);
       // Build query with filters
       const queryParams = new URLSearchParams({
         shopId: shopId,
@@ -2530,9 +2533,9 @@ export async function renderSalesTable({
       currentPage = result.data.currentPage;
 
       // Only reset array if starting from page 1
-      if (page === 1) {
-        allSalesReport = [];
-      }
+      // if (page === 1) {
+      //   allSalesReport = [];
+      // }
 
       if (salesReports.length === 0 && currentPage === 1) {
         salesTableBody.innerHTML =
@@ -2547,6 +2550,10 @@ export async function renderSalesTable({
       });
 
       // Clear the table body and render all accumulated sales
+      if (!append) {
+        salesTableBody.innerHTML = '';
+      }
+
       salesTableBody.innerHTML = '';
 
       const groupedByDate = {};
@@ -2790,10 +2797,14 @@ export async function renderSalesTable({
       });
 
       // Handle Load More button visibility
+      console.log('current page', currentPage);
+      console.log('total pages', totalPages);
       if (currentPage >= totalPages) {
         loadMoreButton.style.display = 'none';
+        console.log('loadMoreButton Inside If Block:', loadMoreButton);
       } else {
         loadMoreButton.style.display = 'block';
+        console.log('loadMoreButton inside ELSE Block:', loadMoreButton);
       }
     } catch (error) {
       console.error('Error rendering transactions:', error);

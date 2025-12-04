@@ -29,7 +29,7 @@ if (createbusinessForm) {
     ).value;
     const businessState = document.getElementById('businessState').value;
     const cacRegNo = document.getElementById('cacRegNo').value;
-    const taxId = document.getElementById('taxId').value;
+    //  const taxId = document.getElementById('taxId').value;
     //  const nin = document.getElementById('nin').value;
     const businessStaffSize =
       document.getElementById('businessStaffSize').value;
@@ -63,7 +63,7 @@ if (createbusinessForm) {
       phoneNumber: businessPhoneNumber,
       stateOfOperation: businessState,
       cacRegNo,
-      taxId,
+      // taxId,
       // nin,
       businessType: businessTypeValue,
       staffSize: businessStaffSize,

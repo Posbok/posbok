@@ -591,6 +591,7 @@ function setupSalesFilters({
         loadMoreButton: document.getElementById(
           `loadMoreSaleButton_admin_${shopId}`
         ),
+        append: false,
       });
       //   console.log('filters:', filters);
     });
@@ -613,6 +614,7 @@ function setupSalesFilters({
         loadMoreButton: document.getElementById(
           `loadMoreSaleButton_admin_${shopId}`
         ),
+        append: false,
       });
     });
 
@@ -716,7 +718,7 @@ function setupSalesFilters({
     `loadMoreSaleButton_admin_${shopId}`
   );
 
-  if (loadMoreSalesButton) loadMoreSalesButton.style.display = 'none';
+  //   if (loadMoreSalesButton) loadMoreSalesButton.style.display = 'none';
 
   if (loadMoreSalesButton)
     loadMoreSalesButton.addEventListener('click', () => {
@@ -735,6 +737,7 @@ function setupSalesFilters({
         loadMoreButton: document.getElementById(
           `loadMoreSaleButton_admin_${shopId}`
         ),
+        append: true,
       });
     });
 }
