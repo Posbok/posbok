@@ -466,7 +466,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (posShopDropdown)
       posShopDropdown.addEventListener('change', async function (e) {
         const selectedShopId = e.target.value;
-        console.log(selectedShopId);
+        //   console.log(selectedShopId);
         clearPosSummaryDiv();
         posTransactionSummaryDiv.style.display = 'block';
         posTransactionSummary.style.display = 'flex';
@@ -717,10 +717,10 @@ export async function handlePosFormSubmit() {
           return;
         }
 
-        console.log(transactionType.toLowerCase() === 'withdrawal');
-        console.log(Number(getAmountForSubmission(amount)));
-        console.log(posShopSummary.cash_at_hand);
-        console.log(posShopSummary);
+        //   console.log(transactionType.toLowerCase() === 'withdrawal');
+        //   console.log(Number(getAmountForSubmission(amount)));
+        //   console.log(posShopSummary.cash_at_hand);
+        //   console.log(posShopSummary);
 
         //   1: if withdrawal amount is greater than cash at hand, handle error by displaying fund pos capital
 
@@ -744,7 +744,7 @@ export async function handlePosFormSubmit() {
           // How much more is needed
           const amountNeeded = requiredBalance - cashAtHand;
 
-          console.log('calculated here:', amountNeeded);
+          //  console.log('calculated here:', amountNeeded);
 
           showToast(
             'info',
@@ -753,7 +753,7 @@ export async function handlePosFormSubmit() {
             )}  to continue.`
           );
 
-          console.log(`the amount is higher than the shop balance`);
+          //  console.log(`the amount is higher than the shop balance`);
           hideBtnLoader(posSubmitButton);
           return;
         }
@@ -795,7 +795,7 @@ export async function handlePosFormSubmit() {
           // How much more is needed
           const amountNeeded = requiredBalance - cashInMachine;
 
-          console.log('calculated here:', amountNeeded);
+          //  console.log('calculated here:', amountNeeded);
 
           showToast(
             'info',
@@ -804,7 +804,7 @@ export async function handlePosFormSubmit() {
             )} more to continue.`
           );
 
-          console.log(`the amount is higher than the machine balance`);
+          //  console.log(`the amount is higher than the machine balance`);
           hideBtnLoader(posSubmitButton);
           return;
         }
@@ -825,7 +825,7 @@ export async function handlePosFormSubmit() {
           // Shortfall
           const amountNeeded = requiredBalance - cashInMachine;
 
-          console.log('calculated here:', amountNeeded);
+          //  console.log('calculated here:', amountNeeded);
 
           showToast(
             'info',
@@ -834,7 +834,7 @@ export async function handlePosFormSubmit() {
             )} more to continue.`
           );
 
-          console.log(`the amount is higher than the machine balance`);
+          //  console.log(`the amount is higher than the machine balance`);
           hideBtnLoader(posSubmitButton);
           return;
         }
@@ -1174,7 +1174,7 @@ export function addMachineFeeForm() {
 
   percentageTypeSelect.addEventListener('change', () => {
     const selected = percentageTypeSelect.value;
-    console.log('Selected:', selected);
+    //  console.log('Selected:', selected);
 
     if (selected === 'true') {
       // Show percentage input, hide fixed amount
@@ -1636,7 +1636,7 @@ export function updateFeeForm(feeDetail) {
 
   percentageTypeSelect.addEventListener('change', () => {
     const selected = percentageTypeSelect.value;
-    console.log('Selected:', selected);
+    //  console.log('Selected:', selected);
 
     if (selected === 'true') {
       // Show percentage input, hide fixed amount
