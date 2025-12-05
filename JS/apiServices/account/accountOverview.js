@@ -21,6 +21,7 @@ const isStaff = parsedUserData?.accountType === 'STAFF';
 export let shopBalancesGlobal = [];
 
 export async function initAccountOverview() {
+  console.log('account overview initated');
   showGlobalLoader();
   //   console.log('code got here');
   const posShopDropdown = document.getElementById('posShopDropdown')?.value;

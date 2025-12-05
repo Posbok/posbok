@@ -2180,7 +2180,7 @@ export async function renderProductInventoryTable(shopId) {
 
     shopProductMap[shopId] = productInventories;
 
-    console.log(productInventories);
+   //  console.log(productInventories);
 
     const totalProductsCountElement = document.querySelector(
       `.totalProductsCount_${shopId}`

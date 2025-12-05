@@ -203,7 +203,7 @@ export async function getProductInventory(shopId) {
     //  console.log('Response received...');
 
     if (productInventoryData) {
-      console.log(productInventoryData);
+      // console.log(productInventoryData);
       hideGlobalLoader();
     }
 

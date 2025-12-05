@@ -71,8 +71,6 @@ const staffUserId = parsedUserData?.id;
 const shopKey = `shop_${staffUserId}`;
 const servicePermission = parsedUserData?.servicePermission;
 
-console.log(servicePermission);
-
 function toTitleCase(value) {
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
@@ -879,7 +877,7 @@ if (isAdmin) {
 
     adminSelectedReport.addEventListener('change', async function (e) {
       const selectedValue = e.target.value;
-      console.log('Selected report:', selectedValue);
+      // console.log('Selected report:', selectedValue);
 
       const shopPosTransactiionSection = document.getElementById(
         `shop-report-${shopId}`
@@ -971,7 +969,7 @@ if (isAdmin) {
 
       // Sales Transactions - ADMIN
       if (selectedValue === `sales_report_${shop.id}`) {
-        console.log(shopSalesTransactiionSection);
+        //   console.log(shopSalesTransactiionSection);
         if (shopSalesTransactiionSection)
           shopSalesTransactiionSection.classList.remove('hidden');
         if (

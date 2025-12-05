@@ -202,7 +202,7 @@ export async function getSalesByStaff(staffId) {
 
     //  console.log('selectedStaffData received...');
 
-    //  console.log('selectedStaffData:', selectedStaffData);
+    console.log('selectedStaffData:', selectedStaffData);
     hideGlobalLoader();
     return selectedStaffData;
   } catch (error) {

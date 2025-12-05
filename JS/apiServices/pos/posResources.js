@@ -444,6 +444,8 @@ export async function getPosTransactions({
     if (filters.type) queryParams.append('type', filters.type);
     if (filters.status) queryParams.append('status', filters.status);
 
+    console.log(`${baseUrl}/api/pos/transactions?${queryParams.toString()}`);
+
     showGlobalLoader();
     const posTransactionsData = await safeFetch(
       `${baseUrl}/api/pos/transactions?${queryParams.toString()}`,

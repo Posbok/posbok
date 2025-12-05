@@ -466,6 +466,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (posShopDropdown)
       posShopDropdown.addEventListener('change', async function (e) {
         const selectedShopId = e.target.value;
+        console.log(selectedShopId);
         clearPosSummaryDiv();
         posTransactionSummaryDiv.style.display = 'block';
         posTransactionSummary.style.display = 'flex';
@@ -588,9 +589,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById(
       isStaff ? 'totalFees' : 'adminTotalFees'
     ).innerHTML = 0;
-    document.getElementById(
-      isStaff ? 'currentBusinessDay' : 'adminCurrentBusinessDay'
-    ).innerHTML = '';
+    //  document.getElementById(
+    //    isStaff ? 'currentBusinessDay' : 'adminCurrentBusinessDay'
+    //  ).innerHTML = '';
   }
 });
 
@@ -723,21 +724,38 @@ export async function handlePosFormSubmit() {
 
         //   1: if withdrawal amount is greater than cash at hand, handle error by displaying fund pos capital
 
+        //   showToast(
+        //    'info',
+        //    `⛔ Deposit POS Capital to proceed: Cannot withdraw more than ₦${formatAmountWithCommas(
+        //      posShopSummary.cash_at_hand
+        //    )}. `
+        //  );
+
         if (
           transactionType.toLowerCase() === 'withdrawal' &&
           Number(getAmountForSubmission(amount)) > posShopSummary.cash_at_hand
         ) {
+          const withdrawalAmt = Number(getAmountForSubmission(amount));
+          const cashAtHand = Number(posShopSummary.cash_at_hand);
+
+          // Required = withdrawal amount + ₦1000 buffer
+          const requiredBalance = withdrawalAmt + 1000;
+
+          // How much more is needed
+          const amountNeeded = requiredBalance - cashAtHand;
+
+          console.log('calculated here:', amountNeeded);
+
           showToast(
             'info',
-            `⛔ Deposit POS Capital to proceed: Cannot withdraw more than ₦${formatAmountWithCommas(
-              posShopSummary.cash_at_hand
-            )}. `
+            `⛔ Withdrawal Rejected: Deposit POS Capital of ₦${formatAmountWithCommas(
+              amountNeeded
+            )}  to continue.`
           );
+
           console.log(`the amount is higher than the shop balance`);
           hideBtnLoader(posSubmitButton);
           return;
-        } else {
-          //  console.log('Proceed to create Withdrawal POS Transaction');
         }
 
         //   2: for withdrawal transaction by card, machine fee must be imputed if not entered display enter machine fee to perform transaction
@@ -768,38 +786,57 @@ export async function handlePosFormSubmit() {
           Number(getAmountForSubmission(amount)) >
             posShopSummary.cash_in_machine
         ) {
+          const depositAmt = Number(getAmountForSubmission(amount));
+          const cashInMachine = Number(posShopSummary.cash_in_machine);
+
+          // Required = deposit amount + ₦1000 buffer
+          const requiredBalance = depositAmt + 1000;
+
+          // How much more is needed
+          const amountNeeded = requiredBalance - cashInMachine;
+
+          console.log('calculated here:', amountNeeded);
+
           showToast(
             'info',
-            `⛔ Fund Cash in Machine to proceed: Cannot perform Deposit transaction more than ₦${formatAmountWithCommas(
-              posShopSummary.cash_in_machine
-            )}. `
+            `⛔ Deposit Rejected: Fund Machine with ₦${formatAmountWithCommas(
+              amountNeeded
+            )} more to continue.`
           );
+
           console.log(`the amount is higher than the machine balance`);
           hideBtnLoader(posSubmitButton);
           return;
-        } else {
-          //  console.log('Proceed to create  Deposit Transaction');
         }
 
         // 4: if billpayment by cash transaction amount is greater than cash in machine return or display fund Cash in machine
-
         if (
           transactionType.toLowerCase() === 'bill_payment' &&
           paymentMethod.toLowerCase() === 'cash' &&
           Number(getAmountForSubmission(amount)) >
             posShopSummary.cash_in_machine
         ) {
+          const billAmt = Number(getAmountForSubmission(amount));
+          const cashInMachine = Number(posShopSummary.cash_in_machine);
+
+          // Required = bill payment amount + ₦1000 buffer
+          const requiredBalance = billAmt + 1000;
+
+          // Shortfall
+          const amountNeeded = requiredBalance - cashInMachine;
+
+          console.log('calculated here:', amountNeeded);
+
           showToast(
             'info',
-            `⛔ Fund Cash in Machine to proceed: Cannot perform Bill Payment by Cash transaction more than ₦${formatAmountWithCommas(
-              posShopSummary.cash_in_machine
-            )}. `
+            `⛔ Bill Payment Rejected: Fund machine with ₦${formatAmountWithCommas(
+              amountNeeded
+            )} more to continue.`
           );
+
           console.log(`the amount is higher than the machine balance`);
           hideBtnLoader(posSubmitButton);
           return;
-        } else {
-          //  console.log('Proceed to create  Bill Payment by Cash Transaction');
         }
 
         const posTransactionCreated = await createPosTransaction(posFormData);
