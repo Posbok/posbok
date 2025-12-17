@@ -292,8 +292,6 @@ export function setupCreateStaffForm() {
   }
 }
 
-showToast('success', `✅ `);
-
 export function populateStaffTable(staffData = [], enrichedShopData = []) {
   const tbody = document.querySelector('.staff-table tbody');
   const loadingRow = document.querySelector('.loading-row');
