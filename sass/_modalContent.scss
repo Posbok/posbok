@@ -1,3 +1,9 @@
+:root {
+   --z-modal: 1000;
+   --z-loader: 1100;
+   --z-toast: 1200;
+}
+
 .modal {
    padding: 3rem;
    opacity: 0;
@@ -10,7 +16,8 @@
    max-width: 100rem;
    max-height: 85vh;
    height: auto;
-   z-index: 999999999999;
+   z-index: var(--z-modal);
+   z-index: 99999990;
    transition: opacity .3s ease-in-out, visibility .3s ease-in-out;
    overflow-y: auto;
 
@@ -78,6 +85,8 @@
       margin-top: 2rem;
    }
 }
+
+
 
 .main.blur,
 .sidebar.blur {

@@ -249,7 +249,11 @@ export function setupCreateStaffForm() {
         return; // Prevent form submission
       }
 
+      const addUserModalBtn = document.querySelector('.addUserModalBtn');
+
       try {
+        showGlobalLoader();
+        showBtnLoader(addUserModalBtn);
         const data = await createStaff(staffDetails);
         //   if (!data || !data.data || !data.data.user) {
         //     //  showToast('fail', `❎ Failed to register staff.`);
@@ -276,15 +280,19 @@ export function setupCreateStaffForm() {
           );
         }
 
-        hideGlobalLoader();
+        //   hideGlobalLoader();
       } catch (err) {
         // err.message will contain the "Email already in use"
-        hideGlobalLoader();
         showToast('fail', `❎ ${err.message}`);
+      } finally {
+        hideGlobalLoader();
+        hideBtnLoader(addUserModalBtn);
       }
     });
   }
 }
+
+showToast('success', `✅ `);
 
 export function populateStaffTable(staffData = [], enrichedShopData = []) {
   const tbody = document.querySelector('.staff-table tbody');

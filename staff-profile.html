@@ -9,7 +9,7 @@
    <meta name="description"
       content="POSBOK - A powerful Inventory and POS management system designed for businesses to track stock levels, monitor POS transactions (withdrawals, deposits, transfers), and evaluate staff performance — all in one intuitive platform." />
 
-   <script src="authGuard.js"></script>
+   <!-- <script src="authGuard.js"></script> -->
 
    <link
       href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400,400i,600|Nunito:300,300i,400,600&display=swap"
@@ -23,11 +23,11 @@
    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
-   <script defer src="https://unpkg.com/smoothscroll-polyfill@0.4.4/dist/smoothscroll.min.js"></script>
-
    <!-- flatpickr - DateOfBirth -->
    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+   <script defer src="https://unpkg.com/smoothscroll-polyfill@0.4.4/dist/smoothscroll.min.js"></script>
 
    <!-- <script defer type="module" src="JS/script.js"></script>
    <script defer type="module" src="JS/goods.js"></script> -->
@@ -36,6 +36,7 @@
 
    <!-- <script src="dist/main.bundle.js" defer></script> -->
    <script src="dist/staff.bundle.js" defer></script>
+
 
    <title> POSBOK &mdash; Staff Management</title>
    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -255,7 +256,7 @@
       </section>
    </main>
 
-   <div id="toast" class="toast">
+   <div id="toast" class="toast success show">
       <h4 class="toast-message heading-subtext center-text mb-2">This is a toast message!</h4>
 
       <!-- <button class="close-toast hero-btn-dark mr-0">Okay</button> -->
@@ -268,7 +269,7 @@
    </div>
 
    <form class="modal-form createStaffModal" id="createStaffModal" name="add-user" netlify>
-      <div class="card addUser modal">
+      <div class="card addUser modal active ">
          <div>
             <h1 class="heading-text  addItemName">Add Staff Profile</h1>
          </div>
@@ -395,7 +396,8 @@
 
             <div class="password-container">
 
-               <input id="staffPassword" type="text" placeholder="Enter Staff Password." name="staffPassword" required>
+               <input id="staffPassword" type="password" placeholder="Enter Staff Password." name="staffPassword"
+                  required>
 
                <small id="password-length" class="error-text" style="color: red; display: none;"> </small>
             </div>
@@ -460,7 +462,11 @@
          </div>
 
          <div class="center-button">
-            <button class="hero-btn-dark saveUserButton addUserModalBtn">Create Account</button>
+            <button class="hero-btn-dark saveUserButton addUserModalBtn  has-spinner" type="submit">
+
+               <span class="btn-text">Create Account</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
          </div>
 
          <div class="close closeModal" id="">&times;</div>
@@ -781,7 +787,7 @@
                   <label for="userProfileDateOfBirth">Date Of Birth</label>
 
                   <input class="userProfileDateOfBirth" id="userProfileDate Of Birth" type="text"
-                     placeholder="Enter DateOfBirth" name="userProfileDateOfBirth" disabled>
+                     placeholder="Enter Date Of Birth" name="userProfileDateOfBirth" disabled>
                </div>
 
                <!-- USer State Of Origin -->
