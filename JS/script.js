@@ -989,7 +989,7 @@ async function checkPreviousBusinessDayStatus() {
 
         return await new Promise((resolve) => {
           bindAdminPreviousBusinessDayFormListener(resolve);
-          //  hideGlobalLoader();
+          hideGlobalLoader();
         });
       }
     }
