@@ -6,7 +6,6 @@
    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-
    <meta name="description"
       content="POSBOK - A powerful Inventory and POS management system designed for businesses to track stock levels, monitor POS transactions (withdrawals, deposits, transfers), and evaluate staff performance — all in one intuitive platform." />
 
@@ -24,18 +23,22 @@
    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
+   <!-- flatpickr - DateOfBirth -->
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
    <script defer src="https://unpkg.com/smoothscroll-polyfill@0.4.4/dist/smoothscroll.min.js"></script>
 
    <!-- <script defer type="module" src="JS/script.js"></script>
-   <script defer type="module" src="JS/reports.js"></script> -->
-   <!-- <script defer type="module" src="JS/goods.js"></script> -->
+   <script defer type="module" src="JS/goods.js"></script> -->
+
+   <script defer type="module" src="JS/apiServices/utility/nigerianLocations.js"></script>
+
+   <!-- <script src="dist/main.bundle.js" defer></script> -->
+   <script src="dist/storefront.bundle.js" defer></script>
 
 
-   <!-- <script src="/dist/main.bundle.js" defer></script> -->
-   <script src="/dist/business.bundle.js" defer></script>
-   <!-- <script src="dist/reports.bundle.js" defer></script> -->
-
-   <title>POSBOK &mdash; Business Management</title>
+   <title> POSBOK &mdash; Storefront Management</title>
    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -116,7 +119,6 @@
       </div>
    </nav>
 
-
    <main class="main">
       <header class="main-heading card">
          <div class="main-heading_intro">
@@ -131,7 +133,6 @@
          </div>
 
          <div class="main-heading_left">
-
             <div class="notificatinoIconDiv mr-2">
                <i class="fa-regular fa-bell icon main-heading-notification "></i>
                <span class="notification-counter"></span>
@@ -159,9 +160,6 @@
                      class="button-link"></a>Inventory</button>
 
 
-               <button class="hero-btn-dark"> <a href="staff-profile.html" class="button-link"></a>Staff
-                  Profile</button>
-
                <button class="hero-btn-dark"> <a href="shop-management.html" class="button-link"></a>Shop
                   Management</button>
 
@@ -169,155 +167,171 @@
                      class="button-link"></a>Warehouse
                   Management</button>
 
-               <button class="hero-btn-dark storefrontBtn"> <a href="storefront-management.html"
-                     class="button-link"></a>Storefront Management</button>
+               <button class="hero-btn-dark"> <a href="manage.html" class="button-link"></a>Manage</button>
 
             </div>
 
          </div>
       </div>
 
-      <!-- <button id="openShopModalBtn">Create Shop</button> -->
+      <section class="staff card">
+         <div class="staff-method">
+            <div class="noStorefrontInfo">
 
-      <section class="businessDetails card">
+               <h2 class="heading-text" style="margin-bottom: 1.5rem;">
+                  Set up your Storefront
+               </h2>
 
-         <div class="settings-container mb-4">
-            <h2 class="heading-text" style="margin-bottom: 1.5rem;">
-               Business Fee Settings
-            </h2>
+               <h3 class="heading-subtext center-text">Create an online presence for your business and start showcasing
+                  products to
+                  customers.</h3>
 
+               <!-- <div class="table-header" style="display: flex; flex-direction: column; width: max-content;"> -->
+               <div class="adminHeader center-text" style="margin: 3rem auto;">
 
-            <!-- <div class="setting-item">
-               <div class="setting-info">
-                  <h4 class="heading-minitext">Manual POS Charge Mode</h4>
-                  <p class="subscript-info">Enable this if you want to manually input POS Charges.</p>
+                  <button class="hero-btn-dark  create-storefront center-button center-text"
+                     id="openStaffModalBtn">Create
+                     Storefront</button>
                </div>
-               <label class="toggle pos_manual_charge_toggle">
-                  <input type="checkbox" id="pos_manual_charge">
-                  <span class="slider"></span>
-               </label>
-            </div> -->
-
-
-            <div class="setting-item">
-               <div class="setting-info">
-                  <h4 class="heading-minitext">Manual Machine Fee Mode</h4>
-                  <p class="subscript-info">Enable this if you want to manually input machine fees.</p>
-               </div>
-               <label class="toggle manual-fee_toggle">
-                  <input type="checkbox" id="manual_machine_fee_mode">
-                  <span class="slider"></span>
-               </label>
+               <!-- <h2 class="heading-subtext"> Staff Informations</h2> -->
+               <!-- </div> -->
             </div>
 
+         </div>
+      </section>
+   </main>
 
-            <!-- <div class="setting-item">
-               <div class="setting-info">
-                  <h4 class="heading-minitext">Transfer Fee for Incoming</h4>
-                  <p class="subscript-info">Apply transfer fee on incoming transactions.</p>
-               </div>
-               <label class="toggle transfer-fee_toggle">
-                  <input type="checkbox" id="transfer_fee_for_incoming">
-                  <span class="slider"></span>
-               </label>
-            </div> -->
+   <div id="toast" class="toast ">
+      <h4 class="toast-message heading-subtext center-text mb-2">This is a toast message!</h4>
+
+      <!-- <button class="close-toast hero-btn-dark mr-0">Okay</button> -->
+
+   </div>
+
+
+   <div id="global-loader" class="loader-overlay hidden">
+      <div class="spinner"></div>
+   </div>
+
+   <form class="modal-form createStaffModal" id="createStaffModal" name="create-storefront" netlify>
+      <div class="card createStorefront modal ">
+         <div>
+            <h1 class="heading-text  addItemName">Storefront Details</h1>
+         </div>
+
+         <!-- Latitude -->
+         <div class="modal-form_input">
+            <label for="storefrontLatitude">Latitude</label>
+
+            <input id="storefrontLatitude" type="text" placeholder="Enter Latitude" name="storefrontLatitude" required>
+         </div>
+
+         <!-- Longitude -->
+         <div class="modal-form_input">
+            <label for="storefrontLongitude">Longitude</label>
+
+            <input id="storefrontLongitude" type="text" placeholder="Enter Longitude" name="storefrontLongitude"
+               required>
+         </div>
+
+         <!-- State of origin -->
+         <!-- <div class="modal-form_input">
+            <label for="staffStateOfOrigin">State Of Origin</label>
+
+            <select id="staffStateOfOrigin" name="staffStateOfOrigin" required>
+               <option value="">Select State</option>
+            </select>
+         </div> -->
+
+         <!-- LGA -->
+         <!-- <div class="modal-form_input">
+            <label for="staffLga">LGA</label>
+
+            <select id="staffLga" name="staffLga" required>
+               <option value="">Select LGA</option>
+            </select>
+         </div> -->
+
+
+         <!-- storefront Address -->
+         <div class="modal-form_input">
+            <label for="storefrontAddress">Storefront Address</label>
+
+            <input id="storefrontAddress" type="text" placeholder="Enter Business Address" name="storefrontAddress"
+               required>
          </div>
 
 
-         <div class="shops-method">
-            <h2 class="heading-text" style="margin-bottom: 1.5rem;">
-               Business Details
-            </h2>
+         <!-- storefront Description -->
+         <div class="modal-form_input">
+            <label for="storefrontDescription">Storefront Description</label>
 
-            <!-- <div class="table-header" style="display: flex; flex-direction: column; width: max-content;"> -->
+            <input id="storefrontDescription" type="text" placeholder="Enter Storefront Description"
+               name="storefrontDescription" required>
+         </div>
 
-            <!-- Business Name -->
-            <div class="business-form_input">
-               <label for="businessName">Business Name</label>
+         <!-- storefront Motto -->
+         <div class="modal-form_input">
+            <label for="storefrontMotto">Storefront Motto</label>
 
-               <input id="businessName" type="text" name="businessName" disabled>
+            <input id="storefrontMotto" type="text" placeholder="Enter Business Motto" name="storefrontMotto">
+         </div>
+
+
+         <!-- storefront Phone Number -->
+         <div class="modal-form_input">
+            <label for="storefrontPhoneNumber">Contact Phone No.</label>
+
+            <input id="storefrontPhoneNumber" type="text" placeholder="Enter Contact Phone No."
+               oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="storefrontPhoneNumber" required>
+         </div>
+
+         <!-- storefront Email -->
+         <div class="modal-form_input">
+            <label for="storefrontEmail">Contact Email </label>
+
+            <input id="storefrontEmail" type="email" placeholder="Enter Contact Email" name="storefrontEmail" required>
+         </div>
+
+         <!-- Whatsapp Phone NUmber -->
+         <div class="modal-form_input">
+            <label for="storefrontWhatsappPhoneNumber">Whatsapp Phone No.</label>
+
+            <input id="storefrontWhatsappPhoneNumber" type="text" placeholder="Enter Whatsapps Phone No."
+               oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="storefrontWhatsappPhoneNumber" required>
+         </div>
+
+
+         <!-- storefront Delivery Status -->
+         <div class="modal-form_input mb-1">
+            <label for="DeliveryStatus" class="heading-subtext">Delivery Status</label>
+
+            <div class="checkbox">
+               <div class="checkbox-container mb-1">
+                  <input id="storefrontPosCheckbox" type="radio" name="DeliveryStatus" value="true">
+                  <label for="storefrontPosCheckbox">Offers Delivery</label>
+               </div>
+
+               <div class="checkbox-container mb-1">
+                  <input id="storefrontSellCheckbox" type="radio" name="DeliveryStatus" value="false">
+                  <label for="staffSellCheckbox">No Delivery</label>
+               </div>
             </div>
-
-            <!-- Business address -->
-            <div class="business-form_input">
-               <label for="businessAddress">Business Address </label>
-
-               <input id="businessAddress" type="text" name="businessAddress" disabled>
-            </div>
-
-            <!-- Phone Number -->
-            <div class="business-form_input">
-               <label for="businessPhoneNumber">Phone Number </label>
-
-               <input id="businessPhoneNumber" type="text" name="businessPhoneNumber" disabled>
-            </div>
-
-            <!-- State Of Operation -->
-            <div class="business-form_input">
-               <label for="businessState">State Of Operatiton </label>
-
-               <input id="businessState" type="text" name="businessState" disabled>
-            </div>
-
-            <!-- CAC Reg Number -->
-            <div class="business-form_input">
-               <label for="businessCacRegNo">CAC Reg Number</label>
-
-               <input id="businessCacRegNo" type="text" name="businessCacRegNo" disabled>
-            </div>
-
-            <!-- Tax ID -->
-            <div class="business-form_input">
-               <label for="businessTaxId">Tax ID</label>
-
-               <input id="businessTaxId" type="text" name="businessTaxId" disabled>
-            </div>
-
-            <!-- NIN -->
-            <div class="business-form_input">
-               <label for="businessNin">NIN</label>
-
-               <input id="businessNin" type="number" name="businessNin" disabled>
-            </div>
-
-            <!-- Business Type -->
-            <div class="business-form_input mb-1">
-               <label for="businessType" class="heading-subtext">Business Type</label>
-
-
-               <input id="businessType" type="text" name="businessType" disabled>
-            </div>
-
-            <!-- Business Staff Size -->
-            <div class="business-form_input">
-               <label for="businessStaffSize">Staff Size</label>
-
-               <input id="businessStaffSize" type="number" name="businessStaffSize" disabled>
-            </div>
-
-            <!-- Version Preference -->
-            <div class="business-form_input  mb-1">
-               <label for="businessVersionPreference" class="heading-subtext">Version Preference</label>
-
-
-               <input id="businessVersionPreference" type="text" name="businessVersionPreference" disabled>
-
-            </div>
-
          </div>
 
          <div class="center-button">
+            <button class="hero-btn-dark saveUserButton createStorefrontModalBtn  has-spinner" type="submit">
 
-            <button class="hero-btn-dark openUpdateBusinessModalBtn" id="openUpdateBusinessModalBtn">
-               <span class="btn-text">Update Business Details</span>
+               <span class="btn-text">Create Storefront</span>
                <span class="btn-spinner hidden"></span>
             </button>
          </div>
-      </section>
 
-   </main>
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
 
-   <form class="modal-form createShopModal" name="modal">
+   <form class="modal-form createShopModal" name="modal" netlify>
       <div class="card createShop modal">
          <div>
             <h1 class="heading-text">Create Shop</h1>
@@ -370,6 +384,7 @@
             </div>
          </div>
 
+
          <!-- Assign Staff Checkbox -->
          <div class="modal-form_input mb-1">
             <div class="checkbox">
@@ -381,56 +396,98 @@
          </div>
 
          <div class="center-button">
-            <button class="hero-btn-dark createShopSubmitButton has-spinner" type="submit">
-               <span class="btn-text">Create SHop</span>
-               <span class="btn-spinner hidden"></span>
-            </button>
+            <button class="hero-btn-dark" type="submit">Create SHop</button>
          </div>
 
          <div class="close closeModal" id="">&times;</div>
       </div>
    </form>
 
-   <form class="modal-form adminUpdateBusinessDataModal" name="modal">
-      <div class="card adminUpdateBusinessData modal ">
+   <form class="modal-form adminUpdateUserDataModal" name="modal">
+      <div class="card adminUpdateUserData modal ">
          <div>
-            <h1 class="heading-text">Update Business Details</h1>
+            <h1 class="heading-text">Update User Data</h1>
          </div>
 
-         <!-- Business name -->
-         <div class="modal-form_input">
-            <label for="updateBusinessName">Business Name</label>
+         <!-- FIrst name -->
+         <div class="addUser-form_input">
+            <label for="updateStaffFirstName">First Name</label>
 
-            <input id="updateBusinessName" type="text" placeholder="Enter Business Name" name="updateBusinessName">
+            <input id="updateStaffFirstName" type="text" placeholder="Enter First Name" name="updateStaffFirstName">
          </div>
 
-         <!-- Business Address -->
-         <div class="modal-form_input">
-            <label for="updateBusinessAddress">Business Address</label>
+         <!-- Last Name -->
+         <div class="addUser-form_input">
+            <label for="updateStaffLastName">Last Name</label>
 
-            <input id="updateBusinessAddress" type="text" placeholder="Enter Business Address"
-               name="updateBusinessAddress">
+            <input id="updateStaffLastName" type="text" placeholder="Enter LastName" name="updateStaffLastName">
          </div>
 
-         <!-- Business PhoneNumber -->
-         <div class="modal-form_input">
-            <label for="updateBusinessPhoneNumber">Business Phone Number</label>
+         <!-- staff Address -->
+         <div class="addUser-form_input">
+            <label for="updateStaffAddress">Staff Address</label>
 
-            <input id="updateBusinessPhoneNumber" type="number" placeholder="Enter Business Phone Number"
-               name="updateBusinessPhoneNumber">
+            <input id="updateStaffAddress" type="text" placeholder="Enter Staff Address" name="updateStaffAddress">
          </div>
 
-         <!-- Business State Of Operation -->
-         <div class="modal-form_input">
-            <label for="updateBusinessStateOfOperation"> State Of Operation</label>
+         <!-- Staff Phone Number -->
+         <div class="addUser-form_input">
+            <label for="updateStaffPhoneNumber">Phone No.</label>
 
-            <input id="updateBusinessStateOfOperation" type="text" placeholder="Enter Business State Of Operation"
-               name="updateBusinessStateOfOperation">
+            <input id="updateStaffPhoneNumber" type="text" placeholder="Enter Phone No."
+               oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="updateStaffPhoneNumber">
          </div>
+
+         <!--  Staff Access Time -->
+         <div class="addUser-form_input flex-gap-2">
+            <div class="double-input mb-2 mt-2">
+               <label for="update-start-time">Access Time</label>
+
+               <div class="access-time_input">
+                  <div class="mb-1">
+                     <label for="update-start-time">Start</label>
+                     <input id="update-start-time" type="time" name="update-start-time" class="mr-2" required>
+                  </div>
+                  <!-- </div> -->
+
+                  <!-- <div class="addUser-form_input"> -->
+                  <!-- <label for="end-time">Access End Time</label> -->
+
+                  <div class="mb-1">
+                     <label for="update-end-time">End</label>
+                     <input id="update-end-time" type="time" name="end-time" required>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+         <!-- Staff Access Service -->
+         <div class="addUser-form_input mb-1">
+            <label for="updateStaffAccessType" class="heading-subtext">Access Type</label>
+
+            <div class="checkbox">
+               <div class="checkbox-container mb-1">
+                  <input id="updateStaffPosCheckbox" type="radio" name="updateStaffAccessType" value="POS_TRANSACTIONS">
+                  <label for="updateStaffPosCheckbox">POS</label>
+               </div>
+
+               <div class="checkbox-container mb-1">
+                  <input id="updateStaffSellCheckbox" type="radio" name="updateStaffAccessType" value="INVENTORY_SALES">
+                  <label for="updateStaffSellCheckbox">SELL</label>
+               </div>
+
+               <div class="checkbox-container mb-1">
+                  <input id="updateStaffPosAndSellCheckbox" type="radio" name="updateStaffAccessType" value="BOTH">
+                  <label for="updateStaffPosAndSellCheckbox">POS & SELL</label>
+               </div>
+            </div>
+         </div>
+
+         <!-- staff Address -->
 
          <div class="center-button">
-            <button class="hero-btn-dark  updateBusinessBtn has-spinner" type="submit">
-               <span class="btn-text">Update Business</span>
+            <button class="hero-btn-dark updateUserDetailSubmitBtn has-spinner" type="submit">
+               <span class="btn-text">Update User Details</span>
                <span class="btn-spinner hidden"></span>
             </button>
          </div>
@@ -439,6 +496,76 @@
       </div>
    </form>
 
+   <form class="modal-form staffManageModal" name="modal">
+      <div class="card staffManage modal ">
+         <div>
+            <h1 class="heading-text">Manage Shop</h1>
+            <h2 class="heading-text" id="staffManage-name">Staff Name</h2>
+         </div>
+
+         <!-- Current name -->
+         <div class="">
+            <label for="staffManageCurrentShop">Current Shop: </label>
+            <h2 class="heading-subtext" id="currentAssignedShop">Shop Name - Shop Address</h2>
+         </div>
+
+         <!-- Assign to shop -->
+         <div class="modal-form_input">
+            <label for="staffManageShopDropdown">Assign New shop</label>
+
+            <select id="staffManageShopDropdown" class="form-control">
+               <option value="">Select a shop</option>
+               <option value="1">Loading Shops...</option>
+
+               <!-- Add Main shops dynamically -->
+            </select>
+         </div>
+
+         <div class="btn-container">
+
+            <div class="center-button">
+               <button class="hero-btn-danger  removeShopButton has-spinner " id="removeShopButton">
+                  <span class="btn-text">Remove from shop</span>
+                  <span class="btn-spinner hidden"></span>
+               </button>
+            </div>
+
+            <div class="center-button">
+               <button class="hero-btn-dark assignShopButton  has-spinner" id="assignShopButton">
+
+                  <span class="btn-text">Assign New SHop</span>
+                  <span class="btn-spinner hidden"></span>
+               </button>
+            </div>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <!-- Delete Staff Modal -->
+   <form class="modal-form deleteStaffContainerModal " name="modal">
+
+      <div class="card confirmation deleteStaffContainer modal ">
+         <h1 class="confirmation-text">Are you sure you want to Delete <span id="confirmation-text"
+               style="color: red;"></span>?
+         </h1>
+
+         <div class="confirmation-btn_container">
+
+            <button class="hero-btn-dark cancel-close">Cancel</button>
+
+            <button class="hero-btn-danger deleteStaffButton  mt-2 has-spinner" type="submit">
+               <span class="btn-text">Delete Staff</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+
+
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
 
    <!-- profile Slider -->
    <div class="profile-slider-overlay "></div>
@@ -518,7 +645,7 @@
                   <label for="userProfileDateOfBirth">Date Of Birth</label>
 
                   <input class="userProfileDateOfBirth" id="userProfileDate Of Birth" type="text"
-                     placeholder="Enter DateOfBirth" name="userProfileDateOfBirth" disabled>
+                     placeholder="Enter Date Of Birth" name="userProfileDateOfBirth" disabled>
                </div>
 
                <!-- USer State Of Origin -->
@@ -695,17 +822,6 @@
 
    </div>
 
-   <div id="toast" class="toast">
-      <h4 class="toast-message heading-subtext center-text mb-2">This is a toast message!</h4>
-
-      <!-- <button class="close-toast hero-btn-dark mr-0">Okay</button> -->
-
-   </div>
-
-
-   <div id="global-loader" class="loader-overlay hidden">
-      <div class="spinner"></div>
-   </div>
 </body>
 
 </html>

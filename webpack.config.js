@@ -8,6 +8,7 @@ module.exports = {
     stock: './JS/stock.js',
     superAdmin: './JS/superAdmin.js',
     superAdminNotices: './JS/superAdminNotices.js',
+    storefront: './JS/storefront.js',
     login: './JS/login.js',
     pos: './JS/pos.js',
     reports: './JS/reports.js',

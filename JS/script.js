@@ -1711,6 +1711,7 @@ const manageNav = document.getElementById('manageNav');
 
 const invetoryNav = document.querySelector('.inventoryBtn');
 const warehouseNav = document.querySelector('.warehouseBtn');
+const storefrontNav = document.querySelector('.storefrontBtn');
 const posManagementNav = document.querySelector('.posManagementBtn');
 
 // Stop everything if no user is logged in
@@ -1915,8 +1916,6 @@ if (!userData) {
     }
   }
 }
-
-console.log('This is from the Staging branch - Script.js File');
 
 if (isAdmin) {
   document.addEventListener('DOMContentLoaded', () => {
