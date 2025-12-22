@@ -989,7 +989,7 @@ async function checkPreviousBusinessDayStatus() {
 
         return await new Promise((resolve) => {
           bindAdminPreviousBusinessDayFormListener(resolve);
-          //  hideGlobalLoader();
+          hideGlobalLoader();
         });
       }
     }
@@ -1915,6 +1915,8 @@ if (!userData) {
     }
   }
 }
+
+console.log('This is from the Staging branch - Script.js File');
 
 if (isAdmin) {
   document.addEventListener('DOMContentLoaded', () => {
