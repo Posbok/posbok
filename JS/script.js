@@ -1260,9 +1260,15 @@ export function closeModal() {
   );
 
   const createStorefront = document.querySelector('.createStorefront');
+  const updateStorefrontDataContainer = document.querySelector(
+    '.updateStorefrontDataContainer'
+  );
 
   //
 
+  if (updateStorefrontDataContainer) {
+    updateStorefrontDataContainer.classList.remove('active');
+  }
   if (createStorefront) {
     createStorefront.classList.remove('active');
   }

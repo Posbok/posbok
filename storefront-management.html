@@ -29,6 +29,17 @@
 
    <script defer src="https://unpkg.com/smoothscroll-polyfill@0.4.4/dist/smoothscroll.min.js"></script>
 
+   <!-- Leaflet - Map library -->
+   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+   <!-- Google Map - Storefront Library -->
+   <!-- <script async defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnuU5JA3xw_CA6cvJE8NEgNfbNA6Srpbg&callback=initMap"></script> -->
+
    <!-- <script defer type="module" src="JS/script.js"></script>
    <script defer type="module" src="JS/goods.js"></script> -->
 
@@ -174,31 +185,133 @@
          </div>
       </div>
 
-      <section class="staff card">
-         <div class="staff-method">
-            <div class="noStorefrontInfo">
+      <section class="staff card storefront">
 
-               <h2 class="heading-text" style="margin-bottom: 1.5rem;">
-                  Set up your Storefront
-               </h2>
+         <!-- EMPTY STATE -->
+         <div class="noStorefrontInfo hidden" id="noStorefrontInfo">
+            <h2 class="heading-text">Set up your Storefront</h2>
+            <h3 class="heading-subtext center-text">
+               Create an online presence for your business and start showcasing products.
+            </h3>
 
-               <h3 class="heading-subtext center-text">Create an online presence for your business and start showcasing
-                  products to
-                  customers.</h3>
+            <div class="adminHeader center-text" style="margin: 3rem auto;">
+               <button class="hero-btn-dark create-storefront" id="openStaffModalBtn">
+                  Create Storefront
+               </button>
+            </div>
+         </div>
 
-               <!-- <div class="table-header" style="display: flex; flex-direction: column; width: max-content;"> -->
-               <div class="adminHeader center-text" style="margin: 3rem auto;">
+         <!-- STOREFRONT INFO -->
+         <div class="availableStoreInfo hidden" id="availableStoreInfo">
 
-                  <button class="hero-btn-dark  create-storefront center-button center-text"
-                     id="openStaffModalBtn">Create
-                     Storefront</button>
+            <!-- Header -->
+            <h1 class="heading-text">Storefront Settings</h1>
+            <div class="storefront-header">
+               <div>
+                  <span class="heading-subtext muted-text">
+                     Store URL:
+                     <a id="storeUrl" class="mono-text" href="#" target="_blank" rel="noopener noreferrer"></a>
+                  </span>
                </div>
-               <!-- <h2 class="heading-subtext"> Staff Informations</h2> -->
-               <!-- </div> -->
+
+               <span class="status-badge pending" id="verificationStatus">
+                  Pending
+               </span>
+            </div>
+
+            <!-- Summary -->
+            <div class="storefront-card summary">
+               <h3 class="card-title heading-subtext" id="businessName"></h3>
+               <p class="motto heading-minitext"><strong>Motto: </strong><span id="businessMotto"></span></p>
+
+               <div class="summary-grid">
+                  <div class=" heading-minitext"><strong>Active:</strong> <span id="isActive"></span></div>
+                  <div class=" heading-minitext"><strong>Offers Delivery:</strong> <span id="offersDelivery"></span>
+                  </div>
+                  <div class=" heading-minitext"><strong>Quantity Mode:</strong> <span id="quantityMode"></span></div>
+               </div>
+            </div>
+
+            <!-- Business Info -->
+            <div class="storefront-card">
+               <h3 class="card-title">Business Information</h3>
+               <div class="info-grid">
+                  <div>
+                     <label>Description</label>
+                     <p class=" heading-minitext" id="businessDescription"></p>
+                  </div>
+                  <div>
+                     <label>Address</label>
+                     <p class=" heading-minitext" id="storeAddress"></p>
+                  </div>
+                  <div>
+                     <label>CAC Registration</label>
+                     <p class=" heading-minitext" id="cacNumber"></p>
+                  </div>
+               </div>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="storefront-card">
+               <h3 class="card-title">Contact Information</h3>
+               <div class="info-grid">
+                  <div><label>Phone</label>
+                     <p class=" heading-minitext" id="contactPhone"></p>
+                  </div>
+                  <div><label>Email</label>
+                     <p class=" heading-minitext" id="contactEmail"></p>
+                  </div>
+                  <div><label>WhatsApp</label>
+                     <p class=" heading-minitext" id="whatsappNumber"></p>
+                  </div>
+               </div>
+            </div>
+
+            <!-- Location -->
+            <div class="storefront-card">
+               <h3 class="card-title">Store Location</h3>
+               <p class="muted-text heading-minitext">
+                  Lat: <span id="latitude"></span> · Lng: <span id="longitude"></span>
+               </p>
+               <!-- <div class="map-placeholder" id="storefront-map">Map preview coming soon</div> -->
+               <div id="storefront-map"></div>
+            </div>
+
+            <!-- Images -->
+            <div class="storefront-card">
+               <h3 class="card-title">Storefront Images</h3>
+
+               <div class="image-grid">
+                  <div class="image-card">
+                     <img id="businessLogo" alt="Business Logo" />
+                     <span class=" heading-minitext">Business Logo</span>
+                     <!-- <button class="link-btn">Update</button> -->
+                  </div>
+
+                  <div class="image-card">
+                     <img id="storeFrontImage" alt="Store Front" />
+                     <span class=" heading-minitext">Store Front</span>
+                     <!-- <button class="link-btn">Update</button> -->
+                  </div>
+
+                  <div class="image-card">
+                     <img id="signBoardImage" alt="Sign Board" />
+                     <span class=" heading-minitext">Sign Board</span>
+                     <!-- <button class="link-btn">Update</button> -->
+                  </div>
+               </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="storefront-actions">
+               <button class="hero-btn-dark center-button updateStorefrontModalBtn">Update Storefront</button>
+               <!-- <button class="hero-btn-outline">Update Images</button>
+               <button class="danger-btn">Delete Storefront</button> -->
             </div>
 
          </div>
       </section>
+
    </main>
 
    <div id="toast" class="toast ">
@@ -213,7 +326,8 @@
       <div class="spinner"></div>
    </div>
 
-   <form class="modal-form createStoreFrontForm" id="createStoreFrontForm" name="create-storefront" netlify>
+   <!-- Create Storefront -->
+   <form class="modal-form createStoreFrontForm" id="createStoreFrontForm" name="create-storefront">
       <div class="card createStorefront modal ">
          <div>
             <h1 class="heading-text  addItemName">Storefront Details</h1>
@@ -337,30 +451,40 @@
 
             <div class="checkbox">
                <div class="checkbox-container mb-1">
-                  <input id="storefrontDisplayQuantityTrue" type="radio" name="displayQuantity" value="true">
-                  <label for="storefrontDisplayQuantityTrue">True</label>
+                  <input id="storefrontDisplayQuantityExact" type="radio" name="displayQuantity" value="exact">
+                  <label for="storefrontDisplayQuantityExact">Exact</label>
                </div>
 
                <div class="checkbox-container mb-1">
-                  <input id="storefrontDisplayQuantityFalse" type="radio" name="displayQuantity" value="false">
-                  <label for="storefrontDisplayQuantityFalse">False</label>
+                  <input id="storefrontDisplayQuantityInStock" type="radio" name="displayQuantity" value="in_stock">
+                  <label for="storefrontDisplayQuantityInStock">In Stock</label>
+               </div>
+
+               <div class="checkbox-container mb-1">
+                  <input id="storefrontDisplayQuantityHidden" type="radio" name="displayQuantity" value="in_stock">
+                  <label for="storefrontDisplayQuantityHidden">Hidden</label>
                </div>
             </div>
          </div>
 
          <!-- Storefront Images -->
          <div class="modal-form_input">
-            <label for="businessLogo">Business Logo</label>
+            <label for="businessLogo">Business Logo <small>(Max size: 5MB)</small></label>
+            <img id="previewBusinessLogo_create" src="/img/placeholder.png" alt="Current Logo" class="preview-img">
             <input id="businessLogo" type="file" name="business_logo" accept="image/*" required />
          </div>
 
          <div class="modal-form_input">
-            <label for="storeFrontImage">Store Front Image</label>
+            <label for="storeFrontImage">Store Front Image <small>(Max size: 5MB)</small></label>
+            <img id="previewStoreFrontImage_create" src="/img/placeholder.png" alt="Current Storefront"
+               class="preview-img">
             <input id="storeFrontImage" type="file" name="store_front_image" accept="image/*" required />
          </div>
 
          <div class="modal-form_input">
-            <label for="signBoardImage">Sign Board Image</label>
+            <label for="signBoardImage">Sign Board Image <small>(Max size: 5MB)</small></label>
+            <img id="previewSignBoardImage_create" src="/img/placeholder.png" alt="Current Signboard"
+               class="preview-img">
             <input id="signBoardImage" type="file" name="sign_board_image" accept="image/*" required />
          </div>
 
@@ -377,7 +501,200 @@
       </div>
    </form>
 
-   <form class="modal-form createShopModal" name="modal" netlify>
+   <!-- Update Storefront -->
+   <form class="modal-form updateStorefrontDataModal" name="modal">
+      <div class="card updateStorefrontDataContainer modal ">
+         <div>
+            <h1 class="heading-text">Update Storefront Data</h1>
+         </div>
+
+
+         <!-- Latitude -->
+         <div class="modal-form_input">
+            <label for="updateStorefrontLatitude">Latitude</label>
+
+            <input id="updateStorefrontLatitude" type="text" placeholder="Enter Latitude" name="latitude" required>
+         </div>
+
+         <!-- Longitude -->
+         <div class="modal-form_input">
+            <label for="updateStorefrontLongitude">Longitude</label>
+
+            <input id="updateStorefrontLongitude" type="text" placeholder="Enter Longitude" name="longitude" required>
+         </div>
+
+         <button class="hero-btn-dark  create-storefront center-button center-text" id="useLocationBtn_2">Use
+            Location</button>
+
+         <!-- State of origin -->
+         <!-- <div class="modal-form_input">
+            <label for="staffStateOfOrigin">State Of Origin</label>
+
+            <select id="staffStateOfOrigin" name="staffStateOfOrigin" required>
+               <option value="">Select State</option>
+            </select>
+         </div> -->
+
+         <!-- LGA -->
+         <!-- <div class="modal-form_input">
+            <label for="staffLga">LGA</label>
+
+            <select id="staffLga" name="staffLga" required>
+               <option value="">Select LGA</option>
+            </select>
+         </div> -->
+
+
+         <!-- storefront Address -->
+         <div class="modal-form_input">
+            <label for="updateStorefrontAddress">Storefront Address</label>
+
+            <input id="updateStorefrontAddress" type="text" placeholder="Enter Business Address"
+               name="updateStorefrontAddress" required>
+         </div>
+
+
+         <!-- storefront Description -->
+         <div class="modal-form_input">
+            <label for="updateStorefrontDescription">Storefront Description</label>
+
+            <input id="updateStorefrontDescription" type="text" placeholder="Enter Storefront Description"
+               name="updateStorefrontDescription" required>
+         </div>
+
+         <!-- storefront Motto -->
+         <div class="modal-form_input">
+            <label for="updateStorefrontMotto">Storefront Motto</label>
+
+            <input id="updateStorefrontMotto" type="text" placeholder="Enter Business Motto"
+               name="updateStorefrontMotto">
+         </div>
+
+
+         <!-- storefront Phone Number -->
+         <div class="modal-form_input">
+            <label for="updateStorefrontPhoneNumber">Contact Phone No.</label>
+
+            <input id="updateStorefrontPhoneNumber" type="text" placeholder="Enter Contact Phone No."
+               oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="updateStorefrontPhoneNumber" required>
+         </div>
+
+         <!-- storefront Email -->
+         <div class="modal-form_input">
+            <label for="updateStorefrontEmail">Contact Email </label>
+
+            <input id="updateStorefrontEmail" type="email" placeholder="Enter Contact Email"
+               name="updateStorefrontEmail" required>
+         </div>
+
+         <!-- Whatsapp Phone NUmber -->
+         <div class="modal-form_input">
+            <label for="updateStorefrontWhatsappPhoneNumber">Whatsapp Phone No.</label>
+
+            <input id="updateStorefrontWhatsappPhoneNumber" type="text" placeholder="Enter Whatsapps Phone No."
+               oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="updateStorefrontWhatsappPhoneNumber"
+               required>
+         </div>
+
+         <!-- Cac Reg. NUmber -->
+         <div class="modal-form_input">
+            <label for="updateStorefrontCacNumber">CAC Reg. No.</label>
+
+            <input id="updateStorefrontCacNumber" type="text" placeholder="Enter CAC Reg. No."
+               oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="updateStorefrontCacNumber" required>
+         </div>
+
+
+         <!-- storefront Delivery Status -->
+         <div class="modal-form_input mb-1">
+            <label for="DeliveryStatus" class="heading-subtext">Delivery Status</label>
+
+            <div class="checkbox">
+               <div class="checkbox-container mb-1">
+                  <input id="updateStorefrontDeliveryStatusTrue" type="radio" name="deliveryStatus" value="true">
+                  <label for="updateStorefrontDeliveryStatusTrue">Offers Delivery</label>
+               </div>
+
+               <div class="checkbox-container mb-1">
+                  <input id="updateStorefrontDeliveryStatusFalse" type="radio" name="deliveryStatus" value="false">
+                  <label for="updateStorefrontDeliveryStatusFalse">No Delivery</label>
+               </div>
+            </div>
+         </div>
+
+         <!-- storefront Display Quantity Mode -->
+         <div class="modal-form_input mb-1">
+            <label for="displayQuantity" class="heading-subtext">Display Quantity Mode</label>
+
+            <div class="checkbox">
+               <div class="checkbox-container mb-1">
+                  <input id="updateStorefrontDisplayQuantityExact" type="radio" name="displayQuantity" value="exact">
+                  <label for="updateStorefrontDisplayQuantityExact">Exact</label>
+               </div>
+
+               <div class="checkbox-container mb-1">
+                  <input id="updateStorefrontDisplayQuantityInStock" type="radio" name="displayQuantity"
+                     value="in_stock">
+                  <label for="updateStorefrontDisplayQuantityInStock">In Stock</label>
+               </div>
+
+               <div class="checkbox-container mb-1">
+                  <input id="updateStorefrontDisplayQuantityHidden" type="radio" name="displayQuantity"
+                     value="in_stock">
+                  <label for="updateStorefrontDisplayQuantityHidden">Hidden</label>
+               </div>
+            </div>
+         </div>
+
+         <!-- Storefront Images -->
+         <!-- <div class="modal-form_input">
+            <label for="updateBusinessLogo">Business Logo <small>(Max size: 5MB)</small></label>
+            <input id="updateBusinessLogo" type="file" name="business_logo" accept="image/*" required />
+         </div>
+
+         <div class="modal-form_input">
+            <label for="updateStoreFrontImage">Store Front Image <small>(Max size: 5MB)</small></label>
+            <input id="updateStoreFrontImage" type="file" name="store_front_image" accept="image/*" required />
+         </div>
+
+         <div class="modal-form_input">
+            <label for="updateSignBoardImage">Sign Board Image <small>(Max size: 5MB)</small></label>
+            <input id="updateSignBoardImage" type="file" name="sign_board_image" accept="image/*" required />
+         </div> -->
+
+         <div class="modal-form_input">
+            <label for="updateBusinessLogo">Business Logo <small>(Max size: 5MB)</small></label>
+            <img id="previewBusinessLogo" src="/img/placeholder.png" alt="Current Logo" class="preview-img">
+            <input id="updateBusinessLogo" type="file" name="business_logo" accept="image/*" />
+         </div>
+
+         <div class="modal-form_input">
+            <label for="updateStoreFrontImage">Store Front Image <small>(Max size: 5MB)</small></label>
+            <img id="previewStoreFrontImage" src="/img/placeholder.png" alt="Current Storefront" class="preview-img">
+            <input id="updateStoreFrontImage" type="file" name="store_front_image" accept="image/*" />
+         </div>
+
+         <div class="modal-form_input">
+            <label for="updateSignBoardImage">Sign Board Image <small>(Max size: 5MB)</small></label>
+            <img id="previewSignBoardImage" src="/img/placeholder.png" alt="Current Signboard" class="preview-img">
+            <input id="updateSignBoardImage" type="file" name="sign_board_image" accept="image/*" />
+         </div>
+
+
+
+         <div class="center-button">
+            <button class="hero-btn-dark updateStorefrontModalBtn  has-spinner" type="submit">
+
+               <span class="btn-text">Update Storefront</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <form class="modal-form createShopModal" name="modal">
       <div class="card createShop modal">
          <div>
             <h1 class="heading-text">Create Shop</h1>
@@ -449,145 +766,6 @@
       </div>
    </form>
 
-   <form class="modal-form adminUpdateUserDataModal" name="modal">
-      <div class="card adminUpdateUserData modal ">
-         <div>
-            <h1 class="heading-text">Update User Data</h1>
-         </div>
-
-         <!-- FIrst name -->
-         <div class="addUser-form_input">
-            <label for="updateStaffFirstName">First Name</label>
-
-            <input id="updateStaffFirstName" type="text" placeholder="Enter First Name" name="updateStaffFirstName">
-         </div>
-
-         <!-- Last Name -->
-         <div class="addUser-form_input">
-            <label for="updateStaffLastName">Last Name</label>
-
-            <input id="updateStaffLastName" type="text" placeholder="Enter LastName" name="updateStaffLastName">
-         </div>
-
-         <!-- staff Address -->
-         <div class="addUser-form_input">
-            <label for="updateStaffAddress">Staff Address</label>
-
-            <input id="updateStaffAddress" type="text" placeholder="Enter Staff Address" name="updateStaffAddress">
-         </div>
-
-         <!-- Staff Phone Number -->
-         <div class="addUser-form_input">
-            <label for="updateStaffPhoneNumber">Phone No.</label>
-
-            <input id="updateStaffPhoneNumber" type="text" placeholder="Enter Phone No."
-               oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="updateStaffPhoneNumber">
-         </div>
-
-         <!--  Staff Access Time -->
-         <div class="addUser-form_input flex-gap-2">
-            <div class="double-input mb-2 mt-2">
-               <label for="update-start-time">Access Time</label>
-
-               <div class="access-time_input">
-                  <div class="mb-1">
-                     <label for="update-start-time">Start</label>
-                     <input id="update-start-time" type="time" name="update-start-time" class="mr-2" required>
-                  </div>
-                  <!-- </div> -->
-
-                  <!-- <div class="addUser-form_input"> -->
-                  <!-- <label for="end-time">Access End Time</label> -->
-
-                  <div class="mb-1">
-                     <label for="update-end-time">End</label>
-                     <input id="update-end-time" type="time" name="end-time" required>
-                  </div>
-               </div>
-            </div>
-         </div>
-
-         <!-- Staff Access Service -->
-         <div class="addUser-form_input mb-1">
-            <label for="updateStaffAccessType" class="heading-subtext">Access Type</label>
-
-            <div class="checkbox">
-               <div class="checkbox-container mb-1">
-                  <input id="updateStaffPosCheckbox" type="radio" name="updateStaffAccessType" value="POS_TRANSACTIONS">
-                  <label for="updateStaffPosCheckbox">POS</label>
-               </div>
-
-               <div class="checkbox-container mb-1">
-                  <input id="updateStaffSellCheckbox" type="radio" name="updateStaffAccessType" value="INVENTORY_SALES">
-                  <label for="updateStaffSellCheckbox">SELL</label>
-               </div>
-
-               <div class="checkbox-container mb-1">
-                  <input id="updateStaffPosAndSellCheckbox" type="radio" name="updateStaffAccessType" value="BOTH">
-                  <label for="updateStaffPosAndSellCheckbox">POS & SELL</label>
-               </div>
-            </div>
-         </div>
-
-         <!-- staff Address -->
-
-         <div class="center-button">
-            <button class="hero-btn-dark updateUserDetailSubmitBtn has-spinner" type="submit">
-               <span class="btn-text">Update User Details</span>
-               <span class="btn-spinner hidden"></span>
-            </button>
-         </div>
-
-         <div class="close closeModal" id="">&times;</div>
-      </div>
-   </form>
-
-   <form class="modal-form staffManageModal" name="modal">
-      <div class="card staffManage modal ">
-         <div>
-            <h1 class="heading-text">Manage Shop</h1>
-            <h2 class="heading-text" id="staffManage-name">Staff Name</h2>
-         </div>
-
-         <!-- Current name -->
-         <div class="">
-            <label for="staffManageCurrentShop">Current Shop: </label>
-            <h2 class="heading-subtext" id="currentAssignedShop">Shop Name - Shop Address</h2>
-         </div>
-
-         <!-- Assign to shop -->
-         <div class="modal-form_input">
-            <label for="staffManageShopDropdown">Assign New shop</label>
-
-            <select id="staffManageShopDropdown" class="form-control">
-               <option value="">Select a shop</option>
-               <option value="1">Loading Shops...</option>
-
-               <!-- Add Main shops dynamically -->
-            </select>
-         </div>
-
-         <div class="btn-container">
-
-            <div class="center-button">
-               <button class="hero-btn-danger  removeShopButton has-spinner " id="removeShopButton">
-                  <span class="btn-text">Remove from shop</span>
-                  <span class="btn-spinner hidden"></span>
-               </button>
-            </div>
-
-            <div class="center-button">
-               <button class="hero-btn-dark assignShopButton  has-spinner" id="assignShopButton">
-
-                  <span class="btn-text">Assign New SHop</span>
-                  <span class="btn-spinner hidden"></span>
-               </button>
-            </div>
-         </div>
-
-         <div class="close closeModal" id="">&times;</div>
-      </div>
-   </form>
 
    <!-- Delete Staff Modal -->
    <form class="modal-form deleteStaffContainerModal " name="modal">

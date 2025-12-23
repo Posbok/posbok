@@ -11,6 +11,7 @@ import {
   showToast,
 } from '../../script.js';
 import { populateStaffTable } from '../../staff.js';
+import { renderStorefront } from '../../storefront.js';
 import { fetchBusinessDetails } from '../business/businessResource.js';
 import { checkAndPromptCreateShop } from '../shop/shopResource.js';
 import { safeFetch } from '../utility/safeFetch.js';
@@ -33,7 +34,7 @@ export async function fetchStorefrontStatus() {
     showGlobalLoader();
     //  console.log('Fetching storefront details for user');
 
-    const fetchedData = await safeFetch(`${baseUrl}/storefront/settings`, {
+    const fetchedData = await safeFetch(`${baseUrl}/api/storefront/settings`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${userToken}`,
@@ -43,6 +44,8 @@ export async function fetchStorefrontStatus() {
     //  console.log('Response received...');
     console.log(fetchedData);
     hideGlobalLoader();
+
+    renderStorefront(fetchedData.data);
 
     return fetchedData;
   } catch (error) {
@@ -57,12 +60,12 @@ export async function setupStorefront(storefrontDetails) {
     //  console.log('Sending POST request...');
 
     const setupStorefrontData = await safeFetch(
-      `${baseUrl}/storefront/settings`,
+      `${baseUrl}/api/storefront/settings`,
       {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${userToken}`,
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(storefrontDetails),
       }
@@ -85,19 +88,19 @@ export async function setupStorefront(storefrontDetails) {
 
 // Upload Storefront image
 
-export async function uploadStorefrontImages(storefrontImagesDetails) {
+export async function uploadStorefrontImages(imageFormData) {
   try {
     //  console.log('Sending POST request...');
 
     const setupStorefrontData = await safeFetch(
-      `${baseUrl}/storefront/upload_images`,
+      `${baseUrl}/api/storefront/upload-images`,
       {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${userToken}`,
-          'Content-Type': 'application/json',
+          //  'Content-Type': 'multipart/form-data',
         },
-        body: JSON.stringify(storefrontImagesDetails),
+        body: imageFormData,
       }
     );
 

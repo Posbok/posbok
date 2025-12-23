@@ -1,0 +1,91 @@
+.storefront {
+   .hidden {
+      display: none;
+   }
+
+   .storefront-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding: 2rem;
+   }
+
+   .status-badge {
+      padding: .4rem 1rem;
+      border-radius: 20px;
+      font-size: 1.8rem;
+
+      &.pending {
+         background: #fff3cd;
+         color: #856404;
+      }
+
+      &.approved {
+         background: #d4edda;
+         color: #155724;
+      }
+   }
+
+   .storefront-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+   }
+
+   .summary-grid,
+   .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+   }
+
+   .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.5rem;
+   }
+
+   .image-card {
+      text-align: center;
+
+      img {
+         width: 100%;
+         height: 140px;
+         object-fit: cover;
+         border-radius: 8px;
+         background: #f2f2f2;
+      }
+   }
+
+   .map-placeholder {
+      margin-top: 1rem;
+      height: 160px;
+      background: #eef1f4;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+   }
+
+   #storefront-map {
+      height: 280px;
+
+      // width: 100%;
+      // height: 400px;
+      // background-color: grey;
+   }
+
+   .storefront-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+   }
+
+}
+
+.preview-img {
+   height: 70px;
+}
