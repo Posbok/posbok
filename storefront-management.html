@@ -213,26 +213,30 @@
       <div class="spinner"></div>
    </div>
 
-   <form class="modal-form createStaffModal" id="createStaffModal" name="create-storefront" netlify>
+   <form class="modal-form createStoreFrontForm" id="createStoreFrontForm" name="create-storefront" netlify>
       <div class="card createStorefront modal ">
          <div>
             <h1 class="heading-text  addItemName">Storefront Details</h1>
          </div>
 
+
+
          <!-- Latitude -->
          <div class="modal-form_input">
             <label for="storefrontLatitude">Latitude</label>
 
-            <input id="storefrontLatitude" type="text" placeholder="Enter Latitude" name="storefrontLatitude" required>
+            <input id="storefrontLatitude" type="text" placeholder="Enter Latitude" name="latitude" required>
          </div>
 
          <!-- Longitude -->
          <div class="modal-form_input">
             <label for="storefrontLongitude">Longitude</label>
 
-            <input id="storefrontLongitude" type="text" placeholder="Enter Longitude" name="storefrontLongitude"
-               required>
+            <input id="storefrontLongitude" type="text" placeholder="Enter Longitude" name="longitude" required>
          </div>
+
+         <button class="hero-btn-dark  create-storefront center-button center-text" id="useLocationBtn">Use
+            Location</button>
 
          <!-- State of origin -->
          <!-- <div class="modal-form_input">
@@ -301,6 +305,14 @@
                oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="storefrontWhatsappPhoneNumber" required>
          </div>
 
+         <!-- Cac Reg. NUmber -->
+         <div class="modal-form_input">
+            <label for="storefrontCacNumber">CAC Reg. No.</label>
+
+            <input id="storefrontCacNumber" type="text" placeholder="Enter CAC Reg. No."
+               oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="storefrontCacNumber" required>
+         </div>
+
 
          <!-- storefront Delivery Status -->
          <div class="modal-form_input mb-1">
@@ -308,19 +320,53 @@
 
             <div class="checkbox">
                <div class="checkbox-container mb-1">
-                  <input id="storefrontPosCheckbox" type="radio" name="DeliveryStatus" value="true">
-                  <label for="storefrontPosCheckbox">Offers Delivery</label>
+                  <input id="storefrontDeliveryStatusTrue" type="radio" name="deliveryStatus" value="true">
+                  <label for="storefrontDeliveryStatusTrue">Offers Delivery</label>
                </div>
 
                <div class="checkbox-container mb-1">
-                  <input id="storefrontSellCheckbox" type="radio" name="DeliveryStatus" value="false">
-                  <label for="staffSellCheckbox">No Delivery</label>
+                  <input id="storefrontDeliveryStatusFalse" type="radio" name="deliveryStatus" value="false">
+                  <label for="storefrontDeliveryStatusFalse">No Delivery</label>
                </div>
             </div>
          </div>
 
+         <!-- storefront Display Quantity Mode -->
+         <div class="modal-form_input mb-1">
+            <label for="displayQuantity" class="heading-subtext">Display Quantity Mode</label>
+
+            <div class="checkbox">
+               <div class="checkbox-container mb-1">
+                  <input id="storefrontDisplayQuantityTrue" type="radio" name="displayQuantity" value="true">
+                  <label for="storefrontDisplayQuantityTrue">True</label>
+               </div>
+
+               <div class="checkbox-container mb-1">
+                  <input id="storefrontDisplayQuantityFalse" type="radio" name="displayQuantity" value="false">
+                  <label for="storefrontDisplayQuantityFalse">False</label>
+               </div>
+            </div>
+         </div>
+
+         <!-- Storefront Images -->
+         <div class="modal-form_input">
+            <label for="businessLogo">Business Logo</label>
+            <input id="businessLogo" type="file" name="business_logo" accept="image/*" required />
+         </div>
+
+         <div class="modal-form_input">
+            <label for="storeFrontImage">Store Front Image</label>
+            <input id="storeFrontImage" type="file" name="store_front_image" accept="image/*" required />
+         </div>
+
+         <div class="modal-form_input">
+            <label for="signBoardImage">Sign Board Image</label>
+            <input id="signBoardImage" type="file" name="sign_board_image" accept="image/*" required />
+         </div>
+
+
          <div class="center-button">
-            <button class="hero-btn-dark saveUserButton createStorefrontModalBtn  has-spinner" type="submit">
+            <button class="hero-btn-dark createStorefrontModalBtn  has-spinner" type="submit">
 
                <span class="btn-text">Create Storefront</span>
                <span class="btn-spinner hidden"></span>

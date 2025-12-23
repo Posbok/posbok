@@ -62,7 +62,7 @@ export async function setupStorefront(storefrontDetails) {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${userToken}`,
-          'Content-Type': 'application/json',
+          'Content-Type': 'multipart/form-data',
         },
         body: JSON.stringify(storefrontDetails),
       }
@@ -79,6 +79,39 @@ export async function setupStorefront(storefrontDetails) {
     return setupStorefrontData;
   } catch (error) {
     console.error('Error creating Storefront:', error);
+    throw error;
+  }
+}
+
+// Upload Storefront image
+
+export async function uploadStorefrontImages(storefrontImagesDetails) {
+  try {
+    //  console.log('Sending POST request...');
+
+    const setupStorefrontData = await safeFetch(
+      `${baseUrl}/storefront/upload_images`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(storefrontImagesDetails),
+      }
+    );
+
+    //  console.log('Response received...');
+
+    if (setupStorefrontData) {
+      // console.log('Staff created successfully:', setupStorefrontData);
+      showToast('success', `✅ ${setupStorefrontData.message}`);
+      // checkAndPromptCreateStaff(); // Refresh the Staff list after creation
+    }
+
+    return setupStorefrontData;
+  } catch (error) {
+    console.error('Error uploading Storefront image:', error);
     throw error;
   }
 }

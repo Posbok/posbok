@@ -1259,7 +1259,13 @@ export function closeModal() {
     '.messageDisplayModalContainer'
   );
 
+  const createStorefront = document.querySelector('.createStorefront');
+
   //
+
+  if (createStorefront) {
+    createStorefront.classList.remove('active');
+  }
 
   if (messageDisplayModalContainer) {
     messageDisplayModalContainer.classList.remove('active');
