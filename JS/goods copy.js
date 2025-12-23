@@ -15,7 +15,6 @@ import {
   updateCategory,
   updateProduct,
   updateProductInventory,
-  uploadProductImages,
 } from './apiServices/inventory/inventoryResources';
 
 import { checkAndPromptCreateShop } from './apiServices/shop/shopResource';
@@ -678,62 +677,10 @@ export function createProductForm() {
           return;
         }
 
-        //   const addInventoryDetails = {
-        //     quantity: Number(addProductQuantity),
-        //     productId: Number(productId),
-        //   };
-
-        const imageFormData = new FormData();
-
-        const imageInputs = [
-          form.productImage_1,
-          form.productImage_2,
-          form.productImage_3,
-          form.productImage_4,
-        ];
-
-        imageInputs.forEach((input) => {
-          if (input?.files?.length) {
-            imageFormData.append('images', input.files[0]);
-          }
-        });
-
-        try {
-          const productImageDetails = await uploadProductImages(
-            imageFormData,
-            productId
-          );
-
-          if (!productImageDetails) {
-            showToast('fail', productImageDetails.message);
-            return;
-          }
-
-          if (productImageDetails) {
-            showToast('success', `✅ ${productImageDetails.message} `);
-            closeModal();
-            clearFormInputs();
-            await renderProductInventoryTable(shopId);
-            const filters = getInventoryLogFilters('admin', shopId);
-            await renderInventoryLogTable({
-              filters,
-              shopId,
-              tableBody: `#inventoryLogBody-${shopId}`,
-            });
-          }
-        } catch (productImageDetailsErr) {
-          showToast(
-            'fail',
-            `❎ ${
-              productImageDetailsErr.message ||
-              'Failed to Upload Product Image to Inventory'
-            }`
-          );
-          console.error(
-            'Error During Uploading Product Image to Inventory',
-            productImageDetailsErr.message
-          );
-        }
+        const addInventoryDetails = {
+          quantity: Number(addProductQuantity),
+          productId: Number(productId),
+        };
 
         if (productData) {
           console.log('productData received successfully:', productData);
