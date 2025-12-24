@@ -1263,8 +1263,13 @@ export function closeModal() {
   const updateStorefrontDataContainer = document.querySelector(
     '.updateStorefrontDataContainer'
   );
+  const viewProductInfo = document.querySelector('.viewProductInfo');
 
   //
+
+  if (viewProductInfo) {
+    viewProductInfo.classList.remove('active');
+  }
 
   if (updateStorefrontDataContainer) {
     updateStorefrontDataContainer.classList.remove('active');

@@ -10,6 +10,7 @@ import {
   getExportStockTakingData,
   getProductCategories,
   getProductDetail,
+  getProductImages,
   getProductInventory,
   getShopInventoryLog,
   updateCategory,
@@ -153,6 +154,20 @@ export function openDeleteProductModal() {
   if (deleteProductContainer) deleteProductContainer.classList.add('active');
   if (main) main.classList.add('blur');
   if (sidebar) sidebar.classList.add('blur');
+}
+
+// Open Product Detail Modal
+export function openProductInfoModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const viewProductInfoContainer = document.querySelector('.viewProductInfo');
+
+  if (viewProductInfoContainer)
+    viewProductInfoContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+
+  // businessDetailModalForm();
 }
 
 // Delete Category
@@ -2063,6 +2078,8 @@ function renderFilteredProducts(shopId, productList) {
         ? 'nearFinishedStockRow'
         : 'inStockRow'
     );
+    row.dataset.productId = product_id;
+
     row.innerHTML = `
        
                 <td class="py-1 productSerialNumber">${index + 1}</td>
@@ -2104,6 +2121,12 @@ function renderFilteredProducts(shopId, productList) {
                 </td>
     
              `;
+
+    row.addEventListener('click', async (e) => {
+      console.log('Row was clicked');
+      showGlobalLoader();
+      viewProductInfo(e, row, product_id);
+    });
     inventoryTableBody.appendChild(row);
 
     // Handle Print Barcode Logic
@@ -2209,6 +2232,119 @@ function renderFilteredProducts(shopId, productList) {
   });
 }
 
+export async function viewProductInfo(e, row) {
+  e.preventDefault();
+  showGlobalLoader();
+
+  const productId = row.dataset.productId;
+
+  console.log(productId);
+
+  const form = document.querySelector('.viewProductInfoModal');
+  form.dataset.productId = productId;
+
+  // Get business by ID
+  try {
+    showGlobalLoader();
+    const productDetails = await getProductDetail(productId);
+    const productImages = await getProductImages(productId);
+    //  console.log('productDetails when Row is Clicked', productDetails);
+
+    if (!productDetails || !productDetails.data) {
+      console.log('No product Details');
+      showToast('error', '❎  Cannot get product Details');
+      closeModal();
+      return;
+    }
+
+    if (!productImages || !productImages.data) {
+      console.log('No product Images');
+      showToast('error', '❎  Cannot get product Images');
+      closeModal();
+      return;
+    }
+
+    console.log(productDetails.data);
+    console.log(productImages.data);
+
+    const product = productDetails.data;
+    const imagesData = productImages.data;
+
+    document.querySelector('.productName').innerText = product.name;
+    document.querySelector('.productSku').innerText = `SKU: ${product.sku}`;
+
+    document.querySelector('.productCategory').innerText =
+      product.ProductCategory?.name || '—';
+
+    document.querySelector('.productDescription').innerText =
+      product.description || '—';
+
+    document.querySelector('.productUnit').innerText = product.unit || '—';
+
+    document.querySelector('.productPurchasePrice').innerText =
+      formatAmountWithCommas(product.purchase_price);
+
+    document.querySelector('.productSellingPrice').innerText =
+      formatAmountWithCommas(product.selling_price);
+
+    document.querySelector('.productLowStock').innerText =
+      product.low_stock_quantity ?? '—';
+
+    document.querySelector('.productPublishedStatus').innerText =
+      product.is_published ? 'Yes' : 'No';
+
+    //  Images
+
+    const primaryImageEl = form.querySelector('.primaryProductImage');
+    const thumbnailsContainer = form.querySelector('.product-image-thumbnails');
+
+    thumbnailsContainer.innerHTML = '';
+
+    function normalizeImageUrl(url) {
+      if (!url) return '/img/placeholder.png';
+      return url.replace('http://', 'https://');
+    }
+
+    if (imagesData.images?.length) {
+      const primaryImage =
+        imagesData.images.find((img) => img.is_primary) || imagesData.images[0];
+
+      primaryImageEl.src = normalizeImageUrl(primaryImage.image_url);
+
+      imagesData.images.forEach((img) => {
+        const thumb = document.createElement('img');
+        thumb.src = normalizeImageUrl(img.image_url);
+
+        thumb.className = 'product-thumbnail';
+        thumb.alt = 'Product Image';
+
+        thumb.addEventListener('click', () => {
+          primaryImageEl.src = img.image_url;
+        });
+
+        thumbnailsContainer.appendChild(thumb);
+      });
+    } else {
+      primaryImageEl.src = '/img/placeholder.png';
+    }
+
+    // Populate Product Detail to UI
+
+    // Finally open the modal
+    openProductInfoModal();
+
+    hideGlobalLoader();
+    //   openBusinessDetailsModal();
+  } catch (err) {
+    hideGlobalLoader();
+    console.error('Error fetching Product details:', err.message);
+    showToast('fail', `❎ Failed to load Product details`);
+    closeModal();
+  } finally {
+    hideGlobalLoader();
+  }
+}
+
 export async function renderProductInventoryTable(shopId) {
   const inventoryTableBody = document.querySelector(
     `#inventory-tbody-${shopId}`
@@ -2301,6 +2437,9 @@ export async function renderProductInventoryTable(shopId) {
           ? 'nearFinishedStockRow'
           : 'inStockRow'
       );
+
+      row.dataset.productId = product_id;
+
       row.innerHTML = `
        
                 <td class="py-1 productSerialNumber">${index + 1}</td>
@@ -2342,6 +2481,13 @@ export async function renderProductInventoryTable(shopId) {
                 </td>
     
              `;
+
+      row.addEventListener('click', async (e) => {
+        console.log('Row was clicked');
+        showGlobalLoader();
+        viewProductInfo(e, row, product_id);
+      });
+
       inventoryTableBody.appendChild(row);
 
       // const deleteProductBtn = row.querySelector(`.deleteProductBtn`);
@@ -2494,7 +2640,7 @@ export async function renderInventoryLogTable({ filters, shopId }) {
 
     //  shopProductMap[shopId] = shopInventoryLogs;
 
-    console.log(shopInventoryLogs);
+    //  console.log(shopInventoryLogs);
 
     if (shopInventoryLogs.length === 0) {
       // const searchSection = document.querySelector(`.search-section_${shopId}`);

@@ -217,6 +217,38 @@ export async function uploadProductImages(imageFormData, productId) {
   }
 }
 
+// Get Product images
+
+export async function getProductImages(productId) {
+  try {
+    //  console.log('Sending POST request...');
+
+    const setupProductData = await safeFetch(
+      `${baseUrl}/api/inventory/products/${productId}/images`,
+      {
+        method: 'Get',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          //  'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+
+    //  console.log('Response received...');
+
+    if (setupProductData) {
+      // console.log('Staff created successfully:', setupProductData);
+      // showToast('success', `✅ ${setupProductData.message}`);
+      // checkAndPromptCreateStaff(); // Refresh the Staff list after creation
+    }
+
+    return setupProductData;
+  } catch (error) {
+    console.error('Error uploading Product image:', error);
+    throw error;
+  }
+}
+
 export async function getProductInventory(shopId) {
   try {
     //  showGlobalLoader();

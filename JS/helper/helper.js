@@ -97,6 +97,7 @@ export function clearFormInputs() {
   const updateStorefrontDataModal = document.querySelector(
     '.updateStorefrontDataModal'
   );
+  const viewProductInfoModal = document.querySelector('.viewProductInfoModal');
 
   //   Clear Search Input
   const searchProductInput = document.querySelector('.searchProductInput');
@@ -108,6 +109,18 @@ export function clearFormInputs() {
   if (searchStockProdutItem) searchStockProdutItem.value = '';
 
   // Clear Form Implementations
+
+  if (viewProductInfoModal) {
+    viewProductInfoModal
+      .querySelectorAll('input, textarea, select')
+      .forEach((el) => {
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          el.checked = false;
+        } else {
+          el.value = '';
+        }
+      });
+  }
 
   if (updateStorefrontDataModal) {
     updateStorefrontDataModal

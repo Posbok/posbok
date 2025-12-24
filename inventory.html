@@ -748,6 +748,8 @@
       </div>
    </form>
 
+
+
    <!-- Add Existing Product -->
    <form class="modal-form addExistingProductModal" name="modal">
       <div class="card addExistingProduct modal ">
@@ -848,6 +850,72 @@
          <div class="close closeModal" id="">&times;</div>
       </div>
    </form>
+
+   <!-- View Product Inventory -->
+   <form class="modal-form viewProductInfoModal" name="modal" data-product-id="">
+      <div class="card viewProductInfo modal">
+
+         <div>
+            <h1 class="heading-text">Product Information</h1>
+            <h2 class="heading-subtext productSku"></h2>
+         </div>
+
+         <!-- Product Images -->
+         <div class="product-image-preview">
+            <img class="primaryProductImage" src="" style="height: 150px; width: auto;" alt="Primary Product Image" />
+
+            <div class="product-image-thumbnails"></div>
+         </div>
+
+         <!-- Product Details -->
+         <div class="product-info-grid">
+
+            <div class="info-row mt-3">
+               <h2 class="label heading-subtext">Product Name: <span class="value productName t">Hello</span></h2>
+
+            </div>
+
+            <div class="info-row">
+               <h2 class="label heading-subtext">Category: <span class="value productCategory "></span></h2>
+
+            </div>
+
+            <div class="info-row">
+               <h2 class="label heading-subtext">Description: <span class="value productDescription "></span></h2>
+
+            </div>
+
+            <div class="info-row">
+               <h2 class="label heading-subtext">Unit: <span class="value productUnit "></span></h2>
+
+            </div>
+
+            <div class="info-row">
+               <h2 class="label heading-subtext">Purchase Price: <span class="value productPurchasePrice "></span></h2>
+
+            </div>
+
+            <div class="info-row">
+               <h2 class="label heading-subtext">Selling Price: <span class="value productSellingPrice "></span></h2>
+
+            </div>
+
+            <div class="info-row">
+               <h2 class="label heading-subtext">Low Stock Alert: <span class="value productLowStock "></span></h2>
+
+            </div>
+
+            <div class="info-row">
+               <h2 class="label heading-subtext">Published: <span class="value productPublishedStatus "></span></h2>
+
+            </div>
+
+         </div>
+
+         <div class="close closeModal">&times;</div>
+      </div>
+   </form>
+
 
    <form class="modal-form addCategoryModal" name="modal">
       <div class="card addCategory modal">
