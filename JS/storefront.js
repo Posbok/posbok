@@ -254,6 +254,8 @@ export function createStorefrontForm() {
             showToast('success', `✅ ${storefrontResData.message}`);
           }
 
+          fetchStorefrontStatus();
+
           closeModal();
           clearFormInputs();
           //  await renderProductInventoryTable(shopId);

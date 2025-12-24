@@ -81,7 +81,7 @@ export async function setupStorefront(storefrontDetails) {
     if (setupStorefrontData) {
       // console.log('Staff created successfully:', setupStorefrontData);
       showToast('success', `✅ ${setupStorefrontData.message}`);
-      fetchStorefrontStatus();
+
       // checkAndPromptCreateStaff(); // Refresh the Staff list after creation
     }
 
