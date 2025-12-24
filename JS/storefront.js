@@ -192,7 +192,7 @@ export function createStorefrontForm() {
         contact_phone: form.storefrontPhoneNumber.value,
         contact_email: form.storefrontEmail.value,
         whatsapp_number: form.storefrontWhatsappPhoneNumber.value,
-        cac_registration: form.storefrontCacNumber.value,
+        cac_registration: form.storefrontCacNumber.value || 'N/A',
         offers_delivery: form.querySelector(
           'input[name="deliveryStatus"]:checked'
         )?.value,
@@ -279,6 +279,56 @@ export function createStorefrontForm() {
   }
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+  const cacInput = document.getElementById('storefrontCacNumber');
+  const deliveryYes = document.getElementById('storefrontDeliveryStatusTrue');
+  const deliveryNo = document.getElementById('storefrontDeliveryStatusFalse');
+
+  const updateCacInput = document.getElementById('updateStorefrontCacNumber');
+  const updateDeliveryYes = document.getElementById(
+    'updateStorefrontDeliveryStatusTrue'
+  );
+  const updateDeliveryNo = document.getElementById(
+    'updateStorefrontDeliveryStatusFalse'
+  );
+
+  if (!cacInput || !deliveryYes || !deliveryNo) return;
+
+  function toggleDeliveryOption() {
+    const hasCAC = cacInput.value.trim().length > 0;
+
+    deliveryYes.disabled = !hasCAC;
+
+    // If CAC is removed while "Offers Delivery" is selected
+    if (!hasCAC && deliveryYes.checked) {
+      deliveryYes.checked = false;
+      deliveryNo.checked = true;
+    }
+  }
+
+  if (!updateCacInput || !updateDeliveryYes || !updateDeliveryNo) return;
+
+  function toggleUpdateDeliveryOption() {
+    const hasCAC = updateCacInput.value.trim().length > 0;
+
+    updateDeliveryYes.disabled = !hasCAC;
+
+    // If CAC is removed while "Offers Delivery" is selected
+    if (!hasCAC && updateDeliveryYes.checked) {
+      updateDeliveryYes.checked = false;
+      updateDeliveryNo.checked = true;
+    }
+  }
+
+  // Listen live
+  cacInput.addEventListener('input', toggleDeliveryOption);
+  updateCacInput.addEventListener('input', toggleUpdateDeliveryOption);
+
+  // Run once on load (important for edit mode / modal reopen)
+  toggleDeliveryOption();
+  toggleUpdateDeliveryOption();
+});
+
 export function updateStorefrontForm() {
   const form = document.querySelector('.updateStorefrontDataModal');
 
@@ -298,7 +348,7 @@ export function updateStorefrontForm() {
       contact_phone: form.updateStorefrontPhoneNumber.value,
       contact_email: form.updateStorefrontEmail.value,
       whatsapp_number: form.updateStorefrontWhatsappPhoneNumber.value,
-      cac_registration: form.updateStorefrontCacNumber.value,
+      cac_registration: form.updateStorefrontCacNumber.value || 'N/A',
       offers_delivery: form.querySelector(
         'input[name="deliveryStatus"]:checked'
       )?.value,
@@ -479,7 +529,7 @@ function populateUpdateStorefrontForm(storefront) {
   document.getElementById('updateStorefrontWhatsappPhoneNumber').value =
     storefront.whatsapp_number;
   document.getElementById('updateStorefrontCacNumber').value =
-    storefront.cac_registration;
+    storefront.cac_registration === 'N/A' ? '' : storefront.cac_registration;
 
   // Delivery status radio
   if (storefront.offers_delivery) {

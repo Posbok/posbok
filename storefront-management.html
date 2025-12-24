@@ -232,7 +232,7 @@
                   <div class=" heading-minitext"><strong>Active:</strong> <span id="isActive"></span></div>
                   <div class=" heading-minitext"><strong>Offers Delivery:</strong> <span id="offersDelivery"></span>
                   </div>
-                  <div class=" heading-minitext"><strong>Quantity Mode:</strong> <span id="quantityMode"></span></div>
+                  <!-- <div class=" heading-minitext"><strong>Quantity Mode:</strong> <span id="quantityMode"></span></div> -->
                </div>
             </div>
 
@@ -426,9 +426,12 @@
          <!-- Cac Reg. NUmber -->
          <div class="modal-form_input">
             <label for="storefrontCacNumber">CAC Reg. No.</label>
-
-            <input id="storefrontCacNumber" type="text" placeholder="Enter CAC Reg. No."
-               oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="storefrontCacNumber">
+            <div class="subscript-container">
+               <input id="storefrontCacNumber" type="text" placeholder="Enter CAC Reg. No."
+                  oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="storefrontCacNumber">
+               <small id="subscript-info">If you don't have a registered business; you cannot offer delivery
+                  services.</small>
+            </div>
          </div>
 
 
@@ -604,8 +607,13 @@
          <div class="modal-form_input">
             <label for="updateStorefrontCacNumber">CAC Reg. No.</label>
 
-            <input id="updateStorefrontCacNumber" type="text" placeholder="Enter CAC Reg. No."
-               oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="updateStorefrontCacNumber" required>
+            <div class="subscript-container">
+               <input id="updateStorefrontCacNumber" type="text" placeholder="Enter CAC Reg. No."
+                  oninput="this.value=this.value.replace(/[^0-9]/g,'')" name="updateStorefrontCacNumber">
+
+               <small id="subscript-info">If you don't have a registered business; you cannot offer delivery
+                  services.</small>
+            </div>
          </div>
 
 
