@@ -196,9 +196,9 @@ export function createStorefrontForm() {
         offers_delivery: form.querySelector(
           'input[name="deliveryStatus"]:checked'
         )?.value,
-        display_quantity_mode: form.querySelector(
-          'input[name="displayQuantity"]:checked'
-        )?.value,
+        //   display_quantity_mode: form.querySelector(
+        //     'input[name="displayQuantity"]:checked'
+        //   )?.value,
       };
 
       console.log('Setting up Storefront with:', storeData);
@@ -302,9 +302,9 @@ export function updateStorefrontForm() {
       offers_delivery: form.querySelector(
         'input[name="deliveryStatus"]:checked'
       )?.value,
-      display_quantity_mode: form.querySelector(
-        'input[name="displayQuantity"]:checked'
-      )?.value,
+      // display_quantity_mode: form.querySelector(
+      //   'input[name="displayQuantity"]:checked'
+      // )?.value,
     };
 
     const updateBtn = form.querySelector('.updateStorefrontModalBtn');
@@ -399,8 +399,8 @@ export function renderStorefront(storefront) {
   document.getElementById('offersDelivery').textContent =
     storefront.offers_delivery ? 'Yes' : 'No';
 
-  document.getElementById('quantityMode').textContent =
-    storefront.display_quantity_mode;
+  //   document.getElementById('quantityMode').textContent =
+  //     storefront.display_quantity_mode;
 
   document.getElementById('businessDescription').textContent =
     storefront.business_description;
@@ -493,23 +493,23 @@ function populateUpdateStorefrontForm(storefront) {
   }
 
   // Display quantity mode
-  switch (storefront.display_quantity_mode) {
-    case 'exact':
-      document.getElementById(
-        'updateStorefrontDisplayQuantityExact'
-      ).checked = true;
-      break;
-    case 'in_stock':
-      document.getElementById(
-        'updateStorefrontDisplayQuantityInStock'
-      ).checked = true;
-      break;
-    case 'hidden':
-      document.getElementById(
-        'updateStorefrontDisplayQuantityHidden'
-      ).checked = true;
-      break;
-  }
+  //   switch (storefront.display_quantity_mode) {
+  //     case 'exact':
+  //       document.getElementById(
+  //         'updateStorefrontDisplayQuantityExact'
+  //       ).checked = true;
+  //       break;
+  //     case 'in_stock':
+  //       document.getElementById(
+  //         'updateStorefrontDisplayQuantityInStock'
+  //       ).checked = true;
+  //       break;
+  //     case 'hidden':
+  //       document.getElementById(
+  //         'updateStorefrontDisplayQuantityHidden'
+  //       ).checked = true;
+  //       break;
+  //   }
 
   // Usage after fetching storefront
   setImagePreview(
