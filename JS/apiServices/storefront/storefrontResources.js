@@ -11,7 +11,7 @@ import {
   showToast,
 } from '../../script.js';
 import { populateStaffTable } from '../../staff.js';
-import { renderStorefront } from '../../storefront.js';
+import { initializeStorefront, renderStorefront } from '../../storefront.js';
 import { fetchBusinessDetails } from '../business/businessResource.js';
 import { checkAndPromptCreateShop } from '../shop/shopResource.js';
 import { safeFetch } from '../utility/safeFetch.js';
@@ -45,6 +45,11 @@ export async function fetchStorefrontStatus() {
     console.log(fetchedData);
     hideGlobalLoader();
 
+    if (fetchedData && fetchedData.data === null) {
+      initializeStorefront();
+      return;
+    }
+
     renderStorefront(fetchedData.data);
 
     return fetchedData;
@@ -76,6 +81,7 @@ export async function setupStorefront(storefrontDetails) {
     if (setupStorefrontData) {
       // console.log('Staff created successfully:', setupStorefrontData);
       showToast('success', `✅ ${setupStorefrontData.message}`);
+      fetchStorefrontStatus();
       // checkAndPromptCreateStaff(); // Refresh the Staff list after creation
     }
 
