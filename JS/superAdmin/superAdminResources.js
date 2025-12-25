@@ -615,6 +615,64 @@ export async function businessMarkAsReadApi(noticeId) {
   }
 }
 
+//  Storefront
+export async function getAllStorefrontBusinesses({ page, filters }) {
+  const tbody = document.querySelector('.superAdmin-storefront-table tbody');
+  //   function showLoadingRow() {
+  //     if (tbody)
+  //       tbody.innerHTML = `
+  //     <tr class="loading-row">
+  //       <td colspan="10" class="table-error-text">Loading All Storefront Storefront...</td>
+  //     </tr>
+  //   `;
+  //   }
+
+  //   showLoadingRow();
+
+  try {
+    //  const queryParams = new URLSearchParams({ page });
+
+    //  if (filters.businessStatus)
+    //    queryParams.append('filter', filters.businessStatus);
+
+    showGlobalLoader();
+    //  console.log('Sending getAllStorefront request...');
+
+    const allStorefrontData = await safeFetch(
+      `${baseUrl}/api//super-admin/storefronts`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          //  'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    //  console.log('Response received...');
+
+    if (allStorefrontData) {
+      // console.log(allStorefrontData);
+      hideGlobalLoader();
+    }
+
+    //  populateAllStorefrontTable(allStorefrontData);
+
+    return allStorefrontData;
+  } catch (error) {
+    hideGlobalLoader();
+    //  console.log(tbody);
+    if (tbody)
+      tbody.innerHTML = `
+    <tr class="loading-row">
+      <td colspan="10" class="table-error-text">Error loading All Storefront...</td>
+    </tr>
+  `;
+    console.error('Error receiving All Storefront:', error);
+    throw error;
+  }
+}
+
 // export async function getExportBusinessesData({ format }) {
 //   console.log(format);
 //   try {

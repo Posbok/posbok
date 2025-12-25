@@ -37,7 +37,7 @@
    <script defer type="module" src="JS/goods.js"></script> -->
 
    <!-- <script src="dist/main.bundle.js" defer></script> -->
-   <script src="dist/superAdmin.bundle.js" defer></script>
+   <script src="dist/superAdminStorefront.bundle.js" defer></script>
 
    <title>POSBOK &mdash; Super Admin</title>
    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -46,7 +46,7 @@
    <link rel="manifest" href="/site.webmanifest">
 </head>
 
-<body class="container superAdminManagementPage">
+<body class="container superAdminStorefrontPage">
 
 
    <nav class="sidebar collapsed">
@@ -66,7 +66,7 @@
 
          <ul class="side-nav">
             <a href="/super-admin.html" class="side-nav_link" id="businessManagementNav">
-               <li class="side-nav_item active">
+               <li class="side-nav_item ">
                   <i class="fa-solid fa-shield-alt icon"></i>
                   <span>Business Mgt.</span>
                </li>
@@ -84,7 +84,7 @@
 
          <ul class="side-nav">
             <a href="/super-admin-storefront.html" class="side-nav_link" id="storerfrontManagementNav">
-               <li class="side-nav_item ">
+               <li class="side-nav_item active">
                   <i class="fa-solid fa-store icon"></i>
                   <span>Storefront Mgt.</span>
                </li>
@@ -116,80 +116,15 @@
          </div>
       </header>
 
-      <section class=" superAdmin reports-section platformStatisticsSection mb-4">
-         <h1 class="heading-text mt-4 mb-4">Platform Statistics</h1>
-
-         <div class="platform-summary">
-            <div class="summary-card">
-               <i class="fa-solid fa-building icon mb-1"></i>
-               <h2>Total Businesses</h2>
-               <p class="value" id="totalBusinesses">--</p>
-            </div>
-
-            <div class="summary-card">
-               <i class="fa-solid fa-bolt icon mb-1"></i>
-               <h2>Active Subscriptions</h2>
-               <p class="value" id="activeSubscriptions">--</p>
-            </div>
-
-            <div class="summary-card">
-               <i class="fa-solid fa-clock icon mb-1"></i>
-               <h2> Expired Subscriptions</h2>
-               <p class="value" id="expiredSubscriptions">--</p>
-            </div>
-
-            <div class="summary-card">
-               <i class="fa-solid fa-user-lock icon mb-1"></i>
-               <h2>Restricted Businesses</h2>
-               <p class="value" id="restrictedBusinesses">--</p>
-            </div>
-
-            <div class="summary-card">
-               <i class="fa-solid fa-clipboard-list icon mb-1"></i>
-               <h2>Registered Only</h2>
-               <p class="value" id="registeredOnly">--</p>
-            </div>
-
-            <div class="summary-card">
-               <i class="fa-solid fa-user-plus icon mb-1"></i>
-               <h2>Recent Registerations</h2>
-               <p class="value" id="recentRegisterations">--</p>
-            </div>
-         </div>
-
-         <div class="business-type">
-            <h2 class="heading-subtext mt-4 mb-2">Business Type</h2>
-            <div id="businessTypeChart" class="chart">
-               <p class="heading-subtext">Loading...</p>
-            </div>
-         </div>
-
-         <div class="platform-trends">
-            <h2 class="heading-subtext mt-4 mb-2">Trends</h2>
-            <div id="monthlySignupsChart" class="chart">
-               <p class="heading-subtext">Loading...</p>
-            </div>
-         </div>
-      </section>
-
-      <!-- Super Admin Busnesses Table -->
+      <!-- Super Admin Storefront Table -->
       <section class="superAdmin card">
          <div class="superAdmin-method">
             <h2 class="heading-text mb-4">
-               Business Management
+               Storefront Management
             </h2>
 
-            <div class="filter-buttons mb-2">
-               <button id="exportBusinessModalBtn" class="hero-btn-dark">Export Businesses</button>
-            </div>
-
-            <div class="filter-buttons mb-2">
-               <button id="notifyAllBusinessesModalBtn" class="hero-btn-dark">Notify All Businesses</button>
-            </div>
-
-
-            <!-- <h1 class="heading-subtext">Filter Businesses</h1> -->
-            <div class="filter-section mb-2">
+            <!-- <h1 class="heading-subtext">Filter Storefrontes</h1> -->
+            <!-- <div class="filter-section mb-2">
 
                <div class="pos-method-form_input ">
 
@@ -211,34 +146,31 @@
                   <button id="resetBusinessStatusFilter_superAdmin" class="hero-btn-outline">Reset</button>
                </div>
 
-            </div>
+            </div> -->
 
             <div class="superAdmin-table-container">
-               <table class="reports-table superAdmin-businesses-table">
+               <table class="reports-table superAdmin-storefront-table">
                   <thead>
                      <tr class="table-header-row">
                         <th class="py-1">S/N</th>
                         <th class="py-1">Business Name</th>
-                        <th class="py-1">Business Type</th>
-                        <th class="py-1">Subscription Status</th>
+                        <th class="py-1">Store URL</th>
                         <th class="py-1">Active Status</th>
-                        <th class="py-1">Shop Count</th>
-                        <th class="py-1">Staff Size</th>
-                        <th class="py-1">Phone Number</th>
-                        <th class="py-1">Email Address</th>
-                        <th class="py-1">State</th>
-                        <th class="py-1">Address</th>
+                        <th class="py-1">Verification Status</th>
+                        <!-- <th class="py-1">Quantity Mode</th> -->
+                        <th class="py-1">Offers Delivery</th>
+                        <th class="py-1">Store Phone No.</th>
                         <th class="py-1">Date Created</th>
-                        <th class="py-1">Action</th>
+                        <th class="py-1">Actions</th>
                      </tr>
                   </thead>
 
-                  <tbody class="allBusinessesTableBody">
+                  <tbody class="allStorefrontTableBody">
 
 
 
                      <tr class="table-body-row loading-row" id="item-list">
-                        <td class="py-1 " colspan="11">Loading All Businesses...</td>
+                        <td class="py-1 " colspan="11">Loading All Storefronts...</td>
 
                      </tr>
 
