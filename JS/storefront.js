@@ -1,4 +1,4 @@
-import './script.js';
+'./script.js';
 import config from '../config';
 import { fetchBusinessDetails } from './apiServices/business/businessResource';
 import {
@@ -43,6 +43,14 @@ const servicePermission = parsedUserData?.servicePermission;
 let userShops = [];
 let enrichedShopData = [];
 let businessId = null;
+
+const adminStorefrontManagementPage = document.body.classList.contains(
+  'adminStorefrontManagementPage'
+);
+
+if (adminStorefrontManagementPage) {
+  fetchStorefrontStatus();
+}
 
 // JS for opening Create Storefront Modal
 document.addEventListener('DOMContentLoaded', function () {
@@ -133,7 +141,7 @@ document.addEventListener('change', function (event) {
 });
 
 // JS for using Geolocation in Storefront Creation
-document.getElementById('useLocationBtn').addEventListener('click', () => {
+document.getElementById('useLocationBtn')?.addEventListener('click', () => {
   if (!navigator.geolocation) {
     alert('Geolocation is not supported');
     return;
@@ -152,7 +160,7 @@ document.getElementById('useLocationBtn').addEventListener('click', () => {
   );
 });
 
-document.getElementById('useLocationBtn_2').addEventListener('click', () => {
+document.getElementById('useLocationBtn_2')?.addEventListener('click', () => {
   if (!navigator.geolocation) {
     alert('Geolocation is not supported');
     return;
@@ -608,7 +616,7 @@ export function initializeStorefront() {
 
 document
   .getElementById('updateBusinessLogo')
-  .addEventListener('change', function (e) {
+  ?.addEventListener('change', function (e) {
     const file = e.target.files[0];
     if (file && file.size > 5 * 1024 * 1024) {
       // 5MB
@@ -616,5 +624,3 @@ document
       e.target.value = ''; // reset input
     }
   });
-
-fetchStorefrontStatus();

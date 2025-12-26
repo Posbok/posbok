@@ -702,7 +702,7 @@ export function bindDeleteBusinessFormListener() {
         showToast(
           'success',
           `✅ ${deleteBusinessData.message}` ||
-            '✅ Business Deleteed successfully.'
+            '✅ Business Deleted successfully.'
         );
       } catch (err) {
         hideBtnLoader(deleteBusinessButton);

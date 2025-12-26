@@ -15,6 +15,7 @@ import { initializeStorefront, renderStorefront } from '../../storefront.js';
 import { fetchBusinessDetails } from '../business/businessResource.js';
 import { checkAndPromptCreateShop } from '../shop/shopResource.js';
 import { safeFetch } from '../utility/safeFetch.js';
+// import { safeFetch } from '../utility/safeFetch.js';
 
 const baseUrl = config.baseUrl;
 const userToken = config.token;
@@ -122,5 +123,29 @@ export async function uploadStorefrontImages(imageFormData) {
   } catch (error) {
     console.error('Error uploading Storefront image:', error);
     throw error;
+  }
+}
+
+export async function getStorefrontDetailById(businessId) {
+  try {
+    showGlobalLoader();
+    const selectedSaleData = await safeFetch(
+      `${baseUrl}/api/super-admin/businesses/${businessId}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    //  console.log('selectedSaleData received...');
+
+    //  console.log('selectedSaleData:', selectedSaleData);
+    hideGlobalLoader();
+    return selectedSaleData;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error fetching Business Detail:', error.message);
   }
 }

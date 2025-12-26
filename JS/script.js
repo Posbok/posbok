@@ -1265,7 +1265,31 @@ export function closeModal() {
   );
   const viewProductInfo = document.querySelector('.viewProductInfo');
 
+  const storefrontDetailContainer = document.querySelector(
+    '.storefrontDetailContainer'
+  );
+
+  const verifyStorefrontContainer = document.querySelector(
+    '.verifyStorefrontContainer'
+  );
+
+  const toggleActivateStorefrontContainer = document.querySelector(
+    '.toggleActivateStorefrontContainer'
+  );
+
   //
+
+  if (toggleActivateStorefrontContainer) {
+    toggleActivateStorefrontContainer.classList.remove('active');
+  }
+
+  if (verifyStorefrontContainer) {
+    verifyStorefrontContainer.classList.remove('active');
+  }
+
+  if (storefrontDetailContainer) {
+    storefrontDetailContainer.classList.remove('active');
+  }
 
   if (viewProductInfo) {
     viewProductInfo.classList.remove('active');

@@ -226,31 +226,20 @@
       <div class="spinner"></div>
    </div>
 
-   <!-- Activate Business Subscription Modal -->
-   <form class="modal-form activateBusinessContainerModal " name="modal">
+   <!-- Verify Business Modal -->
+   <form class="modal-form verifyStorefrontContainerModal " name="modal">
 
-      <div class="card confirmation activateBusinessContainer modal ">
-         <div>
-            <h1 class="heading-text ">Activate Business Subscription</h1>
-         </div>
-
-         <h1 class="business-name-text center-text heading-subtext">
+      <div class="card confirmation verifyStorefrontContainer modal ">
+         <h1 class="confirmation-text">Are you sure you want to <span id="action-text" style="color: red;"></span>
+            Storefront for <span id="confirmation-text" style="color: red;"></span> ?
          </h1>
-
-
-         <div class="modal-form_input">
-            <label for="subscriptionDuration">Subscription Duration</label>
-
-            <input id="subscriptionDuration" type="number" pattern="[0-9]" inputmode="numeric"
-               placeholder="Number of Days" name="subscriptionDuration" required>
-         </div>
 
          <div class="confirmation-btn_container">
 
             <button class="hero-btn-dark cancel-close">Cancel</button>
 
-            <button class="hero-btn-dark activateBusinessButton  mt-2 has-spinner" type="submit">
-               <span class="btn-text">Activate Subscription</span>
+            <button class="hero-btn-danger verifyStorefrontButton  mt-2 has-spinner" type="submit">
+               <span class="btn-text">Update Business</span>
                <span class="btn-spinner hidden"></span>
             </button>
 
@@ -261,371 +250,17 @@
       </div>
    </form>
 
-   <!-- Restrict Business Modal -->
-   <form class="modal-form restrictBusinessContainerModal " name="modal">
-
-      <div class="card confirmation restrictBusinessContainer modal ">
-         <h1 class="confirmation-text">Are you sure you want to Restrict <span id="confirmation-text-2"
-               style="color: red;"></span> ?
+   <!--  Activate / Deactivate Storefront -->
+   <form class="modal-form toggleActivateStorefrontContainerModal " name="modal">
+      <div class="card confirmation toggleActivateStorefrontContainer modal ">
+         <h1 class="confirmation-text">Are you sure you want to <span id="action-text" style="color: red;"></span>
+            Storefront status for <span id="confirmation-text" style="color: red;"></span> ?
          </h1>
 
          <div class="confirmation-btn_container">
-
             <button class="hero-btn-dark cancel-close">Cancel</button>
 
-            <button class="hero-btn-danger restrictBusinessButton  mt-2 has-spinner" type="submit">
-               <span class="btn-text">Restrict Business</span>
-               <span class="btn-spinner hidden"></span>
-            </button>
-
-
-         </div>
-
-         <div class="close closeModal" id="">&times;</div>
-      </div>
-   </form>
-
-   <!-- Unrestrict Business Modal -->
-   <form class="modal-form unrestrictBusinessContainerModal " name="modal">
-
-      <div class="card confirmation unrestrictBusinessContainer modal ">
-         <h1 class="confirmation-text">Are you sure you want to Unrestrict <span id="confirmation-text-2"
-               style="color: red;"></span> ?
-         </h1>
-
-         <div class="confirmation-btn_container">
-
-            <button class="hero-btn-dark cancel-close">Cancel</button>
-
-            <button class="hero-btn-danger unrestrictBusinessButton  mt-2 has-spinner" type="submit">
-               <span class="btn-text">Unrestrict Business</span>
-               <span class="btn-spinner hidden"></span>
-            </button>
-
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Illum magni debitis, nostrum vitae nisi nam harum
-            provident omnis nihil autem dignissimos non suscipit quos assumenda, esse repudiandae atque excepturi
-            perferendis.
-
-
-         </div>
-
-         <div class="close closeModal" id="">&times;</div>
-      </div>
-   </form>
-
-   <!-- Norify Business Modal - single -->
-   <form class="modal-form notifyBusinessContainerModal " name="modal">
-
-      <div class="card confirmation notifyBusinessContainer modal ">
-         <div>
-            <h1 class="heading-text ">Notify Business </h1>
-         </div>
-
-         <h1 class="business-name-text center-text heading-subtext">
-         </h1>
-
-         <!-- Notice Title -->
-         <div class="modal-form_input">
-            <label for="notificationTitle">Title</label>
-
-            <input id="notificationTitle" type="text" placeholder="Enter Notification Title " name="notificationTitle"
-               required>
-         </div>
-
-         <!-- Notice Message -->
-         <div class="modal-form_input">
-            <label for="notificationMessage">Message</label>
-
-            <textarea id="notificationMessage" placeholder="Enter your message" name="notificationMessage" rows="4"
-               cols="50" required></textarea>
-         </div>
-
-         <!-- Notice Type -->
-         <div class="modal-form_input">
-            <label for="notificationType">Select Notice Type</label>
-
-            <select id="notificationType" class="form-control" required>
-               <option value="">Select Notice Type</option>
-               <option value="subscription">Subscription Notice</option>
-               <option value="general">General Notice</option>
-               <option value="urgent">Urgent Notice</option>
-               <option value="maintenance">Maintenance Notice</option>
-               <!-- <option value="">Null</option>
-               <option value="">Null</option> -->
-            </select>
-         </div>
-
-         <!-- Date Purchased -->
-         <div class="modal-form_input">
-            <label for="notificationExpiry">Expires At</label>
-
-            <input type="date" id="notificationExpiry" required>
-         </div>
-
-
-         <div class="confirmation-btn_container">
-
-            <button class="hero-btn-dark cancel-close">Cancel</button>
-
-            <button class="hero-btn-dark notifyBusinessButton  mt-2 has-spinner" type="submit">
-               <span class="btn-text">notify Business</span>
-               <span class="btn-spinner hidden"></span>
-            </button>
-
-
-         </div>
-
-         <div class="close closeModal" id="">&times;</div>
-      </div>
-   </form>
-
-   <!-- Norify Business Modal - ALL -->
-   <form class="modal-form notifyAllBusinessContainerModal " name="modal">
-
-      <div class="card confirmation notifyAllBusinessContainer modal ">
-         <div>
-            <h1 class="heading-text ">Notify All Business </h1>
-         </div>
-
-         <h1 class="business-name-text center-text heading-subtext">
-         </h1>
-
-         <!-- Notice Title -->
-         <div class="modal-form_input">
-            <label for="generalNotificationTitle">Title</label>
-
-            <input id="generalNotificationTitle" type="text" placeholder="Enter General Notification Title "
-               name="generalNotificationTitle" required>
-         </div>
-
-         <!-- Notice Message -->
-         <div class="modal-form_input">
-            <label for="generalNotificationMessage">Message</label>
-
-            <textarea id="generalNotificationMessage" placeholder="Enter your message" name="generalNotificationMessage"
-               rows="4" cols="50" required></textarea>
-         </div>
-
-         <!-- Notice Type -->
-         <div class="modal-form_input">
-            <label for="generalNotificationType">Select Notice Type</label>
-
-            <select id="generalNotificationType" class="form-control" required>
-               <option value="">Select Notice Type</option>
-               <option value="general">General Notice</option>
-               <option value="urgent">Urgent Notice</option>
-               <option value="maintenance">Maintenance Notice</option>
-            </select>
-         </div>
-
-         <!-- Date Purchased -->
-         <div class="modal-form_input">
-            <label for="generalNotificationExpiry">Expires At</label>
-
-            <input type="date" id="generalNotificationExpiry" required>
-         </div>
-
-
-         <div class="confirmation-btn_container">
-
-            <button class="hero-btn-dark cancel-close">Cancel</button>
-
-            <button class="hero-btn-dark notifyAllBusinessButton  mt-2 has-spinner" type="submit">
-               <span class="btn-text">notify All Businesses</span>
-               <span class="btn-spinner hidden"></span>
-            </button>
-
-
-         </div>
-
-         <div class="close closeModal" id="">&times;</div>
-      </div>
-   </form>
-
-
-   <!-- Delete Business Modal -->
-   <form class="modal-form deleteBusinessContainerModal " name="modal">
-
-      <div class="card confirmation deleteBusinessContainer modal ">
-         <h1 class="confirmation-text">Are you sure you want to Delete <span id="confirmation-text-2"
-               style="color: red;"></span> ?
-         </h1>
-
-         <div class="confirmation-btn_container">
-
-            <button class="hero-btn-dark cancel-close">Cancel</button>
-
-            <button class="hero-btn-danger deleteBusinessButton  mt-2 has-spinner" type="submit">
-               <span class="btn-text">Delete Business</span>
-               <span class="btn-spinner hidden"></span>
-            </button>
-
-
-         </div>
-
-         <div class="close closeModal" id="">&times;</div>
-      </div>
-   </form>
-
-   <!-- Restrict Business Modal -->
-   <form class="modal-form restrictBusinessContainerModal " name="modal">
-
-      <div class="card confirmation restrictBusinessContainer modal ">
-         <h1 class="confirmation-text">Are you sure you want to Delete <span id="confirmation-text-2"
-               style="color: red;"></span> ?
-         </h1>
-
-         <div class="confirmation-btn_container">
-
-            <button class="hero-btn-dark cancel-close">Cancel</button>
-
-            <button class="hero-btn-danger restrictBusinessButton  mt-2 has-spinner" type="submit">
-               <span class="btn-text">Delete Business</span>
-               <span class="btn-spinner hidden"></span>
-            </button>
-
-
-         </div>
-
-         <div class="close closeModal" id="">&times;</div>
-      </div>
-   </form>
-
-   <!-- Update Business Details - Super Admin -->
-   <form class="modal-form updateBusinessDataContainerModal" name="modal">
-      <div class="card updateBusinessDataContainer modal ">
-         <div>
-            <h1 class="heading-text">Update Business Details</h1>
-         </div>
-
-         <h1 class="business-name-text center-text heading-subtext">
-         </h1>
-
-         <!-- Business name -->
-         <div class="modal-form_input">
-            <label for="updateBusinessName">Business Name</label>
-
-            <input id="updateBusinessName" type="text" placeholder="Enter Business Name" name="updateBusinessName">
-         </div>
-
-         <!-- Business Address -->
-         <div class="modal-form_input">
-            <label for="updateBusinessAddress">Business Address</label>
-
-            <input id="updateBusinessAddress" type="text" placeholder="Enter Business Address"
-               name="updateBusinessAddress">
-         </div>
-
-         <!-- Business Phone Number -->
-         <div class="modal-form_input">
-            <label for="updateBusinessPhoneNumber">Business Phone Number</label>
-
-            <input id="updateBusinessPhoneNumber" type="number" pattern="[0-9]" inputmode="numeric"
-               placeholder="Enter Business Phone Number" name="updateBusinessPhoneNumber">
-         </div>
-
-         <!-- Business State Of Operation -->
-         <div class="modal-form_input">
-            <label for="updateBusinessStateOfOperation"> State Of Operation</label>
-
-            <input id="updateBusinessStateOfOperation" type="text" placeholder="Enter Business State Of Operation"
-               name="updateBusinessStateOfOperation">
-         </div>
-
-         <!-- Business CAC Number -->
-         <div class="modal-form_input">
-            <label for="updateBusinessCac"> CAC No.</label>
-
-            <input id="updateBusinessCac" type="text" placeholder="Enter Business CAC No." name="updateBusinessCac">
-         </div>
-
-         <!-- Business Tax Id Number -->
-         <div class="modal-form_input">
-            <label for="updateBusinessTaxId"> Tax Id </label>
-
-            <input id="updateBusinessTaxId" type="text" placeholder="Enter Business Tax Id " name="updateBusinessTaxId">
-         </div>
-
-         <!-- Business Nin Number -->
-         <div class="modal-form_input">
-            <label for="updateBusinessNin"> NIN </label>
-
-            <input id="updateBusinessNin" type="number" pattern="[0-9]" inputmode="numeric"
-               placeholder="Enter Business NIN " name="updateBusinessNin">
-         </div>
-
-         <!-- Business Staff Size -->
-         <div class="modal-form_input">
-            <label for="updateBusinessStaffSize"> Staff Size </label>
-
-            <input id="updateBusinessStaffSize" type="text" placeholder="Enter Business Staff Size "
-               name="updateBusinessStaffSize">
-         </div>
-
-         <!-- Business Service Type -->
-         <div class="modal-form_input mb-1">
-            <label for="serviceType" class="heading-subtext">Service Type</label>
-
-            <div class="checkbox">
-               <div class="checkbox-container">
-                  <input id="posShopCheckbox" type="radio" name="serviceType" value="POS_TRANSACTIONS">
-                  <label for="posShopCheckbox">POS</label>
-               </div>
-
-               <div class="checkbox-container">
-                  <input id="sellShopCheckbox" type="radio" name="serviceType" value="INVENTORY_SALES">
-                  <label for="sellShopCheckbox">SELL</label>
-               </div>
-
-               <div class="checkbox-container">
-                  <input id="posAndSellShopCheckbox" type="radio" name="serviceType" value="BOTH">
-                  <label for="posAndSellShopCheckbox">POS & SELL</label>
-               </div>
-            </div>
-         </div>
-
-         <!-- Business Version Preference -->
-         <div class="modal-form_input  mb-1">
-            <label for="versionPreference" class="heading-subtext">Version Preference</label>
-
-            <div class="checkbox">
-               <div class="checkbox-container">
-                  <input id="webCheckbox" type="radio" name="versionPreference" value="WEB">
-                  <label for="webCheckbox">Web</label>
-               </div>
-
-               <div class="checkbox-container">
-                  <input id="mobileCheckbox" type="radio" name="versionPreference" value="MOBILE">
-                  <label for="mobileCheckbox">Mobile</label>
-               </div>
-
-               <div class="checkbox-container">
-                  <input id="standaloneCheckbox" type="radio" name="versionPreference" value="STANDALONE">
-                  <label for="standaloneCheckbox">Standalone</label>
-               </div>
-            </div>
-         </div>
-
-         <!-- Business Is Active Status -->
-         <div class="modal-form_input  mb-1">
-            <label for="businessActiveStatus" class="heading-subtext">Business Active Status</label>
-
-            <div class="checkbox">
-               <div class="checkbox-container">
-                  <input id="trueCheckbox" type="radio" name="businessActiveStatus" value="true">
-                  <label for="trueCheckbox">True</label>
-               </div>
-
-               <div class="checkbox-container">
-                  <input id="falseCheckbox" type="radio" name="businessActiveStatus" value="false">
-                  <label for="falseCheckbox">False</label>
-               </div>
-
-            </div>
-         </div>
-
-         <div class="center-button">
-            <button class="hero-btn-dark  updateBusinessBtn has-spinner" type="submit">
+            <button class="hero-btn-danger toggleActivateStorefrontButton  mt-2 has-spinner" type="submit">
                <span class="btn-text">Update Business</span>
                <span class="btn-spinner hidden"></span>
             </button>
@@ -635,93 +270,48 @@
       </div>
    </form>
 
-   <!-- Business Details Modal -->
-   <div class="modal-form businessDetailModal businessDetailModalContainer" name="modal">
-      <div class="card businessDetails modal ">
-         <div class="reports mt-4 mb-4">
-            <div class="reports-method">
 
-               <div>
-                  <h1 class="heading-text center mb-0" id="businessDetailName"></h1>
-                  <h3 class="heading-minitext center mb-2 center-text" id="businessDetailAddress"></h3>
-               </div>
 
-               <h2 class="heading-minitext mb-1"><strong>Business ID:</strong> <span id="businessDetailId"></span></h2>
-               <h2 class="heading-minitext mb-1"><strong>Phone:</strong> <span id="businessDetailPhone"></span></h2>
-               <h2 class="heading-minitext mb-1"><strong>Email:</strong> <span id="businessDetailEmail"></span></h2>
-               <h2 class="heading-minitext mb-1"><strong>State:</strong> <span id="businessDetailState"></span></h2>
-               <h2 class="heading-minitext mb-1"><strong>CAC Reg No:</strong> <span id="businessDetailCac"></span></h2>
-               <h2 class="heading-minitext mb-1"><strong>Tax ID (TIN):</strong> <span id="businessDetailTin"></span>
-               </h2>
-               <h2 class="heading-minitext mb-1"><strong>NIN:</strong> <span id="businessDetailNin"></span></h2>
-               <h2 class="heading-minitext mb-1"><strong>Business Type:</strong> <span id="businessDetailType"></span>
-               </h2>
-               <h2 class="heading-minitext mb-1"><strong>Staff Size:</strong> <span id="businessDetailStaffSize"></span>
-               </h2>
-               <h2 class="heading-minitext mb-1"><strong>Version Preference:</strong> <span
-                     id="businessDetailVersion"></span></h2>
-               <h2 class="heading-minitext mb-1"><strong>Active Status:</strong> <span id="businessDetailStatus"></span>
-               </h2>
-               <h2 class="heading-minitext mb-1"><strong>Date Created:</strong> <span
-                     id="businessDetailCreatedAt"></span>
-               </h2>
-               <!-- <h2 class="heading-minitext mb-3"><strong>Last Updated:</strong> <span
-                     id="businessDetailUpdatedAt"></span></h2> -->
+   <!-- Storefront Details Modal -->
+   <div class="modal-form storefrontDetailModal storefrontDetailModalContainer">
+      <div class="card storefrontDetailContainer modal">
+         <h1 class="heading-text center" id="sfDetailBusinessName"></h1>
 
-               <div class="reports-table-container mt-2">
-                  <h2 class="heading-subtext mb-1 center-text">Registered Shops (<span
-                        id="businessDetailShopCount"></span>)</h2>
+         <h2 class="heading-minitext mb-1"><strong>Store Slug:</strong> <span id="sfDetailSlug"></span></h2>
+         <h2 class="heading-minitext mb-1"><strong>Status:</strong> <span id="sfDetailStatus"></span></h2>
+         <h2 class="heading-minitext mb-1"><strong>Verification:</strong> <span id="sfDetailVerification"></span></h2>
 
-                  <table class="itemsTable reports-table">
-                     <thead>
-                        <tr class="table-header-row">
-                           <th class="py-1">Shop ID</th>
-                           <th class="py-1">Shop Name</th>
-                           <th class="py-1">Location</th>
-                           <th class="py-1">Created At</th>
-                        </tr>
-                     </thead>
-                     <tbody id="businessDetailShopsBody">
-                        <!-- JS injects shops here -->
-                        <!-- Example:
-              <tr class="table-body-row">
-                <td class="py-1">98</td>
-                <td class="py-1">Development Business Inc.</td>
-                <td class="py-1">Okuokoko, Delta</td>
-                <td class="py-1">2025-05-23</td>
-              </tr>
-              -->
-                     </tbody>
-                  </table>
-               </div>
+         <hr />
 
-               <div class="subscription-section mt-3">
-                  <h2 class="heading-subtext mb-1 center-text">Subscription Info</h2>
-                  <h2 class="heading-minitext mb-1"><strong>Status:</strong> <span id="businessDetailSubStatus"></span>
-                  </h2>
-                  <h2 class="heading-minitext mb-1"><strong>Days Remaining:</strong> <span
-                        id="businessDetailSubDays"></span></h2>
-                  <h2 class="heading-minitext mb-1"><strong>Start Date:</strong> <span
-                        id="businessDetailSubStart"></span></h2>
-                  <h2 class="heading-minitext mb-1"><strong>End Date:</strong> <span id="businessDetailSubEnd"></span>
-                  </h2>
-                  <h2 class="heading-minitext mb-1"><strong>Activated By:</strong> <span
-                        id="businessDetailSubActivatedBy"></span></h2>
-               </div>
+         <h2 class="heading-minitext mb-1 px-1 "><strong>Offers Delivery:</strong> <span id="sfDetailDelivery"></span>
+         </h2>
+         <h2 class="heading-minitext mb-1"><strong>Delivery Verified:</strong> <span
+               id="sfDetailDeliveryVerified"></span>
+         </h2>
+         <h2 class="heading-minitext mb-1"><strong>CAC Reg:</strong> <span id="sfDetailCac"></span></h2>
 
-               <!-- <div class="center-button mb-2 mt-3">
-                  <button class="hero-btn-dark mt-2 mb-1 refreshBusinessDetailsBtn has-spinner" type="button">
-                     <span class="btn-text">Refresh Details</span>
-                     <span class="btn-spinner hidden"></span>
-                  </button>
-               </div> -->
+         <hr />
 
-            </div>
-         </div>
+         <h2 class="heading-minitext mb-1 px-1 "><strong>Phone:</strong> <span id="sfDetailPhone"></span></h2>
+         <h2 class="heading-minitext mb-1"><strong>Email:</strong> <span id="sfDetailEmail"></span></h2>
+         <h2 class="heading-minitext mb-1"><strong>WhatsApp:</strong> <span id="sfDetailWhatsapp"></span></h2>
+
+         <hr />
+
+         <h2 class="heading-minitext mb-1 px-1 "><strong>Stock Mode:</strong> <span id="sfDetailStockMode"></span></h2>
+         <h2 class="heading-minitext mb-1"><strong>Motto:</strong> <span id="sfDetailMotto"></span></h2>
+         <h2 class="heading-minitext mb-1"><strong>Description:</strong> <span id="sfDetailDescription"></span></h2>
+
+         <hr />
+
+         <h2 class="heading-minitext mb-1 px-1 "><strong>Address:</strong> <span id="sfDetailAddress"></span></h2>
+         <h2 class="heading-minitext mb-1"><strong>Coordinates:</strong> <span id="sfDetailCoordinates"></span></h2>
+         <h2 class="heading-minitext mb-1"><strong>Created:</strong> <span id="sfDetailCreatedAt"></span></h2>
 
          <div class="close closeModal">&times;</div>
       </div>
    </div>
+
 
    <form class="modal-form exportBusinessesDataModal " name="exportBusinessesData">
       <div class="card exportBusinessesData modal ">

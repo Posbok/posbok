@@ -673,6 +673,66 @@ export async function getAllStorefrontBusinesses({ page, filters }) {
   }
 }
 
+export async function verifyStorefront(businessId) {
+  try {
+    //  showGlobalLoader();
+    const verifyStorefrontData = await safeFetch(
+      `${baseUrl}/api/super-admin/storefronts/${businessId}/verify`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    if (verifyStorefrontData) {
+      // showToast('success', `✅ ${verifyStorefrontData.message}`);
+      closeModal();
+    }
+
+    //  console.log('verifyStorefrontData received...');
+
+    //  console.log('verifyStorefrontData:', verifyStorefrontData);
+    //  hideGlobalLoader();
+    return verifyStorefrontData;
+  } catch (error) {
+    //  hideGlobalLoader();
+    console.error('Error Verifying Storefront:', error.message);
+    throw error;
+  }
+}
+
+export async function toggleActivateStorefront(businessId) {
+  try {
+    //  showGlobalLoader();
+    const verifyStorefrontData = await safeFetch(
+      `${baseUrl}/api/super-admin/storefronts/${businessId}/toggle`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    if (verifyStorefrontData) {
+      // showToast('success', `✅ ${verifyStorefrontData.message}`);
+      closeModal();
+    }
+
+    //  console.log('verifyStorefrontData received...');
+
+    //  console.log('verifyStorefrontData:', verifyStorefrontData);
+    //  hideGlobalLoader();
+    return verifyStorefrontData;
+  } catch (error) {
+    //  hideGlobalLoader();
+    console.error('Error Activating/Deactivation Storefront:', error.message);
+    throw error;
+  }
+}
+
 // export async function getExportBusinessesData({ format }) {
 //   console.log(format);
 //   try {
