@@ -457,6 +457,9 @@ export function renderStorefront(storefront) {
   document.getElementById('offersDelivery').textContent =
     storefront.offers_delivery ? 'Yes' : 'No';
 
+  document.getElementById('deliveryVerified').textContent =
+    storefront.delivery_verified ? 'Verified' : 'Unverified';
+
   //   document.getElementById('quantityMode').textContent =
   //     storefront.display_quantity_mode;
 
