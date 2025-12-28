@@ -2270,7 +2270,9 @@ export async function viewProductInfo(e, row) {
     const product = productDetails.data;
     const imagesData = productImages.data;
 
-    document.querySelector('.productName').innerText = product.name;
+    console.log(product.name);
+
+    document.querySelector('.productInfoName').innerText = product.name;
     document.querySelector('.productSku').innerText = `SKU: ${product.sku}`;
 
     document.querySelector('.productCategory').innerText =
