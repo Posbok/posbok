@@ -2132,7 +2132,8 @@ function renderFilteredProducts(shopId, productList) {
     // Handle Print Barcode Logic
     const openBarcodeImageBtn = row.querySelector(`#openBarcodeImageBtn`);
 
-    openBarcodeImageBtn?.addEventListener('click', async () => {
+    openBarcodeImageBtn?.addEventListener('click', async (e) => {
+      e.stopPropagation();
       showGlobalLoader();
       const productId = openBarcodeImageBtn.dataset.productId;
       const productBarcode = openBarcodeImageBtn.dataset.productBarcode;
@@ -2167,7 +2168,8 @@ function renderFilteredProducts(shopId, productList) {
     // Handle Delete Product Logic
     const deleteProductModalBtn = row.querySelector(`#deleteProductModalBtn`);
 
-    deleteProductModalBtn?.addEventListener('click', async () => {
+    deleteProductModalBtn?.addEventListener('click', async (e) => {
+      e.stopPropagation();
       showGlobalLoader();
       const productId = deleteProductModalBtn.dataset.productId;
 
@@ -2200,7 +2202,8 @@ function renderFilteredProducts(shopId, productList) {
 
     const updateProductBtn = row.querySelector('.openUpdateProductBtn');
 
-    updateProductBtn?.addEventListener('click', async () => {
+    updateProductBtn?.addEventListener('click', async (e) => {
+      e.stopPropagation();
       showGlobalLoader();
       const productId = updateProductBtn.dataset.productId;
 
@@ -2504,7 +2507,8 @@ export async function renderProductInventoryTable(shopId) {
 
       const openBarcodeImageBtn = row.querySelector(`#openBarcodeImageBtn`);
 
-      openBarcodeImageBtn?.addEventListener('click', async () => {
+      openBarcodeImageBtn?.addEventListener('click', async (e) => {
+        e.stopPropagation();
         showGlobalLoader();
         const productId = openBarcodeImageBtn.dataset.productId;
         const productBarcode = openBarcodeImageBtn.dataset.productBarcode;
@@ -2538,7 +2542,8 @@ export async function renderProductInventoryTable(shopId) {
 
       const deleteProductModalBtn = row.querySelector(`#deleteProductModalBtn`);
 
-      deleteProductModalBtn?.addEventListener('click', async () => {
+      deleteProductModalBtn?.addEventListener('click', async (e) => {
+        e.stopPropagation();
         showGlobalLoader();
         const productId = deleteProductModalBtn.dataset.productId;
 
@@ -2571,7 +2576,8 @@ export async function renderProductInventoryTable(shopId) {
 
       const updateProductBtn = row.querySelector('.openUpdateProductBtn');
 
-      updateProductBtn?.addEventListener('click', async () => {
+      updateProductBtn?.addEventListener('click', async (e) => {
+        e.stopPropagation();
         showGlobalLoader();
         const productId = updateProductBtn.dataset.productId;
 
