@@ -1439,6 +1439,9 @@ export function bindUpdateProductFormListener() {
       const updateProductDescription = document.querySelector(
         '#updateProductDescription'
       ).value;
+      const updateItemDetails = document.querySelector(
+        '#updateProductDetails'
+      ).value;
       const updateProductSku =
         document.querySelector('#updateProductSku').value;
       const updateProductBoughtPrice = document.querySelector(
@@ -1451,6 +1454,38 @@ export function bindUpdateProductFormListener() {
         '#updateProductQuantity'
       ).value;
 
+      const updateProductExpiryDate =
+        document.querySelector('#updateExpiryDate').value;
+
+      const updateLowStockQuantity = document.querySelector(
+        '#updateLowStockQuantityQuantity'
+      ).value;
+
+      const updateSupposedPrice = document.querySelector(
+        '#updateSupposedPrice'
+      ).value;
+
+      //  Publish Status checkboxes
+      const updatePublishStatusCheckboxes = document.querySelectorAll(
+        'input[name="updatePublishStatus"]:checked'
+      );
+
+      const updatePublishStatus = Array.from(updatePublishStatusCheckboxes).map(
+        (cb) => cb.value
+      );
+      const updatePublishStatusValue = updatePublishStatus[0] || null;
+
+      //  Display Quantity checkboxes
+      const updateDisplayQuantitytatusCheckboxes = document.querySelectorAll(
+        'input[name="updateDisplayQuantityStatus"]:checked'
+      );
+
+      const displayQuantitytatus = Array.from(
+        updateDisplayQuantitytatusCheckboxes
+      ).map((cb) => cb.value);
+
+      const updateDisplayQuantitytatusValue = displayQuantitytatus[0] || null;
+
       const updateProductDetails = {
         categoryId: updateProductCategory,
         name: updateProductName,
@@ -1458,6 +1493,13 @@ export function bindUpdateProductFormListener() {
         sku: updateProductSku,
         purchasePrice: Number(getAmountForSubmission(updateProductBoughtPrice)),
         sellingPrice: Number(getAmountForSubmission(updateProductSellingPrice)),
+        //
+        expiryDate: updateProductExpiryDate,
+        lowStockQuantity: Number(updateLowStockQuantity),
+        supposedPrice: Number(getAmountForSubmission(updateSupposedPrice)),
+        isPublished: updatePublishStatusValue,
+        displayQuantity: updateDisplayQuantitytatusValue,
+        productDetails: updateItemDetails,
       };
 
       const updateInventoryDetails = {
@@ -1620,21 +1662,21 @@ export function updateProductForm(productDetail) {
     checkbox.checked = checkbox.value === display_quantity;
   });
 
-  setImagePreview(
-    'updateBusinessLogo',
-    'previewBusinessLogo',
-    storefront.business_logo
-  );
-  setImagePreview(
-    'updateStoreFrontImage',
-    'previewStoreFrontImage',
-    storefront.store_front_image
-  );
-  setImagePreview(
-    'updateSignBoardImage',
-    'previewSignBoardImage',
-    storefront.sign_board_image
-  );
+  //   setImagePreview(
+  //     'updateBusinessLogo',
+  //     'previewBusinessLogo',
+  //     storefront.business_logo
+  //   );
+  //   setImagePreview(
+  //     'updateStoreFrontImage',
+  //     'previewStoreFrontImage',
+  //     storefront.store_front_image
+  //   );
+  //   setImagePreview(
+  //     'updateSignBoardImage',
+  //     'previewSignBoardImage',
+  //     storefront.sign_board_image
+  //   );
 }
 
 // Function to handle image preview + max size check

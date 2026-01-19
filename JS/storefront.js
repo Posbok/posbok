@@ -572,27 +572,22 @@ function populateUpdateStorefrontForm(storefront) {
   //       break;
   //   }
 
-  // Usage after fetching Products
-  //   setImagePreview(
-  //     'updateProductImage_1',
-  //     'updatePreviewupdateProductImage_1',
-  //     storefront.business_logo
-  //   );
-  //   setImagePreview(
-  //     'updateProductImage_2',
-  //     'updatePreviewupdateProductImage_2',
-  //     storefront.business_logo
-  //   );
-  //   setImagePreview(
-  //     'updateProductImage_4',
-  //     'updatePreviewupdateProductImage_4',
-  //     storefront.business_logo
-  //   );
-  //   setImagePreview(
-  //     'updateProductImage_4',
-  //     'updatePreviewupdateProductImage_4',
-  //     storefront.business_logo
-  //   );
+  // Usage after fetching storefront
+  setImagePreview(
+    'updateBusinessLogo',
+    'previewBusinessLogo',
+    storefront.business_logo
+  );
+  setImagePreview(
+    'updateStoreFrontImage',
+    'previewStoreFrontImage',
+    storefront.store_front_image
+  );
+  setImagePreview(
+    'updateSignBoardImage',
+    'previewSignBoardImage',
+    storefront.sign_board_image
+  );
 }
 
 // Function to handle image preview + max size check
