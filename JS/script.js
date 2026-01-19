@@ -1596,6 +1596,34 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// Expiry Date Input
+document.addEventListener('DOMContentLoaded', () => {
+  if (flatpickr) {
+    flatpickr('#expiryDate', {
+      dateFormat: 'Y-m-d',
+      allowInput: true, // Enable input so validation works
+      onReady: function (selectedDates, dateStr, instance) {
+        const el = instance.element;
+
+        // Prevent user typing but keep field focusable & validatable
+        el.onkeydown =
+          el.onkeypress =
+          el.onkeyup =
+            function (e) {
+              e.preventDefault();
+            };
+        el.onpaste = function (e) {
+          e.preventDefault();
+        };
+
+        el.style.caretColor = 'transparent'; // Hide text cursor
+        el.style.cursor = 'pointer'; // UI/UX feedback
+        el.style.backgroundColor = '#f7f7f7'; // Optional style
+      },
+    });
+  }
+});
+
 // // JS for Business ID Generation
 // export function generateBusinessId(length = 10) {
 //   const chars =

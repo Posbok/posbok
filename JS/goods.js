@@ -631,6 +631,8 @@ export function createProductForm() {
         '#addProductDescription'
       ).value;
 
+      const addItemDetails = document.querySelector('#addProductDetails').value;
+
       const addProductSku = document.querySelector('#addProductSku').value;
 
       const addProductBoughtPrice = document.querySelector(
@@ -644,6 +646,36 @@ export function createProductForm() {
       const addProductQuantity = document.querySelector(
         '#addProductQuantity'
       ).value;
+
+      const productExpiryDate = document.querySelector('#expiryDate').value;
+
+      const lowStockQuantity = document.querySelector(
+        '#addLowStockQuantityQuantity'
+      ).value;
+
+      const supposedPrice = document.querySelector(
+        '#addProductSupposedPrice'
+      ).value;
+
+      //  Publish Status checkboxes
+      const publishStatusCheckboxes = document.querySelectorAll(
+        'input[name="publishStatus"]:checked'
+      );
+
+      const publishStatus = Array.from(publishStatusCheckboxes).map(
+        (cb) => cb.value
+      );
+      const publishStatusValue = publishStatus[0] || null;
+
+      //  Display Quantity checkboxes
+      const displayQuantitytatusCheckboxes = document.querySelectorAll(
+        'input[name="displayQuantityStatus"]:checked'
+      );
+
+      const displayQuantitytatus = Array.from(
+        displayQuantitytatusCheckboxes
+      ).map((cb) => cb.value);
+      const displayQuantitytatusValue = displayQuantitytatus[0] || null;
 
       let finalSku_Barcode =
         addProductSku !== '' ? addProductSku : generateSKU(businessName);
@@ -667,6 +699,13 @@ export function createProductForm() {
         sellingPrice: Number(getAmountForSubmission(addProductSellingPrice)),
         barcode: finalSku_Barcode,
         quantityInStock: Number(addProductQuantity),
+        //
+        expiryDate: productExpiryDate,
+        lowStockQuantity: Number(lowStockQuantity),
+        supposedPrice: Number(getAmountForSubmission(supposedPrice)),
+        isPublished: publishStatusValue,
+        displayQuantity: displayQuantitytatusValue,
+        productDetails: addItemDetails,
       };
 
       const shopId = Number(inventoryShopDropdown);
@@ -2281,7 +2320,7 @@ export async function viewProductInfo(e, row) {
     document.querySelector('.productCategory').innerText =
       product.ProductCategory?.name || '—';
 
-    document.querySelector('.productDescription').innerText =
+    document.querySelector('.productDescriptionInfo').innerText =
       product.description || '—';
 
     document.querySelector('.productUnit').innerText = product.unit || '—';
@@ -2297,6 +2336,12 @@ export async function viewProductInfo(e, row) {
 
     document.querySelector('.productPublishedStatus').innerText =
       product.is_published ? 'Yes' : 'No';
+
+    document.querySelector('.productExpiryDateStatus').innerText =
+      product.expiry_date || '—';
+
+    document.querySelector('.productSupposedPriceStatus').innerText =
+      product.supposed_price || '—';
 
     //  Images
 

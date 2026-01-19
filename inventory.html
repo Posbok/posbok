@@ -29,6 +29,10 @@
    <!-- JsBarcode CDN -->
    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 
+   <!-- flatpickr - DateOfBirth -->
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 
    <!-- <script defer type="module" src="JS/script.js"></script>
    <script defer type="module" src="JS/goods.js"></script> -->
@@ -595,6 +599,80 @@
          </div>
 
 
+         <!-- Expiry Date -->
+         <div class="modal-form_input">
+            <label for="updateExpiryDate">Expiry Date</label>
+
+            <input id="updateExpiryDate" type="text" placeholder="Update Expiry Date">
+
+         </div>
+
+         <!-- Low Stock Quantity -->
+         <div class="modal-form_input">
+            <label for="updateLowStockQuantity">Low Stock Quantity </label>
+
+            <!-- <div class="naira-input-container"> -->
+            <input id="updateLowStockQuantityQuantity" type="text" placeholder="Update Low Stock Quantity"
+               name="updateLowStockQuantityQuantity" required>
+            <!-- </div> -->
+         </div>
+
+         <!-- Supposed Price -->
+         <div class="modal-form_input">
+            <label for="updateSupposedPrice">Supposed Price</label>
+
+            <div class="naira-input-container">
+               <input id="updateSupposedPrice" type="text" placeholder="Update Supposed Price"
+                  name="updateSupposedPrice" required>
+               <span class="naira">&#x20A6;</span>
+            </div>
+         </div>
+
+         <!-- Publish Status -->
+         <div class="modal-form_input mb-1">
+            <label for="publishStatus" class="heading-subtext">Publish Status</label>
+
+            <div class="checkbox">
+               <div class="checkbox-container">
+                  <input id="updatePublishStatusTrue" type="radio" name="updatePublishStatus" value="true">
+                  <label for="updatePublishStatusTrue">True</label>
+               </div>
+
+               <div class="checkbox-container">
+                  <input id="updatePublishStatusFalse" type="radio" name="updatePublishStatus" value="false">
+                  <label for="updatePublishStatusFalse">False</label>
+               </div>
+
+            </div>
+         </div>
+
+         <!-- displayQuantity Status -->
+         <div class="modal-form_input mb-1">
+            <label for="displayQuantityStatus" class="heading-subtext">Display Quantity Status</label>
+
+            <div class="checkbox">
+               <div class="checkbox-container">
+                  <input id="updateDisplayQuantityStatusExact" type="radio" name="updateDisplayQuantityStatus"
+                     value="exact">
+                  <label for="updateDisplayQuantityStatusExact">Exact</label>
+               </div>
+
+               <div class="checkbox-container">
+                  <input id="updateDisplayQuantityStatusInStock" type="radio" name="updateDisplayQuantityStatus"
+                     value="in_stock">
+                  <label for="updateDisplayQuantityStatusInStock">In Stock</label>
+               </div>
+
+               <div class="checkbox-container">
+                  <input id="updateDisplayQuantityStatusHidden" type="radio" name="updateDisplayQuantityStatus"
+                     value="hidden">
+                  <label for="updateDisplayQuantityStatusHidden">Hidden</label>
+               </div>
+
+            </div>
+         </div>
+
+
          <!-- <div class="updateProduct-form_input">
             <label for="newItemQuantity">New Item Quantity</label>
 
@@ -662,6 +740,14 @@
                name="addProductDescription" required>
          </div>
 
+         <!-- Product Details -->
+         <div class="modal-form_input">
+            <label for="addProductDescription">Product Details</label>
+
+            <input id="addProductDetails" type="text" placeholder="Enter Product Details" name="addProductDetails"
+               required>
+         </div>
+
          <!-- Product Sku
          <div class="modal-form_input">
             <label for="addProductSku">Product SKU</label>
@@ -710,6 +796,79 @@
                required>
             <!-- </div> -->
          </div>
+
+         <!-- Expiry Date -->
+         <div class="modal-form_input">
+            <label for="expiryDate">Expiry Date</label>
+
+            <!-- <input id="expiryDate" type="date" name="expiryDate" required> -->
+
+            <input id="expiryDate" type="text" placeholder="Select Expiry Date">
+
+         </div>
+
+         <!-- Low Stock Quantity -->
+         <div class="modal-form_input">
+            <label for="lowStockQuantity">Low Stock Quantity </label>
+
+            <!-- <div class="naira-input-container"> -->
+            <input id="addLowStockQuantityQuantity" type="text" placeholder="Enter Low Stock Quantity Quantity"
+               name="addLowStockQuantityQuantity" required>
+            <!-- </div> -->
+         </div>
+
+         <!-- Supposed Price -->
+         <div class="modal-form_input">
+            <label for="productSupposedPrice">Supposed Price</label>
+
+            <div class="naira-input-container">
+               <input id="addProductSupposedPrice" type="text" placeholder="Enter Supposed Price"
+                  name="addProductSupposedPrice" required>
+               <span class="naira">&#x20A6;</span>
+            </div>
+         </div>
+
+         <!-- Publish Status -->
+         <div class="modal-form_input mb-1">
+            <label for="publishStatus" class="heading-subtext">Publish Status</label>
+
+            <div class="checkbox">
+               <div class="checkbox-container">
+                  <input id="publishStatusTrue" type="radio" name="publishStatus" value="true">
+                  <label for="publishStatusTrue">True</label>
+               </div>
+
+               <div class="checkbox-container">
+                  <input id="publishStatusFalse" type="radio" name="publishStatus" value="false">
+                  <label for="publishStatusFalse">False</label>
+               </div>
+
+            </div>
+         </div>
+
+         <!-- displayQuantity Status -->
+         <div class="modal-form_input mb-1">
+            <label for="displayQuantityStatus" class="heading-subtext">Display Quantity Status</label>
+
+            <div class="checkbox">
+               <div class="checkbox-container">
+                  <input id="displayQuantityStatusExact" type="radio" name="displayQuantityStatus" value="exact">
+                  <label for="displayQuantityStatusExact">Exact</label>
+               </div>
+
+               <div class="checkbox-container">
+                  <input id="displayQuantityStatusInStock" type="radio" name="displayQuantityStatus" value="in_stock">
+                  <label for="displayQuantityStatusInStock">In Stock</label>
+               </div>
+
+               <div class="checkbox-container">
+                  <input id="displayQuantityStatusHidden" type="radio" name="displayQuantityStatus" value="hidden">
+                  <label for="displayQuantityStatusHidden">Hidden</label>
+               </div>
+
+            </div>
+         </div>
+
 
          <!-- Product Images -->
          <div class="modal-form_input">
@@ -881,7 +1040,7 @@
             </div>
 
             <div class="info-row">
-               <h2 class="label heading-subtext">Description: <span class="value productDescription "></span></h2>
+               <h2 class="label heading-subtext">Description: <span class="value productDescriptionInfo "></span></h2>
 
             </div>
 
@@ -907,6 +1066,17 @@
 
             <div class="info-row">
                <h2 class="label heading-subtext">Published: <span class="value productPublishedStatus "></span></h2>
+
+            </div>
+
+            <div class="info-row">
+               <h2 class="label heading-subtext">Expiry Date: <span class="value productExpiryDateStatus "></span></h2>
+
+            </div>
+
+            <div class="info-row">
+               <h2 class="label heading-subtext">Supposed Price: <span class="value productSupposedPriceStatus "></span>
+               </h2>
 
             </div>
 
