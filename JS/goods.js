@@ -1619,6 +1619,44 @@ export function updateProductForm(productDetail) {
   updateDisplayQuantityStatus.forEach((checkbox) => {
     checkbox.checked = checkbox.value === display_quantity;
   });
+
+  setImagePreview(
+    'updateBusinessLogo',
+    'previewBusinessLogo',
+    storefront.business_logo
+  );
+  setImagePreview(
+    'updateStoreFrontImage',
+    'previewStoreFrontImage',
+    storefront.store_front_image
+  );
+  setImagePreview(
+    'updateSignBoardImage',
+    'previewSignBoardImage',
+    storefront.sign_board_image
+  );
+}
+
+// Function to handle image preview + max size check
+
+function setImagePreview(inputId, previewId, currentUrl) {
+  const input = document.getElementById(inputId);
+  const preview = document.getElementById(previewId);
+  preview.src = currentUrl || '/img/placeholder.png';
+
+  input.addEventListener('change', function () {
+    const file = input.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert('File is too large. Max size: 5MB');
+        input.value = '';
+        return;
+      }
+      preview.src = URL.createObjectURL(file);
+    } else {
+      preview.src = currentUrl || '/img/placeholder.png';
+    }
+  });
 }
 
 // Prnt/Download Product Barcode
