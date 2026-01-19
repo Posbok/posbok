@@ -1564,6 +1564,12 @@ export function updateProductForm(productDetail) {
     purchase_price,
     selling_price,
     sku,
+    display_quantity,
+    expiry_date,
+    is_published,
+    low_stock_quantity,
+    supposed_price,
+    unit,
   } = product;
 
   //   const categoryName =
@@ -1594,6 +1600,25 @@ export function updateProductForm(productDetail) {
   document.querySelector('#updateProductSellingPrice').value =
     formatAmountWithCommas(selling_price) || '';
   document.querySelector('#updateProductQuantity').value = quantity || '';
+  document.querySelector('#updateExpiryDate').value = expiry_date || '';
+  document.querySelector('#updateLowStockQuantityQuantity').value =
+    low_stock_quantity || '';
+  document.querySelector('#updateSupposedPrice').value =
+    formatAmountWithCommas(supposed_price) || '';
+
+  const updatePublishStatusTrue = document.querySelectorAll(
+    'input[name="updatePublishStatus"]'
+  );
+  updatePublishStatusTrue.forEach((checkbox) => {
+    checkbox.checked = checkbox.value === is_published.toString();
+  });
+
+  const updateDisplayQuantityStatus = document.querySelectorAll(
+    'input[name="updateDisplayQuantityStatus"]'
+  );
+  updateDisplayQuantityStatus.forEach((checkbox) => {
+    checkbox.checked = checkbox.value === display_quantity;
+  });
 }
 
 // Prnt/Download Product Barcode
