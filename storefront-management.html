@@ -145,14 +145,14 @@
 
          <div class="main-heading_left">
             <div class="notificatinoIconDiv mr-2">
-               <i class="fa-regular fa-bell icon main-heading-notification "></i>
+               <i class="fa-regular fa-bell icon main-heading-notification  " title="View Notifications"></i>
                <span class="notification-counter"></span>
             </div>
 
             <button class="hero-btn-dark logoutButton">LOGOUT</button>
             <div class="profileIconDiv mr-2">
 
-               <i class="fa-solid fa-circle-user main-heading-profile--image"></i>
+               <i class="fa-solid fa-circle-user main-heading-profile--image" title="Update Profile"></i>
             </div>
          </div>
       </header>
@@ -208,111 +208,226 @@
          <!-- STOREFRONT INFO -->
          <div class="availableStoreInfo hidden" id="availableStoreInfo">
 
-            <!-- Header -->
-            <h1 class="heading-text">Storefront Settings</h1>
-            <div class="storefront-header">
-               <div>
-                  <span class="heading-subtext muted-text">
-                     Store URL:
-                     <a id="storeUrl" class="mono-text" href="#" target="_blank" rel="noopener noreferrer"></a>
+
+            <h1 class="heading-text mt-3">Storefront Management</h1>
+
+
+
+            <div class="storefront-tabs mt-2">
+               <button class="storefront-tab-btn active" data-tab="overviewTab">
+                  Overview
+               </button>
+
+               <button class="storefront-tab-btn " data-tab="reviewsTab">
+                  Reviews
+                  <span class="tab-badge" id="pendingReviewsCount">0</span>
+               </button>
+
+               <button class="storefront-tab-btn" data-tab="requestsTab">
+                  Purchase Requests
+               </button>
+
+               <button class="storefront-tab-btn" data-tab="analyticsTab">
+                  Analytics
+               </button>
+            </div>
+
+
+            <div class="storefront-tab-content active" id="overviewTab">
+               <div class="storefront-header">
+                  <div>
+                     <span class="heading-subtext muted-text">
+                        Store URL:
+                        <a id="storeUrl" class="mono-text" href="#" target="_blank" rel="noopener noreferrer"></a>
+                     </span>
+                  </div>
+
+                  <span class="status-badge pending" id="verificationStatus">
+                     Pending
                   </span>
                </div>
 
-               <span class="status-badge pending" id="verificationStatus">
-                  Pending
-               </span>
-            </div>
+               <!-- Summary -->
+               <div class="storefront-card summary">
+                  <h3 class="card-title heading-subtext" id="businessName"></h3>
+                  <p class="motto heading-minitext"><strong>Motto: </strong><span id="businessMotto"></span></p>
 
-            <!-- Summary -->
-            <div class="storefront-card summary">
-               <h3 class="card-title heading-subtext" id="businessName"></h3>
-               <p class="motto heading-minitext"><strong>Motto: </strong><span id="businessMotto"></span></p>
-
-               <div class="summary-grid">
-                  <div class=" heading-minitext"><strong>Active:</strong> <span id="isActive"></span></div>
-                  <div class=" heading-minitext"><strong>Offers Delivery:</strong> <span id="offersDelivery"></span>
-                     (<span id="deliveryVerified"></span>)
-                  </div>
-                  <!-- <div class=" heading-minitext"><strong>Quantity Mode:</strong> <span id="quantityMode"></span></div> -->
-               </div>
-            </div>
-
-            <!-- Business Info -->
-            <div class="storefront-card">
-               <h3 class="card-title">Business Information</h3>
-               <div class="info-grid">
-                  <div>
-                     <label>Description</label>
-                     <p class=" heading-minitext" id="businessDescription"></p>
-                  </div>
-                  <div>
-                     <label>Address</label>
-                     <p class=" heading-minitext" id="storeAddress"></p>
-                  </div>
-                  <div>
-                     <label>CAC Registration</label>
-                     <p class=" heading-minitext" id="cacNumber"></p>
+                  <div class="summary-grid">
+                     <div class=" heading-minitext"><strong>Active:</strong> <span id="isActive"></span></div>
+                     <div class=" heading-minitext"><strong>Offers Delivery:</strong> <span id="offersDelivery"></span>
+                        (<span id="deliveryVerified"></span>)
+                     </div>
+                     <!-- <div class=" heading-minitext"><strong>Quantity Mode:</strong> <span id="quantityMode"></span></div> -->
                   </div>
                </div>
-            </div>
 
-            <!-- Contact Info -->
-            <div class="storefront-card">
-               <h3 class="card-title">Contact Information</h3>
-               <div class="info-grid">
-                  <div><label>Phone</label>
-                     <p class=" heading-minitext" id="contactPhone"></p>
-                  </div>
-                  <div><label>Email</label>
-                     <p class=" heading-minitext" id="contactEmail"></p>
-                  </div>
-                  <div><label>WhatsApp</label>
-                     <p class=" heading-minitext" id="whatsappNumber"></p>
-                  </div>
-               </div>
-            </div>
-
-            <!-- Location -->
-            <div class="storefront-card">
-               <h3 class="card-title">Store Location</h3>
-               <p class="muted-text heading-minitext">
-                  Lat: <span id="latitude"></span> · Lng: <span id="longitude"></span>
-               </p>
-               <!-- <div class="map-placeholder" id="storefront-map">Map preview coming soon</div> -->
-               <div id="storefront-map"></div>
-            </div>
-
-            <!-- Images -->
-            <div class="storefront-card">
-               <h3 class="card-title">Storefront Images</h3>
-
-               <div class="image-grid">
-                  <div class="image-card">
-                     <img id="businessLogo" alt="Business Logo" />
-                     <span class=" heading-minitext">Business Logo</span>
-                     <!-- <button class="link-btn">Update</button> -->
-                  </div>
-
-                  <div class="image-card">
-                     <img id="storeFrontImage" alt="Store Front" />
-                     <span class=" heading-minitext">Store Front</span>
-                     <!-- <button class="link-btn">Update</button> -->
-                  </div>
-
-                  <div class="image-card">
-                     <img id="signBoardImage" alt="Sign Board" />
-                     <span class=" heading-minitext">Sign Board</span>
-                     <!-- <button class="link-btn">Update</button> -->
+               <!-- Business Info -->
+               <div class="storefront-card">
+                  <h3 class="card-title">Business Information</h3>
+                  <div class="info-grid">
+                     <div>
+                        <label>Description</label>
+                        <p class=" heading-minitext" id="businessDescription"></p>
+                     </div>
+                     <div>
+                        <label>Address</label>
+                        <p class=" heading-minitext" id="storeAddress"></p>
+                     </div>
+                     <div>
+                        <label>CAC Registration</label>
+                        <p class=" heading-minitext" id="cacNumber"></p>
+                     </div>
                   </div>
                </div>
-            </div>
 
-            <!-- Actions -->
-            <div class="storefront-actions">
-               <button class="hero-btn-dark center-button updateStorefrontModalBtn">Update Storefront</button>
-               <!-- <button class="hero-btn-outline">Update Images</button>
+               <!-- Contact Info -->
+               <div class="storefront-card">
+                  <h3 class="card-title">Contact Information</h3>
+                  <div class="info-grid">
+                     <div><label>Phone</label>
+                        <p class=" heading-minitext" id="contactPhone"></p>
+                     </div>
+                     <div><label>Email</label>
+                        <p class=" heading-minitext" id="contactEmail"></p>
+                     </div>
+                     <div><label>WhatsApp</label>
+                        <p class=" heading-minitext" id="whatsappNumber"></p>
+                     </div>
+                  </div>
+               </div>
+
+               <!-- Location -->
+               <div class="storefront-card">
+                  <h3 class="card-title">Store Location</h3>
+                  <p class="muted-text heading-minitext">
+                     Lat: <span id="latitude"></span> · Lng: <span id="longitude"></span>
+                  </p>
+                  <!-- <div class="map-placeholder" id="storefront-map">Map preview coming soon</div> -->
+                  <div id="storefront-map"></div>
+               </div>
+
+               <!-- Images -->
+               <div class="storefront-card">
+                  <h3 class="card-title">Storefront Images</h3>
+
+                  <div class="image-grid">
+                     <div class="image-card">
+                        <img id="businessLogo" alt="Business Logo" />
+                        <span class=" heading-minitext">Business Logo</span>
+                        <!-- <button class="link-btn">Update</button> -->
+                     </div>
+
+                     <div class="image-card">
+                        <img id="storeFrontImage" alt="Store Front" />
+                        <span class=" heading-minitext">Store Front</span>
+                        <!-- <button class="link-btn">Update</button> -->
+                     </div>
+
+                     <div class="image-card">
+                        <img id="signBoardImage" alt="Sign Board" />
+                        <span class=" heading-minitext">Sign Board</span>
+                        <!-- <button class="link-btn">Update</button> -->
+                     </div>
+                  </div>
+               </div>
+
+               <!-- Actions -->
+               <div class="storefront-actions">
+                  <button class="hero-btn-dark center-button updateStorefrontModalBtn">Update Storefront</button>
+                  <!-- <button class="hero-btn-outline">Update Images</button>
                <button class="danger-btn">Delete Storefront</button> -->
+               </div>
+
             </div>
+
+            <div class="storefront-tab-content " id="reviewsTab">
+               <h2 class="card-title heading-subtext">Product Reviews</h2>
+               <div id="reviewsContainer">
+                  <div class="reviews-header">
+                     <div class="reviews-filters">
+                        <button class="review-filter-btn active" data-filter="all">
+                           All Reviews
+                        </button>
+
+                        <button class="review-filter-btn " data-filter="pending">
+                           Pending Reviews
+                        </button>
+
+                        <button class="review-filter-btn " data-filter="approved">
+                           Approved Reviews
+                        </button>
+
+                     </div>
+                  </div>
+
+                  <div id="reviewsList" class="reviews-list mt-3">
+                     <!-- Reviews will render here -->
+
+                     <div class="review-card approved" data-review-id="3">
+                        <div class="review-header">
+                           <h1 class="review-title heading-subtext">Great product</h1>
+
+                           <div class="review-header-right">
+                              <span class="review-rating heading-subtext">★★★★★</span>
+                              <span class="review-status approved">Approved</span>
+                           </div>
+                        </div>
+
+                        <h2 class="review-text heading-minitext">This product is superb</h2>
+
+                        <div class="review-meta muted-text heading-minitext">
+                           <span>Product: Iphone Charger</span> ·
+                           <span>By: Praises Amaiyo</span> ·
+                           <span>2026-01-19</span>
+                        </div>
+
+                        <div class="review-actions">
+                           <button class=" openModerateModal hero-btn-dark_square" data-review-id="3">
+                              Moderate
+                           </button>
+                        </div>
+                     </div>
+
+                     <div class="review-card " data-review-id="3">
+                        <div class="review-header">
+                           <h1 class="review-title heading-subtext">Great product</h1>
+
+                           <div class="review-header-right">
+                              <span class="review-rating heading-subtext">★★★★★</span>
+                              <span class="review-status approved">Approved</span>
+                           </div>
+                        </div>
+
+                        <h2 class="review-text heading-minitext">This product is superb</h2>
+
+                        <div class="review-meta muted-text heading-minitext">
+                           <span>Product: Iphone Charger</span> ·
+                           <span>By: Praises Amaiyo</span> ·
+                           <span>2026-01-19</span>
+                        </div>
+
+                        <div class="review-actions">
+                           <button class=" openModerateModal businessInitBtn" data-review-id="3">
+                              Moderate
+                           </button>
+                        </div>
+                     </div>
+
+                  </div>
+
+               </div>
+            </div>
+
+            <div class="storefront-tab-content" id="requestsTab">
+               <h3 class="card-title">Purchase Requests</h3>
+               <p class="muted-text heading-minitext">Coming soon</p>
+            </div>
+
+            <div class="storefront-tab-content" id="analyticsTab">
+               <h3 class="card-title">Analytics</h3>
+               <p class="muted-text heading-minitext">Metrics will appear here</p>
+            </div>
+
 
          </div>
       </section>

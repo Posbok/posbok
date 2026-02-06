@@ -127,22 +127,22 @@ if (isAdmin) {
 
       populateBusinessShopDropdown(
         enrichedShopData,
-        'adminDepositposCapitalShopDropdown'
+        'adminDepositposCapitalShopDropdown',
       );
 
       populateBusinessShopDropdown(
         enrichedShopData,
-        'adminFundMachineShopDropdown'
+        'adminFundMachineShopDropdown',
       );
 
       populateBusinessShopDropdown(
         enrichedShopData,
-        'adminClearDashboardFieldShopDropdown'
+        'adminClearDashboardFieldShopDropdown',
       );
 
       populateBusinessShopDropdown(
         enrichedShopData,
-        'closeBusinessDayShopDropdown'
+        'closeBusinessDayShopDropdown',
       );
 
       hideGlobalLoader();
@@ -167,7 +167,7 @@ export function bindDepositPosCapitalFormListener() {
       e.preventDefault();
 
       const adminDepositposCapitalShopDropdown = document.querySelector(
-        '#adminDepositposCapitalShopDropdown'
+        '#adminDepositposCapitalShopDropdown',
       ).value;
 
       const posDepositAmount = isAdmin
@@ -224,7 +224,7 @@ export function bindFundMachineFormListener() {
       e.preventDefault();
 
       const adminFundMachineShopDropdown = document.querySelector(
-        '#adminFundMachineShopDropdown'
+        '#adminFundMachineShopDropdown',
       ).value;
 
       const fundMachineAmount = isAdmin
@@ -272,11 +272,11 @@ export function bindClearDashboardFieldFormListener() {
       e.preventDefault();
 
       const adminClearDashboardFieldShopDropdown = document.querySelector(
-        '#adminClearDashboardFieldShopDropdown'
+        '#adminClearDashboardFieldShopDropdown',
       ).value;
 
       const adminClearDashboardFieldDropdown = document.querySelector(
-        '#adminClearDashboardFieldDropdown'
+        '#adminClearDashboardFieldDropdown',
       ).value;
 
       const clearDashboardFieldDetails = {
@@ -287,14 +287,14 @@ export function bindClearDashboardFieldFormListener() {
       // console.log('Clearing POS Dashboard with:', clearDashboardFieldDetails);
 
       const submitClearDashboardField = document.querySelector(
-        '.submitClearDashboardField'
+        '.submitClearDashboardField',
       );
 
       try {
         showBtnLoader(submitClearDashboardField);
         showGlobalLoader();
         const clearDashboardFieldData = await clearDashboardFieldApi(
-          clearDashboardFieldDetails
+          clearDashboardFieldDetails,
         );
 
         if (clearDashboardFieldData) {
@@ -312,10 +312,10 @@ export function bindClearDashboardFieldFormListener() {
           showToast(
             'success',
             `₦${formatAmountWithCommas(
-              clearedAmount
+              clearedAmount,
             )} has been cleared from ${formatDashboardType(
-              field
-            )} field successfully`
+              field,
+            )} field successfully`,
           );
           closeModal();
         }
@@ -353,12 +353,12 @@ document.addEventListener('DOMContentLoaded', () => {
     .querySelector('#depositPosCapitalBtn')
     ?.addEventListener(
       'click',
-      isAdmin ? openAdminDepositPosCapitalModal : openDepositPosCapitalModal
+      isAdmin ? openAdminDepositPosCapitalModal : openDepositPosCapitalModal,
     );
 
   const fundMachineBtn = document.querySelector('#fundMachineBtn');
   const openClearDashboardFieldModalBtn = document.querySelector(
-    '#openClearDashboardFieldModalBtn'
+    '#openClearDashboardFieldModalBtn',
   );
   const depositPosCapitalBtn = document.querySelector('#depositPosCapitalBtn');
 
@@ -367,12 +367,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   fundMachineBtn?.addEventListener(
     'click',
-    isAdmin ? openAdminFundMachineModal : openFundMachineModal
+    isAdmin ? openAdminFundMachineModal : openFundMachineModal,
   );
 
   openClearDashboardFieldModalBtn?.addEventListener(
     'click',
-    openAClearDashboardFieldModal
+    openAClearDashboardFieldModal,
   );
 
   bindDepositPosCapitalFormListener(); // Only once
@@ -454,10 +454,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const posShopDropdownWithdrawal =
       document.getElementById('posShopDropdown-2');
     const posTransactionSummaryDiv = document.querySelector(
-      '.posTransactions-summary_div'
+      '.posTransactions-summary_div',
     );
     const posTransactionSummary = document.querySelector(
-      '.posTransactions-summary'
+      '.posTransactions-summary',
     );
     if (posTransactionSummaryDiv)
       posTransactionSummaryDiv.style.display = 'none';
@@ -497,7 +497,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           console.error('Error fetching POS Summary Details:', error.message);
           showToast(
             'fail',
-            `❎ Error fetching POS Summary Details: ${error.message}`
+            `❎ Error fetching POS Summary Details: ${error.message}`,
           );
         }
       });
@@ -532,7 +532,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           console.error('Error fetching POS Summary Details:', error.message);
           showToast(
             'fail',
-            `❎ Error fetching POS Summary Details: ${error.message}`
+            `❎ Error fetching POS Summary Details: ${error.message}`,
           );
         }
       });
@@ -540,54 +540,54 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function clearPosSummaryDiv() {
     document.getElementById(
-      isStaff ? 'totalPosCapital' : 'adminTotalPosCapital'
+      isStaff ? 'totalPosCapital' : 'adminTotalPosCapital',
     ).innerHTML = 0;
 
     document.getElementById(
-      isStaff ? 'cashAtHand' : 'adminCashAtHand'
+      isStaff ? 'cashAtHand' : 'adminCashAtHand',
     ).innerHTML = 0;
 
     document.getElementById(
-      isStaff ? 'cashInMachine' : 'adminCashInMachine'
+      isStaff ? 'cashInMachine' : 'adminCashInMachine',
     ).innerHTML = 0;
 
     document.getElementById(
-      isStaff ? 'totalDeposit' : 'adminTotalDeposit'
+      isStaff ? 'totalDeposit' : 'adminTotalDeposit',
     ).innerHTML = 0;
 
     document.getElementById(
-      isStaff ? 'totalWithdrawals' : 'adminTotalWithdrawals'
+      isStaff ? 'totalWithdrawals' : 'adminTotalWithdrawals',
     ).innerHTML = 0;
 
     document.getElementById(
-      isStaff ? 'cashBillPayment' : 'adminCashBillPayment'
+      isStaff ? 'cashBillPayment' : 'adminCashBillPayment',
     ).innerHTML = 0;
 
     document.getElementById(
-      isStaff ? 'totalPosCharges' : 'adminTotalPosCharges'
+      isStaff ? 'totalPosCharges' : 'adminTotalPosCharges',
     ).innerHTML = 0;
 
     document.getElementById(
-      isStaff ? 'cashCharges' : 'adminCashCharges'
+      isStaff ? 'cashCharges' : 'adminCashCharges',
     ).innerHTML = 0;
     document.getElementById(
-      isStaff ? 'machineCharges' : 'adminMachineCharges'
+      isStaff ? 'machineCharges' : 'adminMachineCharges',
     ).innerHTML = 0;
 
     document.getElementById(
-      isStaff ? 'totalCashAtHand' : 'adminTotalCashAtHand'
+      isStaff ? 'totalCashAtHand' : 'adminTotalCashAtHand',
     ).innerHTML = 0;
     document.getElementById(
-      isStaff ? 'totalMachineFee' : 'adminTotalMachineFee'
+      isStaff ? 'totalMachineFee' : 'adminTotalMachineFee',
     ).innerHTML = 0;
     document.getElementById(
-      isStaff ? 'totalTaxFee' : 'adminTotalTaxFee'
+      isStaff ? 'totalTaxFee' : 'adminTotalTaxFee',
     ).innerHTML = 0;
     document.getElementById(
-      isStaff ? 'totalTransferFee' : 'adminTotalTransferFee'
+      isStaff ? 'totalTransferFee' : 'adminTotalTransferFee',
     ).innerHTML = 0;
     document.getElementById(
-      isStaff ? 'totalFees' : 'adminTotalFees'
+      isStaff ? 'totalFees' : 'adminTotalFees',
     ).innerHTML = 0;
     //  document.getElementById(
     //    isStaff ? 'currentBusinessDay' : 'adminCurrentBusinessDay'
@@ -615,44 +615,44 @@ export async function handlePosFormSubmit() {
 
       const posShopDropdown = document.getElementById('posShopDropdown')?.value;
       const amount = document.getElementById(
-        isAdmin ? 'adminPosTransactionAmount' : 'posTransactionAmount'
+        isAdmin ? 'adminPosTransactionAmount' : 'posTransactionAmount',
       ).value;
       // const customerName = document.getElementById(
       //   isAdmin ? 'adminPosCustomerName' : 'posCustomerName'
       // ).value;
       const customerPhone = document.getElementById(
-        isAdmin ? 'adminPosCustomerPhone' : 'posCustomerPhone'
+        isAdmin ? 'adminPosCustomerPhone' : 'posCustomerPhone',
       ).value;
       const posFeePaymentType = document.getElementById(
-        isAdmin ? 'adminPosFeePaymentType' : 'posFeePaymentType'
+        isAdmin ? 'adminPosFeePaymentType' : 'posFeePaymentType',
       ).value;
       const posTransactionCharges = document.querySelector(
-        isAdmin ? '#adminPosTransactionCharges' : '#posTransactionCharges'
+        isAdmin ? '#adminPosTransactionCharges' : '#posTransactionCharges',
       ).value;
       const transactionType = document.getElementById(
-        isAdmin ? 'adminTransactionType' : 'staffTransactionType'
+        isAdmin ? 'adminTransactionType' : 'staffTransactionType',
       ).value;
       const paymentMethod = document.getElementById(
-        isAdmin ? 'adminPaymentMethod' : 'paymentMethod'
+        isAdmin ? 'adminPaymentMethod' : 'paymentMethod',
       ).value;
       const posTransactionReference = document.getElementById(
-        isAdmin ? 'adminPosTransactionReference' : 'posTransactionReference'
+        isAdmin ? 'adminPosTransactionReference' : 'posTransactionReference',
       ).value;
       const posTransactionRemark = document.getElementById(
-        isAdmin ? 'adminPosTransactionRemark' : 'posTransactionRemark'
+        isAdmin ? 'adminPosTransactionRemark' : 'posTransactionRemark',
       ).value;
       const posMachineFee = document.querySelector(
-        isAdmin ? '#adminPosMachineFee' : '#posMachineFee'
+        isAdmin ? '#adminPosMachineFee' : '#posMachineFee',
       ).value;
       const posTaxFee = document.querySelector(
-        isAdmin ? '#adminPosTaxFee' : '#posTaxFee'
+        isAdmin ? '#adminPosTaxFee' : '#posTaxFee',
       ).value;
       const posTransferFee = document.querySelector(
-        isAdmin ? '#adminPosTransferFee' : '#posTransferFee'
+        isAdmin ? '#adminPosTransferFee' : '#posTransferFee',
       ).value;
 
       const posMachineFeeInput = document.querySelector(
-        isAdmin ? '#adminPosMachineFee' : '#posMachineFee'
+        isAdmin ? '#adminPosMachineFee' : '#posMachineFee',
       );
 
       // "transactionType" must be one of [WITHDRAWAL, DEPOSIT, WITHDRAWAL_TRANSFER, BILL_PAYMENT]
@@ -749,8 +749,8 @@ export async function handlePosFormSubmit() {
           showToast(
             'info',
             `⛔ Withdrawal Rejected: Deposit POS Capital of ₦${formatAmountWithCommas(
-              amountNeeded
-            )}  to continue.`
+              amountNeeded,
+            )}  to continue.`,
           );
 
           //  console.log(`the amount is higher than the shop balance`);
@@ -800,8 +800,8 @@ export async function handlePosFormSubmit() {
           showToast(
             'info',
             `⛔ Deposit Rejected: Fund Machine with ₦${formatAmountWithCommas(
-              amountNeeded
-            )} more to continue.`
+              amountNeeded,
+            )} more to continue.`,
           );
 
           //  console.log(`the amount is higher than the machine balance`);
@@ -830,8 +830,8 @@ export async function handlePosFormSubmit() {
           showToast(
             'info',
             `⛔ Bill Payment Rejected: Fund machine with ₦${formatAmountWithCommas(
-              amountNeeded
-            )} more to continue.`
+              amountNeeded,
+            )} more to continue.`,
           );
 
           //  console.log(`the amount is higher than the machine balance`);
@@ -845,7 +845,7 @@ export async function handlePosFormSubmit() {
 
         console.log(
           'POS transaction sent successfully:',
-          posTransactionCreated
+          posTransactionCreated,
         );
         initAccountOverview();
         resetFormInputs();
@@ -861,40 +861,40 @@ export async function handlePosFormSubmit() {
 
       function resetFormInputs() {
         document.getElementById(
-          isAdmin ? 'adminTransactionType' : 'staffTransactionType'
+          isAdmin ? 'adminTransactionType' : 'staffTransactionType',
         ).value = 'withdrawal';
         document.getElementById(
-          isAdmin ? 'adminPaymentMethod' : 'paymentMethod'
+          isAdmin ? 'adminPaymentMethod' : 'paymentMethod',
         ).value = 'card';
         document.getElementById(
-          isAdmin ? 'adminPosFeePaymentType' : 'posFeePaymentType'
+          isAdmin ? 'adminPosFeePaymentType' : 'posFeePaymentType',
         ).value = 'card';
         document.getElementById(
-          isAdmin ? 'adminPosTransactionAmount' : 'posTransactionAmount'
+          isAdmin ? 'adminPosTransactionAmount' : 'posTransactionAmount',
         ).value = '';
         //   document.getElementById(
         //     isAdmin ? 'adminPosCustomerName' : 'posCustomerName'
         //   ).value = '';
         document.getElementById(
-          isAdmin ? 'adminPosTransactionCharges' : 'posTransactionCharges'
+          isAdmin ? 'adminPosTransactionCharges' : 'posTransactionCharges',
         ).value = '';
         document.getElementById(
-          isAdmin ? 'adminPosTransactionReference' : 'posTransactionReference'
+          isAdmin ? 'adminPosTransactionReference' : 'posTransactionReference',
         ).value = '';
         document.getElementById(
-          isAdmin ? 'adminPosCustomerPhone' : 'posCustomerPhone'
+          isAdmin ? 'adminPosCustomerPhone' : 'posCustomerPhone',
         ).value = '';
         document.getElementById(
-          isAdmin ? 'adminPosTransactionRemark' : 'posTransactionRemark'
+          isAdmin ? 'adminPosTransactionRemark' : 'posTransactionRemark',
         ).value = '';
         document.getElementById(
-          isAdmin ? 'adminPosMachineFee' : 'posMachineFee'
+          isAdmin ? 'adminPosMachineFee' : 'posMachineFee',
         ).value = '';
         document.getElementById(
-          isAdmin ? 'adminPosTaxFee' : 'posTaxFee'
+          isAdmin ? 'adminPosTaxFee' : 'posTaxFee',
         ).value = '';
         document.getElementById(
-          isAdmin ? 'adminPosTransferFee' : 'posTransferFee'
+          isAdmin ? 'adminPosTransferFee' : 'posTransferFee',
         ).value = '';
 
         document.querySelector('.paymentMethodType').style.display = 'block';
@@ -928,7 +928,7 @@ export async function handleAdminWithdrawalFormSubmit() {
         document.getElementById('posShopDropdown-2')?.value;
 
       const adminWithdrawalTransactionType = document.getElementById(
-        'adminTransactionType-2'
+        'adminTransactionType-2',
       )?.value;
 
       // const adminWithdrawalMethod = document.getElementById(
@@ -936,7 +936,7 @@ export async function handleAdminWithdrawalFormSubmit() {
       // )?.value;
 
       const adminWithdrawalAmount = document.getElementById(
-        'adminWithdrawalAmount'
+        'adminWithdrawalAmount',
       )?.value;
 
       //       {
@@ -954,33 +954,32 @@ export async function handleAdminWithdrawalFormSubmit() {
       };
 
       const adminWithdrawalSubmitButton = document.querySelector(
-        '.adminWithdrawalSubmitButton'
+        '.adminWithdrawalSubmitButton',
       );
 
       try {
         console.log(
           '📦 Admin Withdrawal Transaction Details:',
-          adminWithdrawalDetails
+          adminWithdrawalDetails,
         );
         showBtnLoader(adminWithdrawalSubmitButton);
 
-        const businessDayVerified = await ensureBusinessDayOpen(
-          posShopDropdown
-        );
+        const businessDayVerified =
+          await ensureBusinessDayOpen(posShopDropdown);
         if (!businessDayVerified) {
           hideBtnLoader(adminWithdrawalSubmitButton);
           return;
         }
 
         const adminWithdrawalData = await createAdminWithdrawal(
-          adminWithdrawalDetails
+          adminWithdrawalDetails,
         );
 
         //   console.log(adminWithdrawalData);
 
         console.log(
           'Admin Withdrawal transaction sent successfully:',
-          adminWithdrawalData
+          adminWithdrawalData,
         );
         resetFormInputs();
         showToast('success', `✅ ${adminWithdrawalData?.message}`);
@@ -991,7 +990,7 @@ export async function handleAdminWithdrawalFormSubmit() {
         hideBtnLoader(adminWithdrawalSubmitButton);
         showToast(
           'fail',
-          `❎ Admin Withdrawal transaction not created: ${err?.message} `
+          `❎ Admin Withdrawal transaction not created: ${err?.message} `,
         );
         // reset form inputs
         resetFormInputs();
@@ -1036,18 +1035,18 @@ export function addPosChargeForm() {
       e.preventDefault();
 
       const posChargeTransactionType = document.querySelector(
-        '#addPosChargeTransactionType'
+        '#addPosChargeTransactionType',
       ).value;
       const posChargeMinAmount = document.querySelector(
-        '#addPosChargeMinAmount'
+        '#addPosChargeMinAmount',
       ).value;
 
       const posChargeMaxAmount = document.querySelector(
-        '#addPosChargeMaxAmount'
+        '#addPosChargeMaxAmount',
       ).value;
 
       const posChargeAmount = document.querySelector(
-        '#addPosChargeAmount'
+        '#addPosChargeAmount',
       ).value;
 
       const addPosChargesDetails = {
@@ -1121,16 +1120,16 @@ export function populatePosChargesTable(posChargesData) {
       <td class="py-1 posChargeSerialNumber">${index + 1}</td>
       <td class="py-1 posChargeType">${formatTransactionType(transaction_type)}
       <td class="py-1 posChargeMinAmount">₦${formatAmountWithCommas(
-        min_amount
+        min_amount,
       )}</td>
       <td class="py-1 posChargeMaxAmount">₦${formatAmountWithCommas(
-        max_amount
+        max_amount,
       )}</td>
       <td class="py-1 posChargeAmount"><strong>₦${formatAmountWithCommas(
-        charge_amount
+        charge_amount,
       )}</td>
       <td class="py-1 posChargeCreatedDate"> ${formatDateTimeReadable(
-        created_at
+        created_at,
       )}
       </td>
        `;
@@ -1148,16 +1147,16 @@ export function addMachineFeeForm() {
   form.dataset.bound = 'true';
 
   const percentageTypeSelect = document.querySelector(
-    '#addMachineFeesPercentageType'
+    '#addMachineFeesPercentageType',
   );
   const percentageRateDiv = document.querySelector('.percentageRateDiv');
   const machineFeesAmountDiv = document.querySelector('.machineFeesAmountDiv');
 
   const machineFeesPercentageRateInput = document.querySelector(
-    '#addMachineFeesPercentageRate'
+    '#addMachineFeesPercentageRate',
   );
   const machineFeesAmountInput = document.querySelector(
-    '#addMachineFeesAmount'
+    '#addMachineFeesAmount',
   );
 
   // Default setup
@@ -1210,21 +1209,21 @@ export function addMachineFeeForm() {
 
       const feeType = document.querySelector('#addFeeType').value;
       const feeTransactionType = document.querySelector(
-        '#addFeeTransactionType'
+        '#addFeeTransactionType',
       ).value;
       const machineFeesMinAmount = document.querySelector(
-        '#addMachineFeesMinAmount'
+        '#addMachineFeesMinAmount',
       ).value;
       const machineFeesMaxAmount = document.querySelector(
-        '#addMachineFeesMaxAmount'
+        '#addMachineFeesMaxAmount',
       ).value;
 
       const machineFeesPercentageRate = document.querySelector(
-        '#addMachineFeesPercentageRate'
+        '#addMachineFeesPercentageRate',
       ).value;
 
       const machineFeesAmount = document.querySelector(
-        '#addMachineFeesAmount'
+        '#addMachineFeesAmount',
       ).value;
 
       const isPercentage = percentageTypeSelect.value === 'true';
@@ -1310,29 +1309,29 @@ export function populateFeesTable(MachineFeesData) {
       <td class="py-1 MachineFeeSerialNumber">${index + 1}</td>
       <td class="py-1 MachineFeeSerialNumber">${formatFeeType(fee_type)}</td>
       <td class="py-1 MachineFeeMinAmount">₦${formatAmountWithCommas(
-        amount_min
+        amount_min,
       )}</td>
       <td class="py-1 MachineFeeMaxAmount">₦${formatAmountWithCommas(
-        amount_max
+        amount_max,
       )}</td>
       <td class="py-1 MachineFeeType">${
         is_percentage === 'undefined'
           ? 'N/A'
           : is_percentage === 'true'
-          ? 'Percentage'
-          : 'N/A'
+            ? 'Percentage'
+            : 'N/A'
       }</td>
       <td class="py-1 MachineFeeCreatedDate"> ${
         percentage_rate === 'undefined'
           ? 'N/A'
           : is_percentage === 'true'
-          ? 'Percentage'
-          : 'N/A'
+            ? 'Percentage'
+            : 'N/A'
       }</td>
       <td class="py-1 MachineFeeAmount"><strong>₦${fee_amount}</td>
       </td>
       <td class="py-1 MachineFeeAmount">${formatDateTimeReadable(
-        created_at
+        created_at,
       )}</td>
       </td>
        <td class="py-1 action-buttons" style="margin-top:1.1rem">
@@ -1503,21 +1502,21 @@ export function bindUpdateFeeFormListener() {
       }
 
       const feeTransactionType = document.querySelector(
-        '#updateFeeTransactionType'
+        '#updateFeeTransactionType',
       ).value;
       const machineFeesMinAmount = document.querySelector(
-        '#updateMachineFeesMinAmount'
+        '#updateMachineFeesMinAmount',
       ).value;
       const machineFeesMaxAmount = document.querySelector(
-        '#updateMachineFeesMaxAmount'
+        '#updateMachineFeesMaxAmount',
       ).value;
 
       const machineFeesPercentageRate = document.querySelector(
-        '#updateMachineFeesPercentageRate'
+        '#updateMachineFeesPercentageRate',
       ).value;
 
       const machineFeesAmount = document.querySelector(
-        '#updateMachineFeesAmount'
+        '#updateMachineFeesAmount',
       ).value;
 
       // const percentageTypeSelect = document.querySelector(
@@ -1605,19 +1604,19 @@ export function updateFeeForm(feeDetail) {
   const percentageRateDiv = document.querySelector('.updatePercentageRateDiv');
 
   const percentageTypeSelect = document.querySelector(
-    '#updateMachineFeesPercentageType'
+    '#updateMachineFeesPercentageType',
   );
 
   const machineFeesAmountDiv = document.querySelector(
-    '.updateMachineFeesAmountDiv'
+    '.updateMachineFeesAmountDiv',
   );
 
   const machineFeesPercentageRateInput = document.querySelector(
-    '#updateMachineFeesPercentageRate'
+    '#updateMachineFeesPercentageRate',
   );
 
   const machineFeesAmountInput = document.querySelector(
-    '#updateMachineFeesAmount'
+    '#updateMachineFeesAmount',
   );
 
   //   const isPercentage = percentageTypeSelect.value === 'true';
@@ -1670,42 +1669,42 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', () => {
   if (document.body.classList.contains('pos-page')) {
     const transactionSelect = document.querySelector(
-      isAdmin ? '#adminTransactionType' : '#staffTransactionType'
+      isAdmin ? '#adminTransactionType' : '#staffTransactionType',
     );
 
     const paymentSelect = document.querySelector(
-      isAdmin ? '#adminPaymentMethod' : '#paymentMethod'
+      isAdmin ? '#adminPaymentMethod' : '#paymentMethod',
     );
 
     // === FEE FIELDS ===
 
     //   Regular Fee Fields
     const paymentMethodDiv = document.querySelector(
-      isAdmin ? '.adminPaymentMethodDiv' : '.staffPaymentMethodDiv'
+      isAdmin ? '.adminPaymentMethodDiv' : '.staffPaymentMethodDiv',
     );
 
     const transactionAmountDiv = document.querySelector(
-      isAdmin ? '.adminTransactionAmountDiv' : '.staffTransactionAmountDiv'
+      isAdmin ? '.adminTransactionAmountDiv' : '.staffTransactionAmountDiv',
     );
 
     const feePaymentTypeDiv = document.querySelector(
-      isAdmin ? '.adminFeePaymentTypeDiv' : '.staffFeePaymentTypeDiv'
+      isAdmin ? '.adminFeePaymentTypeDiv' : '.staffFeePaymentTypeDiv',
     );
 
     const posCustomerPhoneDiv = document.querySelector(
-      isAdmin ? '.adminPosCustomerPhoneDiv' : '.staffPosCustomerPhoneDiv'
+      isAdmin ? '.adminPosCustomerPhoneDiv' : '.staffPosCustomerPhoneDiv',
     );
 
     const posTransactionReferenceDiv = document.querySelector(
       isAdmin
         ? '.adminPosTransactionReferenceDiv'
-        : '.staffPosTransactionReferenceDiv'
+        : '.staffPosTransactionReferenceDiv',
     );
 
     const posTransactionRemarkDiv = document.querySelector(
       isAdmin
         ? '.adminPosTransactionRemarkDiv'
-        : '.staffPosTransactionRemarkDiv'
+        : '.staffPosTransactionRemarkDiv',
     );
 
     //   Dynamic Fee Fields
@@ -1713,16 +1712,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const posChargesDiv = document.querySelector(
       isAdmin
         ? '.adminPosTransactionChargesDiv'
-        : '.staffPosTransactionChargesDiv'
+        : '.staffPosTransactionChargesDiv',
     );
     const machineFeeDiv = document.querySelector(
-      isAdmin ? '.adminPosMachineFeeDiv' : '.staffPosMachineFeeDiv'
+      isAdmin ? '.adminPosMachineFeeDiv' : '.staffPosMachineFeeDiv',
     );
     const taxFeeDiv = document.querySelector(
-      isAdmin ? '.adminPosTaxFeeDiv' : '.staffPosTaxFeeDiv'
+      isAdmin ? '.adminPosTaxFeeDiv' : '.staffPosTaxFeeDiv',
     );
     const transferFeeDiv = document.querySelector(
-      isAdmin ? '.adminPosTransferFeeDiv' : '.staffPosTransferFeeDiv'
+      isAdmin ? '.adminPosTransferFeeDiv' : '.staffPosTransferFeeDiv',
     );
 
     const posSubmitButton = document.querySelector('.posSubmitButton');
@@ -1816,7 +1815,7 @@ document.addEventListener('DOMContentLoaded', () => {
           //   Dynamic Fee Fields
           toggleField(posChargesDiv, 'input', true);
           toggleField(machineFeeDiv, 'input', false);
-          toggleField(taxFeeDiv, 'input', false);
+          toggleField(taxFeeDiv, 'input', true);
           toggleField(transferFeeDiv, 'input', true);
           break;
 

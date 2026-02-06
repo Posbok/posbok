@@ -76,7 +76,7 @@ function toTitleCase(value) {
 }
 
 const adminAccordionContainer = document.querySelector(
-  '.adminAccordionContainer'
+  '.adminAccordionContainer',
 );
 const staffContainer = document.querySelector('.staffContainer');
 
@@ -348,7 +348,7 @@ function setupAdminWithdrawalsFilters({
   //     `resetAdminWithdrawalsFiltersBtn_${shopId}`
   //   );
   const loadMoreBtn = document.getElementById(
-    `adminWithdrawalLoadMoreButton_admin_${shopId}`
+    `adminWithdrawalLoadMoreButton_admin_${shopId}`,
   );
 
   //   if (!applyBtn || !resetBtn || loadMoreBtn) return;
@@ -408,10 +408,10 @@ function setupPosAnalyticsFilters({
   //   renderPosAnalyticsTableFn,
 }) {
   const applyBtn = document.getElementById(
-    `applyAnalyticsFiltersBtn_admin_${shopId}`
+    `applyAnalyticsFiltersBtn_admin_${shopId}`,
   );
   const resetBtn = document.getElementById(
-    `resetAnalyticsFiltersBtn_${shopId}`
+    `resetAnalyticsFiltersBtn_${shopId}`,
   );
 
   if (!applyBtn || !resetBtn) return;
@@ -452,10 +452,10 @@ function setupFinancialSummaryFilters({
   //   renderFinancialSummaryTableFn,
 }) {
   const applyBtn = document.getElementById(
-    `applyFinancialSummaryFiltersBtn_admin_${shopId}`
+    `applyFinancialSummaryFiltersBtn_admin_${shopId}`,
   );
   const resetBtn = document.getElementById(
-    `resetFinancialSummaryFiltersBtn_${shopId}`
+    `resetFinancialSummaryFiltersBtn_${shopId}`,
   );
 
   if (!applyBtn || !resetBtn) return;
@@ -496,14 +496,14 @@ function setupBusinessDaysSummariesFilters({
   renderBusinessDaySummariesTableFn,
 }) {
   const applyBtn = document.getElementById(
-    `applyBusinessDaySummariesTableFiltersBtn_admin_${shopId}`
+    `applyBusinessDaySummariesTableFiltersBtn_admin_${shopId}`,
   );
   const resetBtn = document.getElementById(
-    `resetBusinessDaySummariesTableFiltersBtn_${shopId}`
+    `resetBusinessDaySummariesTableFiltersBtn_${shopId}`,
   );
 
   const loadMoreBtn = document.getElementById(
-    `adminBusinessDaySummariesLoadMoreButton_admin_${shopId}`
+    `adminBusinessDaySummariesLoadMoreButton_admin_${shopId}`,
   );
 
   if (!applyBtn || !resetBtn || !loadMoreBtn) return;
@@ -519,7 +519,7 @@ function setupBusinessDaysSummariesFilters({
       shopId,
       tableBodyId: `#businessDaySummariesTableBody-${shopId}`,
       loadMoreButton: document.getElementById(
-        `adminBusinessDaySummariesLoadMoreButton_admin_${shopId}`
+        `adminBusinessDaySummariesLoadMoreButton_admin_${shopId}`,
       ),
       append: false,
     });
@@ -539,7 +539,7 @@ function setupBusinessDaysSummariesFilters({
       shopId,
       tableBodyId: `#businessDaySummariesTableBody-${shopId}`,
       loadMoreButton: document.getElementById(
-        `adminBusinessDaySummariesLoadMoreButton_admin_${shopId}`
+        `adminBusinessDaySummariesLoadMoreButton_admin_${shopId}`,
       ),
       append: false,
     });
@@ -555,7 +555,7 @@ function setupBusinessDaysSummariesFilters({
       shopId,
       tableBodyId: `#businessDaySummariesTableBody-${shopId}`,
       loadMoreButton: document.getElementById(
-        `adminBusinessDaySummariesLoadMoreButton_admin_${shopId}`
+        `adminBusinessDaySummariesLoadMoreButton_admin_${shopId}`,
       ),
       append: true,
     });
@@ -587,7 +587,7 @@ function setupSalesFilters({
         shopId,
         tableBodyId: `#sale-tbody-${shopId}`,
         loadMoreButton: document.getElementById(
-          `loadMoreSaleButton_admin_${shopId}`
+          `loadMoreSaleButton_admin_${shopId}`,
         ),
         append: false,
       });
@@ -610,7 +610,7 @@ function setupSalesFilters({
         shopId,
         tableBodyId: `#sale-tbody-${shopId}`,
         loadMoreButton: document.getElementById(
-          `loadMoreSaleButton_admin_${shopId}`
+          `loadMoreSaleButton_admin_${shopId}`,
         ),
         append: false,
       });
@@ -713,7 +713,7 @@ function setupSalesFilters({
 
   // Admin Sales
   const loadMoreSalesButton = document.getElementById(
-    `loadMoreSaleButton_admin_${shopId}`
+    `loadMoreSaleButton_admin_${shopId}`,
   );
 
   //   if (loadMoreSalesButton) loadMoreSalesButton.style.display = 'none';
@@ -733,7 +733,7 @@ function setupSalesFilters({
         shopId,
         tableBodyId: `#sale-tbody-${shopId}`,
         loadMoreButton: document.getElementById(
-          `loadMoreSaleButton_admin_${shopId}`
+          `loadMoreSaleButton_admin_${shopId}`,
         ),
         append: true,
       });
@@ -854,13 +854,13 @@ if (isAdmin) {
                      </div>
                      `;
     const shopPosTransactiionSection = document.getElementById(
-      `shop-report-${shopId}`
+      `shop-report-${shopId}`,
     );
     const shopAdminWithdrawalsSection = document.querySelector(
-      `#shopAdminWithdrawals-report-${shopId}`
+      `#shopAdminWithdrawals-report-${shopId}`,
     );
     const shopBusinessDaySummariesSection = document.querySelector(
-      `#shopBusinessDaySummaries-report-${shopId}`
+      `#shopBusinessDaySummaries-report-${shopId}`,
     );
 
     //  const shopSalesTransactiionSection = document.getElementById(
@@ -868,11 +868,11 @@ if (isAdmin) {
     //  );
 
     const shopSalesTransactiionSection = document.getElementById(
-      `shopSales-report-${shopId}`
+      `shopSales-report-${shopId}`,
     );
 
     const adminSelectedReport = accordion.querySelector(
-      `.adminSelectReport_${shop.id} select`
+      `.adminSelectReport_${shop.id} select`,
     );
 
     adminSelectedReport.addEventListener('change', async function (e) {
@@ -880,18 +880,18 @@ if (isAdmin) {
       // console.log('Selected report:', selectedValue);
 
       const shopPosTransactiionSection = document.getElementById(
-        `shop-report-${shopId}`
+        `shop-report-${shopId}`,
       );
 
       const shopAdminWithdrawalsSection = document.querySelector(
-        `#shopAdminWithdrawals-report-${shopId}`
+        `#shopAdminWithdrawals-report-${shopId}`,
       );
       const shopBusinessDaySummariesSection = document.querySelector(
-        `#shopBusinessDaySummaries-report-${shopId}`
+        `#shopBusinessDaySummaries-report-${shopId}`,
       );
 
       const shopSalesTransactiionSection = document.getElementById(
-        `shopSales-report-${shopId}`
+        `shopSales-report-${shopId}`,
       );
 
       if (shopPosTransactiionSection)
@@ -928,7 +928,7 @@ if (isAdmin) {
               shopId,
               tableBodyId: `#pos-tbody-${shopId}`,
               loadMoreButton: document.getElementById(
-                `loadMoreButton_admin_${shopId}`
+                `loadMoreButton_admin_${shopId}`,
               ),
             });
 
@@ -937,7 +937,7 @@ if (isAdmin) {
               shopId,
               tableBodyId: `#adminWithdrawalsTableBody-${shopId}`,
               loadMoreButton: document.getElementById(
-                `adminWithdrawalLoadMoreButton_admin_${shopId}`
+                `adminWithdrawalLoadMoreButton_admin_${shopId}`,
               ),
             });
 
@@ -946,7 +946,7 @@ if (isAdmin) {
               shopId,
               tableBodyId: `#businessDaySummariesTableBody-${shopId}`,
               loadMoreButton: document.getElementById(
-                `adminBusinessDaySummariesLoadMoreButton_admin_${shopId}`
+                `adminBusinessDaySummariesLoadMoreButton_admin_${shopId}`,
               ),
             });
 
@@ -989,7 +989,7 @@ if (isAdmin) {
               shopId,
               tableBodyId: `#sale-tbody-${shopId}`,
               loadMoreButton: document.getElementById(
-                `loadMoreSaleButton_admin_${shopId}`
+                `loadMoreSaleButton_admin_${shopId}`,
               ),
             });
 
@@ -1026,25 +1026,25 @@ if (isAdmin) {
             //  );
 
             const sellProductCategorySection = document.querySelector(
-              '.adminSellProductCategory-section'
+              '.adminSellProductCategory-section',
             );
 
             const sellProductName = document.querySelector(
-              isAdmin ? '.adminSellProductName' : '.sellProductName'
+              isAdmin ? '.adminSellProductName' : '.sellProductName',
             );
 
             const autocompleteList = document.getElementById(
-              isAdmin ? 'adminAutocompleteList' : 'autocompleteList'
+              isAdmin ? 'adminAutocompleteList' : 'autocompleteList',
             );
 
             const productBoughtPrice = document.getElementById(
-              isAdmin ? 'adminProductBoughtPrice' : 'productBoughtPrice'
+              isAdmin ? 'adminProductBoughtPrice' : 'productBoughtPrice',
             );
             const itemSellingprice = document.getElementById(
-              isAdmin ? 'adminItemSellingPrice' : 'itemSellingPrice'
+              isAdmin ? 'adminItemSellingPrice' : 'itemSellingPrice',
             );
             const itemQuantityAvailable = document.getElementById(
-              isAdmin ? 'adminItemQuantityAvailable' : 'itemQuantityAvailable'
+              isAdmin ? 'adminItemQuantityAvailable' : 'itemQuantityAvailable',
             );
 
             // Re-fetch products and categories
@@ -1052,16 +1052,16 @@ if (isAdmin) {
             displayAllCategories(shopId);
 
             const adminSellProductSearchSection = document.querySelector(
-              '.adminSellProductSearch-section'
+              '.adminSellProductSearch-section',
             );
             const adminSellProductCategorySection = document.querySelector(
-              '.adminSellProductCategory-section'
+              '.adminSellProductCategory-section',
             );
             const adminSellProductName = document.querySelector(
-              '.adminSellProductName'
+              '.adminSellProductName',
             );
             const adminAutocompleteList = document.getElementById(
-              'adminAutocompleteList'
+              'adminAutocompleteList',
             );
 
             document.addEventListener('DOMContentLoaded', () => {
@@ -1081,7 +1081,7 @@ if (isAdmin) {
             // JS for Tabs and Charts
             const tabs = document.querySelectorAll(`.tab-btn_${shopId}`);
             const contents = document.querySelectorAll(
-              `.tab-content_${shopId}`
+              `.tab-content_${shopId}`,
             );
 
             tabs.forEach((btn) => {
@@ -1104,7 +1104,7 @@ if (isAdmin) {
             });
 
             const reportStaffDropdown = document.getElementById(
-              `reportStaffDropdown_admin_${shopId}`
+              `reportStaffDropdown_admin_${shopId}`,
             );
 
             // Update Staff Sales Report
@@ -1120,7 +1120,7 @@ if (isAdmin) {
 
                 populateBusinessStaffDropdown(
                   staffDataList,
-                  `reportStaffDropdown_admin_${shopId}`
+                  `reportStaffDropdown_admin_${shopId}`,
                 );
                 hideGlobalLoader();
               } catch (err) {
@@ -1133,18 +1133,18 @@ if (isAdmin) {
 
             // Staff Fiter logic
             const dropdown = document.getElementById(
-              `reportStaffTimeframeDropdown_admin_${shopId}`
+              `reportStaffTimeframeDropdown_admin_${shopId}`,
             );
             const container = document.getElementById(
-              `timeframeInputs_admin_${shopId}`
+              `timeframeInputs_admin_${shopId}`,
             );
 
             const applyFilterBtn = document.getElementById(
-              `applyFilterBtn_admin_${shopId}`
+              `applyFilterBtn_admin_${shopId}`,
             );
 
             const resetFilterBtn = document.getElementById(
-              `resetFilterBtn_admin_${shopId}`
+              `resetFilterBtn_admin_${shopId}`,
             );
 
             if (dropdown) {
@@ -1181,7 +1181,7 @@ if (isAdmin) {
             function resetStaffSalesFilter(shopId) {
               console.log('reached');
               const timeframeDropdown = document.querySelector(
-                `#reportStaffTimeframeDropdown_admin_${shopId}`
+                `#reportStaffTimeframeDropdown_admin_${shopId}`,
               );
 
               // Reset the dropdown selection
@@ -1218,7 +1218,7 @@ if (isAdmin) {
               console.log(fullStaffSalesList); // This is currently ogging correctly
 
               const selectedTimeframe = document.querySelector(
-                `#reportStaffTimeframeDropdown_admin_${shopId}`
+                `#reportStaffTimeframeDropdown_admin_${shopId}`,
               ).value;
 
               if (!selectedTimeframe || selectedTimeframe === 'none') {
@@ -1226,14 +1226,14 @@ if (isAdmin) {
                 updateStaffSalesData(
                   fullStaffSalesList,
                   staffSalesSummary,
-                  shopId
+                  shopId,
                 );
               } else {
                 // Filter based on selected timeframe
                 filterAndRenderStaffSales(
                   fullStaffSalesList,
                   staffSalesSummary,
-                  shopId
+                  shopId,
                 );
               }
             });
@@ -1246,7 +1246,7 @@ if (isAdmin) {
                 shopId,
                 tableBodyId: `#sale-tbody-${shopId}`,
                 loadMoreButton: document.getElementById(
-                  `loadMoreSaleButton_admin_${shopId}`
+                  `loadMoreSaleButton_admin_${shopId}`,
                 ),
               },
             ]);
@@ -1276,7 +1276,7 @@ if (isAdmin) {
             renderAdminWithdrawalsTableFn: renderAdminWithdrawalsTable,
             tableBodyId: `#adminWithdrawalsTableBody-${shopId}`,
             loadMoreButton: document.getElementById(
-              `adminWithdrawalLoadMoreButton_admin_${shopId}`
+              `adminWithdrawalLoadMoreButton_admin_${shopId}`,
             ),
           });
 
@@ -1343,10 +1343,10 @@ if (isAdmin) {
     const posSection = accordion.querySelector(`#shop-report-${shopId}`);
     const salesSection = accordion.querySelector(`#shopSales-report-${shopId}`);
     const adminWithdrawalsSection = accordion.querySelector(
-      `#shopAdminWithdrawals-report-${shopId}`
+      `#shopAdminWithdrawals-report-${shopId}`,
     );
     const businessDaySummariesSection = accordion.querySelector(
-      `#shopBusinessDaySummaries-report-${shopId}`
+      `#shopBusinessDaySummaries-report-${shopId}`,
     );
 
     if (posSection) posSection.classList.add('hidden');
@@ -1377,21 +1377,21 @@ if (isAdmin) {
       const isActive = section.classList.contains('active');
 
       const shopPosTransactiionSection = document.getElementById(
-        `shop-report-${shopId}`
+        `shop-report-${shopId}`,
       );
       const shopAdminWithdrawalsSection = document.querySelector(
-        `#shopAdminWithdrawals-report-${shopId}`
+        `#shopAdminWithdrawals-report-${shopId}`,
       );
       const shopBusinessDaySummariesSection = document.querySelector(
-        `#shopBusinessDaySummaries-report-${shopId}`
+        `#shopBusinessDaySummaries-report-${shopId}`,
       );
 
       const shopSalesTransactiionSection = document.getElementById(
-        `shopSales-report-${shopId}`
+        `shopSales-report-${shopId}`,
       );
 
       const adminSelectedReport = document.querySelector(
-        `.adminSelectReport_${shopId} select`
+        `.adminSelectReport_${shopId} select`,
       );
 
       // Close all accordion sections
@@ -1436,7 +1436,7 @@ if (isAdmin) {
             shopId,
             tableBodyId: `#pos-tbody-${shopId}`,
             loadMoreButton: document.getElementById(
-              `loadMoreButton_admin_${shopId}`
+              `loadMoreButton_admin_${shopId}`,
             ),
           });
 
@@ -1445,7 +1445,7 @@ if (isAdmin) {
             shopId,
             tableBodyId: `#adminWithdrawalsTableBody-${shopId}`,
             loadMoreButton: document.getElementById(
-              `adminWithdrawalLoadMoreButton_admin_${shopId}`
+              `adminWithdrawalLoadMoreButton_admin_${shopId}`,
             ),
           });
 
@@ -1454,7 +1454,7 @@ if (isAdmin) {
             shopId,
             tableBodyId: `#businessDaySummariesTableBody-${shopId}`,
             loadMoreButton: document.getElementById(
-              `adminBusinessDaySummariesLoadMoreButton_admin_${shopId}`
+              `adminBusinessDaySummariesLoadMoreButton_admin_${shopId}`,
             ),
           });
 
@@ -1483,7 +1483,7 @@ if (isAdmin) {
             shopId,
             tableBodyId: `#sale-tbody-${shopId}`,
             loadMoreButton: document.getElementById(
-              `loadMoreSaleButton_admin_${shopId}`
+              `loadMoreSaleButton_admin_${shopId}`,
             ),
           });
 
@@ -1520,25 +1520,25 @@ if (isAdmin) {
           //  );
 
           const sellProductCategorySection = document.querySelector(
-            '.adminSellProductCategory-section'
+            '.adminSellProductCategory-section',
           );
 
           const sellProductName = document.querySelector(
-            isAdmin ? '.adminSellProductName' : '.sellProductName'
+            isAdmin ? '.adminSellProductName' : '.sellProductName',
           );
 
           const autocompleteList = document.getElementById(
-            isAdmin ? 'adminAutocompleteList' : 'autocompleteList'
+            isAdmin ? 'adminAutocompleteList' : 'autocompleteList',
           );
 
           const productBoughtPrice = document.getElementById(
-            isAdmin ? 'adminProductBoughtPrice' : 'productBoughtPrice'
+            isAdmin ? 'adminProductBoughtPrice' : 'productBoughtPrice',
           );
           const itemSellingprice = document.getElementById(
-            isAdmin ? 'adminItemSellingPrice' : 'itemSellingPrice'
+            isAdmin ? 'adminItemSellingPrice' : 'itemSellingPrice',
           );
           const itemQuantityAvailable = document.getElementById(
-            isAdmin ? 'adminItemQuantityAvailable' : 'itemQuantityAvailable'
+            isAdmin ? 'adminItemQuantityAvailable' : 'itemQuantityAvailable',
           );
 
           // Re-fetch products and categories
@@ -1546,16 +1546,16 @@ if (isAdmin) {
           displayAllCategories(shopId);
 
           const adminSellProductSearchSection = document.querySelector(
-            '.adminSellProductSearch-section'
+            '.adminSellProductSearch-section',
           );
           const adminSellProductCategorySection = document.querySelector(
-            '.adminSellProductCategory-section'
+            '.adminSellProductCategory-section',
           );
           const adminSellProductName = document.querySelector(
-            '.adminSellProductName'
+            '.adminSellProductName',
           );
           const adminAutocompleteList = document.getElementById(
-            'adminAutocompleteList'
+            'adminAutocompleteList',
           );
 
           document.addEventListener('DOMContentLoaded', () => {
@@ -1596,7 +1596,7 @@ if (isAdmin) {
           });
 
           const reportStaffDropdown = document.getElementById(
-            `reportStaffDropdown_admin_${shopId}`
+            `reportStaffDropdown_admin_${shopId}`,
           );
 
           // Update Staff Sales Report
@@ -1612,7 +1612,7 @@ if (isAdmin) {
 
               populateBusinessStaffDropdown(
                 staffDataList,
-                `reportStaffDropdown_admin_${shopId}`
+                `reportStaffDropdown_admin_${shopId}`,
               );
               hideGlobalLoader();
             } catch (err) {
@@ -1625,18 +1625,18 @@ if (isAdmin) {
 
           // Staff Fiter logic
           const dropdown = document.getElementById(
-            `reportStaffTimeframeDropdown_admin_${shopId}`
+            `reportStaffTimeframeDropdown_admin_${shopId}`,
           );
           const container = document.getElementById(
-            `timeframeInputs_admin_${shopId}`
+            `timeframeInputs_admin_${shopId}`,
           );
 
           const applyFilterBtn = document.getElementById(
-            `applyFilterBtn_admin_${shopId}`
+            `applyFilterBtn_admin_${shopId}`,
           );
 
           const resetFilterBtn = document.getElementById(
-            `resetFilterBtn_admin_${shopId}`
+            `resetFilterBtn_admin_${shopId}`,
           );
 
           if (dropdown) {
@@ -1671,7 +1671,7 @@ if (isAdmin) {
           function resetStaffSalesFilter(shopId) {
             console.log('reached');
             const timeframeDropdown = document.querySelector(
-              `#reportStaffTimeframeDropdown_admin_${shopId}`
+              `#reportStaffTimeframeDropdown_admin_${shopId}`,
             );
 
             // Reset the dropdown selection
@@ -1708,7 +1708,7 @@ if (isAdmin) {
             console.log(fullStaffSalesList); // This is currently ogging correctly
 
             const selectedTimeframe = document.querySelector(
-              `#reportStaffTimeframeDropdown_admin_${shopId}`
+              `#reportStaffTimeframeDropdown_admin_${shopId}`,
             ).value;
 
             if (!selectedTimeframe || selectedTimeframe === 'none') {
@@ -1716,14 +1716,14 @@ if (isAdmin) {
               updateStaffSalesData(
                 fullStaffSalesList,
                 staffSalesSummary,
-                shopId
+                shopId,
               );
             } else {
               // Filter based on selected timeframe
               filterAndRenderStaffSales(
                 fullStaffSalesList,
                 staffSalesSummary,
-                shopId
+                shopId,
               );
             }
           });
@@ -1736,7 +1736,7 @@ if (isAdmin) {
               shopId,
               tableBodyId: `#sale-tbody-${shopId}`,
               loadMoreButton: document.getElementById(
-                `loadMoreSaleButton_admin_${shopId}`
+                `loadMoreSaleButton_admin_${shopId}`,
               ),
             },
           ]);
@@ -1762,7 +1762,7 @@ if (isAdmin) {
           renderAdminWithdrawalsTableFn: renderAdminWithdrawalsTable,
           tableBodyId: `#adminWithdrawalsTableBody-${shopId}`,
           loadMoreButton: document.getElementById(
-            `adminWithdrawalLoadMoreButton_admin_${shopId}`
+            `adminWithdrawalLoadMoreButton_admin_${shopId}`,
           ),
         });
 
@@ -1811,7 +1811,7 @@ if (isAdmin) {
 
 function filterAndRenderStaffSales(salesList, staffSalesSummary, shopId) {
   const timeframe = document.querySelector(
-    `#reportStaffTimeframeDropdown_admin_${shopId}`
+    `#reportStaffTimeframeDropdown_admin_${shopId}`,
   ).value;
 
   console.log(timeframe);
@@ -1890,17 +1890,17 @@ export function renderSaleDetailById() {
 
 // Update the autocomplete list with provided products
 const autocompleteList = document.getElementById(
-  isAdmin ? 'adminAutocompleteList' : 'autocompleteList'
+  isAdmin ? 'adminAutocompleteList' : 'autocompleteList',
 );
 
 const productBoughtPrice = document.getElementById(
-  isAdmin ? 'adminProductBoughtPrice' : 'productBoughtPrice'
+  isAdmin ? 'adminProductBoughtPrice' : 'productBoughtPrice',
 );
 const itemSellingprice = document.getElementById(
-  isAdmin ? 'adminItemSellingPrice' : 'itemSellingPrice'
+  isAdmin ? 'adminItemSellingPrice' : 'itemSellingPrice',
 );
 const itemQuantityAvailable = document.getElementById(
-  isAdmin ? 'adminItemQuantityAvailable' : 'itemQuantityAvailable'
+  isAdmin ? 'adminItemQuantityAvailable' : 'itemQuantityAvailable',
 );
 
 if (isStaff) {
@@ -1910,7 +1910,7 @@ if (isStaff) {
   let selectSalesReport = `<option value="sales_report">Sales Report</option>`;
 
   const staffSelectedReport = document.querySelector(
-    `.staffSelectReport select`
+    `.staffSelectReport select`,
   );
 
   staffSelectedReport.innerHTML = `<option value="">Select Report Type</option>
@@ -1929,7 +1929,7 @@ if (isStaff) {
 
   const staffPosReportDiv = document.querySelector(`.staffPosReportDiv`);
   const staffAdminWithdrawalsSection = document.querySelector(
-    `.staffAdminWithdrawalReportDiv`
+    `.staffAdminWithdrawalReportDiv`,
   );
 
   const staffSalesTransactiionSection =
@@ -1944,11 +1944,11 @@ if (isStaff) {
   // POS Loadmore Button
   const loadMoreButton = document.getElementById('loadMoreButton_staff');
   const loadMoreAdminWithdrawalButton = document.getElementById(
-    'loadMoreAdminWithdrawalButton_staff'
+    'loadMoreAdminWithdrawalButton_staff',
   );
   // Sales loadmore Button
   const loadMoreSalesButton = document.getElementById(
-    'loadMoreSalesButton_staff'
+    'loadMoreSalesButton_staff',
   );
 
   if (servicePermission === 'POS_TRANSACTIONS') {
@@ -2015,10 +2015,10 @@ if (isStaff) {
       page = 1,
       pageSize,
       filters = {},
-      role = 'staff'
+      role = 'staff',
     ) {
       const posTableBody = document.querySelector(
-        `.posTableDisplay_${role} tbody`
+        `.posTableDisplay_${role} tbody`,
       );
 
       if (!posTableBody) {
@@ -2152,34 +2152,34 @@ if (isStaff) {
                 deleted_at || deleted_by
                   ? 'deletedTransationRow'
                   : 'posTransactionRow'
-              }`
+              }`,
             );
             row.classList.add('table-body-row');
             row.innerHTML = `
     <td class="py-1">${serialNumber++}.</td>
                <td class="py-1">${business_day}</td>
                <td class="py-1 posTransTypeReport">${formatTransactionType(
-                 transaction_type
+                 transaction_type,
                )}</td>
               <td class="py-1 posPaymentMethodReport">${payment_method}</td>
                <td class="py-1 posCustomerInfo">${`${
                  customer_phone === '' ? '-' : customer_phone
                }`}</td>
                <td class="py-1 posAmountReport">&#x20A6;${formatAmountWithCommas(
-                 amount
+                 amount,
                )}</td>
                <td class="py-1 posChargesReport">&#x20A6;${formatAmountWithCommas(
-                 pos_charge_amount
+                 pos_charge_amount,
                )}</td>
                <td class="py-1 posFeePaymentMethodReport">${chargePaymentMethod}</td>
                <td class="py-1 posMachineFeeReport">&#x20A6;${formatAmountWithCommas(
-                 machine_fee
+                 machine_fee,
                )}</td>
                <td class="py-1 posTransferFeeReport">&#x20A6;${formatAmountWithCommas(
-                 transfer_fee
+                 transfer_fee,
                )}</td>
                <td class="py-1 posTaxFeeReport">&#x20A6;${formatAmountWithCommas(
-                 tax_fee
+                 tax_fee,
                )}</td>
                <td class="py-1 posPaymentMethodRef">${transaction_ref}</td> 
                <td class="py-1 posPaymentMethodRemark">${remarks}</td>
@@ -2220,10 +2220,10 @@ if (isStaff) {
       page = 1,
       pageSize,
       filters = {},
-      role = 'staff'
+      role = 'staff',
     ) {
       const adminWithdrawalsTableBody = document.querySelector(
-        `.adminWithdrawalTableDisplay_${role} tbody`
+        `.adminWithdrawalTableDisplay_${role} tbody`,
       );
 
       if (!adminWithdrawalsTableBody) {
@@ -2265,7 +2265,7 @@ if (isStaff) {
 
         if (!result)
           throw new Error(
-            result.message || 'Failed to fetch Admin Withdrawals'
+            result.message || 'Failed to fetch Admin Withdrawals',
           );
 
         const adminWithdrawals = result.data.withdrawals;
@@ -2317,7 +2317,7 @@ if (isStaff) {
                 <td class="py-1">${index + 1}</td>
                 <td class="py-1">${creatorName}</td>
                 <td class="py-1">${formatAdminWithdrawalType(
-                  withdrawal_source
+                  withdrawal_source,
                 )}</td>
                 <td class="py-1">₦${formatAmountWithCommas(amount)}</td>
                 <td class="py-1">${business_day}</td>
@@ -2377,7 +2377,7 @@ if (isStaff) {
 
     if (servicePermission === 'INVENTORY_SALES') {
       const staffSalesReportDiv = document.querySelector(
-        '.staffSalesReportDiv'
+        '.staffSalesReportDiv',
       );
 
       //   staffSalesReportDiv.style.display = 'block';
@@ -2417,7 +2417,7 @@ if (isStaff) {
         page = 1,
         pageSize,
         filters = {},
-        role = 'staff'
+        role = 'staff',
       ) {
         //  console.log('🧪 Applied Filters:', filters);
 
@@ -2429,7 +2429,7 @@ if (isStaff) {
         ]);
 
         const salesTableBody = document.querySelector(
-          `.soldTableDisplay_${role} tbody`
+          `.soldTableDisplay_${role} tbody`,
         );
 
         if (!salesTableBody) {
@@ -2516,16 +2516,16 @@ if (isStaff) {
               } catch (detailError) {
                 console.error(
                   `Error fetching details for sale ID ${saleSummary.id}:`,
-                  detailError
+                  detailError,
                 );
                 return { ...saleSummary, SaleItems: [] }; // Handle error, return empty SaleItems
               }
-            }
+            },
           );
 
           // Wait for all sale details to be fetched in parallel
           const enrichedSalesTransactions = await Promise.all(
-            salesWithDetailsPromises
+            salesWithDetailsPromises,
           );
 
           // Now, iterate over the enriched data to group by date and render
@@ -2583,7 +2583,7 @@ if (isStaff) {
 
               // --- Truncate Item Names ---
               const productNames = SaleItems.map(
-                (item) => item.Product?.name || 'Unknown Product'
+                (item) => item.Product?.name || 'Unknown Product',
               ); // Added null check for Product.name
               const truncatedProductNames = truncateProductNames(productNames, {
                 maxItems: 3,
@@ -2601,26 +2601,26 @@ if (isStaff) {
                <td class="py-1 soldItemNameReport">${truncatedProductNames}</td>
                 <td class="py-1 soldItemStaffNameReport">${first_name} ${last_name}</td>
                  <td class="py-1 soldItemTotalAmountReport">&#x20A6;${formatAmountWithCommas(
-                   total_amount
+                   total_amount,
                  )}</td>
                  <td class="py-1 soldItemPaidAmountReport">&#x20A6;${formatAmountWithCommas(
-                   amount_paid
+                   amount_paid,
                  )}</td>
                   <td class="py-1 soldItemBalanceAmountReport">&#x20A6;${formatAmountWithCommas(
-                    balance
+                    balance,
                   )}</td>
                   <td class="py-1 soldItemDateReport">${payment_method}</td>
                    <td class="py-1 soldItemMachineFeeAmountReport">&#x20A6;${formatAmountWithCommas(
-                     machine_fee
+                     machine_fee,
                    )}</td>
                    <td class="py-1 soldItemTaxFeeAmountReport">&#x20A6;${formatAmountWithCommas(
-                     tax_fee
+                     tax_fee,
                    )}</td>
                   <td class="py-1 soldItemDateReport">${business_day}</td>
                    <td class="py-1 soldItemStatusReport">${formatSaleStatus(
-                     status
+                     status,
                    )}</td>
-                    <td class="py-1 soldItemDetailReport" data-sale-id="${id}"><i class="fa fa-eye"></i></td>
+                    <td class="py-1 soldItemDetailReport" data-sale-id="${id}"><i class="fa fa-eye" title="View Sale Detail"></i></td>
      `;
 
               row.addEventListener('click', async (e) => {
@@ -2668,7 +2668,7 @@ if (isStaff) {
 
     const staffPosReportDiv = document.querySelector(`.staffPosReportDiv`);
     const staffAdminWithdrawalsSection = document.querySelector(
-      `.staffAdminWithdrawalReportDiv`
+      `.staffAdminWithdrawalReportDiv`,
     );
 
     const staffSalesTransactiionSection =
@@ -2688,12 +2688,12 @@ if (isStaff) {
     const loadMoreButton = document.getElementById('loadMoreButton_staff');
 
     const loadMoreAdminWithdrawalButton = document.getElementById(
-      'loadMoreAdminWithdrawalButton_staff'
+      'loadMoreAdminWithdrawalButton_staff',
     );
 
     // Sales loadmore Button
     const loadMoreSalesButton = document.getElementById(
-      'loadMoreSalesButton_staff'
+      'loadMoreSalesButton_staff',
     );
 
     // POS Transactions
@@ -2758,10 +2758,10 @@ if (isStaff) {
           page = 1,
           pageSize,
           filters = {},
-          role = 'staff'
+          role = 'staff',
         ) {
           const posTableBody = document.querySelector(
-            `.posTableDisplay_${role} tbody`
+            `.posTableDisplay_${role} tbody`,
           );
 
           if (!posTableBody) {
@@ -2895,34 +2895,34 @@ if (isStaff) {
                     deleted_at || deleted_by
                       ? 'deletedTransationRow'
                       : 'posTransactionRow'
-                  }`
+                  }`,
                 );
                 row.classList.add('table-body-row');
                 row.innerHTML = `
     <td class="py-1">${serialNumber++}.</td>
                <td class="py-1">${business_day}</td>
                <td class="py-1 posTransTypeReport">${formatTransactionType(
-                 transaction_type
+                 transaction_type,
                )}</td>
               <td class="py-1 posPaymentMethodReport">${payment_method}</td>
                <td class="py-1 posCustomerInfo">${`${
                  customer_phone === '' ? '-' : customer_phone
                }`}</td>
                <td class="py-1 posAmountReport">&#x20A6;${formatAmountWithCommas(
-                 amount
+                 amount,
                )}</td>
                <td class="py-1 posChargesReport">&#x20A6;${formatAmountWithCommas(
-                 pos_charge_amount
+                 pos_charge_amount,
                )}</td>
                <td class="py-1 posFeePaymentMethodReport">${chargePaymentMethod}</td>
                <td class="py-1 posMachineFeeReport">&#x20A6;${formatAmountWithCommas(
-                 machine_fee
+                 machine_fee,
                )}</td>
                <td class="py-1 posTransferFeeReport">&#x20A6;${formatAmountWithCommas(
-                 transfer_fee
+                 transfer_fee,
                )}</td>
                <td class="py-1 posTaxFeeReport">&#x20A6;${formatAmountWithCommas(
-                 tax_fee
+                 tax_fee,
                )}</td>
                <td class="py-1 posPaymentMethodRef">${transaction_ref}</td> 
                <td class="py-1 posPaymentMethodRemark">${remarks}</td>
@@ -2963,10 +2963,10 @@ if (isStaff) {
           page = 1,
           pageSize,
           filters = {},
-          role = 'staff'
+          role = 'staff',
         ) {
           const adminWithdrawalsTableBody = document.querySelector(
-            `.adminWithdrawalTableDisplay_${role} tbody`
+            `.adminWithdrawalTableDisplay_${role} tbody`,
           );
 
           if (!adminWithdrawalsTableBody) {
@@ -3008,7 +3008,7 @@ if (isStaff) {
 
             if (!result)
               throw new Error(
-                result.message || 'Failed to fetch Admin Withdrawals'
+                result.message || 'Failed to fetch Admin Withdrawals',
               );
 
             const adminWithdrawals = result.data.withdrawals;
@@ -3060,7 +3060,7 @@ if (isStaff) {
                 <td class="py-1">${index + 1}</td>
                 <td class="py-1">${creatorName}</td>
                 <td class="py-1">${formatAdminWithdrawalType(
-                  withdrawal_source
+                  withdrawal_source,
                 )}</td>
                 <td class="py-1">₦${formatAmountWithCommas(amount)}</td>
                 <td class="py-1">${business_day}</td>
@@ -3103,7 +3103,7 @@ if (isStaff) {
         servicePermission === 'BOTH'
       ) {
         const staffSalesReportDiv = document.querySelector(
-          '.staffSalesReportDiv'
+          '.staffSalesReportDiv',
         );
 
         //   staffSalesReportDiv.style.display = 'block';
@@ -3143,7 +3143,7 @@ if (isStaff) {
           page = 1,
           pageSize,
           filters = {},
-          role = 'staff'
+          role = 'staff',
         ) {
           //  console.log('🧪 Applied Filters:', filters);
 
@@ -3155,7 +3155,7 @@ if (isStaff) {
           ]);
 
           const salesTableBody = document.querySelector(
-            `.soldTableDisplay_${role} tbody`
+            `.soldTableDisplay_${role} tbody`,
           );
 
           if (!salesTableBody) {
@@ -3242,16 +3242,16 @@ if (isStaff) {
                 } catch (detailError) {
                   console.error(
                     `Error fetching details for sale ID ${saleSummary.id}:`,
-                    detailError
+                    detailError,
                   );
                   return { ...saleSummary, SaleItems: [] }; // Handle error, return empty SaleItems
                 }
-              }
+              },
             );
 
             // Wait for all sale details to be fetched in parallel
             const enrichedSalesTransactions = await Promise.all(
-              salesWithDetailsPromises
+              salesWithDetailsPromises,
             );
 
             // Now, iterate over the enriched data to group by date and render
@@ -3309,7 +3309,7 @@ if (isStaff) {
 
                 // --- Truncate Item Names ---
                 const productNames = SaleItems.map(
-                  (item) => item.Product?.name || 'Unknown Product'
+                  (item) => item.Product?.name || 'Unknown Product',
                 ); // Added null check for Product.name
                 const truncatedProductNames = truncateProductNames(
                   productNames,
@@ -3317,7 +3317,7 @@ if (isStaff) {
                     maxItems: 3,
                     maxLength: 50,
                     separator: ', ',
-                  }
+                  },
                 );
 
                 const row = document.createElement('tr');
@@ -3330,26 +3330,26 @@ if (isStaff) {
                <td class="py-1 soldItemNameReport">${truncatedProductNames}</td>
                 <td class="py-1 soldItemStaffNameReport">${first_name} ${last_name}</td>
                  <td class="py-1 soldItemTotalAmountReport">&#x20A6;${formatAmountWithCommas(
-                   total_amount
+                   total_amount,
                  )}</td>
                  <td class="py-1 soldItemPaidAmountReport">&#x20A6;${formatAmountWithCommas(
-                   amount_paid
+                   amount_paid,
                  )}</td>
                   <td class="py-1 soldItemBalanceAmountReport">&#x20A6;${formatAmountWithCommas(
-                    balance
+                    balance,
                   )}</td>
                   <td class="py-1 soldItemDateReport">${payment_method}</td>
                    <td class="py-1 soldItemMachineFeeAmountReport">&#x20A6;${formatAmountWithCommas(
-                     machine_fee
+                     machine_fee,
                    )}</td>
                    <td class="py-1 soldItemTaxFeeAmountReport">&#x20A6;${formatAmountWithCommas(
-                     tax_fee
+                     tax_fee,
                    )}</td>
                   <td class="py-1 soldItemDateReport">${business_day}</td>
                    <td class="py-1 soldItemStatusReport">${formatSaleStatus(
-                     status
+                     status,
                    )}</td>
-                    <td class="py-1 soldItemDetailReport" data-sale-id="${id}"><i class="fa fa-eye"></i></td>
+                    <td class="py-1 soldItemDetailReport" data-sale-id="${id}"><i class="fa fa-eye" title="View Sale Detail"></i></td>
      `;
 
                 row.addEventListener('click', async (e) => {

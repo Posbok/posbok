@@ -1,19 +1,51 @@
 // COLOR VARIABLES
-$color-primary: #51cf66;
+$color-primary: #7fb239;
 $color-primary-faint: #dcf5e0;
-$color-primary-light: #10AB2B;
+$color-primary-light: #8ac13e;
+
+$color-primary-50: #f3f9ec;
+$color-primary-100: #e8f3d8;
+$color-primary-200: #d0e6b2;
+$color-primary-300: #b9da8b;
+$color-primary-400: #a2cd65;
+$color-primary-500: #8ac13e;
+$color-primary-600: #6f9a32;
+$color-primary-700: #537425;
+$color-primary-800: #374d19;
+$color-primary-900: #1c270c;
+$color-primary-950: #131b09;
+
+$gradient-bottom-right: linear-gradient(135deg, #7FB239ff, #73A134ff, #67902Eff, #5B8029ff, #4F6F24ff, #435E1Eff, #374D19ff);
+
+// background: hsla(85, 51%, 46%, 1);
+
+// background: linear-gradient(135deg, hsla(85, 51%, 46%, 1) 40%, hsla(186, 100%, 69%, 1) 100%);
+
+// background: -moz-linear-gradient(135deg, hsla(85, 51%, 46%, 1) 40%, hsla(186, 100%, 69%, 1) 100%);
+
+// background: -webkit-linear-gradient(135deg, hsla(85, 51%, 46%, 1) 40%, hsla(186, 100%, 69%, 1) 100%);
+
+// filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#7FB239", endColorstr="#60EFFF", GradientType=1 );
+
+
+
+// $color-primary: #51cf66;
+// $color-primary-faint: #dcf5e0;
+// $color-primary-light: #10AB2B;
+
 // $color-primary-light-1: #ebfbee;
 // $color-primary-light-1: #ebfbee;
 $color-primary-light-1: #fff;
 $color-secondary-light: #F89942;
-$color-secondary-dark: #205329;
+$color-secondary-dark: #131b09; // $color-primary-950
 $color-grey-light-1: #fff;
 $color-grey-light-2: #eef1f6;
-$color-grey-dark-1: #0F7A89;
-$color-grey-dark-2: #133f44;
+$color-grey-dark-1: #6f9a32;
+$color-grey-dark-2: #131b09; // $color-primary-950
 // $color-grey-dark-2: #15464C;
 $color-grey-dark-3: #6FC1CC;
 $color-danger: #ec1a23;
+// $color-danger: #d93a2e;
 $color-info: #4DA6FF;
 
 
@@ -117,7 +149,7 @@ body {
    border: 1px solid #ddd;
    border-radius: 10px;
    padding: 1rem 1.5rem;
-   box-shadow: rgba($color-primary-light, 0.3) 0px 1px 1px;
+   box-shadow: rgba($color-primary, 0.3) 0px 1px 1px;
    margin-bottom: 2rem;
 
    @media only screen and (max-width:$bp-medium) {
@@ -171,7 +203,7 @@ body {
    width: 16px;
    height: 16px;
    border: 2px solid $color-grey-light-1;
-   border-top: 2px solid $color-primary-light;
+   border-top: 2px solid $color-primary;
    border-radius: 50%;
    animation: buttonSpin 0.8s linear infinite;
    transform: translateY(-50%) rotate(0deg);
@@ -200,7 +232,7 @@ body {
    align-items: center;
    justify-content: center;
 
-   background-color: $color-primary-light;
+   background-color: $color-primary;
    color: $color-grey-light-1;
    text-align: center;
    border-radius: 10px;
@@ -223,7 +255,8 @@ body {
 
 // Success toast
 .toast.success {
-   background-color: $color-primary-light;
+   // background-color: $color-primary-light;
+   background-color: $color-primary;
 }
 
 // Failure toast

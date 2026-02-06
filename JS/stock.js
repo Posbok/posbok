@@ -102,21 +102,21 @@ export function updateStockItemForm(stockItems, stockItemId) {
   if (updateStockName) updateStockName.value = stockItem.product_name;
 
   const updateStockDescription = document.querySelector(
-    '#updateStockDescription'
+    '#updateStockDescription',
   );
 
   if (updateStockDescription)
     updateStockDescription.value = stockItem.description;
 
   const updateStockBoughtPrice = document.querySelector(
-    '#updateStockBoughtPrice'
+    '#updateStockBoughtPrice',
   );
 
   if (updateStockBoughtPrice)
     updateStockBoughtPrice.value = stockItem.purchase_price;
 
   const updateStockSellingPrice = document.querySelector(
-    '#updateStockSellingPrice'
+    '#updateStockSellingPrice',
   );
 
   if (updateStockSellingPrice)
@@ -195,23 +195,23 @@ export function bindUpdateStockProductFormListener() {
       const updateStockName = document.querySelector('#updateStockName').value;
 
       const updateStockDescription = document.querySelector(
-        '#updateStockDescription'
+        '#updateStockDescription',
       ).value;
 
       const updateStockBoughtPrice = document.querySelector(
-        '#updateStockBoughtPrice'
+        '#updateStockBoughtPrice',
       ).value;
 
       const updateStockSellingPrice = document.querySelector(
-        '#updateStockSellingPrice'
+        '#updateStockSellingPrice',
       ).value;
 
       const updateStockQuantity = document.querySelector(
-        '#updateStockQuantity'
+        '#updateStockQuantity',
       ).value;
 
       const updateStockUnitType = document.querySelector(
-        '#updateStockUnitType'
+        '#updateStockUnitType',
       ).value;
 
       const updateStockItemDetails = {
@@ -226,14 +226,14 @@ export function bindUpdateStockProductFormListener() {
       // console.log('Updating Stock Item Details with:', updateStockItemDetails);
 
       const updateStockModalBtn = document.querySelector(
-        '.updateStockModalBtn'
+        '.updateStockModalBtn',
       );
 
       try {
         showBtnLoader(updateStockModalBtn);
         const updatedStockData = await updateStockItem(
           stockItemId,
-          updateStockItemDetails
+          updateStockItemDetails,
         );
 
         if (!updatedStockData) {
@@ -263,7 +263,7 @@ export function openDeleteStockCategoryModal() {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
   const deleteStockCategoryContainer = document.querySelector(
-    '.deleteStockCategoryContainer'
+    '.deleteStockCategoryContainer',
   );
 
   if (deleteStockCategoryContainer)
@@ -292,7 +292,7 @@ export function bindDeleteStockCategoryFormListener() {
   if (!form) return;
 
   const deleteStockCategoryButton = form.querySelector(
-    '.deleteStockCategoryButton'
+    '.deleteStockCategoryButton',
   );
   const cancelButton = form.querySelector('.cancel-close');
 
@@ -336,7 +336,7 @@ export function openUpdateStockCategoryModalButton() {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
   const updateStockCategoryContainer = document.querySelector(
-    '.updateStockCategory'
+    '.updateStockCategory',
   );
 
   //   console.log(updateStockCategoryContainer);
@@ -350,7 +350,7 @@ export function openUpdateStockCategoryModalButton() {
 export function updateStockCategoryForm(
   stockCategoryId,
   stockCategoryName,
-  stockCategoryDescription
+  stockCategoryDescription,
 ) {
   const form = document.querySelector('.updateStockCategoryModal');
 
@@ -359,10 +359,10 @@ export function updateStockCategoryForm(
 
   if (form) {
     const stockCategoryNameInput = document.querySelector(
-      '#updateStockCategoryName'
+      '#updateStockCategoryName',
     );
     const stockCategoryDescriptionInput = document.querySelector(
-      '#updateStockCategoryDescription'
+      '#updateStockCategoryDescription',
     );
 
     stockCategoryNameInput.value = stockCategoryName;
@@ -388,11 +388,11 @@ export function bindUpdateStockCategoryFormListener() {
       const stockCategoryId = form.dataset.stockCategoryId;
 
       const updateStockCategoryName = document.querySelector(
-        '#updateStockCategoryName'
+        '#updateStockCategoryName',
       ).value;
 
       const updateStockCategoryDescription = document.querySelector(
-        '#updateStockCategoryDescription'
+        '#updateStockCategoryDescription',
       ).value;
 
       const updateStockItemDetails = {
@@ -404,14 +404,14 @@ export function bindUpdateStockCategoryFormListener() {
       // console.log(stockCategoryId);
 
       const updateStockCategoryModalBtn = document.querySelector(
-        '.updateStockCategoryModalBtn'
+        '.updateStockCategoryModalBtn',
       );
 
       try {
         showBtnLoader(updateStockCategoryModalBtn);
         const updatedStockData = await updateStockCategory(
           stockCategoryId,
-          updateStockItemDetails
+          updateStockItemDetails,
         );
 
         if (!updatedStockData) {
@@ -423,7 +423,7 @@ export function bindUpdateStockCategoryFormListener() {
           showToast(
             'success',
             updatedStockData.message ||
-              '✅ Stock Category updated successfully.'
+              '✅ Stock Category updated successfully.',
           );
           closeModal();
         }
@@ -491,10 +491,10 @@ export async function moveStockToShop(e, row) {
 
     const moveItemName = document.querySelector('.moveItemName');
     const stockQuantityAvailable = document.querySelector(
-      '.stockQuantityAvailable'
+      '.stockQuantityAvailable',
     );
     const moveStockSellingPrice = document.querySelector(
-      '#moveStockSellingPrice'
+      '#moveStockSellingPrice',
     );
 
     if (moveItemName) moveItemName.innerText = product_name;
@@ -535,15 +535,15 @@ export function bindMoveStockFormListener() {
       }
 
       const moveStockToShopDropdown = document.querySelector(
-        '#moveStockToShopDropdown'
+        '#moveStockToShopDropdown',
       ).value;
 
       const moveStockToStaffDropdown = document.querySelector(
-        '#moveStockToStaffDropdown'
+        '#moveStockToStaffDropdown',
       ).value;
 
       const moveStockSellingPrice = document.querySelector(
-        '#moveStockSellingPrice'
+        '#moveStockSellingPrice',
       ).value;
 
       const moveStockQuantity =
@@ -694,14 +694,14 @@ export function populateStockCategoryTable(stockCategoriesData) {
           <button class="hero-btn-outline openUpdateStockCategoryButton" data-stock-category-id="${
             category.id
           }"  data-stock-category-name="${
-        category.category_name
-      }"  data-stock-category-description="${category.description}">
+            category.category_name
+          }"  data-stock-category-description="${category.description}" title="Update Category">
             <i class="fa-solid fa-pen-to-square"></i>
           </button>
 
           <button class="hero-btn-outline deleteCategoryButton" data-stock-category-id="${
             category.id
-          }" data-stock-category-name="${category.category_name}">
+          }" data-stock-category-name="${category.category_name}"  title="Delete Category">
             <i class="fa-solid fa-trash-can"></i>
           </button>
         </td>
@@ -723,7 +723,7 @@ export function populateStockCategoryTable(stockCategoriesData) {
       const stockCategoryName = deleteCategoryButton.dataset.stockCategoryName;
 
       const deleteStockCategoryContainerModal = document.querySelector(
-        '.deleteStockCategoryContainerModal'
+        '.deleteStockCategoryContainerModal',
       );
 
       if (deleteStockCategoryContainerModal) {
@@ -754,7 +754,7 @@ export function populateStockCategoryTable(stockCategoriesData) {
     // Update Stock Category Logic
 
     const updateStockCategoryBtn = row.querySelector(
-      '.openUpdateStockCategoryButton'
+      '.openUpdateStockCategoryButton',
     );
 
     updateStockCategoryBtn?.addEventListener('click', async () => {
@@ -766,7 +766,7 @@ export function populateStockCategoryTable(stockCategoriesData) {
         updateStockCategoryBtn.dataset.stockCategoryDescription;
 
       const updateStockCategoryModalContainer = document.querySelector(
-        '.updateStockCategoryModal'
+        '.updateStockCategoryModal',
       );
 
       if (updateStockCategoryModalContainer) {
@@ -792,7 +792,7 @@ export function populateStockCategoryTable(stockCategoriesData) {
           updateStockCategoryForm(
             stockCategoryId,
             stockCategoryName,
-            stockCategoryDescription
+            stockCategoryDescription,
           );
         } else {
           hideGlobalLoader();
@@ -880,8 +880,8 @@ export function populateStockItemsTable(stockItemsData) {
       item.quantity < 1
         ? 'finishedStockRow'
         : item.quantity >= 1 && item.quantity <= 10
-        ? 'nearFinishedStockRow'
-        : 'inStockRow'
+          ? 'nearFinishedStockRow'
+          : 'inStockRow',
     );
 
     let stockId = item.id;
@@ -897,10 +897,10 @@ export function populateStockItemsTable(stockItemsData) {
          <td class="py-1 itemDescription">${item.description}</td>
          <td class="py-1 itemCategory">${stockCategory.category_name}</td>
          <td class="py-1 itemPurchasePrice">₦${formatAmountWithCommas(
-           item.purchase_price
+           item.purchase_price,
          )}</td>
          <td class="py-1 itemSellingPrice">₦${formatAmountWithCommas(
-           item.selling_price
+           item.selling_price,
          )}</td>
           <td class="py-1 itemQuantity">${item.quantity}</td>
           <td class="py-1 itemUnitType">${formatUnitType(item.unit_type)}</td>
@@ -908,32 +908,32 @@ export function populateStockItemsTable(stockItemsData) {
             item.quantity === 0
               ? (item.status = 'Out of Stock')
               : item.quantity >= 1 && item.quantity <= 10
-              ? 'Low Stock'
-              : 'In Stock'
+                ? 'Low Stock'
+                : 'In Stock'
           }</td>
           <td class="py-1 itemDatePurchases">${formatDate(
-            item.date_purchased
+            item.date_purchased,
           )}</td>
 
    
      <td class="py-1 action-buttons">
        <button
          class="hero-btn-outline openMoveStockItemButton"
-         data-stock-item-id="${item.id}"
+         data-stock-item-id="${item.id}"  title="Move Product from Warehouse to Shop Inventory"
        >
       <i class="fa-solid fa-arrow-right-from-bracket"></i>
        </button>
 
        <button
          class="hero-btn-outline openUpdateStockItemButton"
-         data-stock-item-id="${item.id}"
+         data-stock-item-id="${item.id}" title="Update Stock Item Details"
        >
          <i class="fa-solid fa-pen-to-square"></i>
        </button>
 
        <button
          class="hero-btn-outline deleteStockItemButton"
-         data-stock-item-id="${item.id}"
+         data-stock-item-id="${item.id}" title="Delete Stock Item"
        >
          <i class="fa-solid fa-trash-can"></i>
        </button>
@@ -961,7 +961,7 @@ export function populateStockItemsTable(stockItemsData) {
       const stockItemId = deleteStockItemButton.dataset.stockItemId;
 
       const deleteStockContainer = document.querySelector(
-        '.deleteStockContainer'
+        '.deleteStockContainer',
       );
 
       if (deleteStockContainer) {
@@ -988,7 +988,7 @@ export function populateStockItemsTable(stockItemsData) {
     // Update Stock Category Logic
 
     const updateStockProductBtn = row.querySelector(
-      '.openUpdateStockItemButton'
+      '.openUpdateStockItemButton',
     );
 
     updateStockProductBtn?.addEventListener('click', async (e) => {
@@ -1072,14 +1072,14 @@ export function populateStockLogsTable(stockLogsData) {
         <td class="py-1 itemName">${item_name}</td>
          <td class="py-1 itemQuantity">${quantity}</td>
          <td class="py-1 itemPurchasePrice">₦${formatAmountWithCommas(
-           price
+           price,
          )}</td>
           <td class="py-1 itemActionType">${formatActionType(action_type)}</td>
 
           <td class="py-1 itemDatePurchases">${`${first_name} ${last_name}`}</td>
 
           <td class="py-1 itemDatePurchases">${formatDateTimeReadable(
-            created_at
+            created_at,
           )}</td>
 
       `;
@@ -1132,7 +1132,7 @@ if (isAdmin) {
       const { enrichedShopData } = await checkAndPromptCreateShop();
       populateBusinessShopDropdown(
         enrichedShopData,
-        'stockinventoryShopDropdown'
+        'stockinventoryShopDropdown',
       );
       populateBusinessShopDropdown(enrichedShopData, 'restockShopDropdown');
       populateBusinessShopDropdown(enrichedShopData, 'moveStockToShopDropdown');
@@ -1179,7 +1179,7 @@ export function addStockCategoryForm() {
       const addCategoryName = document.querySelector('#addCategoryName').value;
 
       const addCategoryDescription = document.querySelector(
-        '#addCategoryDescription'
+        '#addCategoryDescription',
       ).value;
 
       const addStockCategoryDetails = {
@@ -1190,7 +1190,7 @@ export function addStockCategoryForm() {
       console.log('Add Category Details:', addStockCategoryDetails);
 
       const addStockCategorySubmitBtn = document.querySelector(
-        '.addStockCategorySubmitBtn'
+        '.addStockCategorySubmitBtn',
       );
 
       try {
@@ -1225,31 +1225,31 @@ export function addStockItemForm() {
       e.preventDefault();
 
       const stockinventoryShopDropdown = document.querySelector(
-        '#stockinventoryShopDropdown'
+        '#stockinventoryShopDropdown',
       ).value;
       const addStockCategory =
         document.querySelector('#addStockCategory').value;
       const addStockName = document.querySelector('#addStockName').value;
 
       const addStockDescription = document.querySelector(
-        '#addStockDescription'
+        '#addStockDescription',
       ).value;
 
       const addStockSku = document.querySelector('#addStockSku').value;
 
       const addStockBoughtPrice = document.querySelector(
-        '#addStockBoughtPrice'
+        '#addStockBoughtPrice',
       ).value;
 
       const addStockSellingPrice = document.querySelector(
-        '#addStockSellingPrice'
+        '#addStockSellingPrice',
       ).value;
 
       const addStockQuantity =
         document.querySelector('#addStockQuantity').value;
 
       const addStockDatePurchased = document.querySelector(
-        '#addStockDatePurchased'
+        '#addStockDatePurchased',
       ).value;
 
       const addStockUnitType =
@@ -1275,7 +1275,7 @@ export function addStockItemForm() {
       console.log('Add Stock Item Details:', addStockItemDetails);
 
       const addStockItemSubmitBtn = document.querySelector(
-        '.addStockItemSubmitBtn'
+        '.addStockItemSubmitBtn',
       );
 
       try {
@@ -1306,7 +1306,7 @@ export function bindRestockProductFormListener() {
 
   const restockQtyInput = document.querySelector('#restockQuantityAvailable');
   const prevStockQtyDisplay = document.querySelector(
-    '.previousStockQuantityAvailable'
+    '.previousStockQuantityAvailable',
   );
 
   restockQtyInput.addEventListener('input', function (e) {
@@ -1356,7 +1356,7 @@ export function bindRestockProductFormListener() {
 
       // Inputs
       const restockQuantityAvailable = document.querySelector(
-        '#restockQuantityAvailable'
+        '#restockQuantityAvailable',
       );
 
       const restockProductDetails = {
@@ -1376,7 +1376,7 @@ export function bindRestockProductFormListener() {
         showBtnLoader(restockModalBtn);
         const restockProductData = await restockProduct(
           restockProductDetails,
-          productId
+          productId,
         );
 
         if (!restockProductData) {
@@ -1387,7 +1387,7 @@ export function bindRestockProductFormListener() {
         if (restockProductData) {
           showToast(
             'success',
-            restockProductData.message || '✅ Product Restocked Successfully'
+            restockProductData.message || '✅ Product Restocked Successfully',
           );
           closeModal();
           clearFormInputs();
@@ -1402,7 +1402,7 @@ export function bindRestockProductFormListener() {
         console.error('Error During Adding Existing Product:', err);
         showToast(
           'fail',
-          `❎ ${err.message || 'Failed to Add Existing Product'}`
+          `❎ ${err.message || 'Failed to Add Existing Product'}`,
         );
         return;
       } finally {
@@ -1420,7 +1420,7 @@ const restockSearchSection = document.querySelector('.restockSearch-section');
 // );
 const restockProductNameDiv = document.querySelector('.restockProductNameDiv');
 const restockAutocompleteList = document.getElementById(
-  'restockAutocompleteList'
+  'restockAutocompleteList',
 );
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -1464,7 +1464,7 @@ export function restockProductForm() {
 }
 
 const moveStockToShopDropdown = document.getElementById(
-  'moveStockToShopDropdown'
+  'moveStockToShopDropdown',
 );
 
 const searchStockProdutItem = document.getElementById('searchStockProdutItem');
@@ -1510,7 +1510,7 @@ async function displayAllStocks(selectedShopId) {
             (product) =>
               product.product_name.toLowerCase().includes(inputValue) ||
               product.description.toLowerCase().includes(inputValue) ||
-              product.id.toString().includes(inputValue)
+              product.id.toString().includes(inputValue),
 
             // || product.Product.barcode.toLowerCase().includes(inputValue)
           );
@@ -1573,10 +1573,10 @@ function updateAutocompleteList(stocks) {
   if (restockAutocompleteList) restockAutocompleteList.innerHTML = '';
 
   const restockQuantityAvailable = document.querySelector(
-    '.restockQuantityAvailable'
+    '.restockQuantityAvailable',
   );
   const previousQuantityAvailable = document.querySelector(
-    '.previousStockQuantityAvailable'
+    '.previousStockQuantityAvailable',
   );
 
   const stockNameInput = document.getElementById('stockNameInput');

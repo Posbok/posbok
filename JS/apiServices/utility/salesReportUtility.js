@@ -49,7 +49,7 @@ function toTitleCase(value) {
 }
 
 const adminAccordionContainer = document.querySelector(
-  '.adminAccordionContainer'
+  '.adminAccordionContainer',
 );
 const staffContainer = document.querySelector('.staffContainer');
 
@@ -65,16 +65,16 @@ if (isAdmin) {
 export function updateMonthlySalesData(monthlySalesData, shopId) {
   //   console.log(monthlySalesData);
   const totalMonthlySales = document.getElementById(
-    `totalMonthlySales_${shopId}`
+    `totalMonthlySales_${shopId}`,
   );
   const totalMonthlyAmount = document.getElementById(
-    `totalMonthlyAmount_${shopId}`
+    `totalMonthlyAmount_${shopId}`,
   );
   const totalMonthlyPaid = document.getElementById(
-    `totalMonthlyPaid_${shopId}`
+    `totalMonthlyPaid_${shopId}`,
   );
   const totalMonthlyBalance = document.getElementById(
-    `totalMonthlyBalance_${shopId}`
+    `totalMonthlyBalance_${shopId}`,
   );
 
   if (!monthlySalesData) {
@@ -96,11 +96,11 @@ export function updateDailySalesData(dailySalesData, shopId) {
   //   console.log(dailySalesData);
   const totalDailySales = document.getElementById(`totalDailySales_${shopId}`);
   const totalDailyAmount = document.getElementById(
-    `totalDailyAmount_${shopId}`
+    `totalDailyAmount_${shopId}`,
   );
   const totalDailyPaid = document.getElementById(`totalDailyPaid_${shopId}`);
   const totalDailyBalance = document.getElementById(
-    `totalDailyBalance_${shopId}`
+    `totalDailyBalance_${shopId}`,
   );
 
   if (!dailySalesData) {
@@ -121,17 +121,17 @@ export function updateDailySalesData(dailySalesData, shopId) {
 export function updateTotalSalesAmounts(sales, totalSalesRow, date) {
   const totalSalesAmount = sales.reduce(
     (sum, item) => sum + Number(item.total_amount),
-    0
+    0,
   );
 
   const totalPaidAmount = sales.reduce(
     (sum, item) => sum + Number(item.amount_paid),
-    0
+    0,
   );
 
   const totalBalanceAmount = sales.reduce(
     (sum, item) => sum + Number(item.balance),
-    0
+    0,
   );
 
   // Calculate cost/sold/profit
@@ -159,22 +159,22 @@ export function updateTotalSalesAmounts(sales, totalSalesRow, date) {
      </td>
      <td colspan="2" class="date-header py-1 px-2 mt-1 mb-1">
        <strong>Total Sales Amount</strong> = ₦${formatAmountWithCommas(
-         totalSalesAmount
+         totalSalesAmount,
        )}
      </td>
      <td colspan="2" class="date-header py-1 px-2 mt-1 mb-1">
        <strong>Total Paid Amount</strong> = ₦${formatAmountWithCommas(
-         totalPaidAmount
+         totalPaidAmount,
        )}
      </td>
      <td colspan="2" class="date-header py-1 px-2 mt-1 mb-1">
        <strong>Total Balance Amount</strong> = ₦${formatAmountWithCommas(
-         totalBalanceAmount
+         totalBalanceAmount,
        )}
      </td>
         <td colspan="2" class="date-header py-1 px-2 mt-1 mb-1">
       <strong>Total Cost Price</strong> = ₦${formatAmountWithCommas(
-        totalCostPrice
+        totalCostPrice,
       )}
     </td>
         <td colspan="2" class="date-header py-1 px-2 mt-1 mb-1">
@@ -226,18 +226,18 @@ export async function fetchAllCategories(shopId) {
 }
 
 const autocompleteList = document.getElementById(
-  isAdmin ? 'adminAutocompleteList' : 'autocompleteList'
+  isAdmin ? 'adminAutocompleteList' : 'autocompleteList',
 );
 
 export async function displayAllProducts(shopId) {
   const searchSellProdutItem = document.getElementById(
-    isAdmin ? `adminSearchSellProdutItem_${shopId}` : 'searchSellProdutItem'
+    isAdmin ? `adminSearchSellProdutItem_${shopId}` : 'searchSellProdutItem',
   );
   const autocompleteList = document.getElementById(
-    isAdmin ? 'adminAutocompleteList' : 'autocompleteList'
+    isAdmin ? 'adminAutocompleteList' : 'autocompleteList',
   );
   const sellProductName = document.querySelector(
-    isAdmin ? '.adminSellProductName' : '.sellProductName'
+    isAdmin ? '.adminSellProductName' : '.sellProductName',
   );
 
   try {
@@ -266,7 +266,8 @@ export async function displayAllProducts(shopId) {
         // Filter by selected category (if any)
         if (activeCategoryId !== null) {
           filteredProducts = filteredProducts.filter(
-            (product) => product.Product.ProductCategory.id === activeCategoryId
+            (product) =>
+              product.Product.ProductCategory.id === activeCategoryId,
           );
         }
 
@@ -274,7 +275,7 @@ export async function displayAllProducts(shopId) {
         filteredProducts = filteredProducts.filter(
           (product) =>
             product.Product.name.toLowerCase().includes(inputValue) ||
-            product.Product.description.toLowerCase().includes(inputValue)
+            product.Product.description.toLowerCase().includes(inputValue),
         );
 
         updateAutocompleteList(filteredProducts, shopId);
@@ -299,18 +300,18 @@ export async function displayAllProducts(shopId) {
 
 export async function displayAllCategories(shopId) {
   const sellProductCategorySection = document.querySelector(
-    `.adminSellProductCategory-section_${shopId}`
+    `.adminSellProductCategory-section_${shopId}`,
   );
 
   const autocompleteList = document.getElementById(
-    isAdmin ? 'adminAutocompleteList' : 'autocompleteList'
+    isAdmin ? 'adminAutocompleteList' : 'autocompleteList',
   );
 
   const searchSellProdutItem = document.getElementById(
-    isAdmin ? `adminSearchSellProdutItem_${shopId}` : 'searchSellProdutItem'
+    isAdmin ? `adminSearchSellProdutItem_${shopId}` : 'searchSellProdutItem',
   );
   const sellProductName = document.querySelector(
-    isAdmin ? '.adminSellProductName' : '.sellProductName'
+    isAdmin ? '.adminSellProductName' : '.sellProductName',
   );
 
   try {
@@ -351,7 +352,7 @@ export async function displayAllCategories(shopId) {
         filteredProducts = filteredProducts.filter(
           (product) =>
             product.Product.name.toLowerCase().includes(inputValue) ||
-            product.Product.description.toLowerCase().includes(inputValue)
+            product.Product.description.toLowerCase().includes(inputValue),
         );
       }
 
@@ -386,7 +387,7 @@ export async function displayAllCategories(shopId) {
 
         let filteredProducts = allProducts.filter(
           //  (product) => product.Product.ProductCategory.id === categoryId
-          (product) => product.Product.ProductCategory.id === activeCategoryId
+          (product) => product.Product.ProductCategory.id === activeCategoryId,
         );
 
         const inputValue = searchSellProdutItem.value.toLowerCase().trim();
@@ -395,7 +396,7 @@ export async function displayAllCategories(shopId) {
           filteredProducts = filteredProducts.filter(
             (product) =>
               product.Product.name.toLowerCase().includes(inputValue) ||
-              product.Product.description.toLowerCase().includes(inputValue)
+              product.Product.description.toLowerCase().includes(inputValue),
           );
         }
 
@@ -413,10 +414,10 @@ export async function displayAllCategories(shopId) {
 
 function updateAutocompleteList(products, shopId) {
   const autocompleteList = document.getElementById(
-    isAdmin ? 'adminAutocompleteList' : 'autocompleteList'
+    isAdmin ? 'adminAutocompleteList' : 'autocompleteList',
   );
   const productInput = document.getElementById(
-    isAdmin ? `adminProductInput_${shopId}` : 'productInput'
+    isAdmin ? `adminProductInput_${shopId}` : 'productInput',
   );
 
   autocompleteList.innerHTML = '';
@@ -449,7 +450,7 @@ function updateAutocompleteList(products, shopId) {
         autocompleteList.style.display = 'none';
 
         const productSalesResponse = await getSalesByProduct(
-          selectedProduct.id
+          selectedProduct.id,
         );
 
         if (!productSalesResponse) {
@@ -458,7 +459,7 @@ function updateAutocompleteList(products, shopId) {
             'fail',
             `❎ ${
               productSalesResponse.message || 'Error Getting Sales By Product'
-            }`
+            }`,
           );
           return;
         }
@@ -478,14 +479,14 @@ function updateAutocompleteList(products, shopId) {
 export function updateProductData(
   productSalesList,
   productSalesSummary,
-  shopId
+  shopId,
 ) {
   const totalQty = document.getElementById(`totalQty_${shopId}`);
   const totalRev = document.getElementById(`totalRev_${shopId}`);
   const totalCostContainer = document.getElementById(`totalCost_${shopId}`);
   const totalProfitContainer = document.getElementById(`totalProfit_${shopId}`);
   const tableBody = document.querySelector(
-    `#productSalesTable_${shopId} tbody`
+    `#productSalesTable_${shopId} tbody`,
   );
 
   if (!productSalesSummary) {
@@ -548,7 +549,7 @@ export function updateProductData(
         <td class="py-1">₦${formatAmountWithCommas(totalAmount)}</td>
         <td class="py-1">₦${formatAmountWithCommas(amountPaid)}</td>
         <td class="py-1">₦${formatAmountWithCommas(balance)}</td>
-               <td class="py-1 soldItemDetailReport" data-sale-id="${id}"><i class="fa fa-eye"></i></td>
+               <td class="py-1 soldItemDetailReport" data-sale-id="${id}"><i class="fa fa-eye" title="View Sale Detail"></i></td>
       </tr>
     `;
 
@@ -568,7 +569,7 @@ export async function updateSalesReceipt(e, row) {
   const saleId = row.dataset.saleId;
 
   const updatePartialPaymentForm = document.querySelector(
-    '.updatePartialPaymentForm'
+    '.updatePartialPaymentForm',
   );
 
   updatePartialPaymentForm.dataset.saleId = saleId;
@@ -633,7 +634,7 @@ export async function updateSalesReceipt(e, row) {
     document.getElementById('soldDetailStaffName').textContent =
       `${Account?.first_name} ${Account?.last_name}` || 'N/A';
     document.getElementById('soldDetailDate').textContent = new Date(
-      sale_time
+      sale_time,
     ).toLocaleString('en-UK', {
       hour12: true,
       year: 'numeric',
@@ -649,15 +650,12 @@ export async function updateSalesReceipt(e, row) {
     document.getElementById('soldDetailPaymentMethod').textContent =
       payment_method || 'N/A';
 
-    document.getElementById(
-      'soldDetailTotalAmount'
-    ).textContent = `₦${formatAmountWithCommas(total_amount)}`;
-    document.getElementById(
-      'soldDetailPaidAmount'
-    ).textContent = `₦${formatAmountWithCommas(amount_paid)}`;
-    document.getElementById(
-      'soldDetailBalanceAmount'
-    ).textContent = `₦${formatAmountWithCommas(balance)}`;
+    document.getElementById('soldDetailTotalAmount').textContent =
+      `₦${formatAmountWithCommas(total_amount)}`;
+    document.getElementById('soldDetailPaidAmount').textContent =
+      `₦${formatAmountWithCommas(amount_paid)}`;
+    document.getElementById('soldDetailBalanceAmount').textContent =
+      `₦${formatAmountWithCommas(balance)}`;
 
     document.getElementById('soldDetailStatus').textContent =
       formatSaleStatus(status);
@@ -673,10 +671,10 @@ export async function updateSalesReceipt(e, row) {
              <td class="py-1">${item.Product.name}</td>
                            <td class="py-1">${item.quantity}</td>
                            <td class="py-1">₦${formatAmountWithCommas(
-                             item.selling_price
+                             item.selling_price,
                            )}</td>
                            <td class="py-1">${formatAmountWithCommas(
-                             item.quantity * item.selling_price
+                             item.quantity * item.selling_price,
                            )}</td>
              
                      `;
@@ -688,17 +686,16 @@ export async function updateSalesReceipt(e, row) {
     // Check reports.js for the continuation of this logic - Search updatePartialPaymentForm(...)
 
     const updatePartialPaymentForm = document.querySelector(
-      '.updatePartialPaymentForm'
+      '.updatePartialPaymentForm',
     );
 
     if (status === 'PARTIAL_PAYMENT') {
       updatePartialPaymentForm.classList.remove('hidden');
 
-      document.querySelector(
-        '.partialPaymentStatusText'
-      ).textContent = `Partial Payment Status: ₦${formatAmountWithCommas(
-        amount_paid
-      )} paid | ₦${formatAmountWithCommas(balance)} remaining`;
+      document.querySelector('.partialPaymentStatusText').textContent =
+        `Partial Payment Status: ₦${formatAmountWithCommas(
+          amount_paid,
+        )} paid | ₦${formatAmountWithCommas(balance)} remaining`;
     } else {
       updatePartialPaymentForm.classList.add('hidden');
     }
@@ -747,7 +744,7 @@ export async function updateSalesReceipt(e, row) {
 
       container.innerHTML = renderReceiptPrintHTML(
         saleDetails.data,
-        shopData?.data
+        shopData?.data,
       );
 
       container.style.display = 'block'; // temporarily show
@@ -878,20 +875,20 @@ export function updatePartialPaymentForm(renderTableCallback, callbackArgs) {
       e.preventDefault();
 
       const updatePartialPaymentTypeOption = document.getElementById(
-        'updatePartialPaymentTypeOption'
+        'updatePartialPaymentTypeOption',
       ).value;
       const additionalSalePayment = document.getElementById(
-        'additionalSalePayment'
+        'additionalSalePayment',
       ).value;
       const updatePaymentSubmitBtn = document.querySelector(
-        '.updatePaymentSubmitBtn'
+        '.updatePaymentSubmitBtn',
       );
 
       const saleId = form.dataset.saleId;
 
       const updatePartialPaymentDetails = {
         additionalPayment: Number(
-          getAmountForSubmission(additionalSalePayment)
+          getAmountForSubmission(additionalSalePayment),
         ),
         paymentMethod: updatePartialPaymentTypeOption.toUpperCase(),
       };
@@ -904,7 +901,7 @@ export function updatePartialPaymentForm(renderTableCallback, callbackArgs) {
 
         const updatePartialPaymentData = await updatePartialPayment(
           updatePartialPaymentDetails,
-          saleId
+          saleId,
         );
 
         if (updatePartialPaymentData) {
@@ -949,11 +946,11 @@ export function renderReceiptPrintHTML(saleDetails, shopDetails) {
       <hr class="mb-1" />
       <p>Receipt: ${saleDetails.receipt_number}</p>
       <p>Customer: ${saleDetails.customer_name} - ${
-    saleDetails.customer_phone
-  }</p>
+        saleDetails.customer_phone
+      }</p>
       <p>Staff: ${saleDetails.Account?.first_name} ${
-    saleDetails.Account?.last_name
-  }</p>
+        saleDetails.Account?.last_name
+      }</p>
       <p  class="mb-1" >Date: ${new Date(saleDetails.sale_time).toLocaleString(
         'en-UK',
         {
@@ -964,7 +961,7 @@ export function renderReceiptPrintHTML(saleDetails, shopDetails) {
           hour: 'numeric',
           minute: '2-digit',
           second: '2-digit',
-        }
+        },
       )}</p>
       <hr />
 <table class="mb-1" style="width: 100%; table-layout: fixed; word-wrap: break-word; font-size: 10px;">
@@ -983,25 +980,25 @@ export function renderReceiptPrintHTML(saleDetails, shopDetails) {
           <td style="word-break: break-word;">${item.Product.name}</td>
           <td>${item.quantity}</td>
           <td><span style="text-decoration:line-through;">N</span>${formatAmountWithCommas(
-            item.selling_price
+            item.selling_price,
           )}</td>
           <td><span style="text-decoration:line-through;">N</span>${formatAmountWithCommas(
-            item.quantity * item.selling_price
+            item.quantity * item.selling_price,
           )}</td>
         </tr>
-      `
+      `,
     ).join('')}
   </tbody>
 </table>
       <hr />
       <p>Total:<span style="text-decoration:line-through;">N</span>${formatAmountWithCommas(
-        saleDetails.total_amount
+        saleDetails.total_amount,
       )}</p>
       <p>Paid: <span style="text-decoration:line-through;">N</span>${formatAmountWithCommas(
-        saleDetails.amount_paid
+        saleDetails.amount_paid,
       )}</p>
       <p>Balance:<span style="text-decoration:line-through;">N</span>${formatAmountWithCommas(
-        saleDetails.balance
+        saleDetails.balance,
       )}</p>
       <p>Payment Method:${saleDetails.payment_method}</p>
       <p>Status: ${formatSaleStatus(saleDetails.status)}</p>
@@ -1014,31 +1011,31 @@ export function renderReceiptPrintHTML(saleDetails, shopDetails) {
 export function updateStaffSalesData(
   staffSalesList,
   staffSalesSummary,
-  shopId
+  shopId,
 ) {
   console.log(staffSalesList, staffSalesSummary, shopId);
 
   const staffTotalSale = document.getElementById(
-    `staffTotal-sales_admin_${shopId}`
+    `staffTotal-sales_admin_${shopId}`,
   );
   const staffTotalAmount = document.getElementById(
-    `staffTotal-amount_admin_${shopId}`
+    `staffTotal-amount_admin_${shopId}`,
   );
   const staffTotalPaid = document.getElementById(
-    `staffTotal-paid_admin_${shopId}`
+    `staffTotal-paid_admin_${shopId}`,
   );
   const staffTotalBalance = document.getElementById(
-    `staffTotal-balance_admin_${shopId}`
+    `staffTotal-balance_admin_${shopId}`,
   );
   const staffTotalCost = document.getElementById(
-    `staffTotal-cost_admin_${shopId}`
+    `staffTotal-cost_admin_${shopId}`,
   );
   const staffTotalProfit = document.getElementById(
-    `staffTotal-profit_admin_${shopId}`
+    `staffTotal-profit_admin_${shopId}`,
   );
 
   const tableBody = document.querySelector(
-    `#staffSalesTable_admin_${shopId} tbody`
+    `#staffSalesTable_admin_${shopId} tbody`,
   );
 
   //   if (!staffSalesSummary || !staffSalesList) {
@@ -1118,7 +1115,7 @@ export function updateStaffSalesData(
     //  console.log('salesItems', salesItems);
 
     const productNames = salesItems.map(
-      (item) => item.Product?.name || 'Unknown Product'
+      (item) => item.Product?.name || 'Unknown Product',
     );
 
     const truncatedProductNames = truncateProductNames(productNames, {
@@ -1128,7 +1125,7 @@ export function updateStaffSalesData(
     });
 
     const productUnitPrice = salesItems.map(
-      (item) => item?.unit_price || 'Unknown Price'
+      (item) => item?.unit_price || 'Unknown Price',
     );
 
     const truncatedProductUnitPrice = truncateProductUnitPrice(
@@ -1137,7 +1134,7 @@ export function updateStaffSalesData(
         maxItems: 3,
         maxLength: 50,
         separator: ', ',
-      }
+      },
     );
 
     if (row)
@@ -1148,13 +1145,13 @@ export function updateStaffSalesData(
         <td  class="py-1">${shopName}</td>
         <td  class="py-1">${truncatedProductNames}</td>
         <td  class="py-1">${formatAmountWithCommas(
-          truncatedProductUnitPrice
+          truncatedProductUnitPrice,
         )}</td>
         <td class="py-1">₦${formatAmountWithCommas(amount_paid)}</td>
         <td class="py-1">₦${formatAmountWithCommas(total_amount)}</td>
         <td class="py-1">₦${formatAmountWithCommas(balance)}</td>
         <td class="py-1">${formatSaleStatus(status)}</td>
-        <td class="py-1 soldItemDetailReport" data-sale-id="${id}"><i class="fa fa-eye"></i></td>
+        <td class="py-1 soldItemDetailReport" data-sale-id="${id}"><i class="fa fa-eye"  title="View Sale Detail"></i></td>
       </tr>
     `;
 

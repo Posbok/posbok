@@ -74,7 +74,7 @@ export async function setupStorefront(storefrontDetails) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(storefrontDetails),
-      }
+      },
     );
 
     //  console.log('Response received...');
@@ -108,7 +108,7 @@ export async function uploadStorefrontImages(imageFormData) {
           //  'Content-Type': 'multipart/form-data',
         },
         body: imageFormData,
-      }
+      },
     );
 
     //  console.log('Response received...');
@@ -136,7 +136,7 @@ export async function getStorefrontDetailById(businessId) {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     //  console.log('selectedSaleData received...');
@@ -147,5 +147,31 @@ export async function getStorefrontDetailById(businessId) {
   } catch (error) {
     hideGlobalLoader();
     console.error('Error fetching Business Detail:', error.message);
+  }
+}
+
+//  Reviews
+
+export async function getProductReviews(status = 'all', page = 1, limit = 20) {
+  try {
+    showGlobalLoader();
+
+    const productReviewsData = await safeFetch(
+      `${baseUrl}/api/reviews/all?status=${status}&page=${page}&limit=${limit}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      },
+    );
+
+    hideGlobalLoader();
+
+    console.log(productReviewsData);
+    return productReviewsData;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error fetching Reviews:', error.message);
   }
 }

@@ -123,7 +123,7 @@ select {
    &:focus,
    &:active {
       background-color: $color-grey-light-2;
-      box-shadow: 0 0 0.3rem 0.5rem rgba($color-primary-light, .36);
+      box-shadow: 0 0 0.3rem 0.5rem rgba($color-primary, 1);
    }
 }
 
@@ -210,13 +210,13 @@ select {
    &:focus,
    &:valid {
       background-color: $color-grey-light-2;
-      box-shadow: 0 0 0.3rem 0.1rem rgba($color-primary-light, .36);
+      box-shadow: 0 0 0.3rem 0.1rem rgba($color-primary, .36);
    }
 
    &:active,
    &:focus {
       background-color: $color-grey-light-2;
-      box-shadow: 0 0 0.3rem 0.5rem rgba($color-primary-light, .36);
+      box-shadow: 0 0 0.3rem 0.5rem rgba($color-primary, .36);
    }
 }
 
@@ -382,7 +382,7 @@ select {
 
             &:disabled {
                background-color: $color-grey-light-2;
-               box-shadow: 0 0 0.2rem 0.5rem rgba($color-secondary-light, .36);
+               box-shadow: 0 0 0.2rem 0.5rem rgba($color-primary-200, .46);
                color: #999;
                border: 1px solid #ddd;
                cursor: not-allowed;
@@ -492,7 +492,7 @@ button:disabled:hover {
 .adminSellProductCategoryBtn,
 .sellProductCategoryBtn {
    position: relative;
-   background-color: $color-grey-dark-1;
+   background-color: $color-primary-600;
    color: $color-grey-light-1;
    font-weight: 600;
    font-family: $font-primary;
@@ -522,7 +522,7 @@ button:disabled:hover {
 
    &:active {
       transform: scale(1);
-      background-color: $color-grey-dark-1;
+      background-color: $color-primary-700;
    }
 
    .button-link {

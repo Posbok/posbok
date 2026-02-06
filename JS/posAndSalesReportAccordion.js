@@ -51,7 +51,7 @@ export function openDeleteTransactionModal() {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
   const deleteTransactionContainer = document.querySelector(
-    '.deleteTransactionContainer'
+    '.deleteTransactionContainer',
   );
 
   if (deleteTransactionContainer)
@@ -143,7 +143,7 @@ export function bindDeleteTransactionFormListener() {
   if (!form) return;
 
   const deleteTransactionButton = form.querySelector(
-    '.deleteTransactionButton'
+    '.deleteTransactionButton',
   );
   const cancelButton = form.querySelector('.cancel-close');
 
@@ -178,7 +178,7 @@ export function bindDeleteTransactionFormListener() {
           shopId,
           tableBodyId: `#pos-tbody-${shopId}`,
           loadMoreButton: document.getElementById(
-            `loadMoreButton_admin_${shopId}`
+            `loadMoreButton_admin_${shopId}`,
           ),
           append: false,
         });
@@ -231,7 +231,7 @@ export function bindDeleteSaleFormListener() {
           shopId,
           tableBodyId: `#sale-tbody-${shopId}`,
           loadMoreButton: document.getElementById(
-            `loadMoreSaleButton_admin_${shopId}`
+            `loadMoreSaleButton_admin_${shopId}`,
           ),
           // append: false,
         });
@@ -268,10 +268,10 @@ export function bindUpdateSaleFormListener() {
       }
 
       const updateSaleCustomerName = document.querySelector(
-        '#updateSaleCustomerName'
+        '#updateSaleCustomerName',
       ).value;
       const updateSaleCustomerPhone = document.querySelector(
-        '#updateSaleCustomerPhone'
+        '#updateSaleCustomerPhone',
       ).value;
       const updateSaleRemark =
         document.querySelector('#updateSaleRemark').value;
@@ -307,7 +307,7 @@ export function bindUpdateSaleFormListener() {
           shopId,
           tableBodyId: `#sale-tbody-${shopId}`,
           loadMoreButton: document.getElementById(
-            `loadMoreSaleButton_admin_${shopId}`
+            `loadMoreSaleButton_admin_${shopId}`,
           ),
           // append: false,
         });
@@ -1397,33 +1397,33 @@ export function getAdminPosTransactionList(
   deleted_at,
   deleted_by,
   shop_id,
-  serialNumber
+  serialNumber,
 ) {
   return `
     <td class="py-1">${serialNumber++}.</td>
                <td class="py-1">${business_day}</td>
                <td class="py-1 posTransTypeReport">${formatTransactionType(
-                 transaction_type
+                 transaction_type,
                )}</td>
                <td class="py-1 posPaymentMethodReport">${payment_method}</td>
                <td class="py-1 posCustomerInfo">${`${
                  customer_phone === '' ? '-' : customer_phone
                }`}</td>
                <td class="py-1 posAmountReport">&#x20A6;${formatAmountWithCommas(
-                 amount
+                 amount,
                )}</td>
                <td class="py-1 posChargesReport">&#x20A6;${formatAmountWithCommas(
-                 pos_charge_amount
+                 pos_charge_amount,
                )}</td>
                <td class="py-1 posFeePaymentMethodReport">${chargePaymentMethod}</td>
                <td class="py-1 posMachineFeeReport">&#x20A6;${formatAmountWithCommas(
-                 machine_fee
+                 machine_fee,
                )}</td>
                <td class="py-1 posTransferFeeReport">&#x20A6;${formatAmountWithCommas(
-                 transfer_fee
+                 transfer_fee,
                )}</td>
                <td class="py-1 posTaxFeeReport">&#x20A6;${formatAmountWithCommas(
-                 tax_fee
+                 tax_fee,
                )}</td>
                <td class="py-1 posPaymentMethodRef">${transaction_ref}</td> 
                <td class="py-1 posPaymentMethodRemark">${remarks}</td>
@@ -1438,7 +1438,7 @@ export function getAdminPosTransactionList(
                      : `                    
                          <button
                            class="hero-btn-outline deleteTransactionBtn"
-                           id="deleteTransactionModalBtn" data-transaction-id="${transactionId}"
+                           id="deleteTransactionModalBtn" data-transaction-id="${transactionId}" title="Delete POS Transaction"
                          >
                            <i class="fa-solid fa-trash-can"></i>
                          </button>`
@@ -1456,7 +1456,7 @@ export function getAdminPosAnalyticsList(
   total_amount,
   average_amount,
   min_amount,
-  max_amount
+  max_amount,
 ) {
   return `
       <td class="py-1">${period}</td>
@@ -1465,7 +1465,7 @@ export function getAdminPosAnalyticsList(
       <td class="py-1">${count}</td>
       <td class="py-1">₦${formatAmountWithCommas(total_amount)}</td>
       <td class="py-1">₦${formatAmountWithCommas(
-        average_amount.toFixed(2)
+        average_amount.toFixed(2),
       )}</td>
       <td class="py-1">₦${formatAmountWithCommas(min_amount)}</td>
       <td class="py-1">₦${formatAmountWithCommas(max_amount)}</td>
@@ -1481,7 +1481,7 @@ export function getAdminWithdrawalsList(
   amount,
   business_day,
   created_at,
-  creatorName
+  creatorName,
 ) {
   return `
       <td class="py-1">${index + 1}</td>
@@ -1520,7 +1520,7 @@ export function getBusinessDaySummariesList(
   total_admin_withdrawal_cash_at_hand,
   closed_by,
   closedByName,
-  shopName
+  shopName,
 ) {
   return `
       <td class="py-1">${index + 1}</td>
@@ -1542,10 +1542,10 @@ export function getBusinessDaySummariesList(
        <td class="py-1">₦${formatAmountWithCommas(opening_cash)}</td>
        <td class="py-1">₦${formatAmountWithCommas(closing_cash)}</td>
        <td class="py-1">₦${formatAmountWithCommas(
-         total_admin_withdrawal_machine
+         total_admin_withdrawal_machine,
        )}</td>
        <td class="py-1">₦${formatAmountWithCommas(
-         total_admin_withdrawal_cash_at_hand
+         total_admin_withdrawal_cash_at_hand,
        )}</td>
       <td class="py-1">${closedByName}</td>
               
@@ -1570,7 +1570,7 @@ export function getAdminSalesTransactionList(
   first_name,
   last_name,
   truncatedProductNames,
-  shop_id
+  shop_id,
 ) {
   return `
     <td class="py-1">${serialNumber++}.</td>
@@ -1578,34 +1578,35 @@ export function getAdminSalesTransactionList(
                   <td class="py-1 soldItemNameReport">${truncatedProductNames}</td>
                    <td class="py-1 soldItemStaffNameReport">${first_name} ${last_name}</td>
                     <td class="py-1 soldItemTotalAmountReport">&#x20A6;${formatAmountWithCommas(
-                      total_amount
+                      total_amount,
                     )}</td>
                     <td class="py-1 soldItemPaidAmountReport">&#x20A6;${formatAmountWithCommas(
-                      amount_paid
+                      amount_paid,
                     )}</td>
                      <td class="py-1 soldItemBalanceAmountReport">&#x20A6;${formatAmountWithCommas(
-                       balance
+                       balance,
                      )}</td>
                      <td class="py-1 soldItemDateReport">${payment_method}</td>
                           <td class="py-1 soldItemMachineFeeAmountReport">&#x20A6;${formatAmountWithCommas(
-                            machine_fee
+                            machine_fee,
                           )}</td>
                           <td class="py-1 soldItemTaxFeeAmountReport">&#x20A6;${formatAmountWithCommas(
-                            tax_fee
+                            tax_fee,
                           )}</td>
                      <td class="py-1 soldItemDateReport">${business_day}</td>
                      <td class="py-1 soldItemDateReport">${remarks}</td>
                       <td class="py-1 soldItemStatusReport">${formatSaleStatus(
-                        status
+                        status,
                       )}</td>
                       <td class="py-1 action-buttons">
-                      <button class="hero-btn-outline class=" soldItemDetailReport" data-sale-id="${id}" data-shop-id="${shop_id}"><i class="fa fa-eye"></i></button>
-          <button class="hero-btn-outline editSaleButton" id="editSaleButton" data-sale-id="${id}" data-shop-id="${shop_id}">
-            <i class="fa-solid fa-pen-to-square"></i>
+                      <button class="hero-btn-outline class=" soldItemDetailReport" data-sale-id="${id}" data-shop-id="${shop_id}"><i class="fa fa-eye" title="View Sale Detail"></i></button>
+
+          <button class="hero-btn-outline editSaleButton" id="editSaleButton" data-sale-id="${id}" data-shop-id="${shop_id}" title="Edit Sale">
+            <i class="fa-solid fa-pen-to-square" title="Edit Sale"></i>
           </button>
 
-          <button class="hero-btn-outline deleteSaleModalBtn" id="deleteSaleModalBtn" data-sale-id="${id}" data-shop-id="${shop_id}">
-            <i class="fa-solid fa-trash-can"></i>
+          <button class="hero-btn-outline deleteSaleModalBtn" id="deleteSaleModalBtn" data-sale-id="${id}" data-shop-id="${shop_id}" title="Delete Sale">
+            <i class="fa-solid fa-trash-can" title="Delete Sale"></i>
           </button>
         </td>
                        
@@ -1786,7 +1787,7 @@ export async function renderPosTable({
               deleted_at || deleted_by
                 ? 'deletedTransationRow'
                 : 'posTransactionRow'
-            }`
+            }`,
           );
           row.classList.add('table-body-row');
           row.innerHTML = getAdminPosTransactionList(
@@ -1810,14 +1811,14 @@ export async function renderPosTable({
             deleted_at,
             deleted_by,
             shop_id,
-            serialNumber++
+            serialNumber++,
           );
 
           posTableBody.appendChild(row);
 
           //  Handle Delete POS Transaction Logic
           const deleteTransactionModalBtn = row.querySelector(
-            `#deleteTransactionModalBtn`
+            `#deleteTransactionModalBtn`,
           );
 
           deleteTransactionModalBtn?.addEventListener('click', async () => {
@@ -1826,7 +1827,7 @@ export async function renderPosTable({
               deleteTransactionModalBtn.dataset.transactionId;
 
             const deleteTransactionContainer = document.querySelector(
-              '.deleteTransactionContainer'
+              '.deleteTransactionContainer',
             );
 
             if (deleteTransactionContainer) {
@@ -1834,9 +1835,8 @@ export async function renderPosTable({
               deleteTransactionContainer.dataset.transactionId = transactionId;
 
               // Fetch Shop detail
-              const transactionDetail = await getPosTransactionsById(
-                transactionId
-              );
+              const transactionDetail =
+                await getPosTransactionsById(transactionId);
 
               console.log('transactionDetail', transactionDetail.data);
 
@@ -1971,7 +1971,7 @@ export async function renderPosAnalyticsTable({
           total_amount,
           average_amount,
           min_amount,
-          max_amount
+          max_amount,
         );
 
         posAnalyticsTableBody.appendChild(row);
@@ -2095,7 +2095,7 @@ export async function renderAdminWithdrawalsTable({
           amount,
           business_day,
           created_at,
-          creatorName
+          creatorName,
         );
 
         adminWithdrawalsTableBody.appendChild(row);
@@ -2261,7 +2261,7 @@ export async function renderBusinessDaySummariesTable({
           total_admin_withdrawal_cash_at_hand,
           closed_by,
           closedByName,
-          shopName
+          shopName,
         );
 
         businessDaySummariesTableBody.appendChild(row);
@@ -2347,12 +2347,12 @@ export async function renderFinancialSummaryTable({
       const periodText =
         date_from && date_to
           ? `${formatDateTimeReadable(date_from)} - ${formatDateTimeReadable(
-              date_to
+              date_to,
             )}`
           : 'All Time';
 
       const financialSummaryPeriod = document.querySelector(
-        '#financialSummaryPeriod'
+        '#financialSummaryPeriod',
       );
 
       if (financialSummaryPeriod)
@@ -2365,38 +2365,38 @@ export async function renderFinancialSummaryTable({
       financialSummaryTableBody.innerHTML = '';
 
       const totalFinCapitalDepositsEl = document.getElementById(
-        'totalFinCapitalDeposits'
+        'totalFinCapitalDeposits',
       );
 
       if (totalFinCapitalDepositsEl)
         totalFinCapitalDepositsEl.textContent = `₦${formatAmountWithCommas(
-          capital_deposits
+          capital_deposits,
         )}`;
 
       const totalFinDepositsEl = document.getElementById('totalFinDeposits');
       if (totalFinDepositsEl)
         totalFinDepositsEl.textContent = `₦${formatAmountWithCommas(
-          total_deposits
+          total_deposits,
         )}`;
 
       const totalWithdrawalsEl = document.getElementById('totalWithdrawals');
       if (totalWithdrawalsEl)
         totalWithdrawalsEl.textContent = `₦${formatAmountWithCommas(
-          total_withdrawals
+          total_withdrawals,
         )}`;
 
       const totalWithdrawalTransferEl = document.getElementById(
-        'totalWithdrawalTransfer'
+        'totalWithdrawalTransfer',
       );
       if (totalWithdrawalTransferEl)
         totalWithdrawalTransferEl.textContent = `₦${formatAmountWithCommas(
-          total_transfers
+          total_transfers,
         )}`;
 
       const totalBillPaymentEl = document.getElementById('totalBillPayment');
       if (totalBillPaymentEl)
         totalBillPaymentEl.textContent = `₦${formatAmountWithCommas(
-          total_bill_payments
+          total_bill_payments,
         )}`;
 
       const totalTransactionsEl = document.getElementById('totalTransactions');
@@ -2406,7 +2406,7 @@ export async function renderFinancialSummaryTable({
 
       // ===== Populate the summary table =====
       const financialSummaryBody = document.getElementById(
-        `financialSummaryBody-${shopId}`
+        `financialSummaryBody-${shopId}`,
       );
 
       if (financialSummaryBody) financialSummaryBody.innerHTML = '';
@@ -2577,16 +2577,16 @@ export async function renderSalesTable({
           } catch (detailError) {
             console.error(
               `Error fetching details for sale ID ${saleSummary.id}:`,
-              detailError
+              detailError,
             );
             return { ...saleSummary, SaleItems: [] }; // Handle error, return empty SaleItems
           }
-        }
+        },
       );
 
       // Wait for all sale details to be fetched in parallel
       const enrichedSalesTransactions = await Promise.all(
-        salesWithDetailsPromises
+        salesWithDetailsPromises,
       );
 
       // Now, iterate over the enriched data to group by date and render
@@ -2608,15 +2608,12 @@ export async function renderSalesTable({
       const { totalCostPrice, totalSoldPrice, totalProfit } =
         calculateProfitMetrics(enrichedSalesTransactions);
 
-      document.getElementById(
-        'totalCost'
-      ).textContent = `₦${formatAmountWithCommas(totalCostPrice)}`;
-      document.getElementById(
-        'totalSold'
-      ).textContent = `₦${formatAmountWithCommas(totalSoldPrice)}`;
-      document.getElementById(
-        'totalProfit'
-      ).textContent = `₦${formatAmountWithCommas(totalProfit)}`;
+      document.getElementById('totalCost').textContent =
+        `₦${formatAmountWithCommas(totalCostPrice)}`;
+      document.getElementById('totalSold').textContent =
+        `₦${formatAmountWithCommas(totalSoldPrice)}`;
+      document.getElementById('totalProfit').textContent =
+        `₦${formatAmountWithCommas(totalProfit)}`;
 
       Object.entries(groupedByDate).forEach(([date, sales]) => {
         let serialNumber = 1;
@@ -2662,7 +2659,7 @@ export async function renderSalesTable({
 
           // --- Truncate Item Names ---
           const productNames = SaleItems.map(
-            (item) => item.Product?.name || 'Unknown Product'
+            (item) => item.Product?.name || 'Unknown Product',
           ); // Added null check for Product.name
           const truncatedProductNames = truncateProductNames(productNames, {
             maxItems: 3,
@@ -2698,7 +2695,7 @@ export async function renderSalesTable({
             first_name,
             last_name,
             truncatedProductNames,
-            shop_id
+            shop_id,
           );
 
           row.addEventListener('click', async (e) => {
@@ -2721,7 +2718,7 @@ export async function renderSalesTable({
             // console.log('shopId', shopId);
 
             const deleteSaleContainer = document.querySelector(
-              '.deleteSaleContainer'
+              '.deleteSaleContainer',
             );
 
             if (deleteSaleContainer) {
@@ -3199,7 +3196,7 @@ export async function renderMonthlySummary(year, month, shopId) {
     };
 
     const chartEl = document.querySelector(
-      `#monthlyPaymentMethodChart_${shopId}`
+      `#monthlyPaymentMethodChart_${shopId}`,
     );
 
     if (window[`monthlyPaymentMethodChartInstance_${shopId}`]) {

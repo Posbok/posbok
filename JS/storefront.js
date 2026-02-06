@@ -31,6 +31,7 @@ import {
 import { closeModal, showToast } from './script';
 import {
   fetchStorefrontStatus,
+  getProductReviews,
   setupStorefront,
   uploadStorefrontImages,
 } from './apiServices/storefront/storefrontResources.js';
@@ -45,7 +46,7 @@ let enrichedShopData = [];
 let businessId = null;
 
 const adminStorefrontManagementPage = document.body.classList.contains(
-  'adminStorefrontManagementPage'
+  'adminStorefrontManagementPage',
 );
 
 if (adminStorefrontManagementPage) {
@@ -76,10 +77,10 @@ document.addEventListener('DOMContentLoaded', function () {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
   const updateStorefrontModalBtn = document.querySelector(
-    '.updateStorefrontModalBtn'
+    '.updateStorefrontModalBtn',
   );
   const updateStorefrontDataContainer = document.querySelector(
-    '.updateStorefrontDataContainer'
+    '.updateStorefrontDataContainer',
   );
 
   if (updateStorefrontModalBtn) {
@@ -156,7 +157,7 @@ document.getElementById('useLocationBtn')?.addEventListener('click', () => {
     },
     () => {
       alert('Unable to retrieve location');
-    }
+    },
   );
 });
 
@@ -175,7 +176,7 @@ document.getElementById('useLocationBtn_2')?.addEventListener('click', () => {
     },
     () => {
       alert('Unable to retrieve location');
-    }
+    },
   );
 });
 
@@ -202,7 +203,7 @@ export function createStorefrontForm() {
         whatsapp_number: form.storefrontWhatsappPhoneNumber.value,
         cac_registration: form.storefrontCacNumber.value || 'N/A',
         offers_delivery: form.querySelector(
-          'input[name="deliveryStatus"]:checked'
+          'input[name="deliveryStatus"]:checked',
         )?.value,
         //   display_quantity_mode: form.querySelector(
         //     'input[name="displayQuantity"]:checked'
@@ -212,7 +213,7 @@ export function createStorefrontForm() {
       console.log('Setting up Storefront with:', storeData);
 
       const createStorefrontModalBtn = document.querySelector(
-        '.createStorefrontModalBtn'
+        '.createStorefrontModalBtn',
       );
 
       try {
@@ -229,7 +230,7 @@ export function createStorefrontForm() {
         if (storefrontResData) {
           console.log(
             'storefrontResData received successfully:',
-            storefrontResData
+            storefrontResData,
           );
 
           const imageFormData = new FormData();
@@ -237,16 +238,15 @@ export function createStorefrontForm() {
           imageFormData.append('business_logo', form.businessLogo.files[0]);
           imageFormData.append(
             'store_front_image',
-            form.storeFrontImage.files[0]
+            form.storeFrontImage.files[0],
           );
           imageFormData.append(
             'sign_board_image',
-            form.signBoardImage.files[0]
+            form.signBoardImage.files[0],
           );
 
-          const storefrontImageDetails = await uploadStorefrontImages(
-            imageFormData
-          );
+          const storefrontImageDetails =
+            await uploadStorefrontImages(imageFormData);
 
           if (!storefrontImageDetails) {
             showToast('fail', storefrontImageDetails.message);
@@ -255,7 +255,7 @@ export function createStorefrontForm() {
 
           console.log(
             'storefrontImageResData received successfully:',
-            storefrontImageDetails
+            storefrontImageDetails,
           );
 
           if (storefrontImageDetails) {
@@ -294,10 +294,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const updateCacInput = document.getElementById('updateStorefrontCacNumber');
   const updateDeliveryYes = document.getElementById(
-    'updateStorefrontDeliveryStatusTrue'
+    'updateStorefrontDeliveryStatusTrue',
   );
   const updateDeliveryNo = document.getElementById(
-    'updateStorefrontDeliveryStatusFalse'
+    'updateStorefrontDeliveryStatusFalse',
   );
 
   if (!cacInput || !deliveryYes || !deliveryNo) return;
@@ -358,7 +358,7 @@ export function updateStorefrontForm() {
       whatsapp_number: form.updateStorefrontWhatsappPhoneNumber.value,
       cac_registration: form.updateStorefrontCacNumber.value || 'N/A',
       offers_delivery: form.querySelector(
-        'input[name="deliveryStatus"]:checked'
+        'input[name="deliveryStatus"]:checked',
       )?.value,
       // display_quantity_mode: form.querySelector(
       //   'input[name="displayQuantity"]:checked'
@@ -387,13 +387,13 @@ export function updateStorefrontForm() {
       if (form.updateStoreFrontImage.files[0]) {
         imageFormData.append(
           'store_front_image',
-          form.updateStoreFrontImage.files[0]
+          form.updateStoreFrontImage.files[0],
         );
       }
       if (form.updateSignBoardImage.files[0]) {
         imageFormData.append(
           'sign_board_image',
-          form.updateSignBoardImage.files[0]
+          form.updateSignBoardImage.files[0],
         );
       }
 
@@ -503,7 +503,7 @@ export function renderStorefront(storefront) {
   // Initialize new map
   storefrontMap = L.map('storefront-map').setView(
     [storefront.latitude, storefront.longitude],
-    13
+    13,
   );
   var marker = L.marker([
     `${storefront.latitude}`,
@@ -512,7 +512,7 @@ export function renderStorefront(storefront) {
 
   marker
     .bindPopup(
-      `<b></b>${storefront.Business.business_name}<br>${storefront.address}`
+      `<b></b>${storefront.Business.business_name}<br>${storefront.address}`,
     )
     .openPopup();
 
@@ -544,13 +544,11 @@ function populateUpdateStorefrontForm(storefront) {
 
   // Delivery status radio
   if (storefront.offers_delivery) {
-    document.getElementById(
-      'updateStorefrontDeliveryStatusTrue'
-    ).checked = true;
+    document.getElementById('updateStorefrontDeliveryStatusTrue').checked =
+      true;
   } else {
-    document.getElementById(
-      'updateStorefrontDeliveryStatusFalse'
-    ).checked = true;
+    document.getElementById('updateStorefrontDeliveryStatusFalse').checked =
+      true;
   }
 
   // Display quantity mode
@@ -576,17 +574,17 @@ function populateUpdateStorefrontForm(storefront) {
   setImagePreview(
     'updateBusinessLogo',
     'previewBusinessLogo',
-    storefront.business_logo
+    storefront.business_logo,
   );
   setImagePreview(
     'updateStoreFrontImage',
     'previewStoreFrontImage',
-    storefront.store_front_image
+    storefront.store_front_image,
   );
   setImagePreview(
     'updateSignBoardImage',
     'previewSignBoardImage',
-    storefront.sign_board_image
+    storefront.sign_board_image,
   );
 }
 
@@ -617,6 +615,132 @@ export function initializeStorefront() {
   document.getElementById('availableStoreInfo').classList.add('hidden');
 }
 
+// Fetch Storefront Info
+
+let storefrontReviews = [];
+
+async function loadStorefrontReviews() {
+  const response = await getProductReviews('all', 1, 20);
+
+  if (!response?.data?.reviews) return;
+
+  storefrontReviews = response.data.reviews;
+
+  updatePendingBadge(storefrontReviews);
+  renderReviews(storefrontReviews, 'all');
+}
+
+document.addEventListener('DOMContentLoaded', loadStorefrontReviews);
+
+function getReviewStatus(review) {
+  if (review.is_approved === true) return 'approved';
+  return 'pending'; // until backend adds rejected state
+}
+
+function renderReviews(reviews, filter = 'all') {
+  const container = document.getElementById('reviewsList');
+  container.innerHTML = '';
+
+  let filtered = reviews;
+
+  if (filter === 'pending') {
+    filtered = reviews.filter((r) => !r.is_approved);
+  }
+
+  if (filter === 'approved') {
+    filtered = reviews.filter((r) => r.is_approved);
+  }
+
+  if (!filtered.length) {
+    container.innerHTML = `<p class="muted-text heading-minitext">No reviews found.</p>`;
+    return;
+  }
+
+  filtered.forEach((review) => {
+    const status = getReviewStatus(review);
+    const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+
+    container.insertAdjacentHTML(
+      'beforeend',
+      `
+      <div class="review-card ${status}" data-review-id="${review.id}">
+        <div class="review-header">
+          <h1 class="review-title heading-subtext">${review.review_title}</h1>
+
+          <div class="review-header-right">
+            <span class="review-rating heading-subtext">${stars}</span>
+            <span class="review-status ${status}">
+              ${status.charAt(0).toUpperCase() + status.slice(1)}
+            </span>
+          </div>
+        </div>
+
+        <h2 class="review-text heading-minitext">
+          ${review.review_text}
+        </h2>
+
+        <div class="review-meta muted-text heading-minitext">
+          <span>Product: ${review.Product?.name || 'N/A'}</span> ·
+          <span>By: ${review.customer_name}</span> ·
+          <span>${new Date(review.created_at).toLocaleDateString()}</span>
+        </div>
+
+        <div class="review-actions">
+          <button class="openModerateModal hero-btn-dark_square"
+            data-review-id="${review.id}">
+            Moderate
+          </button>
+        </div>
+      </div>
+      `,
+    );
+  });
+}
+
+function updatePendingBadge(reviews) {
+  const count = reviews.filter((r) => !r.is_approved).length;
+  document.getElementById('pendingReviewsCount').textContent = count;
+}
+
+// Storefront Tab Switching Logic
+document.addEventListener('click', function (e) {
+  const tabBtn = e.target.closest('.storefront-tab-btn');
+  if (!tabBtn) return;
+
+  const targetTab = tabBtn.dataset.tab;
+
+  document
+    .querySelectorAll('.storefront-tab-btn')
+    .forEach((btn) => btn.classList.remove('active'));
+  tabBtn.classList.add('active');
+
+  document
+    .querySelectorAll('.storefront-tab-content')
+    .forEach((tab) => tab.classList.remove('active'));
+
+  const activeTab = document.getElementById(targetTab);
+  if (activeTab) activeTab.classList.add('active');
+
+  if (targetTab === 'reviewsTab') {
+    loadStorefrontReviews();
+  }
+});
+
+document.addEventListener('click', function (e) {
+  const filterBtn = e.target.closest('.review-filter-btn');
+  if (!filterBtn) return;
+
+  document
+    .querySelectorAll('.review-filter-btn')
+    .forEach((btn) => btn.classList.remove('active'));
+
+  filterBtn.classList.add('active');
+
+  const filter = filterBtn.dataset.filter;
+  renderReviews(storefrontReviews, filter);
+});
+
+// Business Logo Size Check on Update Storefront Form
 document
   .getElementById('updateBusinessLogo')
   ?.addEventListener('change', function (e) {

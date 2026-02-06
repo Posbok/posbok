@@ -60,18 +60,18 @@ export function populateShopsTable(shopData = []) {
         <td class="py-1 shopName">${shop.shop_name}</td>
         <td class="py-1 shopLocation">${shop.location}</td>
         <td class="py-1 shopServiceType">${formatServicePermission(
-          shop.service_type
+          shop.service_type,
         )}</td>
         <td class="py-1 shopManager">${staffNames || '—'}</td>
         <td class="py-1 action-buttons">
           <button class="hero-btn-outline editShopButton" data-shop-id="${
             shop.id
-          }">
+          }"  title="Edit Shop Details">
             <i class="fa-solid fa-pen-to-square"></i>
           </button>
           <button class="hero-btn-outline deleteShopButtonModal" data-shop-id="${
             shop.id
-          }">
+          }" title="Delete Shop">
             <i class="fa-solid fa-trash-can"></i>
           </button>
         </td>
@@ -88,7 +88,7 @@ export function populateShopsTable(shopData = []) {
       const shopId = deleteShopButtonModal.dataset.shopId;
 
       const deleteShopContainer = document.querySelector(
-        '.deleteShopContainer'
+        '.deleteShopContainer',
       );
 
       if (deleteShopContainer) {
@@ -118,7 +118,7 @@ export function populateShopsTable(shopData = []) {
       const shopId = updateShopBtn.dataset.shopId;
 
       const adminUpdateShopDataContainer = document.querySelector(
-        '.adminUpdateShopData'
+        '.adminUpdateShopData',
       );
 
       if (adminUpdateShopDataContainer) {
@@ -220,7 +220,7 @@ export function setupUpdateShopForm(shop) {
   document.getElementById('updateShopAddress').value = shop.location || '';
 
   const updateAccessTypeCheckboxes = document.querySelectorAll(
-    'input[name="updateShopAccessType"]'
+    'input[name="updateShopAccessType"]',
   );
   updateAccessTypeCheckboxes.forEach((checkbox) => {
     checkbox.checked = checkbox.value === shop.service_type;
@@ -241,7 +241,7 @@ export function initUpdateShopFormListener() {
     const updateShopAddress =
       document.getElementById('updateShopAddress').value;
     const checkedRadio = document.querySelector(
-      'input[name="updateShopAccessType"]:checked'
+      'input[name="updateShopAccessType"]:checked',
     );
     const updateAccessTypeValue = checkedRadio ? checkedRadio.value : null;
 

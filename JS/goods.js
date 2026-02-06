@@ -53,7 +53,7 @@ const deleteProductButton = document.querySelector('.deleteProductButton');
 const addProductName = document.getElementById('addProductName');
 const addProductBoughtPrice = document.getElementById('addProductBoughtPrice');
 const addProductSellingPrice = document.getElementById(
-  'addProductSellingPrice'
+  'addProductSellingPrice',
 );
 const addProductQuantity = document.getElementById('addProductQuantity');
 
@@ -106,7 +106,7 @@ export function openAddExistingProductModalBtn() {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
   const addExistingProductContainer = document.querySelector(
-    '.addExistingProduct'
+    '.addExistingProduct',
   );
 
   if (addExistingProductContainer)
@@ -133,7 +133,7 @@ export function openProductBarcodeImageModal() {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
   const getBarcodeImageContainer = document.querySelector(
-    '.getBarcodeImageContainer'
+    '.getBarcodeImageContainer',
   );
 
   if (getBarcodeImageContainer)
@@ -148,7 +148,7 @@ export function openDeleteProductModal() {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
   const deleteProductContainer = document.querySelector(
-    '.deleteProductContainer'
+    '.deleteProductContainer',
   );
 
   if (deleteProductContainer) deleteProductContainer.classList.add('active');
@@ -176,7 +176,7 @@ export function openDeleteCategoryModal() {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
   const deleteCategoryContainer = document.querySelector(
-    '.deleteCategoryContainer'
+    '.deleteCategoryContainer',
   );
 
   if (deleteCategoryContainer) deleteCategoryContainer.classList.add('active');
@@ -218,10 +218,10 @@ function setupInventoryLogFilters({
   renderInventoryLogTableFn,
 }) {
   const applyBtn = document.getElementById(
-    `applyInventoryLogFiltersBtn_admin_${shopId}`
+    `applyInventoryLogFiltersBtn_admin_${shopId}`,
   );
   const resetBtn = document.getElementById(
-    `resetInventoryLogFiltersBtn_${shopId}`
+    `resetInventoryLogFiltersBtn_${shopId}`,
   );
 
   if (!applyBtn || !resetBtn) return;
@@ -262,7 +262,7 @@ export function openExportStockTakingDataModal() {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
   const exportStockTakingDataContainer = document.querySelector(
-    '.exportStockTakingData'
+    '.exportStockTakingData',
   );
 
   if (exportStockTakingDataContainer)
@@ -289,11 +289,11 @@ export function bindExportStockTakingDataFormListener() {
       e.preventDefault();
 
       const stockTakingShopDropdown = document.querySelector(
-        '#stockTakingShopDropdown'
+        '#stockTakingShopDropdown',
       ).value;
 
       const exportStockTakingDataFormatDropdown = document.querySelector(
-        '#exportStockTakingDataFormatDropdown'
+        '#exportStockTakingDataFormatDropdown',
       ).value;
 
       const shopId = stockTakingShopDropdown;
@@ -304,7 +304,7 @@ export function bindExportStockTakingDataFormListener() {
 
       // console.log('Sending POS Capital with:', exportBusinessDetails);
       const exportStockTakingDataBtn = document.querySelector(
-        '.exportStockTakingDataBtn'
+        '.exportStockTakingDataBtn',
       );
 
       try {
@@ -312,7 +312,7 @@ export function bindExportStockTakingDataFormListener() {
         showGlobalLoader();
         const exportBusinessResponse = await getExportStockTakingData(
           shopId,
-          exportStockTakingDataFormatDropdown
+          exportStockTakingDataFormatDropdown,
         );
 
         if (exportBusinessResponse) {
@@ -372,7 +372,7 @@ export function addProductCategoryForm() {
       const addCategoryName = document.querySelector('#addCategoryName').value;
 
       const addCategoryDescription = document.querySelector(
-        '#addCategoryDescription'
+        '#addCategoryDescription',
       ).value;
 
       const addProductCategoryDetails = {
@@ -383,7 +383,7 @@ export function addProductCategoryForm() {
       // console.log('Add Category Details:', addProductCategoryDetails);
 
       const addCategorySubmitBtn = document.querySelector(
-        '.addCategorySubmitBtn'
+        '.addCategorySubmitBtn',
       );
 
       try {
@@ -438,13 +438,13 @@ export function populateCategoryTable(productCategoriesData) {
         <td class="py-1 action-buttons">
           <button class="hero-btn-outline openUpdateCategoryButton" data-category-id="${
             category.id
-          }">
+          }"  title="Update Category">
             <i class="fa-solid fa-pen-to-square"></i>
           </button>
 
           <button class="hero-btn-outline deleteCategoryButton" data-category-id="${
             category.id
-          }">
+          }" title="Delete Category">
             <i class="fa-solid fa-trash-can"></i>
           </button>
         </td>
@@ -465,7 +465,7 @@ export function populateCategoryTable(productCategoriesData) {
       const categoryId = deleteCategoryButton.dataset.categoryId;
 
       const deleteCategoryContainer = document.querySelector(
-        '.deleteCategoryContainer'
+        '.deleteCategoryContainer',
       );
 
       if (deleteCategoryContainer) {
@@ -498,7 +498,7 @@ export function populateCategoryTable(productCategoriesData) {
       const categoryId = updateCategoryBtn.dataset.categoryId;
 
       const updateCategoryModalContainer = document.querySelector(
-        '.updateCategoryModal'
+        '.updateCategoryModal',
       );
 
       if (updateCategoryModalContainer) {
@@ -528,15 +528,15 @@ export function populateCategoryTable(productCategoriesData) {
 
 export function populateGoodsShopDropdown(shopList = []) {
   const inventoryShopDropdown = document.getElementById(
-    'inventoryShopDropdown'
+    'inventoryShopDropdown',
   );
 
   const addExistingProductShopDropdown = document.getElementById(
-    'addExistingProductShopDropdown'
+    'addExistingProductShopDropdown',
   );
 
   const stockTakingShopDropdown = document.getElementById(
-    'stockTakingShopDropdown'
+    'stockTakingShopDropdown',
   );
 
   if (inventoryShopDropdown) {
@@ -585,7 +585,7 @@ export function populateCategoriesDropdown(categoriesData = []) {
   const addProductCategoryDropdown =
     document.getElementById('addProductCategory');
   const updateProductCategoryDropdown = document.getElementById(
-    'updateProductCategory'
+    'updateProductCategory',
   );
   if (!addProductCategoryDropdown || !updateProductCategoryDropdown) return;
 
@@ -620,15 +620,15 @@ export function createProductForm() {
       e.preventDefault();
 
       const inventoryShopDropdown = document.querySelector(
-        '#inventoryShopDropdown'
+        '#inventoryShopDropdown',
       ).value;
       const addProductCategory = document.querySelector(
-        '#addProductCategory'
+        '#addProductCategory',
       ).value;
       const addProductName = document.querySelector('#addProductName').value;
 
       const addProductDescription = document.querySelector(
-        '#addProductDescription'
+        '#addProductDescription',
       ).value;
 
       const addItemDetails = document.querySelector('#addProductDetails').value;
@@ -636,44 +636,44 @@ export function createProductForm() {
       const addProductSku = document.querySelector('#addProductSku').value;
 
       const addProductBoughtPrice = document.querySelector(
-        '#addProductBoughtPrice'
+        '#addProductBoughtPrice',
       ).value;
 
       const addProductSellingPrice = document.querySelector(
-        '#addProductSellingPrice'
+        '#addProductSellingPrice',
       ).value;
 
       const addProductQuantity = document.querySelector(
-        '#addProductQuantity'
+        '#addProductQuantity',
       ).value;
 
       const productExpiryDate = document.querySelector('#expiryDate').value;
 
       const lowStockQuantity = document.querySelector(
-        '#addLowStockQuantityQuantity'
+        '#addLowStockQuantityQuantity',
       ).value;
 
       const supposedPrice = document.querySelector(
-        '#addProductSupposedPrice'
+        '#addProductSupposedPrice',
       ).value;
 
       //  Publish Status checkboxes
       const publishStatusCheckboxes = document.querySelectorAll(
-        'input[name="publishStatus"]:checked'
+        'input[name="publishStatus"]:checked',
       );
 
       const publishStatus = Array.from(publishStatusCheckboxes).map(
-        (cb) => cb.value
+        (cb) => cb.value,
       );
       const publishStatusValue = publishStatus[0] || null;
 
       //  Display Quantity checkboxes
       const displayQuantitytatusCheckboxes = document.querySelectorAll(
-        'input[name="displayQuantityStatus"]:checked'
+        'input[name="displayQuantityStatus"]:checked',
       );
 
       const displayQuantitytatus = Array.from(
-        displayQuantitytatusCheckboxes
+        displayQuantitytatusCheckboxes,
       ).map((cb) => cb.value);
       const displayQuantitytatusValue = displayQuantitytatus[0] || null;
 
@@ -755,7 +755,7 @@ export function createProductForm() {
         try {
           const productImageDetails = await uploadProductImages(
             imageFormData,
-            productId
+            productId,
           );
 
           if (!productImageDetails) {
@@ -781,11 +781,11 @@ export function createProductForm() {
             `❎ ${
               productImageDetailsErr.message ||
               'Failed to Upload Product Image to Inventory'
-            }`
+            }`,
           );
           console.error(
             'Error During Uploading Product Image to Inventory',
-            productImageDetailsErr.message
+            productImageDetailsErr.message,
           );
         }
 
@@ -888,7 +888,7 @@ export function bindAddExistingProductFormListener() {
 
   const newQtyInput = document.querySelector('#itemNewQuantityAvailable');
   const prevQtyDisplay = document.querySelector(
-    '.itemPreviousQuantityAvailable'
+    '.itemPreviousQuantityAvailable',
   );
 
   newQtyInput.addEventListener('input', function (e) {
@@ -937,27 +937,27 @@ export function bindAddExistingProductFormListener() {
 
       // Subscripts
       const itemPreviousPurchasePrice = document.querySelector(
-        '.itemPreviousPurchasePrice'
+        '.itemPreviousPurchasePrice',
       );
       const itemPreviousSellingPrice = document.querySelector(
-        '.itemPreviousSellingPrice'
+        '.itemPreviousSellingPrice',
       );
       const itemPreviousQuantityAvailable = document.querySelector(
-        '.itemPreviousQuantityAvailable'
+        '.itemPreviousQuantityAvailable',
       );
 
       // Inputs
 
       const itemNewPurchasePrice = document.querySelector(
-        '#itemNewPurchasePrice'
+        '#itemNewPurchasePrice',
       ).value;
 
       const itemNewSellingPrice = document.querySelector(
-        '#itemNewSellingPrice'
+        '#itemNewSellingPrice',
       ).value;
 
       const itemNewQuantityAvailable = document.querySelector(
-        '#itemNewQuantityAvailable'
+        '#itemNewQuantityAvailable',
       );
 
       const updateProductDetails = {
@@ -988,7 +988,7 @@ export function bindAddExistingProductFormListener() {
       // );
 
       const addExistingProductModalBtn = document.querySelector(
-        '.addExistingProductModalBtn'
+        '.addExistingProductModalBtn',
       );
 
       try {
@@ -996,7 +996,7 @@ export function bindAddExistingProductFormListener() {
         const updatedProductData = await updateProduct(
           productId,
           updateProductDetails,
-          shopId
+          shopId,
         );
 
         if (!updatedProductData) {
@@ -1010,13 +1010,13 @@ export function bindAddExistingProductFormListener() {
           const inventoryData = await updateProductInventory(
             updateInventoryDetails,
             shopId,
-            productId
+            productId,
           );
 
           if (inventoryData) {
             showToast(
               'success',
-              `✅ ${inventoryData.message} with SKU: ${updatedProductData.data.sku}`
+              `✅ ${inventoryData.message} with SKU: ${updatedProductData.data.sku}`,
             );
             closeModal();
             clearFormInputs();
@@ -1033,11 +1033,11 @@ export function bindAddExistingProductFormListener() {
             'fail',
             `❎ ${
               inventoryDataErr.message || 'Failed to Add Existing Inventory'
-            }`
+            }`,
           );
           console.error(
             'Error During Adding Existing Inventory:',
-            inventoryDataErr.message
+            inventoryDataErr.message,
           );
         }
 
@@ -1049,7 +1049,7 @@ export function bindAddExistingProductFormListener() {
         console.error('Error During Adding Existing Product:', err);
         showToast(
           'fail',
-          `❎ ${err.message} || 'Failed to Add Existing Product'}`
+          `❎ ${err.message} || 'Failed to Add Existing Product'}`,
         );
         return;
       }
@@ -1058,16 +1058,16 @@ export function bindAddExistingProductFormListener() {
 }
 
 const adminSellProductSearchSection = document.querySelector(
-  '.addExistingSellProductSearch-section'
+  '.addExistingSellProductSearch-section',
 );
 const adminSellProductCategorySection = document.querySelector(
-  '.addExistingSellProductCategory-section'
+  '.addExistingSellProductCategory-section',
 );
 const adminSellProductName = document.querySelector(
-  '.addExistingSellProductName'
+  '.addExistingSellProductName',
 );
 const adminAutocompleteList = document.getElementById(
-  'addExistingAutocompleteList'
+  'addExistingAutocompleteList',
 );
 // const
 
@@ -1081,7 +1081,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 const addExistingProductShopDropdown = document.getElementById(
-  'addExistingProductShopDropdown'
+  'addExistingProductShopDropdown',
 );
 
 export function addExistingProductForm() {
@@ -1156,7 +1156,8 @@ async function displayAllProducts(selectedShopId) {
         // Filter by selected category (if any)
         if (activeCategoryId !== null) {
           filteredProducts = filteredProducts.filter(
-            (product) => product.Product.ProductCategory.id === activeCategoryId
+            (product) =>
+              product.Product.ProductCategory.id === activeCategoryId,
           );
         }
 
@@ -1238,7 +1239,7 @@ async function displayAllCategories() {
         filteredProducts = filteredProducts.filter(
           (product) =>
             product.Product.name.toLowerCase().includes(inputValue) ||
-            product.Product.description.toLowerCase().includes(inputValue)
+            product.Product.description.toLowerCase().includes(inputValue),
         );
       }
 
@@ -1271,7 +1272,7 @@ async function displayAllCategories() {
 
         let filteredProducts = allProducts.filter(
           //  (product) => product.Product.ProductCategory.id === categoryId
-          (product) => product.Product.ProductCategory.id === activeCategoryId
+          (product) => product.Product.ProductCategory.id === activeCategoryId,
         );
 
         const inputValue = searchSellProdutItem.value.toLowerCase().trim();
@@ -1280,7 +1281,7 @@ async function displayAllCategories() {
           filteredProducts = filteredProducts.filter(
             (product) =>
               product.Product.name.toLowerCase().includes(inputValue) ||
-              product.Product.description.toLowerCase().includes(inputValue)
+              product.Product.description.toLowerCase().includes(inputValue),
           );
         }
 
@@ -1350,13 +1351,13 @@ function updateAutocompleteList(products) {
   adminAutocompleteList.innerHTML = '';
 
   const itemPreviousPurchasePrice = document.querySelector(
-    '.itemPreviousPurchasePrice'
+    '.itemPreviousPurchasePrice',
   );
   const itemPreviousSellingPrice = document.querySelector(
-    '.itemPreviousSellingPrice'
+    '.itemPreviousSellingPrice',
   );
   const itemPreviousQuantityAvailable = document.querySelector(
-    '.itemPreviousQuantityAvailable'
+    '.itemPreviousQuantityAvailable',
   );
 
   const productInput = document.getElementById('productInput');
@@ -1391,10 +1392,10 @@ function updateAutocompleteList(products) {
 
         productInput.value = product.Product.name;
         itemPreviousPurchasePrice.innerText = formatAmountWithCommas(
-          product.Product.purchase_price
+          product.Product.purchase_price,
         );
         itemPreviousSellingPrice.innerText = formatAmountWithCommas(
-          product.Product.selling_price
+          product.Product.selling_price,
         );
         itemPreviousQuantityAvailable.innerText = product.quantity;
 
@@ -1432,65 +1433,68 @@ export function bindUpdateProductFormListener() {
       }
 
       const updateProductCategory = document.querySelector(
-        '#updateProductCategory'
+        '#updateProductCategory',
       ).value;
       const updateProductName =
         document.querySelector('#updateProductName').value;
       const updateProductDescription = document.querySelector(
-        '#updateProductDescription'
+        '#updateProductDescription',
       ).value;
-      const updateItemDetails = document.querySelector(
-        '#updateProductDetails'
-      ).value;
+      // const updateItemDetails = document.querySelector(
+      //   '#updateProductDetails',
+      // ).value;
       const updateProductSku =
         document.querySelector('#updateProductSku').value;
       const updateProductBoughtPrice = document.querySelector(
-        '#updateProductBoughtPrice'
+        '#updateProductBoughtPrice',
       ).value;
       const updateProductSellingPrice = document.querySelector(
-        '#updateProductSellingPrice'
+        '#updateProductSellingPrice',
       ).value;
       const updateProductQuantity = document.querySelector(
-        '#updateProductQuantity'
+        '#updateProductQuantity',
       ).value;
 
       const updateProductExpiryDate =
         document.querySelector('#updateExpiryDate').value;
 
       const updateLowStockQuantity = document.querySelector(
-        '#updateLowStockQuantityQuantity'
+        '#updateLowStockQuantityQuantity',
       ).value;
 
       const updateSupposedPrice = document.querySelector(
-        '#updateSupposedPrice'
+        '#updateSupposedPrice',
       ).value;
 
       //  Publish Status checkboxes
       const updatePublishStatusCheckboxes = document.querySelectorAll(
-        'input[name="updatePublishStatus"]:checked'
+        'input[name="updatePublishStatus"]:checked',
       );
 
       const updatePublishStatus = Array.from(updatePublishStatusCheckboxes).map(
-        (cb) => cb.value
+        (cb) => cb.value,
       );
       const updatePublishStatusValue = updatePublishStatus[0] || null;
 
       //  Display Quantity checkboxes
       const updateDisplayQuantitytatusCheckboxes = document.querySelectorAll(
-        'input[name="updateDisplayQuantityStatus"]:checked'
+        'input[name="updateDisplayQuantityStatus"]:checked',
       );
 
       const displayQuantitytatus = Array.from(
-        updateDisplayQuantitytatusCheckboxes
+        updateDisplayQuantitytatusCheckboxes,
       ).map((cb) => cb.value);
 
       const updateDisplayQuantitytatusValue = displayQuantitytatus[0] || null;
+
+      let finalUpdateSku_Barcode =
+        updateProductSku !== '' ? updateProductSku : generateSKU(businessName);
 
       const updateProductDetails = {
         categoryId: updateProductCategory,
         name: updateProductName,
         description: updateProductDescription,
-        sku: updateProductSku,
+        sku: finalUpdateSku_Barcode,
         purchasePrice: Number(getAmountForSubmission(updateProductBoughtPrice)),
         sellingPrice: Number(getAmountForSubmission(updateProductSellingPrice)),
         //
@@ -1499,21 +1503,21 @@ export function bindUpdateProductFormListener() {
         supposedPrice: Number(getAmountForSubmission(updateSupposedPrice)),
         isPublished: updatePublishStatusValue,
         displayQuantity: updateDisplayQuantitytatusValue,
-        productDetails: updateItemDetails,
+        //   productDetails: updateItemDetails,
       };
 
       const updateInventoryDetails = {
         quantity: Number(updateProductQuantity),
       };
 
-      // console.log(
-      //   'Updating Product Detail with:',
-      //   updateProductDetails,
-      //   productId
-      // );
+      console.log(
+        'Updating Product Detail with:',
+        updateProductDetails,
+        productId,
+      );
 
       const updateProductModalBtn = document.querySelector(
-        '.updateProductModalBtn'
+        '.updateProductModalBtn',
       );
 
       try {
@@ -1521,7 +1525,7 @@ export function bindUpdateProductFormListener() {
         const updatedProductData = await updateProduct(
           productId,
           updateProductDetails,
-          shopId
+          shopId,
         );
 
         if (!updatedProductData) {
@@ -1535,7 +1539,7 @@ export function bindUpdateProductFormListener() {
           const inventoryData = await updateProductInventory(
             updateInventoryDetails,
             shopId,
-            productId
+            productId,
           );
 
           const filters = getInventoryLogFilters('admin', shopId);
@@ -1543,7 +1547,7 @@ export function bindUpdateProductFormListener() {
           if (inventoryData) {
             showToast(
               'success',
-              `✅ ${inventoryData.message} with SKU: ${updatedProductData.data.sku}`
+              `✅ ${inventoryData.message} with SKU: ${updatedProductData.data.sku}`,
             );
             closeModal();
             clearFormInputs();
@@ -1557,11 +1561,11 @@ export function bindUpdateProductFormListener() {
         } catch (inventoryDataErr) {
           showToast(
             'fail',
-            `❎ ${inventoryDataErr.message || 'Failed to Update inventory'}`
+            `❎ ${inventoryDataErr.message || 'Failed to Update inventory'}`,
           );
           console.error(
             'Error During Inventory Updating:',
-            inventoryDataErr.message
+            inventoryDataErr.message,
           );
         }
         hideBtnLoader(updateProductModalBtn);
@@ -1649,14 +1653,14 @@ export function updateProductForm(productDetail) {
     formatAmountWithCommas(supposed_price) || '';
 
   const updatePublishStatusTrue = document.querySelectorAll(
-    'input[name="updatePublishStatus"]'
+    'input[name="updatePublishStatus"]',
   );
   updatePublishStatusTrue.forEach((checkbox) => {
     checkbox.checked = checkbox.value === is_published.toString();
   });
 
   const updateDisplayQuantityStatus = document.querySelectorAll(
-    'input[name="updateDisplayQuantityStatus"]'
+    'input[name="updateDisplayQuantityStatus"]',
   );
   updateDisplayQuantityStatus.forEach((checkbox) => {
     checkbox.checked = checkbox.value === display_quantity;
@@ -1744,7 +1748,7 @@ export function bindGetProductBarcodeFormListener() {
   if (!form) return;
 
   const downloadBarcodeImageBtn = form.querySelector(
-    '.downloadBarcodeImageBtn'
+    '.downloadBarcodeImageBtn',
   );
   const closeBarcodeModalBtn = form.querySelector('.closeBarcodeModalBtn');
 
@@ -1762,7 +1766,7 @@ export function bindGetProductBarcodeFormListener() {
       e.preventDefault();
 
       const productName = document.querySelector(
-        '.barcode-product_name'
+        '.barcode-product_name',
       ).textContent;
 
       const link = document.createElement('a');
@@ -1906,10 +1910,10 @@ export function bindUpdateCategoryFormListener() {
       }
 
       const updateCategoryName = document.querySelector(
-        '#updateCategoryName'
+        '#updateCategoryName',
       ).value;
       const updateCategoryDescription = document.querySelector(
-        '#updateCategoryDescription'
+        '#updateCategoryDescription',
       ).value;
 
       const updateCategoryDetails = {
@@ -1924,14 +1928,14 @@ export function bindUpdateCategoryFormListener() {
       // );
 
       const updateCategoryModalBtn = document.querySelector(
-        '.updateCategoryModalBtn'
+        '.updateCategoryModalBtn',
       );
 
       try {
         showBtnLoader(updateCategoryModalBtn);
         const updatedCategoryData = await updateCategory(
           categoryId,
-          updateCategoryDetails
+          updateCategoryDetails,
         );
 
         if (!updatedCategoryData) {
@@ -2008,7 +2012,7 @@ document.addEventListener('DOMContentLoaded', () => {});
 // }
 
 const adminAccordionContainer = document.querySelector(
-  '.adminAccordionContainer'
+  '.adminAccordionContainer',
 );
 const container = document.getElementById('accordionProductInventory');
 
@@ -2076,7 +2080,7 @@ if (isAdmin && adminAccordionContainer && container) {
       // console.log(accordion);
 
       const searchProductInput = document.getElementById(
-        `searchProdutInventory_${shopId}`
+        `searchProdutInventory_${shopId}`,
       );
 
       searchProductInput.addEventListener('input', (e) => {
@@ -2153,7 +2157,7 @@ if (isAdmin && adminAccordionContainer && container) {
       //          });
 
       const shopInventorySection = document.getElementById(
-        `shop-report-${shopId}`
+        `shop-report-${shopId}`,
       );
 
       if (
@@ -2185,7 +2189,7 @@ if (isAdmin && adminAccordionContainer && container) {
 
 function renderFilteredProducts(shopId, productList) {
   const inventoryTableBody = document.querySelector(
-    `#inventory-tbody-${shopId}`
+    `#inventory-tbody-${shopId}`,
   );
   if (!inventoryTableBody) return;
 
@@ -2219,8 +2223,8 @@ function renderFilteredProducts(shopId, productList) {
       quantity < 1
         ? 'finishedStockRow'
         : quantity >= 1 && quantity <= 10
-        ? 'nearFinishedStockRow'
-        : 'inStockRow'
+          ? 'nearFinishedStockRow'
+          : 'inStockRow',
     );
     row.dataset.productId = product_id;
 
@@ -2235,11 +2239,11 @@ function renderFilteredProducts(shopId, productList) {
                   barcode ? barcode : 'N/A'
                 }</td>
                 <td class="py-1 productAmountBought">&#x20A6;${formatAmountWithCommas(
-                  purchase_price
+                  purchase_price,
                 )}</td>
                 <td class="py-1 productQuantity">${quantity}</td>
                 <td class="py-1 productSellingPrice">&#x20A6;${formatAmountWithCommas(
-                  selling_price
+                  selling_price,
                 )}</td>
                 <td class="py-1 action-buttons" style="margin-top:1.1rem">
                   <button
@@ -2251,16 +2255,16 @@ function renderFilteredProducts(shopId, productList) {
 
                   <button
                     class="hero-btn-outline openUpdateProductBtn"
-                    id="openUpdateProductBtn" data-product-id="${product_id}"
+                    id="openUpdateProductBtn" data-product-id="${product_id}" title="Update Product Details"
                   >
-                    <i class="fa-solid fa-pen-to-square"></i>
+                    <i class="fa-solid fa-pen-to-square"  title="Update Product Details"></i>
                   </button>
 
                   <button
                     class="hero-btn-outline deleteProductBtn"
-                    id="deleteProductModalBtn" data-product-id="${product_id}"
+                    id="deleteProductModalBtn" title="Delete Product Details" data-product-id="${product_id}"
                   >
-                    <i class="fa-solid fa-trash-can"></i>
+                    <i class="fa-solid fa-trash-can" title="Delete Product Details"></i>
                   </button>
                 </td>
     
@@ -2283,7 +2287,7 @@ function renderFilteredProducts(shopId, productList) {
       const productBarcode = openBarcodeImageBtn.dataset.productBarcode;
 
       const getBarcodeImageContainer = document.querySelector(
-        '.getBarcodeImageContainer'
+        '.getBarcodeImageContainer',
       );
 
       if (getBarcodeImageContainer) {
@@ -2318,7 +2322,7 @@ function renderFilteredProducts(shopId, productList) {
       const productId = deleteProductModalBtn.dataset.productId;
 
       const deleteProductContainer = document.querySelector(
-        '.deleteProductContainer'
+        '.deleteProductContainer',
       );
 
       if (deleteProductContainer) {
@@ -2352,7 +2356,7 @@ function renderFilteredProducts(shopId, productList) {
       const productId = updateProductBtn.dataset.productId;
 
       const updateProductModalContainer = document.querySelector(
-        '.updateProductModal'
+        '.updateProductModal',
       );
 
       if (updateProductModalContainer) {
@@ -2502,7 +2506,7 @@ export async function viewProductInfo(e, row) {
 
 export async function renderProductInventoryTable(shopId) {
   const inventoryTableBody = document.querySelector(
-    `#inventory-tbody-${shopId}`
+    `#inventory-tbody-${shopId}`,
   );
 
   if (!inventoryTableBody) {
@@ -2527,25 +2531,25 @@ export async function renderProductInventoryTable(shopId) {
     //  console.log(productInventories);
 
     const totalProductsCountElement = document.querySelector(
-      `.totalProductsCount_${shopId}`
+      `.totalProductsCount_${shopId}`,
     );
     const totalProductsWorthElement = document.querySelector(
-      `.totalProductsWorth_${shopId}`
+      `.totalProductsWorth_${shopId}`,
     );
     const totalProductsProfitsElement = document.querySelector(
-      `.totalProductsProfits_${shopId}`
+      `.totalProductsProfits_${shopId}`,
     );
 
     const totalProductsCount = productInventories?.length || 0;
 
     const totalProductsWorth = productInventories?.reduce(
       (acc, item) => acc + item.Product.purchase_price * item.quantity,
-      0
+      0,
     );
 
     const totalProductSellingPrice = productInventories?.reduce(
       (acc, item) => acc + item.Product.selling_price * item.quantity,
-      0
+      0,
     );
 
     const totalProductProfits = totalProductSellingPrice - totalProductsWorth;
@@ -2589,8 +2593,8 @@ export async function renderProductInventoryTable(shopId) {
         quantity < 1
           ? 'finishedStockRow'
           : quantity >= 1 && quantity <= 10
-          ? 'nearFinishedStockRow'
-          : 'inStockRow'
+            ? 'nearFinishedStockRow'
+            : 'inStockRow',
       );
 
       row.dataset.productId = product_id;
@@ -2606,11 +2610,11 @@ export async function renderProductInventoryTable(shopId) {
                   barcode ? barcode : 'N/A'
                 }</td>
                 <td class="py-1 productAmountBought">&#x20A6;${formatAmountWithCommas(
-                  purchase_price
+                  purchase_price,
                 )}</td>
                 <td class="py-1 productQuantity">${quantity}</td>
                 <td class="py-1 productSellingPrice">&#x20A6;${formatAmountWithCommas(
-                  selling_price
+                  selling_price,
                 )}</td>
                 <td class="py-1 action-buttons" style="margin-top:1.1rem">
                   <button
@@ -2622,16 +2626,16 @@ export async function renderProductInventoryTable(shopId) {
 
                   <button
                     class="hero-btn-outline openUpdateProductBtn"
-                    id="openUpdateProductBtn" data-product-id="${product_id}"
+                    id="openUpdateProductBtn" data-product-id="${product_id}" title="Update Product Details"
                   >
-                    <i class="fa-solid fa-pen-to-square"></i>
+                    <i class="fa-solid fa-pen-to-square" title="Update Product Details"></i>
                   </button>
 
                   <button
                     class="hero-btn-outline deleteProductBtn"
-                    id="deleteProductModalBtn" data-product-id="${product_id}"
+                    id="deleteProductModalBtn" data-product-id="${product_id}"  title="Delete Product Details"
                   >
-                    <i class="fa-solid fa-trash-can"></i>
+                    <i class="fa-solid fa-trash-can" title="Delete Product Details"></i>
                   </button>
                 </td>
     
@@ -2664,7 +2668,7 @@ export async function renderProductInventoryTable(shopId) {
         const productBarcode = openBarcodeImageBtn.dataset.productBarcode;
 
         const getBarcodeImageContainer = document.querySelector(
-          '.getBarcodeImageContainer'
+          '.getBarcodeImageContainer',
         );
 
         if (getBarcodeImageContainer) {
@@ -2698,7 +2702,7 @@ export async function renderProductInventoryTable(shopId) {
         const productId = deleteProductModalBtn.dataset.productId;
 
         const deleteProductContainer = document.querySelector(
-          '.deleteProductContainer'
+          '.deleteProductContainer',
         );
 
         if (deleteProductContainer) {
@@ -2732,7 +2736,7 @@ export async function renderProductInventoryTable(shopId) {
         const productId = updateProductBtn.dataset.productId;
 
         const updateProductModalContainer = document.querySelector(
-          '.updateProductModal'
+          '.updateProductModal',
         );
 
         if (updateProductModalContainer) {
@@ -2768,7 +2772,7 @@ export async function renderProductInventoryTable(shopId) {
 
 export async function renderInventoryLogTable({ filters, shopId }) {
   const inventoryLogTableBody = document.querySelector(
-    `#inventoryLogBody-${shopId}`
+    `#inventoryLogBody-${shopId}`,
   );
 
   if (!inventoryLogTableBody) {
@@ -2844,16 +2848,16 @@ export async function renderInventoryLogTable({ filters, shopId }) {
                 <td class="py-1 productName">${item_name}</td>
                 <td class="py-1 productDescription">${quantity}</td>
                 <td class="py-1 producCategory">&#x20A6;${formatAmountWithCommas(
-                  price
+                  price,
                 )}</td>
                 <td class="py-1 producCategory">${formatActionType(
                   action_type === 'restocked'
                     ? 'New Product Added.'
-                    : action_type
+                    : action_type,
                 )}</td>
                 <td class="py-1 producCategory">${performerName}</td>
                 <td class="py-1 productAmountBought">${formatDateTimeReadable(
-                  created_at
+                  created_at,
                 )}</td>
               
     

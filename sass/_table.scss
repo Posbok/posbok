@@ -7,7 +7,7 @@
 .machineFee,
 .inventory {
    height: min-content;
-   color: $color-grey-dark-2;
+   color: $color-primary-950;
 
    &-method {
       margin: 0 auto;
@@ -296,21 +296,21 @@
 
       .heading-subtext {
          text-align: left;
-         color: $color-grey-dark-2;
+         color: $color-primary-900;
          font-size: 1.5rem;
          text-transform: initial;
       }
 
       .icon {
          font-size: 1.5rem;
-         color: $color-grey-dark-2;
+         color: $color-primary-900;
          transform: rotate(360deg);
          transition: transform 0.3s ease;
       }
 
       &:hover,
       &:active {
-         background-color: $color-primary-light;
+         background-color: $color-primary;
          color: $color-primary-light-1;
 
          .heading-subtext {
@@ -339,7 +339,7 @@
       display: block;
 
       .accordion-toggle {
-         background-color: $color-primary-light;
+         background-color: $color-primary;
 
          .heading-subtext {
             color: $color-primary-light-1
@@ -393,7 +393,7 @@
    font-size: 1.6rem;
    font-weight: 600;
    text-align: center;
-   color: $color-grey-dark-1;
+   color: $color-grey-dark-2;
    padding: 1rem 0 1rem 0;
 }
 
@@ -403,7 +403,7 @@
    font-weight: bold;
    padding: 10px;
    // color: #333;       
-   color: $color-grey-dark-1 ;
+   color: $color-grey-dark-2 ;
 }
 
 .total-row,

@@ -141,7 +141,7 @@ export function setupCreateStaffForm() {
     .addEventListener('input', () => {
       const passwordInput = document.getElementById('staffPassword');
       const confirmPasswordInput = document.getElementById(
-        'staffConfirmPassword'
+        'staffConfirmPassword',
       );
       const pass = passwordInput.value;
       const confirmVal = confirmPasswordInput.value;
@@ -176,7 +176,7 @@ export function setupCreateStaffForm() {
       // Password Validation Ctnd
       const pass = document.getElementById('staffPassword').value;
       const confirmPassword = document.getElementById(
-        'staffConfirmPassword'
+        'staffConfirmPassword',
       ).value;
 
       if (pass !== confirmPassword) {
@@ -200,15 +200,15 @@ export function setupCreateStaffForm() {
       const staffGuarantorName =
         document.getElementById('staffGuarantorName').value;
       const staffGuarantorPhoneNumber = document.getElementById(
-        'staffGuarantorPhoneNumber'
+        'staffGuarantorPhoneNumber',
       ).value;
       const staffGuarantorAddress = document.getElementById(
-        'staffGuarantorAddress'
+        'staffGuarantorAddress',
       ).value;
 
       //  Access type checkboxes
       const accessTypeCheckboxes = document.querySelectorAll(
-        'input[name="accessType"]:checked'
+        'input[name="accessType"]:checked',
       );
 
       const accessType = Array.from(accessTypeCheckboxes).map((cb) => cb.value);
@@ -263,7 +263,7 @@ export function setupCreateStaffForm() {
         try {
           const assigned = await assignUserToShop(
             userId,
-            staffAssigningDetails
+            staffAssigningDetails,
           );
           showToast('success', `✅ ${assigned.message}`);
           closeModal();
@@ -276,7 +276,7 @@ export function setupCreateStaffForm() {
         } catch (assignErr) {
           showToast(
             'fail',
-            `❎ ${assignErr.message || 'Failed to assign user'}`
+            `❎ ${assignErr.message || 'Failed to assign user'}`,
           );
         }
 
@@ -307,7 +307,7 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
     staffData.forEach((staffData) => {
       if (shop.staff) {
         const staff = shop.staff.find(
-          (staffMember) => staffMember.id === staffData.id
+          (staffMember) => staffMember.id === staffData.id,
         );
         if (staff) {
           staffShopName = `${shop.shop_name}`;
@@ -344,23 +344,23 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
           </td>
         <td class="py-1 staffAccountType">${staff.accountType}</td>
         <td class="py-1 staffServicePermission">${formatServicePermission(
-          staff.servicePermission
+          staff.servicePermission,
         )}</td>
         <td class="py-1 staffshop">${staff.shop_name || 'No Shop Assigned'}</td>
         <td class="py-1 action-buttons">
           <button class="hero-btn-outline editStaffButton" data-staff-id="${
             staff.id
-          }">
+          }"  title="Update Staff Details">
             <i class="fa-solid fa-pen-to-square"></i>
           </button>
           <button class="hero-btn-outline deleteStaffButtonModal" data-staff-id="${
             staff.id
-          }">
+          }"  title="Delete Staff">
             <i class="fa-solid fa-trash-can"></i>
           </button>
             <button class="hero-btn-outline manageShopButton" data-staff-id="${
               staff.id
-            }">
+            }"  title="Assign or managing staff's shop assignment">
           <i class="fa-solid fa-shop"></i> <!-- Shop manage icon -->
         </button>
         </td>
@@ -374,7 +374,7 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
       </td>
     <td class="py-1 staffAccountType">${staff.accountType}</td>
     <td class="py-1 staffServicePermission">${formatServicePermission(
-      staff.servicePermission
+      staff.servicePermission,
     )}</td>
        <td class="py-1 staffshop">ADMIN</td>
     <td class="py-1 action-buttons">
@@ -411,7 +411,7 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
       const staffId = deleteBtnModal.dataset.staffId;
 
       const deleteStaffContainer = document.querySelector(
-        '.deleteStaffContainer'
+        '.deleteStaffContainer',
       );
 
       if (deleteStaffContainer) {
@@ -441,7 +441,7 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
       const staffId = updateStaffBtn.dataset.staffId;
 
       const adminUpdateUserDataContainer = document.querySelector(
-        '.adminUpdateUserData'
+        '.adminUpdateUserData',
       );
 
       if (adminUpdateUserDataContainer) {
@@ -498,7 +498,7 @@ export function populateShopDropdown(shopList = [], preselectedShopId = '') {
 
   const dropdown = document.getElementById('shopDropdown');
   const staffManageShopDropdown = document.getElementById(
-    'staffManageShopDropdown'
+    'staffManageShopDropdown',
   );
 
   //   console.log('Trying direct test append');
@@ -568,22 +568,22 @@ export function bindUpdateStaffFormListener() {
     }
 
     const updateStaffLastName = document.getElementById(
-      'updateStaffLastName'
+      'updateStaffLastName',
     ).value;
     const updateStaffFirstName = document.getElementById(
-      'updateStaffFirstName'
+      'updateStaffFirstName',
     ).value;
     const updateStaffAddress =
       document.getElementById('updateStaffAddress').value;
     const updateStaffPhoneNumber = document.getElementById(
-      'updateStaffPhoneNumber'
+      'updateStaffPhoneNumber',
     ).value;
 
     const updateAccessTypeCheckboxes = document.querySelectorAll(
-      'input[name="updateStaffAccessType"]:checked'
+      'input[name="updateStaffAccessType"]:checked',
     );
     const updateAccessType = Array.from(updateAccessTypeCheckboxes).map(
-      (cb) => cb.value
+      (cb) => cb.value,
     );
     const updateAccessTypeValue = updateAccessType[0] || null;
 
@@ -606,7 +606,7 @@ export function bindUpdateStaffFormListener() {
     //  console.log('📦 Staff Update:', { userId, ...staffUpdatedDetails });
 
     const updateUserDetailSubmitBtn = document.querySelector(
-      '.updateUserDetailSubmitBtn'
+      '.updateUserDetailSubmitBtn',
     );
 
     try {
@@ -638,7 +638,7 @@ export function setupUpdateStaffForm(user) {
       const posRadio = document.getElementById('updateStaffPosCheckbox');
       const sellRadio = document.getElementById('updateStaffSellCheckbox');
       const bothRadio = document.getElementById(
-        'updateStaffPosAndSellCheckbox'
+        'updateStaffPosAndSellCheckbox',
       );
 
       // Enable all first
@@ -675,7 +675,7 @@ export function setupUpdateStaffForm(user) {
   document.getElementById('updateStaffAddress').value = user.address || '';
 
   const updateAccessTypeCheckboxes = document.querySelectorAll(
-    'input[name="updateStaffAccessType"]'
+    'input[name="updateStaffAccessType"]',
   );
   updateAccessTypeCheckboxes.forEach((checkbox) => {
     checkbox.checked = checkbox.value === user.servicePermission;
@@ -732,9 +732,8 @@ export function deleteStaffForm(staff) {
 
   form.dataset.staffId = staff.user.id;
 
-  document.getElementById(
-    'confirmation-text'
-  ).textContent = ` ${staff.user.firstName} ${staff.user.lastName}`;
+  document.getElementById('confirmation-text').textContent =
+    ` ${staff.user.firstName} ${staff.user.lastName}`;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -877,8 +876,8 @@ export async function setupManageStaffForm(user) {
   const currentShop = enrichedShopData.find((shop) =>
     shop.staff.some(
       (staffMember) =>
-        staffMember.id === user.id && staffMember.shopId === shop.id
-    )
+        staffMember.id === user.id && staffMember.shopId === shop.id,
+    ),
   );
 
   if (currentAssignedShop) {
@@ -906,8 +905,8 @@ export async function setupManageStaffForm(user) {
         const currentShop = enrichedShopData.find((shop) =>
           shop.staff.some(
             (staffMember) =>
-              staffMember.id === userId && staffMember.shopId === shop.id
-          )
+              staffMember.id === userId && staffMember.shopId === shop.id,
+          ),
         );
 
         //   console.log('userId =', userId, 'shopId =', currentShop?.id);
@@ -941,7 +940,7 @@ export async function setupManageStaffForm(user) {
         const userId = parseInt(staffId);
 
         const selectedShopId = document.querySelector(
-          '#staffManageShopDropdown'
+          '#staffManageShopDropdown',
         ).value;
 
         const staffDetailsForAssigningShop = {
@@ -959,8 +958,8 @@ export async function setupManageStaffForm(user) {
         const currentShop = enrichedShopData.find((shop) =>
           shop.staff.some(
             (staffMember) =>
-              staffMember.id === userId && staffMember.shopId === shop.id
-          )
+              staffMember.id === userId && staffMember.shopId === shop.id,
+          ),
         );
 
         // 💡 1. If user is already in the selected shop
@@ -981,7 +980,7 @@ export async function setupManageStaffForm(user) {
 
           const data = await assignUserToShop(
             userId,
-            staffDetailsForAssigningShop
+            staffDetailsForAssigningShop,
           );
           if (data) {
             hideBtnLoader(assignShopButton);

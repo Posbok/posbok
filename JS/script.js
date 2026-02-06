@@ -202,7 +202,7 @@ export function showToast(type, message) {
 document.addEventListener('DOMContentLoaded', function () {
   const profileIcon = document.querySelector('.profileIconDiv');
   const profileSliderOverlay = document.querySelector(
-    '.profile-slider-overlay'
+    '.profile-slider-overlay',
   );
   const profileSlider = document.querySelector('.profile-slider-content');
   const closeProfileBtn = document.querySelector('.close-profile-btn');
@@ -212,19 +212,19 @@ document.addEventListener('DOMContentLoaded', function () {
   const notificationIcon = document.querySelector('.notificatinoIconDiv');
 
   const notificationSliderOverlay = document.querySelector(
-    '.notification-slider-overlay'
+    '.notification-slider-overlay',
   );
 
   const notificationSlider = document.querySelector(
-    '.notification-slider-content'
+    '.notification-slider-content',
   );
 
   const closeNotificationBtn = document.querySelector(
-    '.close-notification-btn'
+    '.close-notification-btn',
   );
 
   const notificationSliderWrapper = document.querySelector(
-    '.notificationSlider-wrapper'
+    '.notificationSlider-wrapper',
   );
 
   //   profileIcon?.click();
@@ -297,7 +297,7 @@ export async function renderUserprofileDetails() {
 
   const updateProfileFormContainer = document.querySelector('#profile-form');
   const updatePasswordFormContainer = document.querySelector(
-    '#updatePassword-form'
+    '#updatePassword-form',
   );
 
   if (updateProfileFormContainer) {
@@ -345,15 +345,15 @@ export function bindUpdateProfileFormListener() {
       }
 
       const userProfileFirstName = document.getElementById(
-        'userProfileFirstName'
+        'userProfileFirstName',
       ).value;
       const userProfileLastName = document.getElementById(
-        'userProfileLastName'
+        'userProfileLastName',
       ).value;
       const userProfileAddress =
         document.getElementById('userProfileAddress').value;
       const userProfilePhoneNumber = document.getElementById(
-        'userProfilePhoneNumber'
+        'userProfilePhoneNumber',
       ).value;
 
       const updateProfileDetails = {
@@ -370,14 +370,13 @@ export function bindUpdateProfileFormListener() {
       // );
 
       const updateProfileModalBtn = document.querySelector(
-        '.updateProfileModalBtn'
+        '.updateProfileModalBtn',
       );
 
       try {
         showBtnLoader(updateProfileModalBtn);
-        const updatedProfileData = await updateUserProfile(
-          updateProfileDetails
-        );
+        const updatedProfileData =
+          await updateUserProfile(updateProfileDetails);
 
         //   Update LocalStorage
         const currentUser = JSON.parse(localStorage.getItem('userData'));
@@ -497,7 +496,7 @@ export function bindChangePasswordFormListener() {
       if (currentPassword === newPassword) {
         showToast(
           'fail',
-          '❎ New password must be different from current password.'
+          '❎ New password must be different from current password.',
         );
         return;
       }
@@ -523,13 +522,13 @@ export function bindChangePasswordFormListener() {
       // );
 
       const updatePasswordSubmitBtn = document.querySelector(
-        '.updatePasswordSubmitBtn'
+        '.updatePasswordSubmitBtn',
       );
 
       try {
         showBtnLoader(updatePasswordSubmitBtn);
         const updatedProfilePasswordData = await updateUserProfilePassword(
-          changePasswordDetails
+          changePasswordDetails,
         );
 
         if (!updatedProfilePasswordData) {
@@ -555,7 +554,7 @@ export function openStaffBusinessDayModal() {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
   const openStaffBusinessDayContainer = document.querySelector(
-    '.openStaffBusinessDay'
+    '.openStaffBusinessDay',
   );
 
   if (openStaffBusinessDayContainer)
@@ -568,7 +567,7 @@ export function openAdminBusinessDayModal() {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
   const openAdminBusinessDayContainer = document.querySelector(
-    '.openAdminBusinessDay'
+    '.openAdminBusinessDay',
   );
 
   if (openAdminBusinessDayContainer)
@@ -581,10 +580,10 @@ async function renderBusinessDayButtons() {
   const businessInitBtnDiv = document.querySelector('.businessInitBtnDiv');
 
   const openPosCapitalAmountLabel = document.querySelector(
-    '.openPosCapitalAmountLabel'
+    '.openPosCapitalAmountLabel',
   );
   const adminOpenPosCapitalAmount = document.querySelector(
-    '.adminOpenPosCapitalAmount'
+    '.adminOpenPosCapitalAmount',
   );
 
   if (servicePermission === 'INVENTORY_SALES') {
@@ -718,7 +717,7 @@ export function bindOpenBusinessDayFormListener() {
       e.preventDefault();
 
       const businessDayShopDropdown = document.querySelector(
-        '#businessDayShopDropdown'
+        '#businessDayShopDropdown',
       );
       const openingCashAmount = isAdmin
         ? document.querySelector('#adminOpenCashAmount')
@@ -751,7 +750,7 @@ export function bindOpenBusinessDayFormListener() {
       // console.log('Opening Business Day with:', openBusinessDayDetails);
       // console.log('Depositing POS Capital with:', posCapitalDetails);
       const submitBusinessDay = document.querySelector(
-        '.openBusinessDaySubmitBtn'
+        '.openBusinessDaySubmitBtn',
       );
 
       // console.log(submitBusinessDay);
@@ -760,7 +759,7 @@ export function bindOpenBusinessDayFormListener() {
         showGlobalLoader();
         showBtnLoader(submitBusinessDay);
         const openBusinessDayData = await openBusinessDay(
-          openBusinessDayDetails
+          openBusinessDayDetails,
         );
 
         //   if (!openBusinessDayData) {
@@ -796,11 +795,11 @@ export function bindOpenBusinessDayFormListener() {
             `❎ ${
               posCapitalDepositDataErr.message ||
               'Failed to Add posCapitalDeposit'
-            }`
+            }`,
           );
           console.error(
             'Error During posCapitalDeposit Adding:',
-            posCapitalDepositDataErr.message
+            posCapitalDepositDataErr.message,
           );
           //  hideGlobalLoader();
         }
@@ -859,11 +858,11 @@ export function bindCloseBusinessDayFormListener() {
       e.preventDefault();
 
       const closingCashAmount = document.getElementById(
-        isAdmin ? 'adminClosingCashAmount' : 'closingCashAmount'
+        isAdmin ? 'adminClosingCashAmount' : 'closingCashAmount',
       );
 
       const closeBusinessDayShopDropdown = document.getElementById(
-        'closeBusinessDayShopDropdown'
+        'closeBusinessDayShopDropdown',
       ).value;
 
       const closeBusinessDayDetails = {
@@ -873,7 +872,7 @@ export function bindCloseBusinessDayFormListener() {
 
       // console.log('Closing Business Day with:', closeBusinessDayDetails);
       const closeBusinessDayBtn = document.querySelector(
-        '.closeBusinessDayBtn'
+        '.closeBusinessDayBtn',
       );
 
       // console.log(closeBusinessDayBtn);
@@ -882,7 +881,7 @@ export function bindCloseBusinessDayFormListener() {
         showBtnLoader(closeBusinessDayBtn);
         showGlobalLoader();
         const closeBusinessDayData = await closeBusinessDay(
-          closeBusinessDayDetails
+          closeBusinessDayDetails,
         );
 
         if (closeBusinessDayData) {
@@ -1007,7 +1006,7 @@ export function openInformPreviousBusinessDayModal(businessDayDate, shopId) {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
   const informPreviousBusinessDayContainer = document.querySelector(
-    '.informPreviousBusinessDay'
+    '.informPreviousBusinessDay',
   );
 
   document.getElementById('confirmation-text_businessDay').textContent =
@@ -1141,7 +1140,7 @@ closeModalButton.forEach((closeButton) => {
 
 export function closeModal() {
   const depositPosCapitalContainer = document.querySelector(
-    isAdmin ? '.adminDepositPosCapital' : '.depositPosCapital'
+    isAdmin ? '.adminDepositPosCapital' : '.depositPosCapital',
   );
   const createShop = document.querySelector('.createShop');
   const addUser = document.querySelector('.addUser');
@@ -1158,32 +1157,32 @@ export function closeModal() {
   const openStaffBusinessDay = document.querySelector('.openStaffBusinessDay');
   const closeBusinessDay = document.querySelector('.closeBusinessDay');
   const adminCloseBusinessDay = document.querySelector(
-    '.adminCloseBusinessDay'
+    '.adminCloseBusinessDay',
   );
   const adminDepositPosCapital = document.querySelector(
-    '.adminDepositPosCapital'
+    '.adminDepositPosCapital',
   );
   const adminUpdateBusinessData = document.querySelector(
-    '.adminUpdateBusinessData'
+    '.adminUpdateBusinessData',
   );
   const updateCategory = document.querySelector('.updateCategory');
   const deleteShopContainer = document.querySelector('.deleteShopContainer');
   const deleteStaffContainer = document.querySelector('.deleteStaffContainer');
 
   const deleteProductContainer = document.querySelector(
-    '.deleteProductContainer'
+    '.deleteProductContainer',
   );
   const deleteCategoryContainer = document.querySelector(
-    '.deleteCategoryContainer'
+    '.deleteCategoryContainer',
   );
   const deleteNoticeContainer = document.querySelector(
-    '.deleteNoticeContainer'
+    '.deleteNoticeContainer',
   );
   const markAsReadContainer = document.querySelector('.markAsReadContainer');
   const saleDetails = document.querySelector('.saleDetails');
 
   const getBarcodeImageContainer = document.querySelector(
-    '.getBarcodeImageContainer '
+    '.getBarcodeImageContainer ',
   );
 
   const deleteFeeContainer = document.querySelector('.deleteFeeContainer');
@@ -1191,7 +1190,7 @@ export function closeModal() {
   const updateFee = document.querySelector('.updateFee');
 
   const deleteTransactionContainer = document.querySelector(
-    '.deleteTransactionContainer'
+    '.deleteTransactionContainer',
   );
 
   const deleteSaleContainer = document.querySelector('.deleteSaleContainer');
@@ -1199,7 +1198,7 @@ export function closeModal() {
   const updateSale = document.querySelector('.updateSale');
 
   const fundMachine = document.querySelector(
-    isAdmin ? '.adminFundMachine' : '.fundMachine'
+    isAdmin ? '.adminFundMachine' : '.fundMachine',
   );
 
   const addStock = document.querySelector('.addStock');
@@ -1211,70 +1210,70 @@ export function closeModal() {
   const moveStock = document.querySelector('.moveStock');
   const businessDetails = document.querySelector('.businessDetails');
   const activateBusinessContainer = document.querySelector(
-    '.activateBusinessContainer'
+    '.activateBusinessContainer',
   );
   const restrictBusinessContainer = document.querySelector(
-    '.restrictBusinessContainer'
+    '.restrictBusinessContainer',
   );
   const unrestrictBusinessContainer = document.querySelector(
-    '.unrestrictBusinessContainer'
+    '.unrestrictBusinessContainer',
   );
   const notifyBusinessContainer = document.querySelector(
-    '.notifyBusinessContainer'
+    '.notifyBusinessContainer',
   );
   const deleteBusinessContainer = document.querySelector(
-    '.deleteBusinessContainer'
+    '.deleteBusinessContainer',
   );
   const updateBusinessDataContainer = document.querySelector(
-    '.updateBusinessDataContainer'
+    '.updateBusinessDataContainer',
   );
   const proceedWithPreviousBusinessDay = document.querySelector(
-    '.proceedWithPreviousBusinessDay'
+    '.proceedWithPreviousBusinessDay',
   );
   const informPreviousBusinessDay = document.querySelector(
-    '.informPreviousBusinessDay'
+    '.informPreviousBusinessDay',
   );
   const adminInformPreviousBusinessDayModal = document.querySelector(
-    '.admin-inform-previous'
+    '.admin-inform-previous',
   );
   const exportBusinessesData = document.querySelector('.exportBusinessesData');
   const deleteStockCategoryContainer = document.querySelector(
-    '.deleteStockCategoryContainer'
+    '.deleteStockCategoryContainer',
   );
   const updateStockCategory = document.querySelector('.updateStockCategory');
 
   const adminClearDashboardFieldModal = document.querySelector(
-    '.adminClearDashboardFieldModal'
+    '.adminClearDashboardFieldModal',
   );
 
   const exportStockTakingData = document.querySelector(
-    '.exportStockTakingData'
+    '.exportStockTakingData',
   );
 
   const notifyAllBusinessContainer = document.querySelector(
-    '.notifyAllBusinessContainer'
+    '.notifyAllBusinessContainer',
   );
 
   const messageDisplayModalContainer = document.querySelector(
-    '.messageDisplayModalContainer'
+    '.messageDisplayModalContainer',
   );
 
   const createStorefront = document.querySelector('.createStorefront');
   const updateStorefrontDataContainer = document.querySelector(
-    '.updateStorefrontDataContainer'
+    '.updateStorefrontDataContainer',
   );
   const viewProductInfo = document.querySelector('.viewProductInfo');
 
   const storefrontDetailContainer = document.querySelector(
-    '.storefrontDetailContainer'
+    '.storefrontDetailContainer',
   );
 
   const verifyStorefrontContainer = document.querySelector(
-    '.verifyStorefrontContainer'
+    '.verifyStorefrontContainer',
   );
 
   const toggleActivateStorefrontContainer = document.querySelector(
-    '.toggleActivateStorefrontContainer'
+    '.toggleActivateStorefrontContainer',
   );
 
   //
@@ -1544,19 +1543,19 @@ export function closeModal() {
       const notificationIcon = document.querySelector('.notificatinoIconDiv');
 
       const notificationSliderOverlay = document.querySelector(
-        '.notification-slider-overlay'
+        '.notification-slider-overlay',
       );
 
       const notificationSlider = document.querySelector(
-        '.notification-slider-content'
+        '.notification-slider-content',
       );
 
       const closeNotificationBtn = document.querySelector(
-        '.close-notification-btn'
+        '.close-notification-btn',
       );
 
       const notificationSliderWrapper = document.querySelector(
-        '.notificationSlider-wrapper'
+        '.notificationSlider-wrapper',
       );
 
       notificationSlider.classList.add('open');
@@ -1600,6 +1599,34 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', () => {
   if (flatpickr) {
     flatpickr('#expiryDate', {
+      dateFormat: 'Y-m-d',
+      allowInput: true, // Enable input so validation works
+      onReady: function (selectedDates, dateStr, instance) {
+        const el = instance.element;
+
+        // Prevent user typing but keep field focusable & validatable
+        el.onkeydown =
+          el.onkeypress =
+          el.onkeyup =
+            function (e) {
+              e.preventDefault();
+            };
+        el.onpaste = function (e) {
+          e.preventDefault();
+        };
+
+        el.style.caretColor = 'transparent'; // Hide text cursor
+        el.style.cursor = 'pointer'; // UI/UX feedback
+        el.style.backgroundColor = '#f7f7f7'; // Optional style
+      },
+    });
+  }
+});
+
+// Update Expiry Date Input
+document.addEventListener('DOMContentLoaded', () => {
+  if (flatpickr) {
+    flatpickr('#updateExpiryDate', {
       dateFormat: 'Y-m-d',
       allowInput: true, // Enable input so validation works
       onReady: function (selectedDates, dateStr, instance) {
@@ -1829,11 +1856,11 @@ if (!userData) {
 
   // Step 3: Apply logic separately for both staff and admin
   const restrictedServiceAccess = Object.entries(
-    permissionRestrictedPages
+    permissionRestrictedPages,
   ).find(
     ([pageKey, allowedPermissions]) =>
       currentPageName === pageKey &&
-      !allowedPermissions.includes(servicePermission)
+      !allowedPermissions.includes(servicePermission),
   );
 
   if (restrictedServiceAccess) {
@@ -2064,7 +2091,7 @@ if (useBusinessInfoCheckbox) {
     const shopNameInput = document.querySelector('#shopName');
     const shopAddressInput = document.querySelector('#shopAddress');
     const serviceTypeCheckboxes = document.querySelectorAll(
-      'input[name="serviceType"]'
+      'input[name="serviceType"]',
     );
 
     if (useBusinessInfoCheckbox.checked) {
@@ -2080,7 +2107,7 @@ if (useBusinessInfoCheckbox) {
       // Match and check the appropriate checkbox
       const serviceType = businessData.data.business_type;
       const matchedCheckbox = [...serviceTypeCheckboxes].find(
-        (checkbox) => checkbox.value === serviceType
+        (checkbox) => checkbox.value === serviceType,
       );
       if (matchedCheckbox) matchedCheckbox.checked = true;
 
@@ -2142,7 +2169,7 @@ function handleLoadMore() {
 export async function loadBusinessNotices(
   page,
   limit,
-  options = { append: false }
+  options = { append: false },
 ) {
   const { append } = options;
   if (!businessNoticesContainer) return;
@@ -2236,8 +2263,8 @@ function renderBusinessNotices(notices) {
 
     const noticeHTML = `
          <div class="user-message-card message-card_${id} ${
-      is_read ? '' : 'unread'
-    } " data-notice-id="${id}" data-notice-title="${title}">
+           is_read ? '' : 'unread'
+         } " data-notice-id="${id}" data-notice-title="${title}">
                <div class="user-inbox">
                   <div class="user-inbox_header">
                      <div>
@@ -2266,19 +2293,19 @@ function renderBusinessNotices(notices) {
     const notificationIcon = document.querySelector('.notificatinoIconDiv');
 
     const notificationSliderOverlay = document.querySelector(
-      '.notification-slider-overlay'
+      '.notification-slider-overlay',
     );
 
     const notificationSlider = document.querySelector(
-      '.notification-slider-content'
+      '.notification-slider-content',
     );
 
     const closeNotificationBtn = document.querySelector(
-      '.close-notification-btn'
+      '.close-notification-btn',
     );
 
     const notificationSliderWrapper = document.querySelector(
-      '.notificationSlider-wrapper'
+      '.notificationSlider-wrapper',
     );
 
     // **Attach the listener here**
@@ -2308,7 +2335,7 @@ function openBusinessNoticeFullMessageModal(noticeId) {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
   const messageDisplayModalContainer = document.querySelector(
-    '.messageDisplayModalContainer'
+    '.messageDisplayModalContainer',
   );
 
   if (messageDisplayModalContainer)

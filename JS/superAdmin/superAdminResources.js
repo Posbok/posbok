@@ -38,7 +38,7 @@ export async function getAllBusinesses({ page, filters }) {
           Authorization: `Bearer ${userToken}`,
           //  'Content-Type': 'application/json',
         },
-      }
+      },
     );
 
     //  console.log('Response received...');
@@ -75,7 +75,7 @@ export async function getPlatformStatistics() {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     //  console.log('selectedSaleData received...');
@@ -99,7 +99,7 @@ export async function getBusinessDetailById(businessId) {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     //  console.log('selectedSaleData received...');
@@ -114,7 +114,7 @@ export async function getBusinessDetailById(businessId) {
 }
 
 export async function activateBusinessSubscription(
-  businessSubscriptionDetails
+  businessSubscriptionDetails,
 ) {
   try {
     //  showGlobalLoader();
@@ -127,13 +127,13 @@ export async function activateBusinessSubscription(
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(businessSubscriptionDetails),
-      }
+      },
     );
 
     if (activateBusinessData) {
       console.log(
         'Business Subscription Activated successfully:',
-        activateBusinessData
+        activateBusinessData,
       );
       // showToast('success', `✅ ${activateBusinessData.message}`);
       closeModal();
@@ -163,7 +163,7 @@ export async function restrictBusiness(businessRestrictionDetails) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(businessRestrictionDetails),
-      }
+      },
     );
 
     if (restrictBusinessData) {
@@ -196,7 +196,7 @@ export async function unRestrictBusiness(businessUnrestrictionDetails) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(businessUnrestrictionDetails),
-      }
+      },
     );
 
     if (unRestrictBusinessData) {
@@ -229,7 +229,7 @@ export async function notifyAllBusinesess(businessNotificationDetails) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(businessNotificationDetails),
-      }
+      },
     );
 
     if (notifyBusinessData) {
@@ -263,7 +263,7 @@ export async function notifyBusiness(businessNotificationDetails) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(businessNotificationDetails),
-      }
+      },
     );
 
     if (notifyBusinessData) {
@@ -294,7 +294,7 @@ export async function deleteBusiness(businessId) {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     if (deleteBusinessData) {
@@ -327,7 +327,7 @@ export async function updateBusinessDetails(businessUpdateDetails, businessId) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(businessUpdateDetails),
-      }
+      },
     );
 
     if (updateBusinessData) {
@@ -364,7 +364,7 @@ export async function getExportBusinessesData({ format }) {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     if (!response.ok) {
@@ -451,7 +451,7 @@ export async function getSuperAdminNotices(page = 1, limit = 5) {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     if (superAdminNotices) {
@@ -497,7 +497,7 @@ export async function getbusinessNotices(page = 1, limit = 5) {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     if (businessNotices) {
@@ -505,7 +505,7 @@ export async function getbusinessNotices(page = 1, limit = 5) {
       hideGlobalLoader();
     }
 
-    console.log('businessNotices Data:', businessNotices);
+    //  console.log('businessNotices Data:', businessNotices);
 
     if (!businessNotices?.data) {
       throw new Error('Failed to fetch notices or invalid data structure.');
@@ -532,7 +532,7 @@ export async function deleteNotice(noticeId) {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     if (fetchedData) {
@@ -564,7 +564,7 @@ export async function markAsReadApi(noticeId) {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     if (fetchedData) {
@@ -596,7 +596,7 @@ export async function businessMarkAsReadApi(noticeId) {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     if (fetchedData) {
@@ -646,7 +646,7 @@ export async function getAllStorefrontBusinesses({ page, filters }) {
           Authorization: `Bearer ${userToken}`,
           //  'Content-Type': 'application/json',
         },
-      }
+      },
     );
 
     //  console.log('Response received...');
@@ -683,7 +683,7 @@ export async function verifyStorefront(businessId) {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     if (verifyStorefrontData) {
@@ -713,7 +713,7 @@ export async function toggleActivateStorefront(businessId) {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     if (verifyStorefrontData) {

@@ -21,7 +21,7 @@ const parsedUserData = userData ? JSON.parse(userData) : null;
 
 const isSuperAdmin = parsedUserData?.accountType === 'SUPER_ADMIN';
 const isSuperAdminNoticePage = document.body.classList.contains(
-  'superAdminNoticePage'
+  'superAdminNoticePage',
 );
 
 let allSuperAdminNotices = [];
@@ -72,7 +72,7 @@ function handleLoadMore() {
 export async function loadSuperAdminNotices(
   page,
   limit,
-  options = { append: false }
+  options = { append: false },
 ) {
   const { append } = options;
   if (!superAdminNoticesContainer) return;
@@ -145,8 +145,8 @@ function renderSuperAdminNotices(notices) {
 
     const noticeHTML = `
       <div class="message-card message-card_${id} ${
-      is_read ? '' : 'unread'
-    } "  data-notice-id="${id}" data-notice-title="${title}">
+        is_read ? '' : 'unread'
+      } "  data-notice-id="${id}" data-notice-title="${title}">
         <div class="user-inbox">
           <div class="user-inbox_header">
             <div>
@@ -164,10 +164,10 @@ function renderSuperAdminNotices(notices) {
 
           <div class="user-inbox_info">
             <p class="user-inbox_info-time">${new Date(
-              created_at
+              created_at,
             ).toLocaleTimeString()}</p>
             <p class="user-inbox_info-date">${new Date(
-              created_at
+              created_at,
             ).toLocaleDateString()}</p>
           </div>
 
@@ -231,7 +231,7 @@ export function openNotifyAllBusinessModal_2() {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
   const notifyAllBusinessContainer = document.querySelector(
-    '.notifyAllBusinessContainer'
+    '.notifyAllBusinessContainer',
   );
 
   if (notifyAllBusinessContainer)
@@ -252,7 +252,7 @@ function openNoticeFullMessageModal(noticeId) {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
   const messageDisplayModalContainer = document.querySelector(
-    '.messageDisplayModalContainer'
+    '.messageDisplayModalContainer',
   );
 
   if (messageDisplayModalContainer)
@@ -295,7 +295,7 @@ export function bindNotifyAllBusinessFormListener_2() {
   if (!form) return;
 
   const notifyAllBusinessButton = form.querySelector(
-    '.notifyAllBusinessButton_2'
+    '.notifyAllBusinessButton_2',
   );
   const cancelButton = form.querySelector('.cancel-close');
 
@@ -311,19 +311,19 @@ export function bindNotifyAllBusinessFormListener_2() {
       e.preventDefault();
 
       const generalNotificationTitleInput = form.querySelector(
-        '#generalNotificationTitle'
+        '#generalNotificationTitle',
       ).value;
 
       const generalNotificationMessageInput = form.querySelector(
-        '#generalNotificationMessage'
+        '#generalNotificationMessage',
       ).value;
 
       const generalNotificationType = form.querySelector(
-        '#generalNotificationType'
+        '#generalNotificationType',
       ).value;
 
       const generalNotificationExpiryInput = form.querySelector(
-        '#generalNotificationExpiry'
+        '#generalNotificationExpiry',
       ).value;
 
       const GeneralBusinessNotificationDetails = {
@@ -336,13 +336,13 @@ export function bindNotifyAllBusinessFormListener_2() {
 
       console.log(
         'Submitting  General Businesses Notification Details with:',
-        GeneralBusinessNotificationDetails
+        GeneralBusinessNotificationDetails,
       );
 
       try {
         showBtnLoader(notifyAllBusinessButton);
         const generalNotifyBusinessData = await notifyBusiness(
-          GeneralBusinessNotificationDetails
+          GeneralBusinessNotificationDetails,
         );
 
         if (!generalNotifyBusinessData) {
@@ -356,14 +356,14 @@ export function bindNotifyAllBusinessFormListener_2() {
         closeModal();
         await loadSuperAdminNotices(
           superAdminNoticesPageTracker,
-          NOTICES_LIMIT_PER_PAGE
+          NOTICES_LIMIT_PER_PAGE,
         );
 
         clearFormInputs();
         showToast(
           'success',
           `${generalNotifyBusinessData.message}` ||
-            '✅ Business Notified successfully.'
+            '✅ Business Notified successfully.',
         );
       } catch (err) {
         hideBtnLoader(notifyAllBusinessButton);
@@ -378,7 +378,7 @@ function openDeleteNoticeContainer(noticeTitle, noticeId) {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
   const deleteNoticeContainer = document.querySelector(
-    '.deleteNoticeContainer'
+    '.deleteNoticeContainer',
   );
 
   if (deleteNoticeContainer) deleteNoticeContainer.classList.add('active');
@@ -432,11 +432,11 @@ export function bindDeleteNoticeFormListener() {
 
         showToast(
           'success',
-          returnedDeleteNotice.message || '✅ Notice deleted successfully.'
+          returnedDeleteNotice.message || '✅ Notice deleted successfully.',
         );
         await loadSuperAdminNotices(
           superAdminNoticesPageTracker,
-          NOTICES_LIMIT_PER_PAGE
+          NOTICES_LIMIT_PER_PAGE,
         );
       } catch (err) {
         hideBtnLoader(deleteNoticeButton);
@@ -504,11 +504,12 @@ export function bindMarkAsReadFormListener() {
 
         showToast(
           'success',
-          markAsReadResponse.message || '✅ Notice Marked as Read successfully.'
+          markAsReadResponse.message ||
+            '✅ Notice Marked as Read successfully.',
         );
         await loadSuperAdminNotices(
           superAdminNoticesPageTracker,
-          NOTICES_LIMIT_PER_PAGE
+          NOTICES_LIMIT_PER_PAGE,
         );
       } catch (err) {
         hideBtnLoader(markAsReadButton);

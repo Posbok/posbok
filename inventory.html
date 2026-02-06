@@ -137,14 +137,14 @@
 
          <div class="main-heading_left">
             <div class="notificatinoIconDiv mr-2">
-               <i class="fa-regular fa-bell icon main-heading-notification "></i>
+               <i class="fa-regular fa-bell icon main-heading-notification  " title="View Notifications"></i>
                <span class="notification-counter"></span>
             </div>
 
             <button class="hero-btn-dark logoutButton">LOGOUT</button>
             <div class="profileIconDiv mr-2">
 
-               <i class="fa-solid fa-circle-user main-heading-profile--image"></i>
+               <i class="fa-solid fa-circle-user main-heading-profile--image" title="Update Profile"></i>
             </div>
          </div>
       </header>
@@ -566,18 +566,18 @@
          </div>
 
          <!-- Product Details -->
-         <div class="modal-form_input">
+         <!-- <div class="modal-form_input">
             <label for="updateProductDescription">Product Details</label>
 
             <input id="updateProductDetails" type="text" placeholder="Enter Product Details" name="updateProductDetails"
                required>
-         </div>
+         </div> -->
 
 
          <div class="updateProduct-form_input">
             <label for="updateProductSku">Product SKU</label>
 
-            <input id="updateProductSku" type="text" placeholder="Product SKU" name="updateProductSku" required>
+            <input id="updateProductSku" type="text" placeholder="Leave blank to auto-generate" name="updateProductSku">
          </div>
 
          <div class="updateProduct-form_input">
@@ -612,7 +612,7 @@
          <div class="modal-form_input">
             <label for="updateExpiryDate">Expiry Date</label>
 
-            <input id="updateExpiryDate" type="text" placeholder="Update Expiry Date">
+            <input id="updateExpiryDate" type="text" placeholder="Update Expiry Date" required>
 
          </div>
 
@@ -632,7 +632,7 @@
 
             <div class="naira-input-container">
                <input id="updateSupposedPrice" type="text" placeholder="Update Supposed Price"
-                  name="updateSupposedPrice" required>
+                  name="updateSupposedPrice">
                <span class="naira">&#x20A6;</span>
             </div>
          </div>
@@ -843,7 +843,7 @@
 
             <!-- <input id="expiryDate" type="date" name="expiryDate" required> -->
 
-            <input id="expiryDate" type="text" placeholder="Select Expiry Date">
+            <input id="expiryDate" type="text" placeholder="Select Expiry Date" required>
 
          </div>
 
