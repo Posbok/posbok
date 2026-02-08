@@ -33,7 +33,7 @@ export function clearFormInputs() {
   const updateShopForm = document.querySelector('.adminUpdateShopDataModal');
   const staffManageForm = document.querySelector('.staffManageModal');
   const depositPosCapitalForm = document.querySelector(
-    '.depositPosCapitalModal'
+    '.depositPosCapitalModal',
   );
   const createPosTransactionForm = document.querySelector('.pos-method-form');
   const addPosChargeForm = document.querySelector('.addPosChargeModal');
@@ -42,51 +42,51 @@ export function clearFormInputs() {
   const addCategoryForm = document.querySelector('.addCategoryModal');
   const updateProductForm = document.querySelector('.updateProductModal');
   const addExistingProductForm = document.querySelector(
-    '.addExistingProductModal'
+    '.addExistingProductModal',
   );
   const openBusinessDayForm = document.querySelector('.openBusinessDayModal');
   const checkoutForm = document.querySelector('.checkout-form');
   const updatePartialPaymentForm = document.querySelector(
-    '.updatePartialPaymentForm'
+    '.updatePartialPaymentForm',
   );
   const restockForm = document.querySelector('.restock');
 
   const activateBusinessContainerForm = document.querySelector(
-    '.activateBusinessContainerModal'
+    '.activateBusinessContainerModal',
   );
 
   const restrictBusinessContainerForm = document.querySelector(
-    '.restrictBusinessContainerModal'
+    '.restrictBusinessContainerModal',
   );
 
   const notifyBusinessContainerForm = document.querySelector(
-    '.notifyBusinessContainerModal'
+    '.notifyBusinessContainerModal',
   );
 
   const updateBusinessContainerForm = document.querySelector(
-    '.updateBusinessDataContainerModal'
+    '.updateBusinessDataContainerModal',
   );
 
   const moveStockModalForm = document.querySelector('.moveStockModal');
 
   const exportBusinessesDataModalForm = document.querySelector(
-    '.exportBusinessesDataModal'
+    '.exportBusinessesDataModal',
   );
 
   const closeBusinessDayModalForm = document.querySelector(
-    '.closeBusinessDayModal'
+    '.closeBusinessDayModal',
   );
 
   const openBusinessDayModalForm = document.querySelector(
-    '.openBusinessDayModal'
+    '.openBusinessDayModal',
   );
 
   const updateStockCategoryModalForm = document.querySelector(
-    '.updateStockCategoryModal'
+    '.updateStockCategoryModal',
   );
 
   const exportStockTakingDataModalForm = document.querySelector(
-    '.exportStockTakingDataModal'
+    '.exportStockTakingDataModal',
   );
 
   const notifyAllBusinessContainerModalForm =
@@ -95,24 +95,38 @@ export function clearFormInputs() {
 
   const createStoreFrontForm = document.querySelector('.createStoreFrontForm');
   const updateStorefrontDataModal = document.querySelector(
-    '.updateStorefrontDataModal'
+    '.updateStorefrontDataModal',
   );
   const viewProductInfoModal = document.querySelector('.viewProductInfoModal');
 
   const storefrontDetailModal = document.querySelector(
-    '.storefrontDetailModal'
+    '.storefrontDetailModal',
   );
+
+  const moderateReviewModal = document.querySelector('.moderateReviewModal');
 
   //   Clear Search Input
   const searchProductInput = document.querySelector('.searchProductInput');
   if (searchProductInput) searchProductInput.value = '';
 
   const searchStockProdutItem = document.querySelector(
-    '.searchStockProdutItem'
+    '.searchStockProdutItem',
   );
   if (searchStockProdutItem) searchStockProdutItem.value = '';
 
   // Clear Form Implementations
+
+  if (moderateReviewModal) {
+    moderateReviewModal
+      .querySelectorAll('input, textarea, select')
+      .forEach((el) => {
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          el.checked = false;
+        } else {
+          el.value = '';
+        }
+      });
+  }
 
   if (storefrontDetailModal) {
     storefrontDetailModal
@@ -214,7 +228,7 @@ export function clearFormInputs() {
       });
 
     const stockQuantittyAvailableDisplay = document.querySelector(
-      '.stockQuantityAvailable'
+      '.stockQuantityAvailable',
     );
 
     if (stockQuantittyAvailableDisplay)
@@ -233,7 +247,7 @@ export function clearFormInputs() {
       });
 
     const stockQuantittyAvailableDisplay = document.querySelector(
-      '.stockQuantityAvailable'
+      '.stockQuantityAvailable',
     );
 
     if (stockQuantittyAvailableDisplay)
@@ -252,7 +266,7 @@ export function clearFormInputs() {
       });
 
     const stockQuantittyAvailableDisplay = document.querySelector(
-      '.stockQuantityAvailable'
+      '.stockQuantityAvailable',
     );
 
     if (stockQuantittyAvailableDisplay)
@@ -271,7 +285,7 @@ export function clearFormInputs() {
       });
 
     const stockQuantittyAvailableDisplay = document.querySelector(
-      '.stockQuantityAvailable'
+      '.stockQuantityAvailable',
     );
 
     if (stockQuantittyAvailableDisplay)
@@ -336,7 +350,7 @@ export function clearFormInputs() {
     });
 
     const restockSearchSection = document.querySelector(
-      '.restockSearch-section'
+      '.restockSearch-section',
     );
     if (restockSearchSection) restockSearchSection.style.display = 'none';
 
@@ -347,17 +361,17 @@ export function clearFormInputs() {
     //    adminSellProductCategorySection.style.display = 'none';
 
     const restockProductNameDiv = document.querySelector(
-      '.restockProductNameDiv'
+      '.restockProductNameDiv',
     );
     if (restockProductNameDiv) restockProductNameDiv.style.display = 'none';
 
     const restockAutocompleteList = document.getElementById(
-      'restockAutocompleteList'
+      'restockAutocompleteList',
     );
     if (restockAutocompleteList) restockAutocompleteList.style.display = 'none';
 
     const prevStockQtyDisplay = document.querySelector(
-      '.previousStockQuantityAvailable'
+      '.previousStockQuantityAvailable',
     );
 
     if (prevStockQtyDisplay) prevStockQtyDisplay.innerText = '';
@@ -459,7 +473,7 @@ export function clearFormInputs() {
     if (nameLabel) nameLabel.innerText = '';
 
     const currentShopDisplay = staffManageForm.querySelector(
-      '#currentAssignedShop'
+      '#currentAssignedShop',
     );
     if (currentShopDisplay) currentShopDisplay.innerText = 'No Shop Assigned';
 
@@ -567,16 +581,16 @@ export function clearFormInputs() {
       });
 
     const adminSellProductSearchSection = document.querySelector(
-      '.addExistingSellProductSearch-section'
+      '.addExistingSellProductSearch-section',
     );
     const adminSellProductCategorySection = document.querySelector(
-      '.addExistingSellProductCategory-section'
+      '.addExistingSellProductCategory-section',
     );
     const adminSellProductName = document.querySelector(
-      '.addExistingSellProductName'
+      '.addExistingSellProductName',
     );
     const adminAutocompleteList = document.getElementById(
-      'addExistingAutocompleteList'
+      'addExistingAutocompleteList',
     );
 
     if (adminSellProductSearchSection)
@@ -633,7 +647,7 @@ export function clearFormInputs() {
       });
 
     const partialPaymentStatusText = document.querySelector(
-      '.partialPaymentStatusText'
+      '.partialPaymentStatusText',
     );
     if (partialPaymentStatusText)
       partialPaymentStatusText.textContent =
@@ -810,105 +824,105 @@ document.addEventListener('DOMContentLoaded', function () {
   const posCapitalAmountInput = document.getElementById('posCapitalAmount');
   const fundMachineAmountInput = document.getElementById('fundMachineAmount');
   const posTransactionAmountInput = document.getElementById(
-    'posTransactionAmount'
+    'posTransactionAmount',
   );
   const posTransferAmountInput = document.getElementById('posTransferAmount');
   const adminPosTransactionAmountInput = document.getElementById(
-    'adminPosTransactionAmount'
+    'adminPosTransactionAmount',
   );
   const adminPosTransferAmountInput = document.getElementById(
-    'adminPosTransferAmount'
+    'adminPosTransferAmount',
   );
   const adminWithdrawalAmountInput = document.getElementById(
-    'adminWithdrawalAmount'
+    'adminWithdrawalAmount',
   );
   const addPosChargeMinAmountInput = document.getElementById(
-    'addPosChargeMinAmount'
+    'addPosChargeMinAmount',
   );
   const addPosChargeMaxAmountInput = document.getElementById(
-    'addPosChargeMaxAmount'
+    'addPosChargeMaxAmount',
   );
   const addPosChargeAmountInput = document.getElementById('addPosChargeAmount');
   const addProductBoughtPriceInput = document.getElementById(
-    'addProductBoughtPrice'
+    'addProductBoughtPrice',
   );
   const addProductSellingPriceInput = document.getElementById(
-    'addProductSellingPrice'
+    'addProductSellingPrice',
   );
   const addMachineFeesMinAmountInput = document.getElementById(
-    'addMachineFeesMinAmount'
+    'addMachineFeesMinAmount',
   );
   const addMachineFeesMaxAmountInput = document.getElementById(
-    'addMachineFeesMaxAmount'
+    'addMachineFeesMaxAmount',
   );
   const openPosCapitalAmountInput = document.getElementById(
-    'openPosCapitalAmount'
+    'openPosCapitalAmount',
   );
   const openCashAmountInput = document.getElementById('openCashAmount');
   const adminOpenPosCapitalAmount = document.getElementById(
-    'adminOpenPosCapitalAmount'
+    'adminOpenPosCapitalAmount',
   );
   const adminOpenCashAmount = document.getElementById('adminOpenCashAmount');
   const closingCashAmountInput = document.getElementById('closingCashAmount');
   const adminClosingCashAmountInput = document.getElementById(
-    'adminClosingCashAmount'
+    'adminClosingCashAmount',
   );
   const adminPosCapitalAmount = document.getElementById(
-    'adminPosCapitalAmount'
+    'adminPosCapitalAmount',
   );
   const adminFundMachineAmount = document.getElementById(
-    'adminFundMachineAmount'
+    'adminFundMachineAmount',
   );
   const adminSoldProductPrice = document.getElementById(
-    'adminSoldProductPrice'
+    'adminSoldProductPrice',
   );
   const soldProductPrice = document.getElementById('soldProductPrice');
   const amountPaid = document.getElementById('amount-paid');
   const productBalancePrice = document.getElementById('productBalancePrice');
   const additionalSalePayment = document.getElementById(
-    'additionalSalePayment'
+    'additionalSalePayment',
   );
   const itemNewPurchasePrice = document.getElementById('itemNewPurchasePrice');
   const itemNewSellingPrice = document.getElementById('itemNewSellingPrice');
 
   const updateMachineFeesMinAmount = document.getElementById(
-    'updateMachineFeesMinAmount'
+    'updateMachineFeesMinAmount',
   );
 
   const updateMachineFeesMaxAmount = document.getElementById(
-    'updateMachineFeesMaxAmount'
+    'updateMachineFeesMaxAmount',
   );
 
   const updateMachineFeesAmount = document.getElementById(
-    'updateMachineFeesAmount'
+    'updateMachineFeesAmount',
   );
 
   const posTransactionCharges = document.getElementById(
-    isAdmin ? 'adminPosTransactionCharges' : 'posTransactionFee'
+    isAdmin ? 'adminPosTransactionCharges' : 'posTransactionFee',
   );
 
   const posMachineFee = document.getElementById(
-    isAdmin ? 'adminPosMachineFee' : 'posMachineFee'
+    isAdmin ? 'adminPosMachineFee' : 'posMachineFee',
   );
 
   const moveStockSellingPrice = document.getElementById(
-    'moveStockSellingPrice'
+    'moveStockSellingPrice',
   );
 
   const posTaxFee = document.getElementById(
-    isAdmin ? 'adminPosTaxFee' : 'posTaxFee'
+    isAdmin ? 'adminPosTaxFee' : 'posTaxFee',
   );
 
   const posTransferFee = document.getElementById(
-    isAdmin ? 'adminPosTransferFee' : 'posTransferFee'
+    isAdmin ? 'adminPosTransferFee' : 'posTransferFee',
   );
 
   const soldMachineFee = document.getElementById(
-    isAdmin ? 'adminSoldProductMachineFee' : 'soldProductMachineFee'
+    isAdmin ? 'adminSoldProductMachineFee' : 'soldProductMachineFee',
   );
 
   const soldTaxFee = document.getElementById(
-    isAdmin ? 'adminSoldProductTaxFee' : 'soldProductTaxFee'
+    isAdmin ? 'adminSoldProductTaxFee' : 'soldProductTaxFee',
   );
 
   //  const unitPriceInput = document.querySelector('.unit-price-input');
@@ -1189,7 +1203,7 @@ export function generateBarcode() {
   let body = '';
   for (let i = 0; i < 9; i++) {
     body += alphanumerics.charAt(
-      Math.floor(Math.random() * alphanumerics.length)
+      Math.floor(Math.random() * alphanumerics.length),
     );
   }
 
@@ -1292,7 +1306,7 @@ export function getBarcodeFormat(barcode) {
 
 export function populateBusinessShopDropdown(
   shopList = [],
-  dropdownId = 'inventoryShopDropdown'
+  dropdownId = 'inventoryShopDropdown',
 ) {
   const dropdown = document.getElementById(dropdownId);
   if (!dropdown) return;
@@ -1309,7 +1323,7 @@ export function populateBusinessShopDropdown(
 
 export function populateBusinessStaffDropdown(
   staffList = [],
-  dropdownId = 'staffDropdown'
+  dropdownId = 'staffDropdown',
 ) {
   const dropdown = document.getElementById(dropdownId);
   if (!dropdown) return;
@@ -1403,7 +1417,7 @@ export function openProceedWithPreviousBusinessDayModal() {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
   const proceedWithPreviousBusinessDayContainer = document.querySelector(
-    '.proceedWithPreviousBusinessDay'
+    '.proceedWithPreviousBusinessDay',
   );
 
   if (proceedWithPreviousBusinessDayContainer)

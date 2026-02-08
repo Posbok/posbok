@@ -631,7 +631,7 @@ export function createProductForm() {
         '#addProductDescription',
       ).value;
 
-      const addItemDetails = document.querySelector('#addProductDetails').value;
+      // const addItemDetails = document.querySelector('#addProductDetails').value;
 
       const addProductSku = document.querySelector('#addProductSku').value;
 
@@ -705,7 +705,7 @@ export function createProductForm() {
         supposedPrice: Number(getAmountForSubmission(supposedPrice)),
         isPublished: publishStatusValue,
         displayQuantity: displayQuantitytatusValue,
-        productDetails: addItemDetails,
+        //   productDetails: addItemDetails,
       };
 
       const shopId = Number(inventoryShopDropdown);
@@ -2476,6 +2476,7 @@ export async function viewProductInfo(e, row) {
 
         thumb.className = 'product-thumbnail';
         thumb.alt = 'Product Image';
+        thumb.style = 'height: 150px; width: auto;';
 
         thumb.addEventListener('click', () => {
           primaryImageEl.src = img.image_url;

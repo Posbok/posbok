@@ -34,7 +34,7 @@ const parsedUserData = userData ? JSON.parse(userData) : null;
 
 const isSuperAdmin = parsedUserData?.accountType === 'SUPER_ADMIN';
 const superAdminStorefrontPage = document.body.classList.contains(
-  'superAdminStorefrontPage'
+  'superAdminStorefrontPage',
 );
 
 const currentFilter = {};
@@ -54,7 +54,7 @@ function openStorefrontDetailsModal() {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
   const storefrontDetailContainer = document.querySelector(
-    '.storefrontDetailContainer'
+    '.storefrontDetailContainer',
   );
 
   storefrontDetailContainer.classList.add('active');
@@ -70,7 +70,7 @@ export function openVerifyStorefrontModal() {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
   const verifyStorefrontContainer = document.querySelector(
-    '.verifyStorefrontContainer'
+    '.verifyStorefrontContainer',
   );
 
   if (verifyStorefrontContainer)
@@ -141,7 +141,7 @@ export function bindVerifyStorefrontFormListener() {
         showToast(
           'success',
           `✅ ${verifyStorefrontData.message}` ||
-            '✅ Storefront verified successfully.'
+            '✅ Storefront verified successfully.',
         );
       } catch (err) {
         hideBtnLoader(verifyStorefrontButton);
@@ -156,7 +156,7 @@ export function openToggleActivateStorefrontModal() {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
   const toggleActivateStorefrontContainer = document.querySelector(
-    '.toggleActivateStorefrontContainer'
+    '.toggleActivateStorefrontContainer',
   );
 
   if (toggleActivateStorefrontContainer)
@@ -167,7 +167,7 @@ export function openToggleActivateStorefrontModal() {
 
 export function toggleActivateStorefrontForm(business, actionText) {
   const form = document.querySelector(
-    '.toggleActivateStorefrontContainerModal'
+    '.toggleActivateStorefrontContainerModal',
   );
   if (!form) return;
 
@@ -179,12 +179,12 @@ export function toggleActivateStorefrontForm(business, actionText) {
 
 export function bindToggleActivateStorefrontFormListener() {
   const form = document.querySelector(
-    '.toggleActivateStorefrontContainerModal'
+    '.toggleActivateStorefrontContainerModal',
   );
   if (!form) return;
 
   const toggleActivateStorefrontButton = form.querySelector(
-    '.toggleActivateStorefrontButton'
+    '.toggleActivateStorefrontButton',
   );
   const cancelButton = form.querySelector('.cancel-close');
 
@@ -208,9 +208,8 @@ export function bindToggleActivateStorefrontFormListener() {
 
       try {
         showBtnLoader(toggleActivateStorefrontButton);
-        const toggleActivateStorefrontData = await toggleActivateStorefront(
-          businessId
-        );
+        const toggleActivateStorefrontData =
+          await toggleActivateStorefront(businessId);
 
         if (!toggleActivateStorefrontData) {
           console.error('fail', toggleActivateStorefrontData.message);
@@ -226,7 +225,7 @@ export function bindToggleActivateStorefrontFormListener() {
         showToast(
           'success',
           `✅ ${toggleActivateStorefrontData.message}` ||
-            '✅ Storefront verified successfully.'
+            '✅ Storefront verified successfully.',
         );
       } catch (err) {
         hideBtnLoader(toggleActivateStorefrontButton);
@@ -253,7 +252,7 @@ export async function populateAllStorefrontTable({
 }) {
   //   console.log(filters);
   const allStorefrontTableBody = document.querySelector(
-    '.allStorefrontTableBody'
+    '.allStorefrontTableBody',
   );
   const loadMoreButton = document.getElementById('loadMoreButton_superAdmin');
 
@@ -281,7 +280,7 @@ export async function populateAllStorefrontTable({
 
     if (!allStorefrontData)
       throw new Error(
-        allStorefrontData.message || 'Failed to fetch Business Data'
+        allStorefrontData.message || 'Failed to fetch Business Data',
       );
 
     console.log('allStorefrontData', allStorefrontData);
@@ -399,7 +398,7 @@ export async function populateAllStorefrontTable({
                   
             <td class="sf-contact-phone">${storefront_phone_number}</td>                              
             <td class="sf-created-at">${formatDateTimeReadable(
-              created_at
+              created_at,
             )}</td>          
 
              <td class="py-1 action-buttons">
@@ -417,9 +416,9 @@ export async function populateAllStorefrontTable({
                   class="hero-btn-outline verify-storefront-btn"
                   data-storefront-id="${storefrontId}"
                   data-business-id="${business_id}"
-                  title="Verify Storefront"            
+                  title="${delivery_verified ? 'Unverify Storefront' : 'Verify Storefront'}"            
                >
-                 ${is_active ? 'Verified' : 'Unverified'}
+                 ${delivery_verified ? 'Unverify' : 'Verify'}
                </button>
 
                <!-- Activate / Deactivate -->
@@ -432,7 +431,7 @@ export async function populateAllStorefrontTable({
                     is_active ? 'Deactivate Storefront' : 'Activate Storefront'
                   }"
                >
-                ${is_active ? 'Activated' : 'Unactivated'}
+                ${is_active ? 'Deactivate' : 'Activate'}
                </button>
             </td>
          `;
@@ -450,7 +449,7 @@ export async function populateAllStorefrontTable({
       // });
 
       row.addEventListener('click', (e) => {
-        if (e.target.closest('.action-buttons')) return;
+        //   if (e.target.closest('.action-buttons')) return;
         renderStorefrontDetailsById(e, row);
       });
 
@@ -466,7 +465,7 @@ export async function populateAllStorefrontTable({
         const businessId = verifyStorefrontBtn.dataset.businessId;
 
         const verifyStorefrontContainer = document.querySelector(
-          '.verifyStorefrontContainer'
+          '.verifyStorefrontContainer',
         );
 
         if (verifyStorefrontContainer) {
@@ -482,7 +481,7 @@ export async function populateAllStorefrontTable({
             openVerifyStorefrontModal(); // Show modal after data is ready
             verifyStorefrontForm(
               businessDetail.data,
-              is_active ? 'Unverify' : 'Verify'
+              is_active ? 'Unverify' : 'Verify',
             );
           } else {
             hideGlobalLoader();
@@ -493,7 +492,7 @@ export async function populateAllStorefrontTable({
 
       // Verify Storefront
       const toggleActivateStorefrontBtn = row.querySelector(
-        '.toggle-storefront-status-btn'
+        '.toggle-storefront-status-btn',
       );
 
       toggleActivateStorefrontBtn?.addEventListener('click', async (e) => {
@@ -503,7 +502,7 @@ export async function populateAllStorefrontTable({
         const businessId = toggleActivateStorefrontBtn.dataset.businessId;
 
         const toggleActivateStorefrontContainer = document.querySelector(
-          '.toggleActivateStorefrontContainer'
+          '.toggleActivateStorefrontContainer',
         );
 
         if (toggleActivateStorefrontContainer) {
@@ -519,7 +518,7 @@ export async function populateAllStorefrontTable({
             openToggleActivateStorefrontModal(); // Show modal after data is ready
             toggleActivateStorefrontForm(
               businessDetail.data,
-              is_active ? 'Deactivate' : 'Activate'
+              is_active ? 'Deactivate' : 'Activate',
             );
           } else {
             hideGlobalLoader();

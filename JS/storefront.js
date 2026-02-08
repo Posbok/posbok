@@ -32,6 +32,7 @@ import { closeModal, showToast } from './script';
 import {
   fetchStorefrontStatus,
   getProductReviews,
+  moderateReview,
   setupStorefront,
   uploadStorefrontImages,
 } from './apiServices/storefront/storefrontResources.js';
@@ -618,27 +619,63 @@ export function initializeStorefront() {
 // Fetch Storefront Info
 
 let storefrontReviews = [];
+let currentReviewFilter = 'all';
+let currentReviewPage = 1;
+let totalReviewPages = 1;
 
-async function loadStorefrontReviews() {
-  const response = await getProductReviews('all', 1, 20);
+export async function loadStorefrontReviews(page = 1, append = false) {
+  const response = await getProductReviews(currentReviewFilter, page, 50);
 
   if (!response?.data?.reviews) return;
 
-  storefrontReviews = response.data.reviews;
+  const reviews = response.data.reviews;
+  const pagination = response.data.pagination;
 
-  updatePendingBadge(storefrontReviews);
-  renderReviews(storefrontReviews, 'all');
+  totalReviewPages = pagination.totalPages;
+  currentReviewPage = pagination.currentPage;
+
+  if (append) {
+    storefrontReviews = [...storefrontReviews, ...reviews]; // append new reviews
+  } else {
+    storefrontReviews = reviews; // replace on first load or filter change
+  }
+
+  //   updatePendingBadge(storefrontReviews);
+  fetchPendingReviewCount();
+  renderReviews(storefrontReviews, currentReviewFilter);
+
+  // Show/hide Load More button
+  const loadMoreBtn = document.getElementById('reviewsLoadMoreButton');
+  if (loadMoreBtn) {
+    if (currentReviewPage < totalReviewPages) {
+      loadMoreBtn.style.display = 'block';
+      loadMoreBtn.onclick = () =>
+        loadStorefrontReviews(currentReviewPage + 1, true);
+    } else {
+      loadMoreBtn.style.display = 'none';
+      loadMoreBtn.onclick = null;
+    }
+  }
 }
 
-document.addEventListener('DOMContentLoaded', loadStorefrontReviews);
+const isSuperAdmin = parsedUserData?.accountType === 'SUPER_ADMIN';
+const superAdminStorefrontPage = document.body.classList.contains(
+  'superAdminStorefrontPage',
+);
+
+if (!isSuperAdmin && !superAdminStorefrontPage) {
+  document.addEventListener('DOMContentLoaded', () => loadStorefrontReviews());
+}
 
 function getReviewStatus(review) {
   if (review.is_approved === true) return 'approved';
   return 'pending'; // until backend adds rejected state
 }
 
-function renderReviews(reviews, filter = 'all') {
+export function renderReviews(reviews, filter = 'all') {
   const container = document.getElementById('reviewsList');
+  if (!container) return;
+
   container.innerHTML = '';
 
   let filtered = reviews;
@@ -660,46 +697,202 @@ function renderReviews(reviews, filter = 'all') {
     const status = getReviewStatus(review);
     const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
 
-    container.insertAdjacentHTML(
-      'beforeend',
-      `
-      <div class="review-card ${status}" data-review-id="${review.id}">
-        <div class="review-header">
-          <h1 class="review-title heading-subtext">${review.review_title}</h1>
+    // 1️⃣ Create node
+    const card = document.createElement('div');
+    card.className = `review-card ${status}`;
+    card.dataset.reviewId = review.id;
 
-          <div class="review-header-right">
-            <span class="review-rating heading-subtext">${stars}</span>
-            <span class="review-status ${status}">
-              ${status.charAt(0).toUpperCase() + status.slice(1)}
-            </span>
-          </div>
-        </div>
+    // 2️⃣ Inject HTML
+    card.innerHTML = `
+      <div class="review-header">
+        <h1 class="review-title heading-subtext">${review.review_title}</h1>
 
-        <h2 class="review-text heading-minitext">
-          ${review.review_text}
-        </h2>
-
-        <div class="review-meta muted-text heading-minitext">
-          <span>Product: ${review.Product?.name || 'N/A'}</span> ·
-          <span>By: ${review.customer_name}</span> ·
-          <span>${new Date(review.created_at).toLocaleDateString()}</span>
-        </div>
-
-        <div class="review-actions">
-          <button class="openModerateModal hero-btn-dark_square"
-            data-review-id="${review.id}">
-            Moderate
-          </button>
+        <div class="review-header-right">
+          <span class="review-rating heading-subtext">${stars}</span>
+          <span class="review-status ${status}">
+            ${status.charAt(0).toUpperCase() + status.slice(1)}
+          </span>
         </div>
       </div>
-      `,
-    );
+
+      <h2 class="review-text heading-minitext">
+        ${review.review_text}
+      </h2>
+
+      <div class="review-meta muted-text heading-minitext">
+        <span>Product: ${review.Product?.name || 'N/A'}</span> ·
+        <span>By: ${review.customer_name}</span> ·
+        <span>${new Date(review.created_at).toLocaleDateString()}</span>
+      </div>
+
+      <div class="review-actions">
+        <button
+          class="openModerateModal hero-btn-dark_square"
+          data-review-id="${review.id}"
+          data-review-text="${review.review_text}">
+          Moderate
+        </button>
+      </div>
+    `;
+
+    // 3️⃣ Append node
+    container.appendChild(card);
+
+    // 4️⃣ Bind button inside THIS card
+    const moderateBtn = card.querySelector('.openModerateModal');
+
+    moderateBtn.addEventListener('click', () => {
+      const reviewId = moderateBtn.dataset.reviewId;
+      const reviewText = moderateBtn.dataset.reviewText;
+
+      const modal = document.querySelector('.moderateReviewModal');
+      if (!modal) return;
+
+      modal.dataset.reviewId = reviewId;
+
+      openModerateReviewButton();
+      moderateReviewForm(reviewText);
+    });
   });
 }
 
-function updatePendingBadge(reviews) {
-  const count = reviews.filter((r) => !r.is_approved).length;
-  document.getElementById('pendingReviewsCount').textContent = count;
+export function openModerateReviewButton() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const moderateReviewsContainer = document.querySelector('.moderateReview');
+
+  if (moderateReviewsContainer)
+    moderateReviewsContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
+export function moderateReviewForm(categoryDetail) {
+  //   console.log('Category Detail:', CategoryDetail);
+
+  const form = document.querySelector('.moderateReviewModal');
+  if (!form) return;
+
+  //   form.dataset.categoryId = categoryId;
+
+  //   if (!form || form.dataset.bound === 'true') return;
+  //   form.dataset.bound = 'true';
+
+  //   console.log(categoryDetail.data);
+
+  //   const categories = categoryDetail.data;
+
+  //   categories.forEach((category) => {
+  //     //  console.log('category', category.id);
+  //     //  console.log('dataset', form.dataset.categoryId);
+
+  //     if (category.id === Number(form.dataset.categoryId)) {
+  //       const categoryName = category.name;
+  //       const categoryDescription = category.description;
+  //       const categoryId = category.id;
+
+  //       document.querySelector('#updateName').value = categoryName;
+  //       document.querySelector('#updateCategoryDescription').value =
+  //         categoryDescription;
+  //     }
+  //   });
+}
+
+export function bindModerateReviewFormListener() {
+  const form = document.querySelector('.moderateReviewModal');
+  if (!form) return;
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const reviewId = form.dataset.reviewId;
+
+      if (!reviewId) {
+        showToast('fail', '❎ No Review selected for Moderation.');
+        return;
+      }
+
+      const selectedOption = document.querySelector(
+        'input[name="moderateReview"]:checked',
+      );
+
+      if (!selectedOption) {
+        showToast('fail', '❎ Please select Approve or Reject.');
+        return;
+      }
+
+      const moderateAdminResponse = document
+        .querySelector('#moderateAdminResponse')
+        .value.trim();
+
+      const moderateReviewDetails = {
+        is_approved: selectedOption.value === 'true',
+        admin_response: moderateAdminResponse,
+      };
+
+      console.log(
+        'Updating Review Approval Detail with:',
+        moderateReviewDetails,
+        reviewId,
+      );
+
+      const moderateReviewModalBtn = document.querySelector(
+        '.moderateReviewModalBtn',
+      );
+
+      try {
+        showBtnLoader(moderateReviewModalBtn);
+        const moderateReviewData = await moderateReview(
+          reviewId,
+          moderateReviewDetails,
+        );
+
+        if (!moderateReviewData) {
+          console.error('fail', moderateReviewData.message);
+          //  showToast('fail', `❎ ${moderateReviewData.message}`);
+          return;
+        }
+
+        closeModal();
+        showToast('success', `✅ ${moderateReviewData.message}`);
+        hideBtnLoader(moderateReviewModalBtn);
+        await loadStorefrontReviews(); // Refresh reviews list to reflect changes
+        //   hideGlobalLoader();
+      } catch (err) {
+        hideBtnLoader(moderateReviewModalBtn);
+
+        console.error('Error Moderating Reviews:', err);
+        showToast('fail', `❎ ${err.message}`);
+        return;
+      } finally {
+        hideBtnLoader(moderateReviewModalBtn);
+      }
+    });
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  bindModerateReviewFormListener();
+});
+
+// Review badge
+// function updatePendingBadge(reviews) {
+//   const count = reviews.filter((r) => !r.is_approved).length;
+//   document.getElementById('pendingReviewsCount').textContent = count;
+// }
+
+async function fetchPendingReviewCount() {
+  // large limit JUST for counting
+  const response = await getProductReviews('pending', 1, 1000);
+
+  if (!response?.data?.reviews) return;
+
+  //   const count = response.data.reviews.length;
+  const count = response.data.reviews.filter((r) => !r.is_approved).length;
+  const badge = document.getElementById('pendingReviewsCount');
+
+  if (badge) badge.textContent = count;
 }
 
 // Storefront Tab Switching Logic
@@ -736,8 +929,9 @@ document.addEventListener('click', function (e) {
 
   filterBtn.classList.add('active');
 
-  const filter = filterBtn.dataset.filter;
-  renderReviews(storefrontReviews, filter);
+  currentReviewFilter = filterBtn.dataset.filter;
+  currentReviewPage = 1; // reset page on filter change
+  loadStorefrontReviews(1, false);
 });
 
 // Business Logo Size Check on Update Storefront Form

@@ -340,6 +340,7 @@
 
             </div>
 
+            <!-- Review Tab Section -->
             <div class="storefront-tab-content " id="reviewsTab">
                <h2 class="card-title heading-subtext">Product Reviews</h2>
                <div id="reviewsContainer">
@@ -363,7 +364,7 @@
                   <div id="reviewsList" class="reviews-list mt-3">
                      <!-- Reviews will render here -->
 
-                     <div class="review-card approved" data-review-id="3">
+                     <!-- <div class="review-card approved" data-review-id="3">
                         <div class="review-header">
                            <h1 class="review-title heading-subtext">Great product</h1>
 
@@ -411,8 +412,14 @@
                               Moderate
                            </button>
                         </div>
-                     </div>
+                     </div> -->
 
+                  </div>
+
+                  <div id="loadMoreButtonDiv" class="center-button mt-2">
+                     <button id="reviewsLoadMoreButton" class="hero-btn-dark load-more-button">
+                        Load More
+                     </button>
                   </div>
 
                </div>
@@ -814,6 +821,48 @@
             <button class="hero-btn-dark updateStorefrontModalBtn  has-spinner" type="submit">
 
                <span class="btn-text">Update Storefront</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <!-- Moderate Reviews -->
+   <form class="modal-form moderateReviewModal" name="moderateReview">
+      <div class="card moderateReview modal ">
+         <div>
+            <h1 class="heading-text addItemName">Moderate Review</h1>
+         </div>
+
+         <div class="modal-form_input mb-1">
+            <label for="moderateReview" class="heading-subtext">Approve Review</label>
+
+            <div class="checkbox">
+               <div class="checkbox-container">
+                  <input id="moderateReviewTrue" type="radio" name="moderateReview" value="true">
+                  <label for="moderateReviewTrue">Approve</label>
+               </div>
+
+               <div class="checkbox-container">
+                  <input id="moderateReviewFalse" type="radio" name="moderateReview" value="false">
+                  <label for="moderateReviewFalse">Reject</label>
+               </div>
+
+            </div>
+         </div>
+
+         <div class="modal-form_input">
+            <label for="moderateAdminResponse">Admin Response</label>
+
+            <textarea id="moderateAdminResponse" type="text" placeholder="Admin Response" name="moderateAdminResponse"
+               rows="4" cols="50" required></textarea>
+         </div>
+
+         <div class="center-button">
+            <button class="hero-btn-dark moderateReviewModalBtn" id="moderateReviewModalBtn">
+               <span class="btn-text">update Review</span>
                <span class="btn-spinner hidden"></span>
             </button>
          </div>

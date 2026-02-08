@@ -152,7 +152,7 @@ export async function getStorefrontDetailById(businessId) {
 
 //  Reviews
 
-export async function getProductReviews(status = 'all', page = 1, limit = 20) {
+export async function getProductReviews(status = 'all', page = 1, limit = 50) {
   try {
     showGlobalLoader();
 
@@ -173,5 +173,72 @@ export async function getProductReviews(status = 'all', page = 1, limit = 20) {
   } catch (error) {
     hideGlobalLoader();
     console.error('Error fetching Reviews:', error.message);
+  }
+}
+
+// export async function markAsReadApi(noticeId) {
+//   try {
+//     //  console.log('Sending POST request...');
+
+//     showGlobalLoader();
+
+//     const fetchedData = await safeFetch(
+//       `${baseUrl}/api/super-admin/business-notices/${noticeId}/read`,
+//       {
+//         method: 'PATCH',
+//         headers: {
+//           Authorization: `Bearer ${userToken}`,
+//         },
+//       },
+//     );
+
+//     if (fetchedData) {
+//       // console.log('Notice deleted successfully:', fetchedData);
+//       showToast('success', `✅ ${fetchedData.message}`);
+//       // await renderProductInventoryTable(shopId); // Refresh list or update UI
+//       hideGlobalLoader();
+//     }
+
+//     return fetchedData;
+//   } catch (error) {
+//     hideGlobalLoader();
+//     //  console.error('Error deleting Notice', error);
+//     showToast('error', '❌ Failed to Mark Notice As Read');
+//     throw error;
+//   }
+// }
+
+export async function moderateReview(reviewId, moderateReviewDetails) {
+  try {
+    //  console.log('Sending POST request...');
+
+    showGlobalLoader();
+
+    const fetchedData = await safeFetch(
+      `${baseUrl}/api/reviews/${reviewId}/moderate`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(moderateReviewDetails),
+      },
+    );
+
+    if (fetchedData) {
+      console.log('Review moderated successfully:', fetchedData);
+      // showToast('success', `✅ ${fetchedData.message}`);
+      // await renderProductInventoryTable(shopId); // Refresh list or update UI
+      // await loadStorefrontReviews();
+      hideGlobalLoader();
+    }
+
+    return fetchedData;
+  } catch (error) {
+    hideGlobalLoader();
+    //  console.error('Error deleting Notice', error);
+    showToast('error', '❌ Failed to Mark Notice As Read');
+    throw error;
   }
 }

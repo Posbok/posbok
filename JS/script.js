@@ -1276,7 +1276,13 @@ export function closeModal() {
     '.toggleActivateStorefrontContainer',
   );
 
+  const moderateReview = document.querySelector('.moderateReview');
+
   //
+
+  if (moderateReview) {
+    moderateReview.classList.remove('active');
+  }
 
   if (toggleActivateStorefrontContainer) {
     toggleActivateStorefrontContainer.classList.remove('active');
