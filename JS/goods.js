@@ -13,6 +13,8 @@ import {
   getProductImages,
   getProductInventory,
   getShopInventoryLog,
+  reorderProductImages,
+  setPrimaryProductImage,
   updateCategory,
   updateProduct,
   updateProductInventory,
@@ -2421,7 +2423,7 @@ export async function viewProductInfo(e, row) {
     const product = productDetails.data;
     const imagesData = productImages.data;
 
-    console.log(product.name);
+    //  console.log(product.name);
 
     document.querySelector('.productInfoName').innerText = product.name;
     document.querySelector('.productSku').innerText = `SKU: ${product.sku}`;
@@ -2476,10 +2478,91 @@ export async function viewProductInfo(e, row) {
 
         thumb.className = 'product-thumbnail';
         thumb.alt = 'Product Image';
-        thumb.style = 'height: 150px; width: auto;';
+        thumb.style = 'height: 150px; width: auto; cursor: move;';
 
-        thumb.addEventListener('click', () => {
-          primaryImageEl.src = img.image_url;
+        //Dragable Images
+        thumb.draggable = true;
+        thumb.dataset.imageId = img.id;
+        thumb.dataset.order = img.display_order;
+
+        thumb.addEventListener('click', async () => {
+          showGlobalLoader();
+          try {
+            const response = await setPrimaryProductImage(product.id, img.id);
+
+            console.log('Primary image response:', response);
+
+            if (!response || response.success === false) {
+              throw new Error(response?.message || 'Failed request');
+            }
+
+            // Update UI
+            primaryImageEl.src = normalizeImageUrl(img.image_url);
+
+            imagesData.images.forEach((i) => (i.is_primary = false));
+            img.is_primary = true;
+
+            showToast(
+              'success',
+              response.message || '✅ Primary image updated',
+            );
+          } catch (err) {
+            console.error('Primary image error:', err);
+            showToast(
+              'fail',
+              `❎ ${err.message || 'Failed to set primary image'}`,
+            );
+          } finally {
+            hideGlobalLoader();
+          }
+        });
+
+        let draggedItem = null;
+
+        thumbnailsContainer.addEventListener('dragstart', (e) => {
+          if (e.target.classList.contains('product-thumbnail')) {
+            draggedItem = e.target;
+          }
+        });
+
+        thumbnailsContainer.addEventListener('dragover', (e) => {
+          e.preventDefault();
+        });
+
+        thumbnailsContainer.addEventListener('drop', async (e) => {
+          e.preventDefault();
+
+          if (!draggedItem) return;
+
+          const target = e.target.closest('.product-thumbnail');
+          if (!target || target === draggedItem) return;
+
+          thumbnailsContainer.insertBefore(draggedItem, target);
+
+          // After reorder, build new order array
+          const reordered = Array.from(
+            thumbnailsContainer.querySelectorAll('.product-thumbnail'),
+          ).map((imgEl, index) => ({
+            imageId: Number(imgEl.dataset.imageId),
+            displayOrder: index,
+          }));
+
+          try {
+            showGlobalLoader();
+            const response = await reorderProductImages(product.id, reordered);
+
+            if (!response || response.success === false) {
+              throw new Error(response?.message || 'Failed request');
+            }
+
+            showToast('success', response?.message || '✅ Images reordered');
+          } catch (err) {
+            showToast('fail', `❎ ${err.message || 'Failed to reorder image'}`);
+          } finally {
+            hideGlobalLoader();
+          }
+
+          draggedItem = null;
         });
 
         thumbnailsContainer.appendChild(thumb);

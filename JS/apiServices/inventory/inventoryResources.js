@@ -66,7 +66,7 @@ export async function getProductCategories() {
           Authorization: `Bearer ${userToken}`,
           //  'Content-Type': 'application/json',
         },
-      }
+      },
     );
 
     //  console.log('Response received...');
@@ -134,7 +134,7 @@ export async function createProduct(shopId, productDetails) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(productDetails),
-      }
+      },
     );
 
     //   console.log('fetchedData received...');
@@ -165,7 +165,7 @@ export async function addInventory(inventoryDetails, shopId) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(inventoryDetails),
-      }
+      },
     );
 
     //  console.log('fetchedData received...');
@@ -199,7 +199,7 @@ export async function uploadProductImages(imageFormData, productId) {
           //  'Content-Type': 'multipart/form-data',
         },
         body: imageFormData,
-      }
+      },
     );
 
     //  console.log('Response received...');
@@ -231,7 +231,7 @@ export async function getProductImages(productId) {
           Authorization: `Bearer ${userToken}`,
           //  'Content-Type': 'multipart/form-data',
         },
-      }
+      },
     );
 
     //  console.log('Response received...');
@@ -249,6 +249,50 @@ export async function getProductImages(productId) {
   }
 }
 
+// Set Primary Image
+export async function setPrimaryProductImage(productId, imageId) {
+  try {
+    const fetchedSetPrimaryProductImage = await safeFetch(
+      `${baseUrl}/api/inventory/products/${productId}/images/${imageId}/primary`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    console.log(fetchedSetPrimaryProductImage);
+
+    return fetchedSetPrimaryProductImage;
+  } catch (error) {
+    console.error('Error setting primary image:', error);
+    throw error;
+  }
+}
+
+// Reorder Images
+export async function reorderProductImages(productId, imageOrder) {
+  try {
+    return await safeFetch(
+      `${baseUrl}/api/inventory/products/${productId}/images/reorder`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          imageOrder: imageOrder,
+        }),
+      },
+    );
+  } catch (error) {
+    console.error('Error reordering images:', error);
+    throw error;
+  }
+}
+
 export async function getProductInventory(shopId) {
   try {
     //  showGlobalLoader();
@@ -262,7 +306,7 @@ export async function getProductInventory(shopId) {
           Authorization: `Bearer ${userToken}`,
           //  'Content-Type': 'application/json',
         },
-      }
+      },
     );
 
     //  console.log('Response received...');
@@ -293,7 +337,7 @@ export async function getProductDetail(productId) {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     //  console.log('Response received...');
@@ -325,7 +369,7 @@ export async function deleteProduct(productId, shopId) {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     if (fetchedData) {
@@ -357,7 +401,7 @@ export async function deleteCategory(categoryId) {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     if (fetchedData) {
@@ -392,7 +436,7 @@ export async function updateProduct(productId, updateProductDetails, shopId) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(updateProductDetails),
-      }
+      },
     );
 
     if (updateProductData) {
@@ -424,7 +468,7 @@ export async function updateCategory(categoryId, updateCategoryDetails) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(updateCategoryDetails),
-      }
+      },
     );
 
     if (updateCategoryData) {
@@ -445,7 +489,7 @@ export async function updateCategory(categoryId, updateCategoryDetails) {
 export async function updateProductInventory(
   updateInventoryDetails,
   shopId,
-  productId
+  productId,
 ) {
   try {
     //  console.log('Sending POST request...');
@@ -459,7 +503,7 @@ export async function updateProductInventory(
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(updateInventoryDetails),
-      }
+      },
     );
 
     if (updateProductData) {
@@ -502,7 +546,7 @@ export async function getShopInventoryLog({ shopId, filters = {} }) {
           Authorization: `Bearer ${userToken}`,
           //  'Content-Type': 'application/json',
         },
-      }
+      },
     );
 
     //  console.log('Response received...');
@@ -548,7 +592,7 @@ export async function getAllSales({
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     if (posTransactionsData) {
@@ -583,7 +627,7 @@ export async function getExportStockTakingData(shopId, format = '') {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     if (!response.ok) {
