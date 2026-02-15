@@ -207,7 +207,8 @@
    .notificationSlider-wrapper,
    .slider-wrapper {
       display: flex;
-      width: 700px;
+      width: 100%;
+      // width: 700px;
       transition: transform 0.4s ease-in-out;
 
       .cart-view,
