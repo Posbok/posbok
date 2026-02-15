@@ -127,32 +127,48 @@ export async function renderBusinessDetails() {
 
   const data = businessData.data;
 
-  document.getElementById('viewBusinessName').innerText =
-    data.business_name || '—';
+  if (!data) {
+    console.error('No business data available');
+    hideGlobalLoader();
+    return;
+  }
 
-  document.getElementById('viewBusinessAddress').innerText =
-    data.address || '—';
+  const viewBusinessName = document.getElementById('viewBusinessName');
+  if (viewBusinessName) viewBusinessName.innerText = data.business_name || '—';
 
-  document.getElementById('viewBusinessPhone').innerText =
-    data.phone_number || '—';
+  const viewBusinessAddress = document.getElementById('viewBusinessAddress');
+  if (viewBusinessAddress) viewBusinessAddress.innerText = data.address || '—';
 
-  document.getElementById('viewBusinessState').innerText =
-    data.state_of_operation || '—';
+  const viewBusinessPhone = document.getElementById('viewBusinessPhone');
+  if (viewBusinessPhone) viewBusinessPhone.innerText = data.phone_number || '—';
 
-  document.getElementById('viewBusinessCac').innerText = data.cac_reg_no || '—';
+  const viewBusinessState = document.getElementById('viewBusinessState');
+  if (viewBusinessState)
+    viewBusinessState.innerText = data.state_of_operation || '—';
 
-  document.getElementById('viewBusinessTax').innerText = data.tax_id || '—';
+  const viewBusinessCac = document.getElementById('viewBusinessCac');
+  if (viewBusinessCac) viewBusinessCac.innerText = data.cac_reg_no || '—';
 
-  document.getElementById('viewBusinessNin').innerText = data.nin || '—';
+  const viewBusinessTax = document.getElementById('viewBusinessTax');
+  if (viewBusinessTax) viewBusinessTax.innerText = data.tax_id || '—';
 
-  document.getElementById('viewBusinessType').innerText =
-    data.business_type === 'BOTH' ? 'POS & SALES' : data.business_type || '—';
+  const viewBusinessNin = document.getElementById('viewBusinessNin');
+  if (viewBusinessNin) viewBusinessNin.innerText = data.nin || '—';
 
-  document.getElementById('viewBusinessStaffSize').innerText =
-    data.staff_size || '—';
+  const viewBusinessType = document.getElementById('viewBusinessType');
+  if (viewBusinessType)
+    viewBusinessType.innerText =
+      data.business_type === 'BOTH' ? 'POS & SALES' : data.business_type || '—';
 
-  document.getElementById('viewBusinessVersion').innerText =
-    data.version_preference || '—';
+  const viewBusinessStaffSize = document.getElementById(
+    'viewBusinessStaffSize',
+  );
+  if (viewBusinessStaffSize)
+    viewBusinessStaffSize.innerText = data.staff_size || '—';
+
+  const viewBusinessVersion = document.getElementById('viewBusinessVersion');
+  if (viewBusinessVersion)
+    viewBusinessVersion.innerText = data.version_preference || '—';
 
   hideGlobalLoader();
 }

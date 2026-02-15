@@ -2477,8 +2477,10 @@ body.authentication {
   gap: 1rem;
   justify-content: center; }
 
-.preview-img {
-  height: 70px; }
+.preview-img,
+.updatePreview-img {
+  height: 70px;
+  margin-right: .7rem; }
 
 .storefront-tabs {
   display: flex;

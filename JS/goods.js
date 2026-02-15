@@ -1411,180 +1411,344 @@ function updateAutocompleteList(products) {
 }
 
 //  Update Product
+// export function bindUpdateProductFormListener() {
+//   const form = document.querySelector('.updateProductModal');
+//   if (!form) return;
+
+//   //   console.log(form);
+
+//   if (form) {
+//     form.addEventListener('submit', async function (e) {
+//       e.preventDefault();
+
+//       const productId = form.dataset.productId;
+//       const shopId = form.dataset.shopId;
+
+//       if (!productId) {
+//         showToast('fail', '❎ No Product selected for update.');
+//         return;
+//       }
+
+//       if (!shopId) {
+//         showToast('fail', '❎ No shop selected for update.');
+//         return;
+//       }
+
+//       const updateProductCategory = document.querySelector(
+//         '#updateProductCategory',
+//       ).value;
+//       const updateProductName =
+//         document.querySelector('#updateProductName').value;
+//       const updateProductDescription = document.querySelector(
+//         '#updateProductDescription',
+//       ).value;
+//       // const updateItemDetails = document.querySelector(
+//       //   '#updateProductDetails',
+//       // ).value;
+//       const updateProductSku =
+//         document.querySelector('#updateProductSku').value;
+//       const updateProductBoughtPrice = document.querySelector(
+//         '#updateProductBoughtPrice',
+//       ).value;
+//       const updateProductSellingPrice = document.querySelector(
+//         '#updateProductSellingPrice',
+//       ).value;
+//       const updateProductQuantity = document.querySelector(
+//         '#updateProductQuantity',
+//       ).value;
+
+//       const updateProductExpiryDate =
+//         document.querySelector('#updateExpiryDate').value;
+
+//       const updateLowStockQuantity = document.querySelector(
+//         '#updateLowStockQuantityQuantity',
+//       ).value;
+
+//       const updateSupposedPrice = document.querySelector(
+//         '#updateSupposedPrice',
+//       ).value;
+
+//       //  Publish Status checkboxes
+//       const updatePublishStatusCheckboxes = document.querySelectorAll(
+//         'input[name="updatePublishStatus"]:checked',
+//       );
+
+//       const updatePublishStatus = Array.from(updatePublishStatusCheckboxes).map(
+//         (cb) => cb.value,
+//       );
+//       const updatePublishStatusValue = updatePublishStatus[0] || null;
+
+//       //  Display Quantity checkboxes
+//       const updateDisplayQuantitytatusCheckboxes = document.querySelectorAll(
+//         'input[name="updateDisplayQuantityStatus"]:checked',
+//       );
+
+//       const displayQuantitytatus = Array.from(
+//         updateDisplayQuantitytatusCheckboxes,
+//       ).map((cb) => cb.value);
+
+//       const updateDisplayQuantitytatusValue = displayQuantitytatus[0] || null;
+
+//       let finalUpdateSku_Barcode =
+//         updateProductSku !== '' ? updateProductSku : generateSKU(businessName);
+
+//       const updateProductDetails = {
+//         categoryId: updateProductCategory,
+//         name: updateProductName,
+//         description: updateProductDescription,
+//         sku: finalUpdateSku_Barcode,
+//         purchasePrice: Number(getAmountForSubmission(updateProductBoughtPrice)),
+//         sellingPrice: Number(getAmountForSubmission(updateProductSellingPrice)),
+//         //
+//         expiryDate: updateProductExpiryDate,
+//         lowStockQuantity: Number(updateLowStockQuantity),
+//         supposedPrice: Number(getAmountForSubmission(updateSupposedPrice)),
+//         isPublished: updatePublishStatusValue,
+//         displayQuantity: updateDisplayQuantitytatusValue,
+//         //   productDetails: updateItemDetails,
+//       };
+
+//       const updateInventoryDetails = {
+//         quantity: Number(updateProductQuantity),
+//       };
+
+//       console.log(
+//         'Updating Product Detail with:',
+//         updateProductDetails,
+//         productId,
+//       );
+
+//       const updateProductModalBtn = document.querySelector(
+//         '.updateProductModalBtn',
+//       );
+
+//       try {
+//         showBtnLoader(updateProductModalBtn);
+//         const updatedProductData = await updateProduct(
+//           productId,
+//           updateProductDetails,
+//           shopId,
+//         );
+
+//         if (!updatedProductData) {
+//           console.error('fail', updatedProductData.message);
+//           return;
+//         }
+
+//         //   console.log('Adding Products with:', addProductDetails);
+
+//         try {
+//           const inventoryData = await updateProductInventory(
+//             updateInventoryDetails,
+//             shopId,
+//             productId,
+//           );
+
+//           const filters = getInventoryLogFilters('admin', shopId);
+
+//           if (inventoryData) {
+//             showToast(
+//               'success',
+//               `✅ ${inventoryData.message} with SKU: ${updatedProductData.data.sku}`,
+//             );
+//             closeModal();
+//             clearFormInputs();
+//             await renderProductInventoryTable(shopId);
+//             await renderInventoryLogTable({
+//               filters,
+//               shopId,
+//               tableBody: `#inventoryLogBody-${shopId}`,
+//             });
+//           }
+
+//           const imageFormData = new FormData();
+
+//           const imageInputs = [
+//             form.updateProductImage_1,
+//             form.updateProductImage_2,
+//             form.updateProductImage_3,
+//             form.updateProductImage_4,
+//           ];
+
+//           imageInputs.forEach((input) => {
+//             if (input?.files?.length) {
+//               imageFormData.append('images', input.files[0]);
+//             }
+//           });
+
+//           if (imageFormData.has('images')) {
+//             await uploadProductImages(imageFormData, productId);
+//           }
+//         } catch (inventoryDataErr) {
+//           showToast(
+//             'fail',
+//             `❎ ${inventoryDataErr.message || 'Failed to Update inventory'}`,
+//           );
+//           console.error(
+//             'Error During Inventory Updating:',
+//             inventoryDataErr.message,
+//           );
+//         }
+//         hideBtnLoader(updateProductModalBtn);
+//         //   hideGlobalLoader();
+//       } catch (err) {
+//         hideBtnLoader(updateProductModalBtn);
+
+//         console.error('Error Updating product:', err);
+//         showToast('fail', `❎ ${err.message}`);
+//         return;
+//       }
+//     });
+//   }
+// }
+
 export function bindUpdateProductFormListener() {
   const form = document.querySelector('.updateProductModal');
-  if (!form) return;
+  if (!form || form.dataset.bound === 'true') return;
 
-  //   console.log(form);
+  form.dataset.bound = 'true';
 
-  if (form) {
-    form.addEventListener('submit', async function (e) {
-      e.preventDefault();
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
 
-      const productId = form.dataset.productId;
-      const shopId = form.dataset.shopId;
+    const productId = form.dataset.productId;
+    const shopId = form.dataset.shopId;
 
-      if (!productId) {
-        showToast('fail', '❎ No Product selected for update.');
-        return;
-      }
+    if (!productId) {
+      showToast('fail', '❎ No Product selected for update.');
+      return;
+    }
 
-      if (!shopId) {
-        showToast('fail', '❎ No shop selected for update.');
-        return;
-      }
+    if (!shopId) {
+      showToast('fail', '❎ No shop selected for update.');
+      return;
+    }
 
-      const updateProductCategory = document.querySelector(
-        '#updateProductCategory',
-      ).value;
-      const updateProductName =
-        document.querySelector('#updateProductName').value;
-      const updateProductDescription = document.querySelector(
-        '#updateProductDescription',
-      ).value;
-      // const updateItemDetails = document.querySelector(
-      //   '#updateProductDetails',
-      // ).value;
-      const updateProductSku =
-        document.querySelector('#updateProductSku').value;
-      const updateProductBoughtPrice = document.querySelector(
-        '#updateProductBoughtPrice',
-      ).value;
-      const updateProductSellingPrice = document.querySelector(
-        '#updateProductSellingPrice',
-      ).value;
-      const updateProductQuantity = document.querySelector(
-        '#updateProductQuantity',
-      ).value;
+    const updateProductModalBtn = document.querySelector(
+      '.updateProductModalBtn',
+    );
 
-      const updateProductExpiryDate =
-        document.querySelector('#updateExpiryDate').value;
-
-      const updateLowStockQuantity = document.querySelector(
-        '#updateLowStockQuantityQuantity',
-      ).value;
-
-      const updateSupposedPrice = document.querySelector(
-        '#updateSupposedPrice',
-      ).value;
-
-      //  Publish Status checkboxes
-      const updatePublishStatusCheckboxes = document.querySelectorAll(
-        'input[name="updatePublishStatus"]:checked',
-      );
-
-      const updatePublishStatus = Array.from(updatePublishStatusCheckboxes).map(
-        (cb) => cb.value,
-      );
-      const updatePublishStatusValue = updatePublishStatus[0] || null;
-
-      //  Display Quantity checkboxes
-      const updateDisplayQuantitytatusCheckboxes = document.querySelectorAll(
-        'input[name="updateDisplayQuantityStatus"]:checked',
-      );
-
-      const displayQuantitytatus = Array.from(
-        updateDisplayQuantitytatusCheckboxes,
-      ).map((cb) => cb.value);
-
-      const updateDisplayQuantitytatusValue = displayQuantitytatus[0] || null;
-
-      let finalUpdateSku_Barcode =
-        updateProductSku !== '' ? updateProductSku : generateSKU(businessName);
+    try {
+      showBtnLoader(updateProductModalBtn);
 
       const updateProductDetails = {
-        categoryId: updateProductCategory,
-        name: updateProductName,
-        description: updateProductDescription,
-        sku: finalUpdateSku_Barcode,
-        purchasePrice: Number(getAmountForSubmission(updateProductBoughtPrice)),
-        sellingPrice: Number(getAmountForSubmission(updateProductSellingPrice)),
-        //
-        expiryDate: updateProductExpiryDate,
-        lowStockQuantity: Number(updateLowStockQuantity),
-        supposedPrice: Number(getAmountForSubmission(updateSupposedPrice)),
-        isPublished: updatePublishStatusValue,
-        displayQuantity: updateDisplayQuantitytatusValue,
-        //   productDetails: updateItemDetails,
+        categoryId: document.querySelector('#updateProductCategory').value,
+        name: document.querySelector('#updateProductName').value,
+        description: document.querySelector('#updateProductDescription').value,
+        sku:
+          document.querySelector('#updateProductSku').value ||
+          generateSKU(businessName),
+        purchasePrice: Number(
+          getAmountForSubmission(
+            document.querySelector('#updateProductBoughtPrice').value,
+          ),
+        ),
+        sellingPrice: Number(
+          getAmountForSubmission(
+            document.querySelector('#updateProductSellingPrice').value,
+          ),
+        ),
+        expiryDate: document.querySelector('#updateExpiryDate').value,
+        lowStockQuantity: Number(
+          document.querySelector('#updateLowStockQuantityQuantity').value,
+        ),
+        supposedPrice: Number(
+          getAmountForSubmission(
+            document.querySelector('#updateSupposedPrice').value,
+          ),
+        ),
+        isPublished:
+          document.querySelector('input[name="updatePublishStatus"]:checked')
+            ?.value || null,
+        displayQuantity:
+          document.querySelector(
+            'input[name="updateDisplayQuantityStatus"]:checked',
+          )?.value || null,
       };
 
       const updateInventoryDetails = {
-        quantity: Number(updateProductQuantity),
+        quantity: Number(
+          document.querySelector('#updateProductQuantity').value,
+        ),
       };
 
-      console.log(
-        'Updating Product Detail with:',
+      // 1️⃣ Update Product
+      const updatedProductData = await updateProduct(
+        productId,
         updateProductDetails,
+        shopId,
+      );
+
+      if (!updatedProductData?.data) {
+        throw new Error(updatedProductData?.message || 'Product update failed');
+      }
+
+      // 2️⃣ Update Inventory
+      const inventoryData = await updateProductInventory(
+        updateInventoryDetails,
+        shopId,
         productId,
       );
 
-      const updateProductModalBtn = document.querySelector(
-        '.updateProductModalBtn',
-      );
+      if (!inventoryData) {
+        throw new Error('Inventory update failed');
+      }
 
-      try {
-        showBtnLoader(updateProductModalBtn);
-        const updatedProductData = await updateProduct(
+      // 3️⃣ Upload Images (before success UI)
+      const imageFormData = new FormData();
+      const imageInputs = [
+        form.updateProductImage_1,
+        form.updateProductImage_2,
+        form.updateProductImage_3,
+        form.updateProductImage_4,
+      ];
+
+      imageInputs.forEach((input) => {
+        if (input?.files?.length) {
+          imageFormData.append('images', input.files[0]);
+        }
+      });
+
+      if (imageFormData.has('images')) {
+        const imageUploadResponse = await uploadProductImages(
+          imageFormData,
           productId,
-          updateProductDetails,
-          shopId,
         );
 
-        if (!updatedProductData) {
-          console.error('fail', updatedProductData.message);
-          return;
+        if (!imageUploadResponse) {
+          throw new Error('Image upload failed');
         }
-
-        //   console.log('Adding Products with:', addProductDetails);
-
-        try {
-          const inventoryData = await updateProductInventory(
-            updateInventoryDetails,
-            shopId,
-            productId,
-          );
-
-          const filters = getInventoryLogFilters('admin', shopId);
-
-          if (inventoryData) {
-            showToast(
-              'success',
-              `✅ ${inventoryData.message} with SKU: ${updatedProductData.data.sku}`,
-            );
-            closeModal();
-            clearFormInputs();
-            await renderProductInventoryTable(shopId);
-            await renderInventoryLogTable({
-              filters,
-              shopId,
-              tableBody: `#inventoryLogBody-${shopId}`,
-            });
-          }
-        } catch (inventoryDataErr) {
-          showToast(
-            'fail',
-            `❎ ${inventoryDataErr.message || 'Failed to Update inventory'}`,
-          );
-          console.error(
-            'Error During Inventory Updating:',
-            inventoryDataErr.message,
-          );
-        }
-        hideBtnLoader(updateProductModalBtn);
-        //   hideGlobalLoader();
-      } catch (err) {
-        hideBtnLoader(updateProductModalBtn);
-
-        console.error('Error Updating product:', err);
-        showToast('fail', `❎ ${err.message}`);
-        return;
       }
-    });
-  }
+
+      // 4️⃣ Only now show success
+      const filters = getInventoryLogFilters('admin', shopId);
+
+      showToast(
+        'success',
+        `✅ Product updated successfully with SKU: ${updatedProductData.data.sku}`,
+      );
+
+      closeModal();
+      clearFormInputs();
+
+      await renderProductInventoryTable(shopId);
+      await renderInventoryLogTable({
+        filters,
+        shopId,
+        tableBody: `#inventoryLogBody-${shopId}`,
+      });
+    } catch (err) {
+      console.error('Update process failed:', err);
+      showToast('fail', `❎ ${err.message || 'Update failed'}`);
+    } finally {
+      hideBtnLoader(updateProductModalBtn);
+    }
+  });
 }
 
-export function updateProductForm(productDetail) {
+export function updateProductForm(productDetail, productImages = null) {
   console.log('Product Detail:', productDetail);
+  console.log('Product Images:', productImages);
 
   const form = document.querySelector('.updateProductModal');
   if (!form) return;
@@ -1594,7 +1758,14 @@ export function updateProductForm(productDetail) {
 
   const product = productDetail.data;
   const productCategory = product.ProductCategory;
-  const productInventory = product.inventory[0];
+  const productInventory = product.inventory?.[0];
+
+  //   productImages.data.images = [{ id, image_url, display_order, is_primary }];
+
+  if (!productInventory) {
+    showToast('fail', '❎ No Inventory data found for this product.');
+    console.log('❎ No Inventory data found for this product.', productId);
+  }
 
   const shopId = productInventory?.Shop.id;
   const productId = product.id;
@@ -1668,21 +1839,48 @@ export function updateProductForm(productDetail) {
     checkbox.checked = checkbox.value === display_quantity;
   });
 
-  //   setImagePreview(
-  //     'updateBusinessLogo',
-  //     'previewBusinessLogo',
-  //     storefront.business_logo
-  //   );
-  //   setImagePreview(
-  //     'updateStoreFrontImage',
-  //     'previewStoreFrontImage',
-  //     storefront.store_front_image
-  //   );
-  //   setImagePreview(
-  //     'updateSignBoardImage',
-  //     'previewSignBoardImage',
-  //     storefront.sign_board_image
-  //   );
+  const imageSlots = [
+    {
+      previewId: 'updatePreviewProductImage_1',
+      inputId: 'updateProductImage_1',
+    },
+    {
+      previewId: 'updatePreviewProductImage_2',
+      inputId: 'updateProductImage_2',
+    },
+    {
+      previewId: 'updatePreviewProductImage_3',
+      inputId: 'updateProductImage_3',
+    },
+    {
+      previewId: 'updatePreviewProductImage_4',
+      inputId: 'updateProductImage_4',
+    },
+  ];
+
+  const images = productImages?.data?.images || [];
+
+  imageSlots.forEach((slot, index) => {
+    const previewEl = document.getElementById(slot.previewId);
+    const inputEl = document.getElementById(slot.inputId);
+
+    const imageData = images[index];
+
+    if (imageData?.image_url) {
+      previewEl.src = imageData.image_url;
+      previewEl.dataset.imageId = imageData.id;
+    } else {
+      previewEl.src = '/img/placeholder.png';
+      previewEl.dataset.imageId = '';
+    }
+
+    // Optional: live preview when user selects new file
+    inputEl?.addEventListener('change', function () {
+      if (this.files && this.files[0]) {
+        previewEl.src = URL.createObjectURL(this.files[0]);
+      }
+    });
+  });
 }
 
 // Function to handle image preview + max size check
@@ -1721,7 +1919,7 @@ export function getProductBarcodeImageForm(product, shopId) {
   const barcode = form.dataset.productBarcode;
   const productId = form.dataset.productId;
 
-  console.log(productId, barcode);
+  //   console.log(productId, barcode);
 
   const barcodeImg = document.getElementById('barcode-image');
 
@@ -2273,7 +2471,7 @@ function renderFilteredProducts(shopId, productList) {
              `;
 
     row.addEventListener('click', async (e) => {
-      console.log('Row was clicked');
+      // console.log('Row was clicked');
       showGlobalLoader();
       viewProductInfo(e, row, product_id);
     });
@@ -2366,7 +2564,10 @@ function renderFilteredProducts(shopId, productList) {
         updateProductModalContainer.dataset.productId = productId;
 
         // Fetch staff detail
-        const ProductDetail = await getProductDetail(productId);
+        const [ProductDetail, productImages] = await Promise.all([
+          getProductDetail(productId),
+          getProductImages(productId),
+        ]);
 
         //  console.log('Product detail received successfully:', ProductDetail);
 
@@ -2375,7 +2576,7 @@ function renderFilteredProducts(shopId, productList) {
           hideGlobalLoader();
           openUpdateProductButton(); // Show modal after data is ready
 
-          updateProductForm(ProductDetail);
+          updateProductForm(ProductDetail, productImages);
         } else {
           hideGlobalLoader();
           showToast('fail', '❌ Failed to fetch Product details.');
@@ -2391,7 +2592,7 @@ export async function viewProductInfo(e, row) {
 
   const productId = row.dataset.productId;
 
-  console.log(productId);
+  //   console.log(productId);
 
   const form = document.querySelector('.viewProductInfoModal');
   form.dataset.productId = productId;
@@ -2399,8 +2600,14 @@ export async function viewProductInfo(e, row) {
   // Get business by ID
   try {
     showGlobalLoader();
-    const productDetails = await getProductDetail(productId);
-    const productImages = await getProductImages(productId);
+    //  const productDetails = await getProductDetail(productId);
+    //  const productImages = await getProductImages(productId);
+
+    const [productDetails, productImages] = await Promise.all([
+      getProductDetail(productId),
+      getProductImages(productId),
+    ]);
+
     //  console.log('productDetails when Row is Clicked', productDetails);
 
     if (!productDetails || !productDetails.data) {
@@ -2417,8 +2624,8 @@ export async function viewProductInfo(e, row) {
       return;
     }
 
-    console.log(productDetails.data);
-    console.log(productImages.data);
+    //  console.log(productDetails.data);
+    //  console.log(productImages.data);
 
     const product = productDetails.data;
     const imagesData = productImages.data;
@@ -2726,7 +2933,7 @@ export async function renderProductInventoryTable(shopId) {
              `;
 
       row.addEventListener('click', async (e) => {
-        console.log('Row was clicked');
+        //   console.log('Row was clicked');
         showGlobalLoader();
         viewProductInfo(e, row, product_id);
       });
@@ -2828,7 +3035,10 @@ export async function renderProductInventoryTable(shopId) {
           updateProductModalContainer.dataset.productId = productId;
 
           // Fetch staff detail
-          const ProductDetail = await getProductDetail(productId);
+          const [ProductDetail, productImages] = await Promise.all([
+            getProductDetail(productId),
+            getProductImages(productId),
+          ]);
 
           //  console.log('Product detail received successfully:', ProductDetail);
 
@@ -2837,7 +3047,7 @@ export async function renderProductInventoryTable(shopId) {
             hideGlobalLoader();
             openUpdateProductButton(); // Show modal after data is ready
 
-            updateProductForm(ProductDetail);
+            updateProductForm(ProductDetail, productImages);
           } else {
             hideGlobalLoader();
             showToast('fail', '❌ Failed to fetch Product details.');

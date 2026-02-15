@@ -507,7 +507,7 @@ export function renderStorefront(storefront) {
   document.getElementById('signBoardImage').src =
     storefront.sign_board_image || imgFallback;
 
-  //   initMap(storefront.latitude, storefront.longitude);
+  // initMap(storefront.latitude, storefront.longitude);
 
   // Leaflet Map Initialization for Storefront Location
   if (storefrontMap) {
