@@ -180,7 +180,25 @@
       <!-- <button id="openShopModalBtn">Create Shop</button> -->
 
       <section class="businessDetails card">
+         <h2 class="heading-text" style="margin-bottom: 1.5rem;">
+            Business Settings
+         </h2>
 
+
+         <div class="adminHeader" style="display: flex; flex-direction: row; gap: 1rem; align-items: center;">
+
+            <button class="hero-btn-dark openViewBusinessModalBtn  mr-0 force-mb-0" id="openViewBusinessModalBtn">
+               <span class="btn-text">View Business Details</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+
+            <button class="hero-btn-dark openUpdateBusinessModalBtn  mr-0 force-mb-0" id="openUpdateBusinessModalBtn">
+               <span class="btn-text">Update Business Details</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <!-- POS Fee toggle buttons and settigns  -->
          <div class="settings-container mb-4">
             <!-- <h2 class="heading-text" style="margin-bottom: 1.5rem;">
                Business Fee Settings
@@ -223,96 +241,6 @@
             </div> -->
          </div>
 
-
-         <div class="shops-method">
-            <h2 class="heading-text" style="margin-bottom: 1.5rem;">
-               Business Details
-            </h2>
-
-            <!-- <div class="table-header" style="display: flex; flex-direction: column; width: max-content;"> -->
-
-            <!-- Business Name -->
-            <div class="business-form_input">
-               <label for="businessName">Business Name</label>
-
-               <input id="businessName" type="text" name="businessName" disabled>
-            </div>
-
-            <!-- Business address -->
-            <div class="business-form_input">
-               <label for="businessAddress">Business Address </label>
-
-               <input id="businessAddress" type="text" name="businessAddress" disabled>
-            </div>
-
-            <!-- Phone Number -->
-            <div class="business-form_input">
-               <label for="businessPhoneNumber">Phone Number </label>
-
-               <input id="businessPhoneNumber" type="text" name="businessPhoneNumber" disabled>
-            </div>
-
-            <!-- State Of Operation -->
-            <div class="business-form_input">
-               <label for="businessState">State Of Operatiton </label>
-
-               <input id="businessState" type="text" name="businessState" disabled>
-            </div>
-
-            <!-- CAC Reg Number -->
-            <div class="business-form_input">
-               <label for="businessCacRegNo">CAC Reg Number</label>
-
-               <input id="businessCacRegNo" type="text" name="businessCacRegNo" disabled>
-            </div>
-
-            <!-- Tax ID -->
-            <div class="business-form_input">
-               <label for="businessTaxId">Tax ID</label>
-
-               <input id="businessTaxId" type="text" name="businessTaxId" disabled>
-            </div>
-
-            <!-- NIN -->
-            <div class="business-form_input">
-               <label for="businessNin">NIN</label>
-
-               <input id="businessNin" type="number" name="businessNin" disabled>
-            </div>
-
-            <!-- Business Type -->
-            <div class="business-form_input mb-1">
-               <label for="businessType" class="heading-subtext">Business Type</label>
-
-
-               <input id="businessType" type="text" name="businessType" disabled>
-            </div>
-
-            <!-- Business Staff Size -->
-            <div class="business-form_input">
-               <label for="businessStaffSize">Staff Size</label>
-
-               <input id="businessStaffSize" type="number" name="businessStaffSize" disabled>
-            </div>
-
-            <!-- Version Preference -->
-            <div class="business-form_input  mb-1">
-               <label for="businessVersionPreference" class="heading-subtext">Version Preference</label>
-
-
-               <input id="businessVersionPreference" type="text" name="businessVersionPreference" disabled>
-
-            </div>
-
-         </div>
-
-         <div class="center-button">
-
-            <button class="hero-btn-dark openUpdateBusinessModalBtn" id="openUpdateBusinessModalBtn">
-               <span class="btn-text">Update Business Details</span>
-               <span class="btn-spinner hidden"></span>
-            </button>
-         </div>
       </section>
 
    </main>
@@ -434,6 +362,73 @@
                <span class="btn-spinner hidden"></span>
             </button>
          </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <form class="modal-form adminViewBusinessDataModal" name="modal">
+      <div class="card adminViewBusinessData modal ">
+
+
+         <div class="business-details-container">
+
+            <h2 class="heading-text" style="margin-bottom: 1.5rem;">
+               Business Details
+            </h2>
+
+            <div class="details-row">
+               <span class="details-label heading-minitext">Business Name:</span>
+               <span class="details-value heading-minitext" id="viewBusinessName">—</span>
+            </div>
+
+            <div class="details-row">
+               <span class="details-label heading-minitext">Address:</span>
+               <span class="details-value heading-minitext" id="viewBusinessAddress">—</span>
+            </div>
+
+            <div class="details-row">
+               <span class="details-label heading-minitext">Phone:</span>
+               <span class="details-value heading-minitext" id="viewBusinessPhone">—</span>
+            </div>
+
+            <div class="details-row">
+               <span class="details-label heading-minitext">State Of Operation:</span>
+               <span class="details-value heading-minitext" id="viewBusinessState">—</span>
+            </div>
+
+            <div class="details-row">
+               <span class="details-label heading-minitext">CAC Reg No:</span>
+               <span class="details-value heading-minitext" id="viewBusinessCac">—</span>
+            </div>
+
+            <div class="details-row">
+               <span class="details-label heading-minitext">Tax ID:</span>
+               <span class="details-value heading-minitext" id="viewBusinessTax">—</span>
+            </div>
+
+            <div class="details-row">
+               <span class="details-label heading-minitext">NIN:</span>
+               <span class="details-value heading-minitext" id="viewBusinessNin">—</span>
+            </div>
+
+            <div class="details-row">
+               <span class="details-label heading-minitext">Business Type:</span>
+               <span class="details-value heading-minitext" id="viewBusinessType">—</span>
+            </div>
+
+            <div class="details-row">
+               <span class="details-label heading-minitext">Staff Size:</span>
+               <span class="details-value heading-minitext" id="viewBusinessStaffSize">—</span>
+            </div>
+
+            <div class="details-row">
+               <span class="details-label heading-minitext">Version Preference:</span>
+               <span class="details-value heading-minitext" id="viewBusinessVersion">—</span>
+            </div>
+
+         </div>
+
 
          <div class="close closeModal" id="">&times;</div>
       </div>

@@ -651,10 +651,17 @@ button:disabled:hover {
 
 .adminHeader {
    display: flex;
-   flex-direction: column;
    width: max-content;
    gap: 1rem;
    margin: 2rem 0;
+
+   @media only screen and (min-width:$bp-small) {
+      flex-direction: column !important;
+      align-items: normal !important;
+
+   }
+
+
 }
 
 .center-button {
@@ -786,4 +793,21 @@ button:disabled:hover {
 
 #text {
    display: none;
+}
+
+// Business Details Modal
+.details-row {
+   display: flex;
+   justify-content: space-between;
+   margin-bottom: 12px;
+   border-bottom: 1px solid #eee;
+   padding-bottom: 6px;
+}
+
+.details-label {
+   font-weight: 600;
+}
+
+.details-value {
+   color: #444;
 }

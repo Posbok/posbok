@@ -1277,8 +1277,15 @@ export function closeModal() {
   );
 
   const moderateReview = document.querySelector('.moderateReview');
+  const adminViewBusinessData = document.querySelector(
+    '.adminViewBusinessData',
+  );
 
   //
+
+  if (adminViewBusinessData) {
+    adminViewBusinessData.classList.remove('active');
+  }
 
   if (moderateReview) {
     moderateReview.classList.remove('active');

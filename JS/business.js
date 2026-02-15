@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Attach listeners - Manual Fee Toggle
     const manualPosCharges = document.querySelector(
-      '.pos_manual_charge_toggle input'
+      '.pos_manual_charge_toggle input',
     );
 
     if (manualPosCharges)
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         try {
           const response = await setManualPosCharges(
-            updateManualPosChargesData
+            updateManualPosChargesData,
           );
           if (response && response.success) {
             showToast('success', `✅ ${response.message}`);
@@ -116,96 +116,113 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 export async function renderBusinessDetails() {
   showGlobalLoader();
+
   const businessData = await fetchBusinessDetails();
 
-  if (!businessData) {
-    //  showToast('error', ' ⛔ Failed to fetch business details');
+  if (!businessData?.data) {
     console.error('Failed to fetch business details');
     hideGlobalLoader();
     return;
   }
 
-  const businessName =
-    businessData?.data.business_name || 'Business Name Not Available';
-  const businessAddress =
-    businessData?.data.address || 'Business Address Not Available';
-  const businessPhoneNumber =
-    businessData?.data.phone_number || 'Business Phone Number Not Available';
-  const stateofOperation =
-    businessData?.data.state_of_operation ||
-    'Business State Of Operation Not Available';
-  const cacRegNo =
-    businessData?.data.cac_reg_no || 'Business CAC Reg No. Not Available';
-  const taxId = businessData?.data.tax_id || 'Business Tax ID Not Available';
-  const nin = businessData?.data.nin || 'Business NIN Not Available';
-  const businessType =
-    businessData?.data.business_type || 'Business Type Not Available';
-  const staffSize =
-    businessData?.data.staff_size || 'Business Staff Size Not Available';
-  const versionPreference =
-    businessData?.data.version_preference || 'Business Version Not Available';
-  //   const isActive = businessData?.data.is_active || 'Business SUbscription Not Available';
+  const data = businessData.data;
 
-  //   DOM Elements Input
-  const businessNameInput = document.getElementById('businessName');
-  const businessAddressInput = document.getElementById('businessAddress');
-  const businessPhoneNumberInput = document.getElementById(
-    'businessPhoneNumber'
-  );
-  const businessStateInput = document.getElementById('businessState');
-  const businessCacRegNoInput = document.getElementById('businessCacRegNo');
-  const businessTaxIdInput = document.getElementById('businessTaxId');
-  const businessNinInput = document.getElementById('businessNin');
-  const businessTypeInput = document.getElementById('businessType');
-  const businessStaffSizeInput = document.getElementById('businessStaffSize');
-  const businessVersionPreferenceInput = document.getElementById(
-    'businessVersionPreference'
-  );
+  document.getElementById('viewBusinessName').innerText =
+    data.business_name || '—';
 
-  //   const BusinessIsActiveInput = document.getElementById('isActive');
+  document.getElementById('viewBusinessAddress').innerText =
+    data.address || '—';
 
-  //   Set the values of the input fields
-  if (businessNameInput) businessNameInput.value = businessName;
-  if (businessAddressInput) businessAddressInput.value = businessAddress;
-  if (businessPhoneNumberInput)
-    businessPhoneNumberInput.value = businessPhoneNumber;
-  if (businessStateInput) businessStateInput.value = stateofOperation;
-  if (businessCacRegNoInput) businessCacRegNoInput.value = cacRegNo;
-  if (businessTaxIdInput) businessTaxIdInput.value = taxId;
-  if (businessNinInput) businessNinInput.value = nin;
-  if (businessTypeInput)
-    businessTypeInput.value =
-      businessType === 'BOTH' ? 'POS & SALES' : businessType;
-  if (businessStaffSizeInput) businessStaffSizeInput.value = staffSize;
-  if (businessVersionPreferenceInput)
-    businessVersionPreferenceInput.value = versionPreference;
+  document.getElementById('viewBusinessPhone').innerText =
+    data.phone_number || '—';
 
-  // Update Business Details
+  document.getElementById('viewBusinessState').innerText =
+    data.state_of_operation || '—';
 
-  document
-    .querySelector('#openUpdateBusinessModalBtn')
-    ?.addEventListener('click', async () => {
-      showGlobalLoader();
+  document.getElementById('viewBusinessCac').innerText = data.cac_reg_no || '—';
 
-      const adminUpdateBusinessDataContainer = document.querySelector(
-        '.adminUpdateBusinessData'
-      );
+  document.getElementById('viewBusinessTax').innerText = data.tax_id || '—';
 
-      if (adminUpdateBusinessDataContainer) {
-        if (businessData?.data) {
-          hideGlobalLoader();
-          openUpdateBusinessModal();
-          setupUpdateBusinessForm(businessData.data);
-        }
-      } else {
-        hideGlobalLoader();
-        showToast('fail', '❌ Failed to fetch Business details.');
-      }
+  document.getElementById('viewBusinessNin').innerText = data.nin || '—';
 
-      // openUpdateBusinessModal
-    });
-  //   console.log(businessData);
+  document.getElementById('viewBusinessType').innerText =
+    data.business_type === 'BOTH' ? 'POS & SALES' : data.business_type || '—';
+
+  document.getElementById('viewBusinessStaffSize').innerText =
+    data.staff_size || '—';
+
+  document.getElementById('viewBusinessVersion').innerText =
+    data.version_preference || '—';
+
+  hideGlobalLoader();
 }
+
+// View and View Business Details Modal
+document
+  .querySelector('#openViewBusinessModalBtn')
+  ?.addEventListener('click', async () => {
+    const businessData = await fetchBusinessDetails();
+
+    console.log(businessData);
+
+    if (!businessData) {
+      //  showToast('error', ' ⛔ Failed to fetch business details');
+      console.error('Failed to fetch business details');
+      hideGlobalLoader();
+      return;
+    }
+
+    showGlobalLoader();
+
+    const adminViewBusinessDataContainer = document.querySelector(
+      '.adminViewBusinessData',
+    );
+
+    if (adminViewBusinessDataContainer) {
+      if (businessData?.data) {
+        hideGlobalLoader();
+        openViewBusinessModal();
+        setupViewBusinessForm(businessData.data);
+      }
+    } else {
+      hideGlobalLoader();
+      showToast('fail', '❌ Failed to fetch Business details.');
+    }
+
+    // openViewBusinessModal
+  });
+
+document
+  .querySelector('#openUpdateBusinessModalBtn')
+  ?.addEventListener('click', async () => {
+    const businessData = await fetchBusinessDetails();
+
+    if (!businessData) {
+      //  showToast('error', ' ⛔ Failed to fetch business details');
+      console.error('Failed to fetch business details');
+      hideGlobalLoader();
+      return;
+    }
+
+    showGlobalLoader();
+
+    const adminUpdateBusinessDataContainer = document.querySelector(
+      '.adminUpdateBusinessData',
+    );
+
+    if (adminUpdateBusinessDataContainer) {
+      if (businessData?.data) {
+        hideGlobalLoader();
+        openUpdateBusinessModal();
+        setupUpdateBusinessForm(businessData.data);
+      }
+    } else {
+      hideGlobalLoader();
+      showToast('fail', '❌ Failed to fetch Business details.');
+    }
+
+    // openUpdateBusinessModal
+  });
 
 // export async function renderBusinessSettings() {
 //   const businessSettings = await getBusinessSettings();
@@ -241,11 +258,35 @@ export async function renderBusinessDetails() {
 //   hideGlobalLoader();
 // }
 
+// View and Update Business Details Modal Functions
+export function openViewBusinessModal() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const adminViewBusinessDataContainer = document.querySelector(
+    '.adminViewBusinessData',
+  );
+
+  if (adminViewBusinessDataContainer)
+    adminViewBusinessDataContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
+export function setupViewBusinessForm(businessData) {
+  const form = document.querySelector('.adminViewBusinessDataModal');
+  if (!form) return;
+
+  // Save businessData.id in the form for later use
+  form.dataset.businessid = businessData.id;
+}
+
+//Update Business Modal Functions
+
 export function openUpdateBusinessModal() {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
   const adminUpdateBusinessDataContainer = document.querySelector(
-    '.adminUpdateBusinessData'
+    '.adminUpdateBusinessData',
   );
 
   if (adminUpdateBusinessDataContainer)
@@ -292,13 +333,13 @@ export function bindUpdateBusinessFormListener() {
     const updateBusinessName =
       document.getElementById('updateBusinessName').value;
     const updateBusinessAddress = document.getElementById(
-      'updateBusinessAddress'
+      'updateBusinessAddress',
     ).value;
     const updateBusinessPhoneNumber = document.getElementById(
-      'updateBusinessPhoneNumber'
+      'updateBusinessPhoneNumber',
     ).value;
     const updateBusinessStateOfOperation = document.getElementById(
-      'updateBusinessStateOfOperation'
+      'updateBusinessStateOfOperation',
     ).value;
 
     const businessUpdatedDetails = {
