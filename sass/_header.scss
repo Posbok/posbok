@@ -29,10 +29,9 @@
       z-index: 99999;
       position: relative;
 
-      @media only screen and (max-width:$bp-small-extra) {
-
-         align-items: end;
-
+      @media only screen and (max-width:$bp-small) {
+         flex-direction: column;
+         gap: .5rem;
       }
 
       @media only screen and (max-width:$bp-small-extra) {
@@ -47,13 +46,15 @@
          margin-right: auto;
 
          @media only screen and (max-width:$bp-small) {
+            flex-direction: row;
             gap: .5rem;
          }
 
          @media only screen and (max-width:$bp-smaller) {
-            flex-direction: column;
+            // flex-direction: column;
             align-items: start;
             gap: .5rem;
+
          }
 
          .main-heading_logo {
@@ -62,6 +63,11 @@
             height: 5.1rem;
             // height: 6rem;
             margin-right: .1rem;
+
+            @media only screen and (max-width:$bp-small) {
+               margin-right: .7rem;
+
+            }
          }
 
          .main-welcome {
@@ -85,6 +91,15 @@
          display: flex;
          align-items: center;
          // gap: 1rem;
+
+         @media only screen and (max-width:$bp-small) {
+            width: 100%;
+            justify-content: end;
+
+            & .profileIconDiv.mr-2 {
+               margin-right: 0 !important;
+            }
+         }
 
          @media only screen and (max-width:$bp-small-extra) {
 
