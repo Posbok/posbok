@@ -2435,6 +2435,12 @@ body.authentication {
   align-items: center;
   margin-bottom: 2rem;
   padding: 2rem; }
+  @media only screen and (max-width: 30.5em) {
+    .storefront .storefront-header {
+      flex-direction: column-reverse;
+      align-items: start;
+      gap: 1.5rem;
+      padding: 1rem; } }
 
 .storefront .status-badge {
   padding: .4rem 1rem;
@@ -2455,6 +2461,9 @@ body.authentication {
   border-radius: 10px;
   padding: 2rem;
   margin-bottom: 2rem; }
+  @media only screen and (max-width: 30.5em) {
+    .storefront .storefront-card {
+      padding: 1rem; } }
 
 .storefront .summary-grid,
 .storefront .info-grid {
@@ -2501,17 +2510,20 @@ body.authentication {
 
 .storefront-tabs {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 8px;
   margin-bottom: 16px; }
 
 .storefront-tab-btn,
 .review-filter-btn {
-  padding: 6px 14px;
+  padding: 8px 14px;
   border-radius: 6px;
   border: 1px solid #ddd;
   background: transparent;
-  cursor: pointer; }
+  cursor: pointer;
+  white-space: nowrap;
+  flex: 0 0 auto; }
 
 .storefront-tab-btn.active,
 .review-filter-btn.active {

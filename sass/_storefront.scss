@@ -9,6 +9,13 @@
       align-items: center;
       margin-bottom: 2rem;
       padding: 2rem;
+
+      @media only screen and (max-width:$bp-small) {
+         flex-direction: column-reverse;
+         align-items: start;
+         gap: 1.5rem;
+         padding: 1rem;
+      }
    }
 
    .status-badge {
@@ -37,6 +44,10 @@
       border-radius: 10px;
       padding: 2rem;
       margin-bottom: 2rem;
+
+      @media only screen and (max-width:$bp-small) {
+         padding: 1rem;
+      }
    }
 
    .summary-grid,
@@ -99,18 +110,22 @@
 
 .storefront-tabs {
    display: flex;
+   flex-wrap: wrap;
    justify-content: center;
    gap: 8px;
    margin-bottom: 16px;
 }
 
+
 .storefront-tab-btn,
 .review-filter-btn {
-   padding: 6px 14px;
+   padding: 8px 14px;
    border-radius: 6px;
    border: 1px solid #ddd;
    background: transparent;
    cursor: pointer;
+   white-space: nowrap;
+   flex: 0 0 auto;
 }
 
 .storefront-tab-btn.active,
