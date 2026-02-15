@@ -177,7 +177,7 @@ export function updateTotalSalesAmounts(sales, totalSalesRow, date) {
         totalCostPrice,
       )}
     </td>
-        <td colspan="2" class="date-header py-1 px-2 mt-1 mb-1">
+        <td colspan="4" class="date-header py-1 px-2 mt-1 mb-1">
       <strong>Total Profit</strong> = ₦${formatAmountWithCommas(totalProfit)}
       </td>
      `;

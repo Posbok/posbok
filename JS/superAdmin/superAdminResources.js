@@ -673,7 +673,7 @@ export async function getAllStorefrontBusinesses({ page, filters }) {
   }
 }
 
-export async function verifyStorefront(businessId) {
+export async function verifyStorefront(businessId, verityStorefrontDetails) {
   try {
     //  showGlobalLoader();
     const verifyStorefrontData = await safeFetch(
@@ -682,7 +682,9 @@ export async function verifyStorefront(businessId) {
         method: 'PATCH',
         headers: {
           Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify(verityStorefrontDetails),
       },
     );
 
@@ -703,7 +705,10 @@ export async function verifyStorefront(businessId) {
   }
 }
 
-export async function toggleActivateStorefront(businessId) {
+export async function toggleActivateStorefront(
+  businessId,
+  toggleActivateStorefrontDetails,
+) {
   try {
     //  showGlobalLoader();
     const verifyStorefrontData = await safeFetch(
@@ -712,7 +717,9 @@ export async function toggleActivateStorefront(businessId) {
         method: 'PATCH',
         headers: {
           Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify(toggleActivateStorefrontDetails),
       },
     );
 

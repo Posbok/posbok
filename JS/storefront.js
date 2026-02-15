@@ -443,7 +443,20 @@ export function renderStorefront(storefront) {
   //
   //   document.getElementById('storeSlug').textContent = storefront.store_slug;
   document.getElementById('verificationStatus').textContent =
-    storefront.verification_status;
+    storefront.verification_status.toUpperCase();
+
+  const verificationStatusBadge = document.querySelector('.status-badge');
+  if (verificationStatusBadge) {
+    if (storefront.verification_status === 'verified') {
+      verificationStatusBadge.className = 'status-badge verified';
+    }
+    if (storefront.verification_status === 'pending') {
+      verificationStatusBadge.className = 'status-badge pending';
+    }
+    if (storefront.verification_status === 'rejected') {
+      verificationStatusBadge.className = 'status-badge rejected';
+    }
+  }
 
   document.getElementById('businessName').textContent =
     storefront.Business.business_name;

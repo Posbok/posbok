@@ -2622,7 +2622,7 @@ export async function renderSalesTable({
         groupRow.className = 'date-group-row table-body-row ';
 
         groupRow.innerHTML = `
-      <td colspan="11" class="date-header py-1 mt-1 mb-1">
+      <td colspan="15" class="date-header py-1 mt-1 mb-1">
         <strong>${date}</strong>     </td>
 
      `;

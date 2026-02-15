@@ -2410,9 +2410,12 @@ body.authentication {
   .storefront .status-badge.pending {
     background: #fff3cd;
     color: #856404; }
-  .storefront .status-badge.approved {
-    background: #d4edda;
-    color: #155724; }
+  .storefront .status-badge.verified {
+    background: #7fb239;
+    color: #f3f9ec; }
+  .storefront .status-badge.rejected {
+    background-color: #ec1a23;
+    color: #f3f9ec; }
 
 .storefront .storefront-card {
   background: #fff;

@@ -159,6 +159,7 @@
                         <th class="py-1">Verification Status</th>
                         <!-- <th class="py-1">Quantity Mode</th> -->
                         <th class="py-1">Offers Delivery</th>
+                        <th class="py-1">Delivery Verified</th>
                         <th class="py-1">Store Phone No.</th>
                         <th class="py-1">Date Created</th>
                         <th class="py-1">Actions</th>
@@ -230,9 +231,28 @@
    <form class="modal-form verifyStorefrontContainerModal " name="modal">
 
       <div class="card confirmation verifyStorefrontContainer modal ">
-         <h1 class="confirmation-text">Are you sure you want to <span id="action-text" style="color: red;"></span>
-            Storefront for <span id="confirmation-text" style="color: red;"></span> ?
+         <h1 class="confirmation-text">CAC/Delivery Status for
+            Storefront Verification for <span id="confirmation-text" style="color: red;"></span> ?
          </h1>
+
+         <!-- Select Option -->
+         <div class="modal-form_input">
+            <label for="verifyStorefrontStatusDropdown">CAC/Delivery Status</label>
+
+            <select id="verifyStorefrontStatusDropdown" class="form-control" required>
+               <option value="">Select an Option</option>
+               <option value="verified">Verified</option>
+               <option value="rejected">Rejected</option>
+               <option value="pending">Pending</option>
+            </select>
+         </div>
+
+         <div class="modal-form_input">
+            <label for="verifyStorefrontReason">Reason (Optional)</label>
+
+            <input class="verifyStorefrontReason" id="verifyStorefrontReason" type="text" placeholder="Enter Reason"
+               name="verifyStorefrontReason">
+         </div>
 
          <div class="confirmation-btn_container">
 
@@ -253,9 +273,27 @@
    <!--  Activate / Deactivate Storefront -->
    <form class="modal-form toggleActivateStorefrontContainerModal " name="modal">
       <div class="card confirmation toggleActivateStorefrontContainer modal ">
-         <h1 class="confirmation-text">Are you sure you want to <span id="action-text" style="color: red;"></span>
+         <h1 class="confirmation-text">Activate/Deactivate
             Storefront status for <span id="confirmation-text" style="color: red;"></span> ?
          </h1>
+
+         <!-- Select Option -->
+         <div class="modal-form_input">
+            <label for="toggleActivateStorefrontStatusDropdown">Activate Storefront</label>
+
+            <select id="toggleActivateStorefrontStatusDropdown" class="form-control" required>
+               <option value="">Select an Option</option>
+               <option value="true">True</option>
+               <option value="false">False</option>
+            </select>
+         </div>
+
+         <div class="modal-form_input">
+            <label for="toggleActivateStorefrontReason">Reason (Optional)</label>
+
+            <input class="toggleActivateStorefrontReason" id="toggleActivateStorefrontReason" type="text"
+               placeholder="Enter Reason" name="toggleActivateStorefrontReason">
+         </div>
 
          <div class="confirmation-btn_container">
             <button class="hero-btn-dark cancel-close">Cancel</button>

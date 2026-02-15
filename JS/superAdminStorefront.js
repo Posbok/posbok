@@ -104,7 +104,8 @@ export function bindVerifyStorefrontFormListener() {
       closeModal();
     });
 
-    verifyStorefrontButton?.addEventListener('click', async (e) => {
+    //  verifyStorefrontButton?.addEventListener('click', async (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const businessId = form.dataset.businessId;
@@ -114,18 +115,30 @@ export function bindVerifyStorefrontFormListener() {
         return;
       }
 
-      // const businessDeletionDetails = {
-      //   business_id: Number(businessId),
-      // };
+      const verifyStorefrontReason = document.getElementById(
+        'verifyStorefrontReason',
+      ).value;
 
-      // console.log(
-      //   'Submitting Business Deletion Details with:',
-      //   businessDeletionDetails
-      // );
+      const verifyStorefrontStatusDropdown = document.getElementById(
+        'verifyStorefrontStatusDropdown',
+      ).value;
+
+      const verifyStorefrontDetails = {
+        status: verifyStorefrontStatusDropdown,
+        notes: verifyStorefrontReason,
+      };
+
+      console.log(
+        'Submitting Storefront Verification Details with:',
+        verifyStorefrontDetails,
+      );
 
       try {
         showBtnLoader(verifyStorefrontButton);
-        const verifyStorefrontData = await verifyStorefront(businessId);
+        const verifyStorefrontData = await verifyStorefront(
+          businessId,
+          verifyStorefrontDetails,
+        );
 
         if (!verifyStorefrontData) {
           console.error('fail', verifyStorefrontData.message);
@@ -196,7 +209,7 @@ export function bindToggleActivateStorefrontFormListener() {
       closeModal();
     });
 
-    toggleActivateStorefrontButton?.addEventListener('click', async (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const businessId = form.dataset.businessId;
@@ -206,10 +219,30 @@ export function bindToggleActivateStorefrontFormListener() {
         return;
       }
 
+      const toggleActivateStorefrontReason = document.getElementById(
+        'toggleActivateStorefrontReason',
+      ).value;
+
+      const toggleActivateStorefrontStatusDropdown = document.getElementById(
+        'toggleActivateStorefrontStatusDropdown',
+      ).value;
+
+      const toggleActivateStorefrontDetails = {
+        is_active: toggleActivateStorefrontStatusDropdown,
+        reason: toggleActivateStorefrontReason,
+      };
+
+      console.log(
+        'Submitting Storefront Activation/Deactivation Details with:',
+        toggleActivateStorefrontDetails,
+      );
+
       try {
         showBtnLoader(toggleActivateStorefrontButton);
-        const toggleActivateStorefrontData =
-          await toggleActivateStorefront(businessId);
+        const toggleActivateStorefrontData = await toggleActivateStorefront(
+          businessId,
+          toggleActivateStorefrontDetails,
+        );
 
         if (!toggleActivateStorefrontData) {
           console.error('fail', toggleActivateStorefrontData.message);
@@ -395,6 +428,9 @@ export async function populateAllStorefrontTable({
             <td class="sf-offers-delivery">${
               offers_delivery ? 'Yes' : 'No'
             }</td>          
+            <td class="sf-offers-delivery">${
+              delivery_verified ? 'Yes' : 'No'
+            }</td>          
                   
             <td class="sf-contact-phone">${storefront_phone_number}</td>                              
             <td class="sf-created-at">${formatDateTimeReadable(
@@ -418,7 +454,7 @@ export async function populateAllStorefrontTable({
                   data-business-id="${business_id}"
                   title="${delivery_verified ? 'Unverify Storefront' : 'Verify Storefront'}"            
                >
-                 ${delivery_verified ? 'Unverify' : 'Verify'}
+                Delivery Status
                </button>
 
                <!-- Activate / Deactivate -->
@@ -431,7 +467,7 @@ export async function populateAllStorefrontTable({
                     is_active ? 'Deactivate Storefront' : 'Activate Storefront'
                   }"
                >
-                ${is_active ? 'Deactivate' : 'Activate'}
+               Activation Status
                </button>
             </td>
          `;

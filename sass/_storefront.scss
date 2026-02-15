@@ -21,9 +21,14 @@
          color: #856404;
       }
 
-      &.approved {
-         background: #d4edda;
-         color: #155724;
+      &.verified {
+         background: $color-primary;
+         color: $color-primary-50;
+      }
+
+      &.rejected {
+         background-color: $color-danger;
+         color: $color-primary-50
       }
    }
 
