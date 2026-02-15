@@ -655,6 +655,12 @@ button:disabled:hover {
    gap: 1rem;
    margin: 2rem 0;
 
+   @media only screen and (max-width:$bp-small) {
+      flex-direction: column !important;
+      align-items: normal !important;
+
+   }
+
    @media only screen and (min-width:$bp-small) {
       flex-direction: column !important;
       align-items: normal !important;

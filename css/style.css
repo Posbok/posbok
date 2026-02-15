@@ -1228,6 +1228,10 @@ button:disabled:hover {
   width: max-content;
   gap: 1rem;
   margin: 2rem 0; }
+  @media only screen and (max-width: 30.5em) {
+    .adminHeader {
+      flex-direction: column !important;
+      align-items: normal !important; } }
   @media only screen and (min-width: 30.5em) {
     .adminHeader {
       flex-direction: column !important;
@@ -1504,6 +1508,9 @@ button:disabled:hover {
     justify-content: center;
     z-index: 99999;
     position: relative; }
+    @media only screen and (max-width: 25.5em) {
+      .main-heading {
+        align-items: end; } }
     @media only screen and (max-width: 25.5em) {
       .main-heading {
         align-items: end; } }
