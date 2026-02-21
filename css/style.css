@@ -1956,7 +1956,9 @@ body.authentication {
   z-index: var(--z-modal);
   z-index: 99999990;
   transition: opacity .3s ease-in-out, visibility .3s ease-in-out;
-  overflow-y: auto; }
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #131b09 #fff; }
   .modal .heading-subtext {
     color: #131b09; }
   @media only screen and (max-width: 50.3em) {
