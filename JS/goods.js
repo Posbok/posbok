@@ -3109,6 +3109,7 @@ export async function renderInventoryLogTable({ filters, shopId }) {
     }
 
     inventoryLogTableBody.innerHTML = '';
+
     shopInventoryLogs.forEach((shopInventoryLog, index) => {
       // console.log(shopInventoryLog);
 
@@ -3136,6 +3137,11 @@ export async function renderInventoryLogTable({ filters, shopId }) {
       //     ? 'nearFinishedStockRow'
       //     : 'inStockRow'
       // );
+
+      if (action_type === 'sold') {
+        return; // do not display actions related to sales in inventory log as they are already captured in sales report.
+      }
+
       row.innerHTML = `
        
                 <td class="py-1 productSerialNumber">${index + 1}</td>
