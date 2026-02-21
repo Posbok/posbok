@@ -123,30 +123,14 @@
                Storefront Management
             </h2>
 
-            <!-- <h1 class="heading-subtext">Filter Storefrontes</h1> -->
-            <!-- <div class="filter-section mb-2">
+            <h1 class="heading-subtext">Filter Storefrontes</h1>
+            <div class="filter-section mb-2">
 
-               <div class="pos-method-form_input ">
+               <input type="text" id="storefrontSearchInput" class="storefront-search-input"
+                  placeholder="Search by business name, store URL, phone..." />
+               <!-- <span id="storefrontSearchCount"></span> -->
 
-                  <label for="businessStatusFilter">Business Status:</label>
-
-                  <select id="businessStatusFilter" name="businessStatusFilter">
-                     <option value="">All</option>
-                     <option value="active">Active</option>
-                     <option value="expired">Expired/Unsubscribed</option>
-                     <option value="restricted">Restricted Businesses</option>
-                     <option value="registered">Registered Only</option>
-                  </select>
-               </div>
-
-
-               <div class="filter-buttons">
-                  <button id="applyBusinessStatusFilter_superAdmin" class="hero-btn-dark">Apply Filters</button>
-
-                  <button id="resetBusinessStatusFilter_superAdmin" class="hero-btn-outline">Reset</button>
-               </div>
-
-            </div> -->
+            </div>
 
             <div class="superAdmin-table-container">
                <table class="reports-table superAdmin-storefront-table">
@@ -168,14 +152,10 @@
 
                   <tbody class="allStorefrontTableBody">
 
-
-
                      <tr class="table-body-row loading-row" id="item-list">
                         <td class="py-1 " colspan="11">Loading All Storefronts...</td>
 
                      </tr>
-
-
 
                   </tbody>
                </table>

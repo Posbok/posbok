@@ -630,7 +630,19 @@ export async function getAllStorefrontBusinesses({ page, filters }) {
   //   showLoadingRow();
 
   try {
-    //  const queryParams = new URLSearchParams({ page });
+    const queryParams = new URLSearchParams({
+      page,
+      limit: filters.limit,
+    });
+
+    // TODO: Move search to backend query param when backend team implements it.
+    // Switch limit back to 50 and pass `search` param to API.
+    // Temporary 1000 limit works fine under ~500 storefront users.
+
+    console.log(queryParams);
+    console.log(
+      `${baseUrl}/api//super-admin/storefronts?${queryParams.toString()}`,
+    );
 
     //  if (filters.businessStatus)
     //    queryParams.append('filter', filters.businessStatus);
@@ -639,7 +651,7 @@ export async function getAllStorefrontBusinesses({ page, filters }) {
     //  console.log('Sending getAllStorefront request...');
 
     const allStorefrontData = await safeFetch(
-      `${baseUrl}/api//super-admin/storefronts`,
+      `${baseUrl}/api//super-admin/storefronts?${queryParams.toString()}`,
       {
         method: 'GET',
         headers: {

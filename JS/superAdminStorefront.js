@@ -37,17 +37,96 @@ const superAdminStorefrontPage = document.body.classList.contains(
   'superAdminStorefrontPage',
 );
 
-const currentFilter = {};
+const currentFilter = { limit: 1000 };
+// TODO: Move search to backend query param when backend team implements it.
+// Switch limit back to 50 and pass `search` param to API.
+// Temporary 1000 limit works fine under ~500 storefront users.
+
 if (isSuperAdmin && superAdminStorefrontPage) {
   document.addEventListener('DOMContentLoaded', async () => {
-    //  setupAllBusinessesFilters({
-    //    currentFilter,
-    //    populateAllStorefrontTableFn: populateAllStorefrontTable,
-    //  });
+    setupAllBusinessesFilters({
+      currentFilter,
+      populateAllStorefrontTableFn: populateAllStorefrontTable,
+    });
 
     //  loadPlatformStatisticsDashboard();
     await populateAllStorefrontTable({ page: 1, filters: currentFilter });
+    initStorefrontSearch();
   });
+}
+
+function setupAllBusinessesFilters({
+  currentFilter,
+  populateAllStorefrontTableFn,
+}) {
+  //   const applyBtn = document.getElementById(
+  //     `applyBusinessStatusFilter_superAdmin`
+  //   );
+  //   const resetBtn = document.getElementById(
+  //     `resetBusinessStatusFilter_superAdmin`
+  //   );
+  const loadMoreBtn = document.getElementById(`loadMoreButton_superAdmin`);
+
+  //   if (!applyBtn || !resetBtn || !loadMoreBtn) return;
+  if (!loadMoreBtn) return;
+
+  // Load More
+  loadMoreBtn.addEventListener('click', () => {
+    const filters = currentFilter || {};
+
+    //  if (currentPage < totalPages)
+    populateAllStorefrontTableFn({
+      page: currentPage + 1,
+      // limit,
+      filters,
+      append: true,
+    });
+
+    //  const emptyRow = document.createElement('tr');
+    //  emptyRow.innerHTML = `
+    //      <td colspan="10" class="table-error-text">Loading More Businesses...</td>
+    //    `;
+
+    //  const allBusinessesTableBody = document.querySelector(
+    //    '.allBusinessesTableBody'
+    //  );
+
+    //  if (allBusinessesTableBody) {
+    //    allBusinessesTableBody.innerHTML = '';
+
+    //    allBusinessesTableBody.appendChild(emptyRow);
+    //  }
+  });
+  // Apply Filters
+  //   applyBtn.addEventListener('click', () => {
+  //     const filters = getBusinessStatusFilters();
+  //     Object.assign(currentFilter, filters);
+
+  //     businessesArray = [];
+
+  //     populateAllBusinessesTableFn({
+  //       page: 1,
+  //       filters,
+  //       append: false,
+  //     });
+  //   });
+
+  // Reset Filters
+  //   resetBtn.addEventListener('click', () => {
+  //     const role = 'admin';
+
+  //     resetBusinessStatusFilter();
+  //     const filters = getBusinessStatusFilters();
+  //     Object.assign(currentFilter, filters);
+  //     businessesArray = [];
+
+  //     populateAllBusinessesTableFn({
+  //       page: 1,
+  //       // limit,
+  //       filters,
+  //       append: false,
+  //     });
+  //   });
 }
 
 function openStorefrontDetailsModal() {
@@ -151,6 +230,7 @@ export function bindVerifyStorefrontFormListener() {
         closeModal();
         clearFormInputs();
         await populateAllStorefrontTable({ page: 1, filters: currentFilter });
+        initStorefrontSearch();
         showToast(
           'success',
           `✅ ${verifyStorefrontData.message}` ||
@@ -255,6 +335,7 @@ export function bindToggleActivateStorefrontFormListener() {
         closeModal();
         clearFormInputs();
         await populateAllStorefrontTable({ page: 1, filters: currentFilter });
+        initStorefrontSearch();
         showToast(
           'success',
           `✅ ${toggleActivateStorefrontData.message}` ||
@@ -283,7 +364,7 @@ export async function populateAllStorefrontTable({
   filters,
   append = false,
 }) {
-  //   console.log(filters);
+  console.log(filters);
   const allStorefrontTableBody = document.querySelector(
     '.allStorefrontTableBody',
   );
@@ -331,16 +412,23 @@ export async function populateAllStorefrontTable({
       StorefrontArray = [];
     }
 
+    //  if (!allStorefront.length && currentPage === 1) {
+    //    allStorefrontTableBody.innerHTML = '';
+    //    StorefrontArray = [];
+
+    //    const emptyRow = document.createElement('tr');
+    //    emptyRow.innerHTML = `
+    //      <td colspan="10" class="table-error-text">No Storefront Found.</td>
+    //    `;
+
+    //    if (allStorefrontTableBody) allStorefrontTableBody.appendChild(emptyRow);
+    //    return;
+    //  }
+
     if (!allStorefront.length && currentPage === 1) {
-      allStorefrontTableBody.innerHTML = '';
       StorefrontArray = [];
-
-      const emptyRow = document.createElement('tr');
-      emptyRow.innerHTML = `
-        <td colspan="10" class="table-error-text">No Storefront Found.</td>
-      `;
-
-      if (allStorefrontTableBody) allStorefrontTableBody.appendChild(emptyRow);
+      renderStorefrontRows([]); // handles empty state display
+      loadMoreButton.style.display = 'none';
       return;
     }
 
@@ -564,6 +652,10 @@ export async function populateAllStorefrontTable({
       });
     });
 
+    renderStorefrontRows(
+      searchQuery ? getFilteredStorefronts() : StorefrontArray,
+    );
+
     // Handle Load More button visibility
     if (currentPage >= totalPages) {
       loadMoreButton.style.display = 'none';
@@ -575,6 +667,183 @@ export async function populateAllStorefrontTable({
     allStorefrontTableBody.innerHTML =
       '<tr><td colspan="12" class="table-error-text">Error loading All Storefront.</td></tr>';
   }
+}
+
+// ─── Search State ───────────────────────────────────────────────────────────
+let searchQuery = '';
+let filteredStorefrontArray = [];
+
+// ─── Search Handler Setup ────────────────────────────────────────────────────
+export function initStorefrontSearch() {
+  const searchInput = document.getElementById('storefrontSearchInput');
+  if (!searchInput) return;
+
+  searchInput.addEventListener('input', (e) => {
+    searchQuery = e.target.value.trim().toLowerCase();
+    renderStorefrontRows(
+      searchQuery ? getFilteredStorefronts() : StorefrontArray,
+    );
+  });
+}
+
+// ─── Filter Logic ────────────────────────────────────────────────────────────
+function getFilteredStorefronts() {
+  if (!searchQuery) return StorefrontArray;
+
+  return StorefrontArray.filter((storefrontData) => {
+    const { store_slug, contact_phone, verification_status, Business } =
+      storefrontData;
+    const businessName = Business?.business_name?.toLowerCase() || '';
+    const slug = store_slug?.toLowerCase() || '';
+    const phone = contact_phone?.toLowerCase() || '';
+    const verStatus = verification_status?.toLowerCase() || '';
+
+    return (
+      businessName.includes(searchQuery) ||
+      slug.includes(searchQuery) ||
+      phone.includes(searchQuery) ||
+      verStatus.includes(searchQuery)
+    );
+  });
+}
+
+// ─── Extract Row Rendering into its own function ─────────────────────────────
+function renderStorefrontRows(dataArray) {
+  const allStorefrontTableBody = document.querySelector(
+    '.allStorefrontTableBody',
+  );
+  //   const searchCountEl = document.getElementById('storefrontSearchCount');
+  const loadMoreButton = document.getElementById('loadMoreButton_superAdmin');
+  if (!allStorefrontTableBody) return;
+
+  allStorefrontTableBody.innerHTML = '';
+
+  if (!dataArray.length) {
+    allStorefrontTableBody.innerHTML = `
+      <tr>
+        <td colspan="10" class="table-error-text">
+          ${searchQuery ? `No results found for "${searchQuery}"` : 'No Storefront Found.'}
+        </td>
+      </tr>`;
+    //  if (searchCountEl) searchCountEl.textContent = '';
+    loadMoreButton.style.display = 'none';
+    return;
+  }
+
+  // Show count when searching
+  //   if (searchCountEl) {
+  //     searchCountEl.textContent = searchQuery
+  //       ? `Showing ${dataArray.length} of ${StorefrontArray.length} storefronts`
+  //       : '';
+  //   }
+
+  dataArray.forEach((storefrontData, index) => {
+    const {
+      id: storefrontId,
+      business_id,
+      is_active,
+      store_slug,
+      offers_delivery,
+      delivery_verified,
+      contact_phone: storefront_phone_number,
+      verification_status,
+      created_at,
+      Business,
+    } = storefrontData;
+
+    const row = document.createElement('tr');
+    row.classList.add('table-body-row');
+    row.dataset.businessId = business_id;
+    row.dataset.storefrontId = storefrontId;
+
+    row.innerHTML = `
+      <td class="sf-serial-number">${index + 1}</td>
+      <td class="sf-business-name">${Business.business_name}</td>
+      <td class="sf-store-slug">
+        <a href="https://posbok-storefront.vercel.app/${store_slug}" target="_blank" rel="noopener noreferrer" class="sf-storefront-link" title="Open storefront in new tab">
+          ${store_slug}
+        </a>
+      </td>
+      <td class="sf-store-status">${is_active ? 'Active' : 'Inactive'}</td>
+      <td class="sf-verification-status">${verification_status}</td>
+      <td class="sf-offers-delivery">${offers_delivery ? 'Yes' : 'No'}</td>
+      <td class="sf-offers-delivery">${delivery_verified ? 'Yes' : 'No'}</td>
+      <td class="sf-contact-phone">${storefront_phone_number}</td>
+      <td class="sf-created-at">${formatDateTimeReadable(created_at)}</td>
+      <td class="py-1 action-buttons">
+        <button class="hero-btn-outline view-storefront-btn" data-storefront-id="${storefrontId}" data-business-id="${business_id}" title="View Storefront Details">
+          <i class="fa-solid fa-eye"></i>
+        </button>
+        <button class="hero-btn-outline verify-storefront-btn" data-storefront-id="${storefrontId}" data-business-id="${business_id}" title="${delivery_verified ? 'Unverify Storefront' : 'Verify Storefront'}">
+          Delivery Status
+        </button>
+        <button class="hero-btn-outline toggle-storefront-status-btn" data-storefront-id="${storefrontId}" data-business-id="${business_id}" data-current-status="${is_active}" title="${is_active ? 'Deactivate Storefront' : 'Activate Storefront'}">
+          Activation Status
+        </button>
+      </td>
+    `;
+
+    // ── Row click ──
+    row.addEventListener('click', (e) => {
+      renderStorefrontDetailsById(e, row);
+    });
+
+    // ── Verify btn ──
+    const verifyStorefrontBtn = row.querySelector('.verify-storefront-btn');
+    verifyStorefrontBtn?.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      showGlobalLoader();
+      const businessId = verifyStorefrontBtn.dataset.businessId;
+      const verifyStorefrontContainer = document.querySelector(
+        '.verifyStorefrontContainer',
+      );
+      if (verifyStorefrontContainer) {
+        verifyStorefrontContainer.dataset.businessId = businessId;
+        const businessDetail = await getBusinessDetailById(businessId);
+        if (businessDetail?.data) {
+          hideGlobalLoader();
+          openVerifyStorefrontModal();
+          verifyStorefrontForm(
+            businessDetail.data,
+            is_active ? 'Unverify' : 'Verify',
+          );
+        } else {
+          hideGlobalLoader();
+          showToast('fail', '❌ Failed to fetch Business details.');
+        }
+      }
+    });
+
+    // ── Toggle activate btn ──
+    const toggleActivateStorefrontBtn = row.querySelector(
+      '.toggle-storefront-status-btn',
+    );
+    toggleActivateStorefrontBtn?.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      showGlobalLoader();
+      const businessId = toggleActivateStorefrontBtn.dataset.businessId;
+      const toggleActivateStorefrontContainer = document.querySelector(
+        '.toggleActivateStorefrontContainer',
+      );
+      if (toggleActivateStorefrontContainer) {
+        toggleActivateStorefrontContainer.dataset.businessId = businessId;
+        const businessDetail = await getBusinessDetailById(businessId);
+        if (businessDetail?.data) {
+          hideGlobalLoader();
+          openToggleActivateStorefrontModal();
+          toggleActivateStorefrontForm(
+            businessDetail.data,
+            is_active ? 'Deactivate' : 'Activate',
+          );
+        } else {
+          hideGlobalLoader();
+          showToast('fail', '❌ Failed to fetch Business details.');
+        }
+      }
+    });
+
+    allStorefrontTableBody.appendChild(row);
+  });
 }
 
 function getStorefrontFromCacheById(storefrontId) {
