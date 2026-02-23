@@ -598,6 +598,7 @@ async function renderBusinessDayButtons() {
   if (isStaff) {
     const businessDay = await getCurrentBusinessDay(isStaff ? shopId : '');
     //  console.log('new Business Day:', businessDay.data);
+    console.log('COde got here');
 
     //  console.log(openingCash);
 
@@ -605,47 +606,47 @@ async function renderBusinessDayButtons() {
 
     if (businessInitBtnDiv) businessInitBtnDiv.innerHTML = ''; // Clear current buttons
 
-    if (
-      businessDay.data === false ||
-      businessDay.data === null ||
-      businessDay.success === false
-    ) {
-      const openBusinessDayBtn = document.createElement('button');
-      openBusinessDayBtn.classList.add('openBusinessDayBtn', 'businessInitBtn');
-      openBusinessDayBtn.id = 'openBusinessDayBtn';
-      openBusinessDayBtn.innerText = 'Open Business Day';
-      if (businessInitBtnDiv)
-        businessInitBtnDiv.appendChild(openBusinessDayBtn);
+    //  if (
+    //    businessDay.data === false ||
+    //    businessDay.data === null ||
+    //    businessDay.success === false
+    //  ) {
+    //    const openBusinessDayBtn = document.createElement('button');
+    //    openBusinessDayBtn.classList.add('openBusinessDayBtn', 'businessInitBtn');
+    //    openBusinessDayBtn.id = 'openBusinessDayBtn';
+    //    openBusinessDayBtn.innerText = 'Open Business Day';
+    //    if (businessInitBtnDiv)
+    //      businessInitBtnDiv.appendChild(openBusinessDayBtn);
 
-      document
-        .querySelector('#openBusinessDayBtn')
-        ?.addEventListener('click', openStaffBusinessDayModal);
+    //    document
+    //      .querySelector('#openBusinessDayBtn')
+    //      ?.addEventListener('click', openStaffBusinessDayModal);
 
-      openStaffBusinessDayModal();
-    } else if (businessDay.success === null) {
-      // fallback
-      if (businessInitBtnDiv)
-        businessInitBtnDiv.innerHTML = `
-    <p class="text-danger">⚠️ Failed to fetch business day status. Please refresh or try again later.</p>
-  `;
-    } else {
-      if (businessInitBtnDiv)
-        businessInitBtnDiv.innerHTML = `
-      <button class="hero-btn-danger closeBusinessDayModal mb-0" id="closeBusinessDayModal">Close Business Day</button>
-    `;
+    //    openStaffBusinessDayModal();
+    //  } else if (businessDay.success === null) {
+    //    // fallback
+    //    if (businessInitBtnDiv)
+    //      businessInitBtnDiv.innerHTML = `
+    //    <p class="text-danger">⚠️ Failed to fetch business day status. Please refresh or try again later.</p>
+    //  `;
+    //  } else {
+    //    if (businessInitBtnDiv)
+    //      businessInitBtnDiv.innerHTML = `
+    //      <button class="hero-btn-danger closeBusinessDayModal mb-0" id="closeBusinessDayModal">Close Business Day</button>
+    //    `;
 
-      setupModalCloseButtons();
+    //    setupModalCloseButtons();
 
-      // document
-      //   .querySelector('#depositPosCapitalBtn')
-      //   ?.addEventListener('click', openDepositPosCapitalModal);
+    //    // document
+    //    //   .querySelector('#depositPosCapitalBtn')
+    //    //   ?.addEventListener('click', openDepositPosCapitalModal);
 
-      document
-        .querySelector('#closeBusinessDayModal')
-        ?.addEventListener('click', openCloseBusinessDayModal);
+    //    document
+    //      .querySelector('#closeBusinessDayModal')
+    //      ?.addEventListener('click', openCloseBusinessDayModal);
 
-      // initAccountOverview();
-    }
+    //    // initAccountOverview();
+    //  }
     //   else if (businessDay.data.status === 'closed')
     //  if (businessInitBtnDiv)   businessInitBtnDiv.innerHTML = `
     //   <button class="viewSummaryBtn businessInitBtn" id="viewSummaryBtn">📊 View Business Day Summary</button>
@@ -924,7 +925,7 @@ async function checkPreviousBusinessDayStatus() {
     showGlobalLoader();
     // populateBusinessShopDropdown(enrichedShopData, 'businessDayShopDropdown');
 
-    console.log('object', enrichedShopData);
+    //  console.log('object', enrichedShopData);
 
     if (isStaff) {
       const response = await getCurrentBusinessDay(isStaff ? shopId : '');
@@ -933,11 +934,23 @@ async function checkPreviousBusinessDayStatus() {
 
       console.log('business Day', businessDay);
 
+      if (!businessDay) {
+        showToast(
+          'fail',
+          '❎ Business Day not Opened for this shop. Contact ADMIN!.',
+        );
+
+        console.warn(
+          '⚠️ No business day data returned for staff shop. Skipping previous day check.',
+        );
+        return;
+      }
+
       // Compare dates
       const today = new Date().toISOString().split('T')[0];
       const businessDayDate = businessDay.opening_time.split('T')[0];
-      console.log('XXX today', today);
-      console.log(' XXX businessDayDate', businessDayDate);
+      // console.log('XXX today', today);
+      // console.log(' XXX businessDayDate', businessDayDate);
 
       if (businessDay.is_open && businessDayDate !== today) {
         // Show a confirmation dialog;
@@ -1016,6 +1029,9 @@ export function openInformPreviousBusinessDayModal(businessDayDate, shopId) {
     informPreviousBusinessDayContainer.classList.add('active');
   if (main) main.classList.add('blur');
   if (sidebar) sidebar.classList.add('blur');
+
+  hideGlobalLoader();
+  console.log('Global loaded closed');
 }
 
 export function openAdminPreviousBusinessDayModal(shops) {
