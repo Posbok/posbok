@@ -702,7 +702,7 @@ export function createProductForm() {
         barcode: finalSku_Barcode,
         quantityInStock: Number(addProductQuantity),
         //
-        expiryDate: productExpiryDate,
+        expiryDate: productExpiryDate || null,
         lowStockQuantity: Number(lowStockQuantity),
         supposedPrice: Number(getAmountForSubmission(supposedPrice)),
         isPublished: publishStatusValue,
@@ -719,10 +719,11 @@ export function createProductForm() {
         showBtnLoader(addProductModalBtn);
         const productData = await createProduct(shopId, addProductDetails);
 
-        //   console.log('productData received successfully:', productData);
+        console.log('productData received successfully:', productData);
 
         if (!productData) {
-          showToast('fail', productData.message);
+          console.log('productData not received successfully:', productData);
+          showToast('fail', productData.message || 'Failed to create product.');
           return;
         }
 

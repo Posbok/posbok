@@ -4,13 +4,13 @@
   "description": "POSBOK webpage",
   "main": "index.js",
   "scripts": {
-    "watch:sass": "node-sass sass/main.scss css/style.css -w",
+    "watch:sass": "sass sass/main.scss css/style.css --watch",
     "devserver": "live-server",
     "webpack": "webpack --mode development --watch",
     "start": "npm-run-all --parallel devserver watch:sass webpack",
-    "compile:sass": "node-sass sass/main.scss css/style.comp.css",
+    "compile:sass": "sass sass/main.scss css/style.comp.css",
     "prefix:css": "postcss --use autoprefixer -b 'last 10 versions' css/style.comp.css -o css/style.prefix.css",
-    "compress:css": "node-sass css/style.prefix.css css/style.css --output-style compressed",
+    "compress:css": "sass css/style.prefix.css css/style.css --style=compressed",
     "build:css": "npm-run-all compile:sass prefix:css compress:css"
   },
   "author": "Praises Amaiyo",
@@ -22,9 +22,9 @@
     "babel-loader": "^9.2.1",
     "concat": "^1.0.3",
     "css-loader": "^7.1.2",
-    "node-sass": "^8.0.0",
     "npm-run-all": "^4.1.5",
     "postcss-cli": "^10.1.0",
+    "sass": "^1.97.3",
     "style-loader": "^4.0.0",
     "webpack": "^5.95.0",
     "webpack-cli": "^5.1.4"

@@ -150,6 +150,7 @@ export async function createProduct(shopId, productDetails) {
     return fetchedData;
   } catch (error) {
     console.error('Error posting product:', error);
+    throw error;
   }
 }
 
@@ -178,9 +179,12 @@ export async function addInventory(inventoryDetails, shopId) {
       // getProductCategories();
     }
 
+    console.log('API call Create Product Fetched data', fetchedData);
+
     return fetchedData;
   } catch (error) {
     console.error('Error posting product:', error);
+    throw error;
   }
 }
 
