@@ -705,8 +705,8 @@ export function createProductForm() {
         expiryDate: productExpiryDate || null,
         lowStockQuantity: Number(lowStockQuantity),
         supposedPrice: Number(getAmountForSubmission(supposedPrice)),
-        isPublished: publishStatusValue,
-        displayQuantity: displayQuantitytatusValue,
+        isPublished: publishStatusValue || false,
+        displayQuantity: displayQuantitytatusValue || 'in_stock',
         //   productDetails: addItemDetails,
       };
 
@@ -1649,7 +1649,7 @@ export function bindUpdateProductFormListener() {
             document.querySelector('#updateProductSellingPrice').value,
           ),
         ),
-        expiryDate: document.querySelector('#updateExpiryDate').value,
+        expiryDate: document.querySelector('#updateExpiryDate').value || null,
         lowStockQuantity: Number(
           document.querySelector('#updateLowStockQuantityQuantity').value,
         ),
