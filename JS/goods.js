@@ -1632,13 +1632,16 @@ export function bindUpdateProductFormListener() {
     try {
       showBtnLoader(updateProductModalBtn);
 
+      const updateSku =
+        document.querySelector('#updateProductSku').value ||
+        generateSKU(businessName);
+
       const updateProductDetails = {
         categoryId: document.querySelector('#updateProductCategory').value,
         name: document.querySelector('#updateProductName').value,
         description: document.querySelector('#updateProductDescription').value,
-        sku:
-          document.querySelector('#updateProductSku').value ||
-          generateSKU(businessName),
+        sku: updateSku,
+        barcode: updateSku,
         purchasePrice: Number(
           getAmountForSubmission(
             document.querySelector('#updateProductBoughtPrice').value,
@@ -1666,6 +1669,8 @@ export function bindUpdateProductFormListener() {
             'input[name="updateDisplayQuantityStatus"]:checked',
           )?.value || null,
       };
+
+      // console.log('Updating Products with:', updateProductDetails);
 
       const updateInventoryDetails = {
         quantity: Number(
@@ -1748,8 +1753,8 @@ export function bindUpdateProductFormListener() {
 }
 
 export function updateProductForm(productDetail, productImages = null) {
-  console.log('Product Detail:', productDetail);
-  console.log('Product Images:', productImages);
+  //   console.log('Product Detail:', productDetail);
+  //   console.log('Product Images:', productImages);
 
   const form = document.querySelector('.updateProductModal');
   if (!form) return;
@@ -2952,6 +2957,8 @@ export async function renderProductInventoryTable(shopId) {
       // Handle Print Barcode Logic
 
       const openBarcodeImageBtn = row.querySelector(`#openBarcodeImageBtn`);
+
+      // console.log(openBarcodeImageBtn);
 
       openBarcodeImageBtn?.addEventListener('click', async (e) => {
         e.stopPropagation();
