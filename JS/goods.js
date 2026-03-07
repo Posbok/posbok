@@ -2830,32 +2830,73 @@ export async function renderProductInventoryTable(shopId) {
     const totalProductsCountElement = document.querySelector(
       `.totalProductsCount_${shopId}`,
     );
-    const totalProductsWorthElement = document.querySelector(
-      `.totalProductsWorth_${shopId}`,
+    const totalProductsCostElement = document.querySelector(
+      `.totalProductsCost_${shopId}`,
     );
     const totalProductsProfitsElement = document.querySelector(
       `.totalProductsProfits_${shopId}`,
     );
+    const totalProductsWorthElement = document.querySelector(
+      `.totalProductsWorth_${shopId}`,
+    );
 
     const totalProductsCount = productInventories?.length || 0;
 
-    const totalProductsWorth = productInventories?.reduce(
+    //  const totalProductsCost = productInventories?.reduce(
+    //    (acc, item) => acc + item.Product.purchase_price * item.quantity,
+    //    0,
+    //  );
+
+    //  const totalProductSellingPrice = productInventories?.reduce(
+    //    (acc, item) => acc + item.Product.selling_price * item.quantity,
+    //    0,
+    //  );
+
+    //  const totalProductProfits = totalProductSellingPrice - totalProductsCost;
+
+    //  const totalProductWorth = totalProductSellingPrice;
+    //  //   + totalProductsCost;
+
+    // 1. Filter out items with 0 or missing purchase price for financial calcs
+    const validFinancialItems =
+      productInventories?.filter((item) => item.Product.purchase_price > 0) ||
+      [];
+
+    // 2. Total Cost (Only for valid items)
+    const totalProductsCost = validFinancialItems.reduce(
       (acc, item) => acc + item.Product.purchase_price * item.quantity,
       0,
     );
 
-    const totalProductSellingPrice = productInventories?.reduce(
+    // 3. Total Selling Price of the VALID items (for Profit calculation)
+    const validSellingPriceForProfit = validFinancialItems.reduce(
       (acc, item) => acc + item.Product.selling_price * item.quantity,
       0,
     );
 
-    const totalProductProfits = totalProductSellingPrice - totalProductsWorth;
+    console.log('Length of Valid items', validFinancialItems.length);
+
+    // 4. Profit (Now accurate because it ignores 0-cost items)
+    const totalProductProfits = validSellingPriceForProfit - totalProductsCost;
+
+    // 5. Total Shop Worth (Keep this using ALL items as you requested)
+    const totalProductWorth = productInventories?.reduce(
+      (acc, item) => acc + item.Product.selling_price * item.quantity,
+      0,
+    );
 
     totalProductsCountElement.textContent = totalProductsCount;
-    totalProductsWorthElement.textContent =
-      `₦` + formatAmountWithCommas(totalProductsWorth);
+
+    totalProductsCostElement.textContent =
+      `₦` + formatAmountWithCommas(totalProductsCost);
+
     totalProductsProfitsElement.textContent =
-      `₦` + formatAmountWithCommas(totalProductProfits);
+      `₦` +
+      formatAmountWithCommas(totalProductProfits) +
+      ` (${validFinancialItems.length} Valid items included)`;
+
+    totalProductsWorthElement.textContent =
+      `₦` + formatAmountWithCommas(totalProductWorth);
 
     //  console.log(totalProductProfits, totalProductsWorth, totalProductsCount);
 
@@ -3200,11 +3241,14 @@ export function getAdminInventoryTableHtml(shop) {
                <div>
                   <h2 class="heading-subtext ">Total Products: <span class="totalProductsCount_${shop.id}">0</span></h2>
 
-                  <h2 class="heading-subtext ">Total Products Worth: <span
-                        class="totalProductsWorth_${shop.id}">0</span></h2>
-
-                  <h2 class="heading-subtext ">Total Estimated Profits: <span
+                  <h2 class="heading-subtext ">Total Products Cost: <span
+                        class="totalProductsCost_${shop.id}">0</span></h2>
+                        
+                        <h2 class="heading-subtext ">Total Estimated Profits: <span
                         class="totalProductsProfits_${shop.id}">0</span></h2>
+                        
+                        <h2 class="heading-subtext ">Total Inventory Worth: <span
+                              class="totalProductsWorth_${shop.id}">0</span></h2>
 
                </div>
 

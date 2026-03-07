@@ -1,4 +1,5 @@
 .reports,
+.payment,
 .goods,
 .superAdmin,
 .shops,
@@ -18,6 +19,7 @@
       }
 
       .reports-table-container,
+      .payment-table-container,
       .product-table-container,
       .shops-table-container,
       .staff-table-container,
@@ -63,6 +65,7 @@
 
 
    .product-table,
+   .payment-table,
    .reports-table {
       margin: 0 auto;
       width: 100%;

@@ -243,6 +243,212 @@
 
       </section>
 
+      <section class="subscription-page card">
+
+         <header class="subscription-header center-text">
+            <h1 class="heading-text">Subscription & Billing</h1>
+            <p class="heading-subtext center-text">Manage your POSBOK services, billing cycle, and payment history.</p>
+         </header>
+
+
+         <!-- CURRENT SUBSCRIPTION -->
+         <div class="subscription-card">
+
+            <h2 class="card-title heading-subtext">Current Subscription</h2>
+
+            <!-- ACTIVE PLAN -->
+            <div class="plan-status plan-active mb-4">
+
+               <div class="status-badge active mb-2">Active</div>
+
+               <div class="plan-info">
+                  <h2 class="heading-minitext mb-1 "><strong>Billing Cycle:</strong> Monthly</h2>
+                  <h2 class="heading-minitext mb-1 "><strong>Next Billing Date:</strong> 25 March 2026</h2>
+                  <h2 class="heading-minitext mb-1 "><strong>Days Remaining:</strong> 29 days</h2>
+               </div>
+
+               <div class="active-services ">
+                  <h2 class=" heading-subtext mt-3">Active Services</h2>
+
+                  <ul>
+                     <li class="heading-minitext mb-1 ">POS Only</li>
+                     <li class="heading-minitext mb-1 ">Inventory (Sales)</li>
+                  </ul>
+               </div>
+
+            </div>
+
+
+            <!-- TRIAL PLAN -->
+            <div class="plan-status plan-trial mb-4">
+
+               <div class="status-badge trial mb-2">Free Trial</div>
+
+               <h2 class="heading-minitext mb-1 ">Your trial expires in <strong>7 days</strong>.</h2>
+               <h2 class="heading-minitext mb-1 ">Subscribe now to avoid interruption.</h2>
+
+            </div>
+
+
+            <!-- EXPIRED PLAN -->
+            <div class="plan-status plan-expired mb-4">
+
+               <div class="status-badge expired mb-2">Expired</div>
+
+               <h2 class="heading-minitext mb-1 ">Your subscription has expired.</h2>
+               <h2 class="heading-minitext mb-1 ">Renew to restore access to POSBOK services.</h2>
+
+            </div>
+
+         </div>
+
+
+
+         <!-- SERVICE SELECTION -->
+         <div class="subscription-card">
+
+            <h2 class="card-title heading-subtext">Choose Services</h2>
+
+            <div class="billing-cycle center-text mb-4">
+
+               <label class="checkbox-container">
+                  <input type="radio" name="billingCycle" value="monthly" checked>
+                  Monthly Billing
+               </label>
+
+               <label class="checkbox-container">
+                  <input type="radio" name="billingCycle" value="yearly">
+                  Yearly Billing
+               </label>
+
+            </div>
+
+
+            <div class="service-grid">
+
+               <label class="service-option checkbox-container">
+                  <input type="checkbox" value="POS">
+                  <div class="service-content">
+                     <h4>POS Only</h4>
+                     <p class="price">₦3,500 / month</p>
+                  </div>
+               </label>
+
+
+               <label class="service-option checkbox-container">
+                  <input type="checkbox" value="INVENTORY">
+                  <div class="service-content">
+                     <h4>Inventory (Sales)</h4>
+                     <p class="price">₦4,000 / month</p>
+                  </div>
+               </label>
+
+
+               <label class="service-option checkbox-container">
+                  <input type="checkbox" value="WAREHOUSE">
+                  <div class="service-content">
+                     <h4>Warehouse</h4>
+                     <p class="price">₦5,000 / month</p>
+                  </div>
+               </label>
+
+
+               <label class="service-option checkbox-container">
+                  <input type="checkbox" value="ECOMMERCE">
+                  <div class="service-content">
+                     <h4>E-Commerce</h4>
+                     <p class="price">₦5,000 / month</p>
+                  </div>
+               </label>
+
+            </div>
+
+         </div>
+
+
+
+         <!-- PRICE SUMMARY -->
+         <div class="subscription-card">
+
+            <h2 class="card-title heading-subtext">Price Summary</h2>
+
+            <div class="quote-summary">
+
+               <div class="quote-item">
+                  <span class="heading-minitext">POS Only</span>
+                  <span class="heading-minitext">₦2,500</span>
+               </div>
+
+               <div class="quote-item">
+                  <span class="heading-minitext">Inventory</span>
+                  <span class="heading-minitext">₦3,000</span>
+               </div>
+
+               <div class="discount-note ">
+                  2 services selected — Enjoy ₦1,000 discount per service
+               </div>
+
+               <div class="quote-total">
+                  <span class="heading-minitext">Total</span>
+                  <span class="heading-minitext">₦5,500</span>
+               </div>
+
+               <button class="pay-button hero-btn-dark">
+                  Pay ₦5,500 with Paystack
+               </button>
+
+            </div>
+
+         </div>
+
+
+
+         <!-- PAYMENT HISTORY -->
+         <div class="subscription-card payment">
+
+            <h2 class="card-title">Payment History</h2>
+
+            <div class="payment-table-container">
+               <table class="payment-table">
+
+                  <thead>
+                     <tr class="table-header-row">
+                        <th class="py-1">Date</th>
+                        <th class="py-1">Services</th>
+                        <th class="py-1">Amount</th>
+                        <th class="py-1">Status</th>
+                        <th class="py-1">Channel</th>
+                     </tr>
+                  </thead>
+
+                  <tbody>
+
+                     <tr class="table-body-row">
+                        <td class="py-1 productSerialNumber">24 Feb 2026</td>
+                        <td class="py-1 productSerialNumber">POS + Inventory</td>
+                        <td class="py-1 productSerialNumber">₦5,500</td>
+                        <td class="py-1 productSerialNumber"><span class="payment-status success">Success</span></td>
+                        <td class="py-1 productSerialNumber">Card</td>
+                     </tr>
+
+                     <tr class="table-body-row">
+                        <td class="py-1 productSerialNumber">12 Jan 2026</td>
+                        <td class="py-1 productSerialNumber">POS</td>
+                        <td class="py-1 productSerialNumber">₦3,500</td>
+                        <td class="py-1 productSerialNumber"><span class="payment-status success">Success</span></td>
+                        <td class="py-1 productSerialNumber">Card</td>
+                     </tr>
+
+                  </tbody>
+
+               </table>
+
+            </div>
+         </div>
+
+
+      </section>
+
    </main>
 
    <form class="modal-form createShopModal" name="modal">
