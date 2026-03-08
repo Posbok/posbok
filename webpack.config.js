@@ -20,6 +20,7 @@ module.exports = {
     resetPassword: './JS/resetPassword.js',
     shops: './JS/shops.js',
     posAndSalesReportAccordion: './JS/posAndSalesReportAccordion.js',
+    subscription: './JS/subscription.js',
     main: './JS/script.js', // Common JS for the main page if needed
   },
 

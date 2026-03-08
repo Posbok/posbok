@@ -33,6 +33,7 @@
 
    <!-- <script src="/dist/main.bundle.js" defer></script> -->
    <script src="/dist/business.bundle.js" defer></script>
+   <script src="/dist/subscription.bundle.js" defer></script>
    <!-- <script src="dist/reports.bundle.js" defer></script> -->
 
    <title>POSBOK &mdash; Business Management</title>
@@ -268,7 +269,7 @@
                </div>
 
                <div class="active-services ">
-                  <h2 class=" heading-subtext mt-3">Active Services</h2>
+                  <h2 class=" heading-subtext mt-3 mb-1">Active Services</h2>
 
                   <ul>
                      <li class="heading-minitext mb-1 ">POS Only</li>
@@ -404,45 +405,48 @@
 
 
          <!-- PAYMENT HISTORY -->
-         <div class="subscription-card payment">
+         <div class="subscription-crd card payment">
+            <div class="payment-method">
 
-            <h2 class="card-title">Payment History</h2>
 
-            <div class="payment-table-container">
-               <table class="payment-table">
+               <h2 class="card-title">Payment History</h2>
 
-                  <thead>
-                     <tr class="table-header-row">
-                        <th class="py-1">Date</th>
-                        <th class="py-1">Services</th>
-                        <th class="py-1">Amount</th>
-                        <th class="py-1">Status</th>
-                        <th class="py-1">Channel</th>
-                     </tr>
-                  </thead>
+               <div class="payment-table-container">
+                  <table class="payment-table">
 
-                  <tbody>
+                     <thead>
+                        <tr class="table-header-row">
+                           <th class="py-1">Date</th>
+                           <th class="py-1">Services</th>
+                           <th class="py-1">Amount</th>
+                           <th class="py-1">Status</th>
+                           <th class="py-1">Channel</th>
+                        </tr>
+                     </thead>
 
-                     <tr class="table-body-row">
-                        <td class="py-1 productSerialNumber">24 Feb 2026</td>
-                        <td class="py-1 productSerialNumber">POS + Inventory</td>
-                        <td class="py-1 productSerialNumber">₦5,500</td>
-                        <td class="py-1 productSerialNumber"><span class="payment-status success">Success</span></td>
-                        <td class="py-1 productSerialNumber">Card</td>
-                     </tr>
+                     <tbody>
 
-                     <tr class="table-body-row">
-                        <td class="py-1 productSerialNumber">12 Jan 2026</td>
-                        <td class="py-1 productSerialNumber">POS</td>
-                        <td class="py-1 productSerialNumber">₦3,500</td>
-                        <td class="py-1 productSerialNumber"><span class="payment-status success">Success</span></td>
-                        <td class="py-1 productSerialNumber">Card</td>
-                     </tr>
+                        <tr class="table-body-row">
+                           <td class="py-1 productSerialNumber">24 Feb 2026</td>
+                           <td class="py-1 productSerialNumber">POS + Inventory</td>
+                           <td class="py-1 productSerialNumber">₦5,500</td>
+                           <td class="py-1 productSerialNumber"><span class="payment-status success">Success</span></td>
+                           <td class="py-1 productSerialNumber">Card</td>
+                        </tr>
 
-                  </tbody>
+                        <tr class="table-body-row">
+                           <td class="py-1 productSerialNumber">12 Jan 2026</td>
+                           <td class="py-1 productSerialNumber">POS</td>
+                           <td class="py-1 productSerialNumber">₦3,500</td>
+                           <td class="py-1 productSerialNumber"><span class="payment-status success">Success</span></td>
+                           <td class="py-1 productSerialNumber">Card</td>
+                        </tr>
 
-               </table>
+                     </tbody>
 
+                  </table>
+
+               </div>
             </div>
          </div>
 

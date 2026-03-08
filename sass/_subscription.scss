@@ -108,6 +108,18 @@
    font-size: 14px;
 }
 
+.discount-amount-note,
+.discount-amount {
+   opacity: 70%;
+   font-size: 1.3rem;
+   font-weight: 400;
+
+}
+
+.discount-amount {
+   text-decoration-line: line-through;
+}
+
 .quote-total {
    display: flex;
    justify-content: space-between;
@@ -115,6 +127,8 @@
    font-size: 18px;
    margin-top: 10px;
 }
+
+
 
 .pay-button {
    width: 100%;

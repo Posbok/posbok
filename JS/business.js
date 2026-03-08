@@ -177,6 +177,7 @@ export async function renderBusinessDetails() {
 document
   .querySelector('#openViewBusinessModalBtn')
   ?.addEventListener('click', async () => {
+    showGlobalLoader();
     const businessData = await fetchBusinessDetails();
 
     console.log(businessData);
@@ -211,6 +212,7 @@ document
 document
   .querySelector('#openUpdateBusinessModalBtn')
   ?.addEventListener('click', async () => {
+    showGlobalLoader();
     const businessData = await fetchBusinessDetails();
 
     if (!businessData) {
@@ -219,8 +221,6 @@ document
       hideGlobalLoader();
       return;
     }
-
-    showGlobalLoader();
 
     const adminUpdateBusinessDataContainer = document.querySelector(
       '.adminUpdateBusinessData',
