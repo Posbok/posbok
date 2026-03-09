@@ -11,7 +11,11 @@ import {
   showToast,
 } from '../../script.js';
 import { populateStaffTable } from '../../staff.js';
-import { resetSubscriptionUI, updateQuote } from '../../subscription.js';
+import {
+  renderSubscriptions,
+  resetSubscriptionUI,
+  updateQuote,
+} from '../../subscription.js';
 import { fetchBusinessDetails } from '../business/businessResource.js';
 import { checkAndPromptCreateShop } from '../shop/shopResource.js';
 import { safeFetch } from '../utility/safeFetch.js';
@@ -186,7 +190,7 @@ export async function verifyPayment(reference) {
         resetSubscriptionUI();
 
         // Refresh subscriptions and pricing
-        await getActiveSubscriptionPlans();
+        await renderSubscriptions();
         await getSubscriptionPlans();
       }
     } else {

@@ -306,7 +306,7 @@ async function renderSubscriptionUI() {
   document.getElementById('billingCycle').textContent = plans[0].billing_cycle;
 }
 
-async function renderSubscriptions() {
+export async function renderSubscriptions() {
   const container = document.getElementById('subscriptionsContainer');
   const emptyState = document.getElementById('noPlanState');
 
