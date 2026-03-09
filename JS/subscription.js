@@ -257,6 +257,95 @@ export function resetSubscriptionUI() {
     </div>`;
 }
 
-getActiveSubscriptionPlans();
+async function renderSubscriptionUI() {
+  const activeState = document.getElementById('activeState');
+  const trialState = document.getElementById('trialState');
+  const expiredState = document.getElementById('expiredState');
+  const noneState = document.getElementById('noPlanState');
+
+  const badge = document.getElementById('statusBadge');
+  const servicesContainer = document.getElementById('servicesContainer');
+
+  function hideAll() {
+    activeState.classList.add('hidden');
+    trialState.classList.add('hidden');
+    expiredState.classList.add('hidden');
+    noneState.classList.add('hidden');
+  }
+
+  const response = await getActiveSubscriptionPlans();
+
+  hideAll();
+
+  const plans = response.data;
+
+  if (!plans || plans.length === 0) {
+    badge.textContent = 'No Plan';
+    badge.className = 'status-badge status-none';
+
+    noneState.classList.remove('hidden');
+
+    return;
+  }
+
+  badge.textContent = 'Active';
+  badge.className = 'status-badge status-active';
+
+  activeState.classList.remove('hidden');
+
+  servicesContainer.innerHTML = '';
+
+  plans.forEach((plan) => {
+    const chip = document.createElement('div');
+    chip.className = 'service-chip';
+    chip.textContent = plan.service_name;
+
+    servicesContainer.appendChild(chip);
+  });
+
+  document.getElementById('billingCycle').textContent = plans[0].billing_cycle;
+}
+
+async function renderSubscriptions() {
+  const container = document.getElementById('subscriptionsContainer');
+  const emptyState = document.getElementById('noPlanState');
+
+  const response = await getActiveSubscriptionPlans();
+  const plans = response.data;
+
+  container.innerHTML = '';
+
+  if (!plans || plans.length === 0) {
+    emptyState.classList.remove('hidden');
+    return;
+  }
+
+  emptyState.classList.add('hidden');
+
+  plans.forEach((plan) => {
+    const card = document.createElement('div');
+
+    card.className = 'service-subscription';
+
+    card.innerHTML = `
+      <div class="service-header">
+        <h3>${plan.service_name}</h3>
+        <span class="service-status ${plan.status}">${plan.status.toUpperCase() || 'N/A'}</span>
+      </div>
+
+      <div class="service-info">
+        <span style="font-weight: 500;"><strong>Billing:</strong> ${plan.billing_cycle || 'N/A'}</span>
+        <span style="font-weight: 500;"><strong>Next Billing:</strong> ${plan.end_date.toLocaleString() || '-'}</span>
+        <span style="font-weight: 500;"><strong>Days Remaining:</strong> ${plan.days_remaining}</span>
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+// getActiveSubscriptionPlans();
+// renderSubscriptionUI();
+renderSubscriptions();
 getSubscriptionPlans();
 updateQuote();

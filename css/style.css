@@ -4736,4 +4736,113 @@ body.authentication {
   color: #e02424;
 }
 
+.subscription-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 24px;
+}
+.subscription-card .subscription-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.subscription-card .plan-state.hidden {
+  display: none;
+}
+.subscription-card .plan-info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.subscription-card .info-item {
+  background: #f9fafb;
+  padding: 12px;
+  border-radius: 8px;
+}
+.subscription-card .info-item .label {
+  display: block;
+  font-size: 12px;
+  color: #777;
+}
+.subscription-card .info-item .value {
+  font-weight: 600;
+  font-size: 15px;
+}
+.subscription-card .services-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.subscription-card .service-chip {
+  background: #eef2ff;
+  color: #3730a3;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.subscription-card .status-badge {
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.subscription-card .status-active {
+  background: #dcfce7;
+  color: #166534;
+}
+.subscription-card .status-trial {
+  background: #fef3c7;
+  color: #92400e;
+}
+.subscription-card .status-expired {
+  background: #fee2e2;
+  color: #991b1b;
+}
+.subscription-card .status-none {
+  background: #e5e7eb;
+  color: #374151;
+}
+.subscription-card .primary-btn {
+  margin-top: 12px;
+  background: #4f46e5;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.subscription-card .service-subscription {
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 12px;
+  background: #fff;
+}
+.subscription-card .service-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.subscription-card .service-status {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+.subscription-card .service-status.active {
+  background: #dcfce7;
+  color: #166534;
+}
+.subscription-card .service-info {
+  display: flex;
+  gap: 20px;
+  font-size: 13px;
+}
+
 /*# sourceMappingURL=style.css.map */

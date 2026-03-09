@@ -258,49 +258,120 @@
          <!-- CURRENT SUBSCRIPTION -->
          <div class="subscription-card">
 
-            <h2 class="card-title heading-subtext">Current Subscription</h2>
+            <div class="subscription-header">
+               <h2 class="card-title heading-subtext">Current Subscription</h2>
+               <div id="statusBadge" class="status-badge">Status</div>
+            </div>
 
-            <!-- ACTIVE PLAN -->
-            <div class="plan-status plan-active mb-4">
 
-               <div class="status-badge active mb-2">Active</div>
+            <!-- ACTIVE STATE -->
+            <!-- <div id="activeState" class="plan-state hidden">
 
-               <div class="plan-info">
-                  <h2 class="heading-minitext mb-1 "><strong>Billing Cycle:</strong> Monthly</h2>
-                  <h2 class="heading-minitext mb-1 "><strong>Next Billing Date:</strong> 25 March 2026</h2>
-                  <h2 class="heading-minitext mb-1 "><strong>Days Remaining:</strong> 29 days</h2>
+               <div class="plan-info-grid">
+
+                  <div class="info-item">
+                     <span class="label">Billing Cycle</span>
+                     <span id="billingCycle" class="value">-</span>
+                  </div>
+
+                  <div class="info-item">
+                     <span class="label">Next Billing</span>
+                     <span id="nextBillingDate" class="value">-</span>
+                  </div>
+
+                  <div class="info-item">
+                     <span class="label">Days Remaining</span>
+                     <span id="daysRemaining" class="value">-</span>
+                  </div>
+
                </div>
 
-               <div class="active-services ">
-                  <h2 class=" heading-subtext mt-3 mb-1">Active Services</h2>
 
-                  <ul>
-                     <li class="heading-minitext mb-1 ">POS Only</li>
-                     <li class="heading-minitext mb-1 ">Inventory (Sales)</li>
-                  </ul>
+               <div class="active-services">
+                  <h3 class="heading-minitext">Active Services</h3>
+                  <div id="servicesContainer" class="services-chips"></div>
                </div>
+
+            </div> -->
+
+
+            <!-- SUBSCRIPTIONS WILL RENDER HERE -->
+            <div id="subscriptionsContainer" class="subscriptions-container">
+
+               <!-- Example subscription item (JS will generate these) -->
+               <!--
+      <div class="service-subscription">
+
+         <div class="service-header">
+            <h3 class="heading-minitext service-title">POS Only</h3>
+            <span class="service-status active">Active</span>
+         </div>
+
+         <div class="service-info">
+
+            <div class="service-info-item">
+               <span class="label">Billing Cycle</span>
+               <span class="value">Monthly</span>
+            </div>
+
+            <div class="service-info-item">
+               <span class="label">Next Billing</span>
+               <span class="value">25 March 2026</span>
+            </div>
+
+            <div class="service-info-item">
+               <span class="label">Days Remaining</span>
+               <span class="value">29 days</span>
+            </div>
+
+         </div>
+
+      </div>
+      -->
+
+            </div>
+
+            <!-- TRIAL STATE -->
+            <div id="trialState" class="plan-state hidden">
+
+               <p class="heading-minitext">
+                  Your free trial expires in
+                  <strong id="trialDays">7 days</strong>.
+               </p>
+
+               <p class="heading-minitext">
+                  Select a subscription plan when trial ends
+               </p>
 
             </div>
 
 
-            <!-- TRIAL PLAN -->
-            <div class="plan-status plan-trial mb-4">
+            <!-- EXPIRED STATE -->
+            <div id="expiredState" class="plan-state hidden">
 
-               <div class="status-badge trial mb-2">Free Trial</div>
+               <p class="heading-subtext">
+                  Your subscription has expired.
+               </p>
 
-               <h2 class="heading-minitext mb-1 ">Your trial expires in <strong>7 days</strong>.</h2>
-               <h2 class="heading-minitext mb-1 ">Subscribe now to avoid interruption.</h2>
+               <p class="heading-minitext">
+                  Renew subscription below
+               </p>
+
+
 
             </div>
 
 
-            <!-- EXPIRED PLAN -->
-            <div class="plan-status plan-expired mb-4">
+            <!-- NO PLAN -->
+            <div id="noPlanState" class="plan-state hidden">
 
-               <div class="status-badge expired mb-2">Expired</div>
+               <p class="heading-subtext">
+                  You currently have no active subscription.
+               </p>
 
-               <h2 class="heading-minitext mb-1 ">Your subscription has expired.</h2>
-               <h2 class="heading-minitext mb-1 ">Renew to restore access to POSBOK services.</h2>
+               <p class="heading-minitext">
+                  Choose a subscription plan below
+               </p>
 
             </div>
 
