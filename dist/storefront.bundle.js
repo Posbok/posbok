@@ -246,7 +246,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
   \*******************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\nconst config = {\n  baseUrl: 'https://api.posbok.com',\n  token: localStorage.getItem('accessToken') || null,\n  userData: localStorage.getItem('userData') || null,\n  //   dummyShopId: 88, // john8709@yahoo.com\n  //   dummyShopId: 91, //blessing7430@yahoo.com\n  PAYSTACK_PUBLIC_KEY: 'pk_test_b20f529fb254d470ea0a1753377f1a8be11305e8',\n  PAYSTACK_SECRET_KEY: 'sk_live_9e1b8c3a7c5f0b4d9e1b8c3a7c5f0b4d',\n  PAYSTACK_CALLBACK_URl: 'https://posbok.com/payment/callback'\n};\n// console.log(config.baseUrl);\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (config);\n\n//# sourceURL=webpack://posbok/./config.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\nconst config = {\n  baseUrl: 'https://api.posbok.com',\n  token: localStorage.getItem('accessToken') || null,\n  userData: localStorage.getItem('userData') || null,\n  //   dummyShopId: 88, // john8709@yahoo.com\n  //   dummyShopId: 91, //blessing7430@yahoo.com\n  PAYSTACK_PUBLIC_KEY: 'pk_test_b20f529fb254d470ea0a1753377f1a8be11305e8'\n};\n// console.log(config.baseUrl);\n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (config);\n\n//# sourceURL=webpack://posbok/./config.js?");
 
 /***/ }),
 

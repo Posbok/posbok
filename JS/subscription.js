@@ -18,9 +18,7 @@ import {
   verifyPayment,
 } from './apiServices/subscription/subscriptionResource.js';
 
-const loginForm = document.getElementById('loginForm');
 const PAYSTACK_PUBLIC_KEY = config.PAYSTACK_PUBLIC_KEY;
-const PAYSTACK_CALLBACK_URl = config.PAYSTACK_CALLBACK_URl;
 
 const userData = config.userData;
 let parsedUserData = null;
