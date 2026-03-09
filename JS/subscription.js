@@ -26,6 +26,8 @@ parsedUserData = userData ? JSON.parse(userData) : null;
 
 const adminEmail = parsedUserData?.email;
 
+console.log(adminEmail);
+
 const selectedServices = new Set();
 let billingCycle = 'monthly';
 
