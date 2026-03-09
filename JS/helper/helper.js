@@ -131,7 +131,6 @@ export function clearFormInputs() {
       });
 
     const quoteSummary = document.querySelector('.quote-summary');
-    console.log('code got here:', quoteSummary);
 
     quoteSummary.innerHTML = `<p class="heading-minitext">Select a service to see pricing</p>
          <div class="discount-note ">
