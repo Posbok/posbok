@@ -958,10 +958,10 @@ export async function handleAdminWithdrawalFormSubmit() {
       );
 
       try {
-        console.log(
-          '📦 Admin Withdrawal Transaction Details:',
-          adminWithdrawalDetails,
-        );
+        //   console.log(
+        //     '📦 Admin Withdrawal Transaction Details:',
+        //     adminWithdrawalDetails,
+        //   );
         showBtnLoader(adminWithdrawalSubmitButton);
 
         const businessDayVerified =

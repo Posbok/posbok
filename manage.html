@@ -26,6 +26,9 @@
 
    <script defer src="https://unpkg.com/smoothscroll-polyfill@0.4.4/dist/smoothscroll.min.js"></script>
 
+   <!-- Paystack -->
+   <script src="https://js.paystack.co/v1/inline.js"></script>
+
    <!-- <script defer type="module" src="JS/script.js"></script>
    <script defer type="module" src="JS/reports.js"></script> -->
    <!-- <script defer type="module" src="JS/goods.js"></script> -->
@@ -306,7 +309,7 @@
 
 
          <!-- SERVICE SELECTION -->
-         <div class="subscription-card">
+         <div class="subscription-card ">
 
             <h2 class="card-title heading-subtext">Choose Services</h2>
 
@@ -325,7 +328,7 @@
             </div>
 
 
-            <div class="service-grid">
+            <div class="service-grid subscriptionServiceCard">
 
                <label class="service-option checkbox-container">
                   <input type="checkbox" value="POS">
@@ -369,13 +372,13 @@
 
 
          <!-- PRICE SUMMARY -->
-         <div class="subscription-card">
+         <form class="subscription-card" id="subscriptionForm">
 
             <h2 class="card-title heading-subtext">Price Summary</h2>
 
             <div class="quote-summary">
 
-               <div class="quote-item">
+               <!-- <div class="quote-item">
                   <span class="heading-minitext">POS Only</span>
                   <span class="heading-minitext">₦2,500</span>
                </div>
@@ -398,9 +401,19 @@
                   Pay ₦5,500 with Paystack
                </button>
 
+               <div class="center-button">
+                  <button class="hero-btn-dark mb-2 pay-button  pay-button   has-spinner" id="payNowBtn" type="submit">
+                     <span class="btn-text">Pay ${formatCurrency(quote.total_price)} with Paystack</span>
+                     <span class="btn-spinner hidden"></span>
+                  </button>
+               
+               </div> -->
+
+
+
             </div>
 
-         </div>
+         </form>
 
 
 

@@ -14,10 +14,19 @@ import {
   getActiveSubscriptionPlans,
   getSubscriptionPlans,
   showLiveQuote,
+  initializeSubscriptionPayment,
+  verifyPayment,
 } from './apiServices/subscription/subscriptionResource.js';
 
 const loginForm = document.getElementById('loginForm');
-const baseUrl = config.baseUrl;
+const PAYSTACK_PUBLIC_KEY = config.PAYSTACK_PUBLIC_KEY;
+const PAYSTACK_CALLBACK_URl = config.PAYSTACK_CALLBACK_URl;
+
+const userData = config.userData;
+let parsedUserData = null;
+parsedUserData = userData ? JSON.parse(userData) : null;
+
+const adminEmail = parsedUserData?.email;
 
 const selectedServices = new Set();
 let billingCycle = 'monthly';
@@ -41,7 +50,7 @@ function buildQuotePayload() {
   };
 }
 
-async function updateQuote() {
+export async function updateQuote() {
   showGlobalLoader();
   try {
     if (selectedServices.size === 0) {
@@ -95,9 +104,13 @@ function renderQuoteSummary(quote) {
   `;
 
   const payHTML = `
-      <button class="pay-button hero-btn-dark" id="payNowBtn">
-        Pay ${formatCurrency(quote.total_price)} with Paystack
-      </button>
+          <div class="center-button">
+                  <button class="hero-btn-dark btn mb-2 has-spinner payNowBtn" id="payNowBtn" type="submit">
+                     <span class="btn-text">Pay ${formatCurrency(quote.total_price)} with Paystack</span>
+                     <span class="btn-spinner hidden"></span>
+                  </button>
+               
+               </div>
     `;
 
   quoteSummary.innerHTML = `
@@ -129,6 +142,120 @@ billingRadios.forEach((radio) => {
     updateQuote();
   });
 });
+
+async function startPayment() {
+  try {
+    if (selectedServices.size === 0) {
+      showToast('error', 'Please select at least one service.');
+      return;
+    }
+
+    const paymentPayload = {
+      services: Array.from(selectedServices),
+      billing_cycle: billingCycle,
+      email: adminEmail,
+    };
+
+    const payBtn = document.getElementById('payNowBtn');
+    showBtnLoader(payBtn);
+
+    const paymentData = await initializeSubscriptionPayment(paymentPayload);
+
+    console.log('Payment Data', paymentData);
+
+    if (!paymentData || !paymentData.success) {
+      throw new Error(paymentData.message || 'Payment initialization failed');
+    }
+
+    const { access_code, reference, quote } = paymentData.data;
+
+    const amount = quote.total_price * 100; // convert to kobo
+
+    localStorage.setItem('paystack_ref', reference);
+
+    const handler = PaystackPop.setup({
+      key: PAYSTACK_PUBLIC_KEY,
+      email: adminEmail,
+      amount: amount, // ✅ REQUIRED
+      ref: reference,
+      currency: 'NGN',
+
+      // callback: function (response) {
+      //   console.log('Payment complete:', response);
+      //   verifyPayment(response.reference);
+      // },
+
+      callback: function (response) {
+        console.log('Payment complete:', response);
+
+        const savedRef =
+          localStorage.getItem('paystack_ref') || response.reference;
+
+        verifyPayment(savedRef);
+      },
+
+      onClose: function () {
+        showToast('info', 'Payment cancelled');
+        hideBtnLoader(payBtn);
+      },
+    });
+
+    handler.openIframe();
+  } catch (error) {
+    console.error('Payment start error:', error);
+    showToast('error', error.message || 'Payment initialization failed');
+  }
+}
+
+// document.addEventListener('click', function (event) {
+//   if (event.target && event.target.id === 'payNowBtn') {
+//     console.log('object');
+//     startPayment();
+//   }
+// });
+
+// document.addEventListener('click', function (event) {
+//   const payBtn = event.target.closest('#payNowBtn');
+//   if (payBtn) {
+//     startPayment();
+//   }
+// });
+
+const subscriptionForm = document.querySelector('#subscriptionForm');
+subscriptionForm.addEventListener('submit', (e) => {
+  e.preventDefault(); // stop page reload
+  startPayment();
+});
+
+// document.querySelector('#payNowBtn')?.addEventListener('click', async () => {
+//   console.log('object');
+//   startPayment();
+// });
+
+export function resetSubscriptionUI() {
+  // Clear selected services and billing cycle
+  selectedServices.clear();
+  billingCycle = 'monthly';
+
+  // Reset checkboxes and radios
+  const subscriptionServiceCard = document.querySelector(
+    '.subscriptionServiceCard',
+  );
+  if (subscriptionServiceCard) {
+    subscriptionServiceCard
+      .querySelectorAll('input[type="checkbox"]')
+      .forEach((cb) => (cb.checked = false));
+    subscriptionServiceCard
+      .querySelectorAll('input[type="radio"]')
+      .forEach((rb) => (rb.checked = rb.value === 'monthly'));
+  }
+
+  // Clear quote summary
+  quoteSummary.innerHTML = `<p class="heading-minitext">Select a service to see pricing</p>
+    <div class="discount-note">
+      Choose more services to Enjoy massive discount per service
+    </div>`;
+}
 
 getActiveSubscriptionPlans();
 getSubscriptionPlans();

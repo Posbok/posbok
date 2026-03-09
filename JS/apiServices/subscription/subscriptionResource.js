@@ -11,6 +11,7 @@ import {
   showToast,
 } from '../../script.js';
 import { populateStaffTable } from '../../staff.js';
+import { resetSubscriptionUI, updateQuote } from '../../subscription.js';
 import { fetchBusinessDetails } from '../business/businessResource.js';
 import { checkAndPromptCreateShop } from '../shop/shopResource.js';
 import { safeFetch } from '../utility/safeFetch.js';
@@ -49,7 +50,7 @@ export async function showLiveQuote(quoteDeti) {
 
     if (showLiveQuoteData) {
       // hideGlobalLoader();
-      console.log('Quote received successfully:', showLiveQuoteData);
+      // console.log('Quote received successfully:', showLiveQuoteData);
       // showToast('success', `✅ ${showLiveQuoteData.message}`);
     }
 
@@ -118,5 +119,85 @@ export async function getActiveSubscriptionPlans() {
       error.message,
     );
     throw error;
+  }
+}
+
+export async function initializeSubscriptionPayment(paymentDetails) {
+  //   console.log(paymentDetails.billing_cycle);
+  //   console.log(paymentDetails.services);
+  console.log(JSON.stringify(paymentDetails));
+
+  try {
+    const response = await safeFetch(
+      `${baseUrl}/api/service-plans/payment/initialize`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(paymentDetails),
+      },
+    );
+
+    return response;
+  } catch (error) {
+    console.error('Payment initialization failed:', error);
+    throw error;
+  }
+}
+
+export async function verifyPayment(reference) {
+  //   const loader = document.getElementById('main-loader');
+  //   const statusText = document.getElementById('status-text');
+
+  //   // Start the timer immediately when verification starts
+  //   const timer = setTimeout(() => {
+  //     if (loader && loader.style.display !== 'none') {
+  //       statusText.innerHTML += `<br><button class="hero-btn-dark mt-2" onclick="location.reload()">Re-check Payment</button>`;
+  //     }
+  //   }, 10000);
+
+  try {
+    showGlobalLoader();
+    if (!reference) {
+      showToast('error', 'No payment reference found');
+      hideGlobalLoader();
+      return;
+    }
+
+    const res = await safeFetch(
+      `${baseUrl}/api/service-plans/payment/verify/${reference}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      },
+    );
+
+    if (res.success && res.data.status === 'success') {
+      if (res.success && res.data.status === 'success') {
+        localStorage.removeItem('paystack_ref');
+        hideGlobalLoader();
+        showToast('success', 'Payment successful. Subscription activated.');
+
+        // Reset UI and state
+        resetSubscriptionUI();
+
+        // Refresh subscriptions and pricing
+        await getActiveSubscriptionPlans();
+        await getSubscriptionPlans();
+      }
+    } else {
+      hideGlobalLoader();
+      showToast('error', `Payment ${res.data.status}`);
+    }
+    console.log(res);
+  } catch (error) {
+    console.error('Payment verification failed:', error);
+
+    showToast('error', 'Payment verification failed');
+    hideGlobalLoader();
   }
 }

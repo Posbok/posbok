@@ -21,6 +21,7 @@ module.exports = {
     shops: './JS/shops.js',
     posAndSalesReportAccordion: './JS/posAndSalesReportAccordion.js',
     subscription: './JS/subscription.js',
+    callback: './payment/callback/callback.js',
     main: './JS/script.js', // Common JS for the main page if needed
   },
 

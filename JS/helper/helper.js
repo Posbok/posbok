@@ -104,6 +104,9 @@ export function clearFormInputs() {
   );
 
   const moderateReviewModal = document.querySelector('.moderateReviewModal');
+  const subscriptionServiceCard = document.querySelector(
+    '.subscriptionServiceCard',
+  );
 
   //   Clear Search Input
   const searchProductInput = document.querySelector('.searchProductInput');
@@ -115,6 +118,26 @@ export function clearFormInputs() {
   if (searchStockProdutItem) searchStockProdutItem.value = '';
 
   // Clear Form Implementations
+
+  if (subscriptionServiceCard) {
+    subscriptionServiceCard
+      .querySelectorAll('input, textarea, select')
+      .forEach((el) => {
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          el.checked = false;
+        } else {
+          el.value = '';
+        }
+      });
+
+    const quoteSummary = document.querySelector('.quote-summary');
+    console.log('code got here:', quoteSummary);
+
+    quoteSummary.innerHTML = `<p class="heading-minitext">Select a service to see pricing</p>
+         <div class="discount-note ">
+                  Choose more services to Enjoy massive discount per service
+               </div>`;
+  }
 
   if (moderateReviewModal) {
     moderateReviewModal
