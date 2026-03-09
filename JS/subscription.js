@@ -257,6 +257,6 @@ export function resetSubscriptionUI() {
     </div>`;
 }
 
-getActiveSubscriptionPlans();
-getSubscriptionPlans();
-updateQuote();
+// getActiveSubscriptionPlans();
+// getSubscriptionPlans();
+// updateQuote();
