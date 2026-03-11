@@ -699,6 +699,22 @@ export function formatAmountWithCommasOnInput(input) {
 }
 
 // Format dashboard Field type
+export function formatSubscriptionChannel(value) {
+  if (!value) return '-';
+
+  switch (value.toLowerCase()) {
+    case 'card':
+      return 'Card';
+
+    case 'bank_transfer':
+      return 'Bank Transfer';
+
+    default:
+      return value;
+  }
+}
+
+// Format dashboard Field type
 export function formatAdminWithdrawalType(value) {
   switch (value.toLowerCase()) {
     case 'cash_in_machine':

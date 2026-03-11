@@ -68,7 +68,7 @@ if (loginForm) {
                 headers: {
                   Authorization: `Bearer ${token}`,
                 },
-              }
+              },
             );
 
             if (!shopResponse) {

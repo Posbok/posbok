@@ -93,7 +93,7 @@ export async function updateUserProfile(updateProfileDetails) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(updateProfileDetails),
-      }
+      },
     );
 
     if (updateUserProfileData) {
@@ -123,7 +123,7 @@ export async function updateUserProfilePassword(updateProfileDetails) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(updateProfileDetails),
-      }
+      },
     );
 
     if (updateUserProfilePasswordData) {
@@ -154,7 +154,7 @@ export async function fetchStaffDetail(staffId) {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     //  console.log('Response received...');
@@ -265,7 +265,7 @@ export async function checkAndPromptCreateStaff() {
 
     // Filter out admins
     const nonAdminStaff = allStaffs.filter(
-      (staff) => staff.accountType !== 'ADMIN'
+      (staff) => staff.accountType !== 'ADMIN',
     );
 
     // If we’re on staff-profile and there is only one staff (admin)
@@ -437,7 +437,7 @@ export async function assignUserToShop(user_id, staffAssigningDetails) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(staffAssigningDetails),
-      }
+      },
     );
 
     if (assignUserToShopData) {
@@ -524,7 +524,7 @@ export async function removeStaffFromShop(user_id, shop_id) {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     if (fetchedData) {
@@ -540,5 +540,30 @@ export async function removeStaffFromShop(user_id, shop_id) {
     console.error('Error removing Staff from shop', error);
     showToast('error', '❌ Failed to remove Staff from shop');
     throw error;
+  }
+}
+
+export async function refreshUserProfile() {
+  const token = localStorage.getItem('accessToken');
+
+  console.log('Code execution reached ');
+
+  if (!token) return;
+
+  try {
+    const response = await safeFetch(`${baseUrl}/api/users/profile`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const user = response.data.user;
+
+    localStorage.setItem('userData', JSON.stringify(user));
+
+    return user;
+  } catch (error) {
+    console.error('Failed to refresh user profile:', error.message);
   }
 }

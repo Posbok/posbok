@@ -2207,6 +2207,28 @@ body.authentication {
   border-bottom: 1px solid #7fb239;
   transition: background-color 0.2s;
 }
+.sellProduct-method-form_input #addExistingAutocompleteList-item p,
+.sellProduct-method-form_input .adminAutocomplete-list-item p,
+.sellProduct-method-form_input .autocomplete-list-item p,
+.sellStock-method-form_input #addExistingAutocompleteList-item p,
+.sellStock-method-form_input .adminAutocomplete-list-item p,
+.sellStock-method-form_input .autocomplete-list-item p,
+.adminSellProduct-method-form_input #addExistingAutocompleteList-item p,
+.adminSellProduct-method-form_input .adminAutocomplete-list-item p,
+.adminSellProduct-method-form_input .autocomplete-list-item p {
+  font-weight: 600;
+}
+.sellProduct-method-form_input #addExistingAutocompleteList-item small,
+.sellProduct-method-form_input .adminAutocomplete-list-item small,
+.sellProduct-method-form_input .autocomplete-list-item small,
+.sellStock-method-form_input #addExistingAutocompleteList-item small,
+.sellStock-method-form_input .adminAutocomplete-list-item small,
+.sellStock-method-form_input .autocomplete-list-item small,
+.adminSellProduct-method-form_input #addExistingAutocompleteList-item small,
+.adminSellProduct-method-form_input .adminAutocomplete-list-item small,
+.adminSellProduct-method-form_input .autocomplete-list-item small {
+  font-weight: 600;
+}
 .sellProduct-method-form_input #addExistingAutocompleteList-item:hover,
 .sellProduct-method-form_input .adminAutocomplete-list-item:hover,
 .sellProduct-method-form_input .autocomplete-list-item:hover,

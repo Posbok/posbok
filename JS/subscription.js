@@ -3,6 +3,7 @@ import './script.js';
 
 import { safeFetch } from './apiServices/utility/safeFetch.js';
 import {
+  formatSubscriptionChannel,
   hideBtnLoader,
   hideGlobalLoader,
   showBtnLoader,
@@ -16,6 +17,7 @@ import {
   showLiveQuote,
   initializeSubscriptionPayment,
   verifyPayment,
+  getSubscriptionHistory,
 } from './apiServices/subscription/subscriptionResource.js';
 
 const PAYSTACK_PUBLIC_KEY = config.PAYSTACK_PUBLIC_KEY;
@@ -344,8 +346,135 @@ export async function renderSubscriptions() {
   });
 }
 
-// getActiveSubscriptionPlans();
-// renderSubscriptionUI();
-renderSubscriptions();
-getSubscriptionPlans();
-updateQuote();
+let paymentCurrentPage = 1;
+let paymentTotalPages = 1;
+
+function formatAmount(amount) {
+  return `₦${amount.toLocaleString()}`;
+}
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
+}
+
+function formatServices(services) {
+  return services.join(' + ');
+}
+
+function renderPaymentRow(payment, serialNumber) {
+  const tbody = document.getElementById('paymentHistoryTableBody');
+
+  //   tbody.innerHTML = ''; // Clear existing rows
+
+  const date = payment.paid_at || payment.created_at;
+  const services = formatServices(payment.services);
+  const amount = formatAmount(payment.amount);
+  const status = payment.status;
+  const channel = formatSubscriptionChannel(payment.channel);
+
+  const row = `
+    <tr class="table-body-row">
+      <td class="py-1 productSerialNumber">${serialNumber}.</td>
+      <td class="py-1 productSerialNumber">${formatDate(date)}</td>
+      <td class="py-1 productSerialNumber">${services}</td>
+      <td class="py-1 productSerialNumber">${amount}</td>
+      <td class="py-1 productSerialNumber">
+        <span class="payment-status ${status}">
+          ${status}
+        </span>
+      </td>
+      <td class="py-1 productSerialNumber">${channel}</td>
+    </tr>
+  `;
+
+  tbody.insertAdjacentHTML('beforeend', row);
+}
+
+async function loadPaymentHistory(page = 1) {
+  const tbody = document.getElementById('paymentHistoryTableBody');
+  const btn = document.getElementById('loadMorePaymentsBtn');
+
+  // Only show loading state when fetching first page
+  if (page === 1 && tbody) {
+    tbody.innerHTML = `
+      <tr class="loading-row">
+        <td colspan="5" class="table-error-text">
+          Loading Subscription History...
+        </td>
+      </tr>
+    `;
+
+    btn.style.display = 'none';
+  }
+
+  try {
+    const paymentResponse = await getSubscriptionHistory(page);
+
+    const payments = paymentResponse.data.payments;
+    const pagination = paymentResponse.data.pagination;
+
+    if (payments.length === 0 && page === 1) {
+      document.getElementById('paymentHistoryTableBody').innerHTML =
+        `<tr class="loading-row">
+       <td colspan="5" class="table-error-text">
+         No Transactions Available
+       </td>
+     </tr>`;
+      return;
+    }
+
+    if (payments.length === 0) {
+      showToast('info', 'No more transactions to load');
+      return;
+    }
+
+    paymentCurrentPage = pagination.currentPage;
+    paymentTotalPages = pagination.totalPages;
+
+    if (page === 1) {
+      tbody.innerHTML = '';
+    }
+
+    payments.forEach((payment, index) => {
+      const serialNumber =
+        (paymentCurrentPage - 1) * pagination.itemsPerPage + index + 1;
+
+      renderPaymentRow(payment, serialNumber);
+    });
+
+    updateLoadMoreButton();
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error loading payment history:', error.message);
+  }
+}
+
+function updateLoadMoreButton() {
+  const btn = document.getElementById('loadMorePaymentsBtn');
+
+  if (paymentCurrentPage >= paymentTotalPages) {
+    btn.style.display = 'none';
+  } else {
+    btn.style.display = 'block';
+  }
+}
+
+document.getElementById('loadMorePaymentsBtn').addEventListener('click', () => {
+  const nextPage = paymentCurrentPage + 1;
+  loadPaymentHistory(nextPage);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  // getActiveSubscriptionPlans();
+  // renderSubscriptionUI();
+  renderSubscriptions();
+  getSubscriptionPlans();
+
+  updateQuote();
+  loadPaymentHistory(1);
+});

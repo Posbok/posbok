@@ -12,6 +12,7 @@ import {
   checkAndPromptCreateStaff,
   fetchProfileDetails,
   openCreateStaffModal,
+  refreshUserProfile,
   updateUserProfile,
   updateUserProfilePassword,
 } from './apiServices/user/userResource.js';
@@ -2399,3 +2400,8 @@ export function displayfullNotice(noticeId) {
   timeEl.textContent = new Date(selected.created_at).toLocaleTimeString();
   dateEl.textContent = new Date(selected.created_at).toLocaleDateString();
 }
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await refreshUserProfile();
+  //   initializeUI(); // your existing UI rendering
+});

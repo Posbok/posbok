@@ -2575,7 +2575,7 @@ function renderFilteredProducts(shopId, productList) {
           getProductImages(productId),
         ]);
 
-        //  console.log('Product detail received successfully:', ProductDetail);
+        console.log('Product detail received successfully:', ProductDetail);
 
         // Call function to prefill modal inputs
         if (ProductDetail?.success === true) {
@@ -3089,7 +3089,7 @@ export async function renderProductInventoryTable(shopId) {
             getProductImages(productId),
           ]);
 
-          //  console.log('Product detail received successfully:', ProductDetail);
+          console.log('Product detail received successfully:', ProductDetail);
 
           // Call function to prefill modal inputs
           if (ProductDetail?.success === true) {

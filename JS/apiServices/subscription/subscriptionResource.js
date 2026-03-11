@@ -205,3 +205,41 @@ export async function verifyPayment(reference) {
     hideGlobalLoader();
   }
 }
+
+export async function getSubscriptionHistory(page) {
+  //   const tbody = document.getElementById('paymentHistoryTableBody');
+
+  //   if (tbody) {
+  //     tbody.innerHTML = `<tr>
+  //  '<tr class="loading-row"><td colspan="4" class="table-error-text ">Loading Subscription History...</td></tr>';
+  // `;
+  //   }
+
+  try {
+    showGlobalLoader();
+    //  console.log('Fetching Active Subscription Plan Pricing for user');
+
+    const fetchedData = await safeFetch(
+      `${baseUrl}/api/service-plans/payment/history?page=${page}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      },
+    );
+
+    //  console.log('Response received...');
+    console.log('Subscription History', fetchedData);
+    hideGlobalLoader();
+
+    return fetchedData;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error(
+      'Error Fetching Active Subscription Plans Pricing Info:',
+      error.message,
+    );
+    throw error;
+  }
+}
