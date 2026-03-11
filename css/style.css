@@ -2414,6 +2414,20 @@ body.authentication {
   margin-top: 2rem;
 }
 
+.main.subscribe {
+  backdrop-filter: blur(1px);
+}
+.main.subscribe::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.46);
+  z-index: 22;
+}
+
 .main.blur,
 .sidebar.blur {
   backdrop-filter: blur(1px);

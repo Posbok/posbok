@@ -23,7 +23,7 @@ import {
   showGlobalLoader,
 } from './helper/helper';
 import { closeModal, showToast } from './script';
-import { hasService, loadUserServices, userServices } from './subscription.js';
+import { userServices } from './subscription.js';
 
 const userData = config.userData;
 const dummyShopId = config.dummyShopId;
@@ -88,82 +88,47 @@ if (isStaff) {
   //   displayAllCategories();
 }
 
-async function initializeSellFeature() {
-  //   const hasINVENTORYService = userServices.some(
-  //     (service) =>
-  //       service.service_code === 'INVENTORY' && service.status === 'active',
-  //   );
+console.log('From the sel.js file', userServices);
 
-  //   console.log(hasINVENTORYService);
+const hasINVENTORYService = userServices.some(
+  (service) =>
+    service.service_code === 'INVENTORY' && service.status === 'active',
+);
 
-  //   if (!hasINVENTORYService) {
-  //     if (adminSellContainer) adminSellContainer.style.display = 'none';
-  //     if (staffSellContainer) staffSellContainer.style.display = 'none';
-  //     //  return;
-  //   }
+if (!hasINVENTORYService) {
+  if (adminSellContainer) adminSellContainer.style.display = 'none';
+  if (staffSellContainer) staffSellContainer.style.display = 'none';
 
-  await loadUserServices();
-
-  console.log(hasService('INVENTORY'));
-
-  if (!hasService('INVENTORY')) {
-    showSubscriptionRequiredModal();
-    if (adminSellContainer) adminSellContainer.style.display = 'block';
-    if (staffSellContainer) {
-      staffSellContainer.innerHTML = '';
-      staffSellContainer.style.display = 'none';
-    }
-
-    return;
-  }
-
-  if (isAdmin) {
-    if (adminSellContainer) adminSellContainer.style.display = 'block';
-    if (staffSellContainer) {
-      staffSellContainer.innerHTML = '';
-      staffSellContainer.style.display = 'none';
-    }
-
-    loadShopDropdown();
-  } else {
-    if (adminSellContainer) {
-      adminSellContainer.innerHTML = '';
-      adminSellContainer.style.display = 'none';
-    }
-
-    if (staffSellContainer) staffSellContainer.style.display = 'block';
-  }
+  console.log('Not having Inventory Here');
+  //   return; // oUTSIDE A FUNCTION
 }
 
-function showSubscriptionRequiredModal() {
-  const main = document.querySelector('.main');
-  const subscriptionRequiredModal = document.querySelector(
-    '.subscriptionRequiredModal',
-  );
+if (isAdmin && adminSellContainer) {
+  if (adminSellContainer) adminSellContainer.style.display = 'block';
+  if (staffSellContainer) staffSellContainer.innerHTML = '';
+  if (staffSellContainer) staffSellContainer.style.display = 'none';
 
-  if (subscriptionRequiredModal)
-    subscriptionRequiredModal.classList.add('active');
-  if (main) main.classList.add('subscribe');
-}
+  async function loadShopDropdown() {
+    try {
+      showGlobalLoader();
+      const { enrichedShopData } = await checkAndPromptCreateShop();
+      populateBusinessShopDropdown(enrichedShopData, 'sellProductShopDropdown');
 
-async function loadShopDropdown() {
-  try {
-    showGlobalLoader();
+      syncDropdownWithCartShop();
 
-    const { enrichedShopData } = await checkAndPromptCreateShop();
-
-    populateBusinessShopDropdown(enrichedShopData, 'sellProductShopDropdown');
-
-    syncDropdownWithCartShop();
-
-    hideGlobalLoader();
-  } catch (err) {
-    hideGlobalLoader();
-    console.error('Failed to load dropdown:', err.message);
+      hideGlobalLoader();
+    } catch (err) {
+      hideGlobalLoader();
+      console.error('Failed to load dropdown:', err.message);
+    }
   }
-}
 
-initializeSellFeature();
+  loadShopDropdown();
+} else {
+  if (adminSellContainer) adminSellContainer.innerHTML = '';
+  if (adminSellContainer) adminSellContainer.style.display = 'none';
+  if (staffSellContainer) staffSellContainer.style.display = 'block';
+}
 
 async function fetchAllProducts(shopId) {
   let products = [];

@@ -148,7 +148,7 @@
 
       <!-- Admin Sell Form -->
       <div class="adminSellContainer admin-view card adminSellProduct">
-         <form class="sell-product-form adminAddToCartForm" name="sell-product">
+         <form class="sell-product-form adminAddToCartForm " name="sell-product">
 
             <div>
                <h1 class="heading-text">Admin: Sell Item</h1>
@@ -902,6 +902,7 @@
    <div id="receiptPrintPDF"></div>
 
 
+
    <!-- Sold Items Report Modals -->
    <form class="modal-form soldDetailModal soldDetailModalContainer" name="modal">
       <div class="card saleDetails modal">
@@ -916,7 +917,7 @@
 
                <!-- <div class="modalBody"> -->
                <!-- <h2 class="heading-minitext mb-1 "><strong>Shop Name:</strong> <span id="soldDetailShop"></span>
-               </h2> -->
+                  </h2> -->
                <h2 class="heading-minitext mb-1 "><strong>Receipt:</strong> <span id="soldDetailReceiptNumber"></span>
                </h2>
                <h2 class="heading-minitext mb-1"><strong>Customer:</strong> <span id="soldDetailCustomerName"></span>
@@ -938,18 +939,18 @@
                      <tbody>
                         <!-- JS injects rows here -->
                         <!-- <tr class="table-body-row ">
-                           <td class="py-1">Iphone Charger</td>
-                           <td class="py-1">2</td>
-                           <td class="py-1">₦500</td>
-                           <td class="py-1">₦1000</td>
-                        </tr>
-
-                        <tr class="table-body-row ">
-                           <td class="py-1">Oriamo Powerbank</td>
-                           <td class="py-1">1</td>
-                           <td class="py-1">₦200</td>
-                           <td class="py-1">₦200</td>
-                        </tr> -->
+                              <td class="py-1">Iphone Charger</td>
+                              <td class="py-1">2</td>
+                              <td class="py-1">₦500</td>
+                              <td class="py-1">₦1000</td>
+                           </tr>
+   
+                           <tr class="table-body-row ">
+                              <td class="py-1">Oriamo Powerbank</td>
+                              <td class="py-1">1</td>
+                              <td class="py-1">₦200</td>
+                              <td class="py-1">₦200</td>
+                           </tr> -->
                      </tbody>
                   </table>
                </div>
@@ -992,6 +993,23 @@
       </div>
    </form>
 
+   <!-- Subscribe Expired Modals -->
+   <form class="modal-form soldDetailModal subscriptionRequiredModalContainer" name="modal">
+      <div class="card subscriptionRequiredModal modal ">
+
+         <div class="reports-method pdfHere">
+
+            <h1 class="heading-text center-text mt-2">You dont have access to this service</h1>
+
+         </div>
+
+
+
+      </div>
+
+
+
+   </form>
 </body>
 
 </html>

@@ -22,13 +22,13 @@ import {
 
 const PAYSTACK_PUBLIC_KEY = config.PAYSTACK_PUBLIC_KEY;
 
+const isLoggedIn = localStorage.getItem('accessToken');
+
 const userData = config.userData;
 let parsedUserData = null;
 parsedUserData = userData ? JSON.parse(userData) : null;
 
 const adminEmail = parsedUserData?.email;
-
-console.log(adminEmail);
 
 const selectedServices = new Set();
 let billingCycle = 'monthly';
@@ -56,7 +56,8 @@ export async function updateQuote() {
   showGlobalLoader();
   try {
     if (selectedServices.size === 0) {
-      quoteSummary.innerHTML = `<p class="heading-minitext">Select a service to see pricing</p>
+      if (quoteSummary)
+        quoteSummary.innerHTML = `<p class="heading-minitext">Select a service to see pricing</p>
          <div class="discount-note ">
                   Choose more services to Enjoy massive discount per service
                </div>`;
@@ -224,7 +225,7 @@ async function startPayment() {
 // });
 
 const subscriptionForm = document.querySelector('#subscriptionForm');
-subscriptionForm.addEventListener('submit', (e) => {
+subscriptionForm?.addEventListener('submit', (e) => {
   e.preventDefault(); // stop page reload
   startPayment();
 });
@@ -295,7 +296,7 @@ async function renderSubscriptionUI() {
 
   activeState.classList.remove('hidden');
 
-  servicesContainer.innerHTML = '';
+  if (servicesContainer) servicesContainer.innerHTML = '';
 
   plans.forEach((plan) => {
     const chip = document.createElement('div');
@@ -315,14 +316,14 @@ export async function renderSubscriptions() {
   const response = await getActiveSubscriptionPlans();
   const plans = response.data;
 
-  container.innerHTML = '';
+  if (container) container.innerHTML = '';
 
   if (!plans || plans.length === 0) {
-    emptyState.classList.remove('hidden');
+    if (emptyState) emptyState.classList.remove('hidden');
     return;
   }
 
-  emptyState.classList.add('hidden');
+  if (emptyState) emptyState.classList.add('hidden');
 
   plans.forEach((plan) => {
     const card = document.createElement('div');
@@ -342,7 +343,7 @@ export async function renderSubscriptions() {
       </div>
     `;
 
-    container.appendChild(card);
+    if (container) container.appendChild(card);
   });
 }
 
@@ -392,7 +393,7 @@ function renderPaymentRow(payment, serialNumber) {
     </tr>
   `;
 
-  tbody.insertAdjacentHTML('beforeend', row);
+  if (tbody) tbody.insertAdjacentHTML('beforeend', row);
 }
 
 async function loadPaymentHistory(page = 1) {
@@ -401,7 +402,8 @@ async function loadPaymentHistory(page = 1) {
 
   // Only show loading state when fetching first page
   if (page === 1 && tbody) {
-    tbody.innerHTML = `
+    if (tbody)
+      tbody.innerHTML = `
       <tr class="loading-row">
         <td colspan="5" class="table-error-text">
           Loading Subscription History...
@@ -409,7 +411,7 @@ async function loadPaymentHistory(page = 1) {
       </tr>
     `;
 
-    btn.style.display = 'none';
+    if (btn) btn.style.display = 'none';
   }
 
   try {
@@ -419,8 +421,8 @@ async function loadPaymentHistory(page = 1) {
     const pagination = paymentResponse.data.pagination;
 
     if (payments.length === 0 && page === 1) {
-      document.getElementById('paymentHistoryTableBody').innerHTML =
-        `<tr class="loading-row">
+      if (tbody)
+        tbody.innerHTML = `<tr class="loading-row">
        <td colspan="5" class="table-error-text">
          No Transactions Available
        </td>
@@ -437,7 +439,7 @@ async function loadPaymentHistory(page = 1) {
     paymentTotalPages = pagination.totalPages;
 
     if (page === 1) {
-      tbody.innerHTML = '';
+      if (tbody) tbody.innerHTML = '';
     }
 
     payments.forEach((payment, index) => {
@@ -458,23 +460,74 @@ function updateLoadMoreButton() {
   const btn = document.getElementById('loadMorePaymentsBtn');
 
   if (paymentCurrentPage >= paymentTotalPages) {
-    btn.style.display = 'none';
+    if (btn) btn.style.display = 'none';
   } else {
-    btn.style.display = 'block';
+    if (btn) btn.style.display = 'block';
   }
 }
 
-document.getElementById('loadMorePaymentsBtn').addEventListener('click', () => {
-  const nextPage = paymentCurrentPage + 1;
-  loadPaymentHistory(nextPage);
-});
+document
+  .getElementById('loadMorePaymentsBtn')
+  ?.addEventListener('click', () => {
+    const nextPage = paymentCurrentPage + 1;
+    loadPaymentHistory(nextPage);
+  });
+
+//   UI Display based on subscription status
+export let userServices = [];
+
+export async function loadUserServices() {
+  try {
+    const response = await getActiveSubscriptionPlans();
+    userServices = response.data;
+
+    renderServiceUI();
+  } catch (error) {
+    console.error('Error loading services:', error);
+    return [];
+  }
+}
+
+function renderServiceUI() {
+  const services = userServices.map((s) => s.service_code);
+
+  console.log('User Services:', services);
+
+  if (services.includes('POS')) {
+    document.querySelectorAll('.pos-feature').forEach((el) => {
+      el.style.display = 'block';
+    });
+  }
+
+  if (services.includes('WAREHOUSE')) {
+    document.querySelectorAll('.warehouse-feature').forEach((el) => {
+      el.style.display = 'block';
+    });
+  }
+
+  if (services.includes('ECOMMERCE')) {
+    document.querySelectorAll('.ecommerce-feature').forEach((el) => {
+      el.style.display = 'block';
+    });
+  }
+}
+
+export function hasService(code) {
+  return userServices.some(
+    (s) => s.service_code === code && s.status === 'active',
+  );
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   // getActiveSubscriptionPlans();
   // renderSubscriptionUI();
-  renderSubscriptions();
-  getSubscriptionPlans();
 
-  updateQuote();
-  loadPaymentHistory(1);
+  if (isLoggedIn) {
+    loadUserServices();
+    renderSubscriptions();
+    getSubscriptionPlans();
+
+    updateQuote();
+    loadPaymentHistory(1);
+  }
 });

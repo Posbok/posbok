@@ -1897,8 +1897,7 @@ if (!userData) {
   );
 
   if (restrictedServiceAccess) {
-    //  window.location.href = 'index.html';
-    console.log('Currently in an unauthorized place normally');
+    window.location.href = 'index.html';
   }
 
   if (isStaff) {
@@ -1975,13 +1974,13 @@ if (!userData) {
       servicePermission === 'POS_TRANSACTIONS' ||
       servicePermission === 'BOTH'
     ) {
-      // if (posIndexTab) posIndexTab.style.display = 'block';
-      // if (posNav) posNav.style.display = 'block';
-      // if (posManagementNav) posManagementNav.classList.remove('hidden');
+      if (posIndexTab) posIndexTab.style.display = 'block';
+      if (posNav) posNav.style.display = 'block';
+      if (posManagementNav) posManagementNav.classList.remove('hidden');
     } else {
-      // if (posIndexTab) posIndexTab.style.display = 'none';
-      // if (posNav) posNav.style.display = 'none';
-      // if (posManagementNav) posManagementNav.classList.add('hidden');
+      if (posIndexTab) posIndexTab.style.display = 'none';
+      if (posNav) posNav.style.display = 'none';
+      if (posManagementNav) posManagementNav.classList.add('hidden');
     }
 
     // Conditionally show Sell tab
@@ -1989,21 +1988,21 @@ if (!userData) {
       servicePermission === 'INVENTORY_SALES' ||
       servicePermission === 'BOTH'
     ) {
-      // if (sellIndexTab) sellIndexTab.style.display = 'block';
-      // if (sellNav) sellNav.style.display = 'block';
-      // if (invetoryNav) invetoryNav.classList.remove('hidden');
-      // if (warehouseNav) warehouseNav.classList.remove('hidden');
+      if (sellIndexTab) sellIndexTab.style.display = 'block';
+      if (sellNav) sellNav.style.display = 'block';
+      if (invetoryNav) invetoryNav.classList.remove('hidden');
+      if (warehouseNav) warehouseNav.classList.remove('hidden');
     } else {
-      // if (sellIndexTab) sellIndexTab.style.display = 'none';
-      // if (sellNav) sellNav.style.display = 'none';
-      // if (invetoryNav) invetoryNav.classList.add('hidden');
-      // if (warehouseNav) warehouseNav.classList.add('hidden');
+      if (sellIndexTab) sellIndexTab.style.display = 'none';
+      if (sellNav) sellNav.style.display = 'none';
+      if (invetoryNav) invetoryNav.classList.add('hidden');
+      if (warehouseNav) warehouseNav.classList.add('hidden');
     }
 
     if (servicePermission === 'BOTH') {
-      // if (posManagementNav) posManagementNav.classList.remove('hidden');
-      // if (invetoryNav) invetoryNav.classList.remove('hidden');
-      // if (warehouseNav) warehouseNav.classList.remove('hidden');
+      if (posManagementNav) posManagementNav.classList.remove('hidden');
+      if (invetoryNav) invetoryNav.classList.remove('hidden');
+      if (warehouseNav) warehouseNav.classList.remove('hidden');
     }
 
     const restrictedAdminPages = ['super-admin'];

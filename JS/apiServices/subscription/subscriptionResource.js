@@ -82,7 +82,7 @@ export async function getSubscriptionPlans() {
     );
 
     //  console.log('Response received...');
-    console.log(fetchedData);
+    //  console.log(fetchedData);
     hideGlobalLoader();
 
     return fetchedData;
@@ -230,7 +230,7 @@ export async function getSubscriptionHistory(page) {
     );
 
     //  console.log('Response received...');
-    console.log('Subscription History', fetchedData);
+    //  console.log('Subscription History', fetchedData);
     hideGlobalLoader();
 
     return fetchedData;

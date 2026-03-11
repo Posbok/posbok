@@ -546,7 +546,7 @@ export async function removeStaffFromShop(user_id, shop_id) {
 export async function refreshUserProfile() {
   const token = localStorage.getItem('accessToken');
 
-  console.log('Code execution reached ');
+  //   console.log('Code execution reached ');
 
   if (!token) return;
 
