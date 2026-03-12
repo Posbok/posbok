@@ -47,7 +47,6 @@ import {
   updateCashInMachineUI,
 } from './apiServices/account/accountOverview.js';
 import { getBusinessSettings } from './apiServices/business/businessResource.js';
-import { hasService, loadUserServices } from './subscription.js';
 
 const userData = config.userData;
 const dummyShopId = config.dummyShopId;
@@ -65,80 +64,54 @@ if (isAdmin) {
 }
 
 const adminPosContainer = document.querySelector('.adminPosContainer');
+
 const staffPosContainer = document.querySelector('.staffPosContainer');
 
-// if (isAdmin && adminPosContainer) {
+// if ((isAdmin && adminPosContainer) || staffPosContainer) {
 //   if (adminPosContainer) adminPosContainer.style.display = 'block';
-//   if (staffPosContainer) staffPosContainer.innerHTML = '';
 //   if (staffPosContainer) staffPosContainer.style.display = 'none';
+
+//   async function loadShopDropdown() {
+//     try {
+//       showGlobalLoader();
+//       const { enrichedShopData } = await checkAndPromptCreateShop();
+//       populateBusinessShopDropdown(enrichedShopData, 'posShopDropdown');
+//       hideGlobalLoader();
+//     } catch (err) {
+//       hideGlobalLoader();
+//       console.error('Failed to load dropdown:', err.message);
+//     }
+//   }
 
 //   loadShopDropdown();
 // } else {
-//   if (adminPosContainer) adminPosContainer.innerHTML = '';
 //   if (adminPosContainer) adminPosContainer.style.display = 'none';
 //   if (staffPosContainer) staffPosContainer.style.display = 'block';
 // }
 
-async function initializeInventoryFeature() {
-  await loadUserServices();
+if (isAdmin && adminPosContainer) {
+  if (adminPosContainer) adminPosContainer.style.display = 'block';
+  if (staffPosContainer) staffPosContainer.innerHTML = '';
+  if (staffPosContainer) staffPosContainer.style.display = 'none';
 
-  console.log(hasService('POS'));
-
-  if (!hasService('POS')) {
-    showSubscriptionRequiredModal();
-    if (adminPosContainer) adminPosContainer.style.display = 'block';
-    if (staffPosContainer) {
-      staffPosContainer.innerHTML = '';
-      staffPosContainer.style.display = 'none';
+  async function loadShopDropdown() {
+    try {
+      showGlobalLoader();
+      const { enrichedShopData } = await checkAndPromptCreateShop();
+      populateBusinessShopDropdown(enrichedShopData, 'posShopDropdown');
+      populateBusinessShopDropdown(enrichedShopData, 'posShopDropdown-2');
+      hideGlobalLoader();
+    } catch (err) {
+      hideGlobalLoader();
+      console.error('Failed to load dropdown:', err.message);
     }
-
-    return;
   }
 
-  if (isAdmin) {
-    if (adminPosContainer) adminPosContainer.style.display = 'block';
-    if (staffPosContainer) {
-      staffPosContainer.innerHTML = '';
-      staffPosContainer.style.display = 'none';
-    }
-
-    loadShopDropdown();
-  } else {
-    if (adminPosContainer) {
-      adminPosContainer.innerHTML = '';
-      adminPosContainer.style.display = 'none';
-    }
-
-    if (staffPosContainer) staffPosContainer.style.display = 'block';
-  }
-}
-
-function showSubscriptionRequiredModal() {
-  const main = document.querySelector('.main');
-  const subscriptionRequiredModal = document.querySelector(
-    '.subscriptionRequiredModal',
-  );
-
-  if (subscriptionRequiredModal)
-    subscriptionRequiredModal.classList.add('active');
-  if (main) main.classList.add('subscribe');
-}
-
-async function loadShopDropdown() {
-  try {
-    showGlobalLoader();
-    const { enrichedShopData } = await checkAndPromptCreateShop();
-    populateBusinessShopDropdown(enrichedShopData, 'posShopDropdown');
-    populateBusinessShopDropdown(enrichedShopData, 'posShopDropdown-2');
-    hideGlobalLoader();
-  } catch (err) {
-    hideGlobalLoader();
-    console.error('Failed to load dropdown:', err.message);
-  }
-}
-
-if (document.body.classList.contains('pos-page')) {
-  initializeInventoryFeature();
+  loadShopDropdown();
+} else {
+  if (adminPosContainer) adminPosContainer.innerHTML = '';
+  if (adminPosContainer) adminPosContainer.style.display = 'none';
+  if (staffPosContainer) staffPosContainer.style.display = 'block';
 }
 
 // JavaScript for POS Form

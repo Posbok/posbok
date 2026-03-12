@@ -89,19 +89,6 @@ if (isStaff) {
 }
 
 async function initializeSellFeature() {
-  //   const hasINVENTORYService = userServices.some(
-  //     (service) =>
-  //       service.service_code === 'INVENTORY' && service.status === 'active',
-  //   );
-
-  //   console.log(hasINVENTORYService);
-
-  //   if (!hasINVENTORYService) {
-  //     if (adminSellContainer) adminSellContainer.style.display = 'none';
-  //     if (staffSellContainer) staffSellContainer.style.display = 'none';
-  //     //  return;
-  //   }
-
   await loadUserServices();
 
   console.log(hasService('INVENTORY'));
@@ -163,7 +150,9 @@ async function loadShopDropdown() {
   }
 }
 
-initializeSellFeature();
+if (document.body.classList.contains('sale-page')) {
+  initializeSellFeature();
+}
 
 async function fetchAllProducts(shopId) {
   let products = [];
