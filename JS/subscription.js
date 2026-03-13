@@ -28,6 +28,7 @@ const userData = config.userData;
 let parsedUserData = null;
 parsedUserData = userData ? JSON.parse(userData) : null;
 
+const isAdmin = parsedUserData?.accountType === 'ADMIN';
 const adminEmail = parsedUserData?.email;
 
 const selectedServices = new Set();
@@ -260,54 +261,54 @@ export function resetSubscriptionUI() {
     </div>`;
 }
 
-async function renderSubscriptionUI() {
-  const activeState = document.getElementById('activeState');
-  const trialState = document.getElementById('trialState');
-  const expiredState = document.getElementById('expiredState');
-  const noneState = document.getElementById('noPlanState');
+// async function renderSubscriptionUI() {
+//   const activeState = document.getElementById('activeState');
+//   const trialState = document.getElementById('trialState');
+//   const expiredState = document.getElementById('expiredState');
+//   const noneState = document.getElementById('noPlanState');
 
-  const badge = document.getElementById('statusBadge');
-  const servicesContainer = document.getElementById('servicesContainer');
+//   const badge = document.getElementById('statusBadge');
+//   const servicesContainer = document.getElementById('servicesContainer');
 
-  function hideAll() {
-    activeState.classList.add('hidden');
-    trialState.classList.add('hidden');
-    expiredState.classList.add('hidden');
-    noneState.classList.add('hidden');
-  }
+//   function hideAll() {
+//     activeState.classList.add('hidden');
+//     trialState.classList.add('hidden');
+//     expiredState.classList.add('hidden');
+//     noneState.classList.add('hidden');
+//   }
 
-  const response = await getActiveSubscriptionPlans();
+//   const response = await getActiveSubscriptionPlans();
 
-  hideAll();
+//   hideAll();
 
-  const plans = response.data;
+//   const plans = response.data;
 
-  if (!plans || plans.length === 0) {
-    badge.textContent = 'No Plan';
-    badge.className = 'status-badge status-none';
+//   if (!plans || plans.length === 0) {
+//     badge.textContent = 'No Plan';
+//     badge.className = 'status-badge status-none';
 
-    noneState.classList.remove('hidden');
+//     noneState.classList.remove('hidden');
 
-    return;
-  }
+//     return;
+//   }
 
-  badge.textContent = 'Active';
-  badge.className = 'status-badge status-active';
+//   badge.textContent = 'Active';
+//   badge.className = 'status-badge status-active';
 
-  activeState.classList.remove('hidden');
+//   activeState.classList.remove('hidden');
 
-  if (servicesContainer) servicesContainer.innerHTML = '';
+//   if (servicesContainer) servicesContainer.innerHTML = '';
 
-  plans.forEach((plan) => {
-    const chip = document.createElement('div');
-    chip.className = 'service-chip';
-    chip.textContent = plan.service_name;
+//   plans.forEach((plan) => {
+//     const chip = document.createElement('div');
+//     chip.className = 'service-chip';
+//     chip.textContent = plan.service_name;
 
-    servicesContainer.appendChild(chip);
-  });
+//     servicesContainer.appendChild(chip);
+//   });
 
-  document.getElementById('billingCycle').textContent = plans[0].billing_cycle;
-}
+//   document.getElementById('billingCycle').textContent = plans[0].billing_cycle;
+// }
 
 export async function renderSubscriptions() {
   const container = document.getElementById('subscriptionsContainer');
@@ -513,6 +514,7 @@ function renderServiceUI() {
 }
 
 export function hasService(code) {
+  //   console.log(code);
   return userServices.some(
     (s) => s.service_code === code && s.status === 'active',
   );
@@ -523,11 +525,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // renderSubscriptionUI();
 
   if (isLoggedIn) {
-    loadUserServices();
-    renderSubscriptions();
-    getSubscriptionPlans();
+    if (isAdmin) {
+      renderSubscriptions();
+      getSubscriptionPlans();
+      loadUserServices();
+      loadPaymentHistory(1);
+    }
 
     updateQuote();
-    loadPaymentHistory(1);
   }
 });

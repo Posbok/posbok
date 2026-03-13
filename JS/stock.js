@@ -37,6 +37,7 @@ import { checkAndPromptCreateShop } from './apiServices/shop/shopResource.js';
 
 import { checkAndPromptCreateStaff } from './apiServices/user/userResource.js';
 import { getProductCategories } from './apiServices/inventory/inventoryResources.js';
+import { hasService, loadUserServices } from './subscription.js';
 
 const userData = config.userData;
 const dummyShopId = config.dummyShopId; // Dummy user data for testing
@@ -55,6 +56,34 @@ if (isAdmin) {
     getStockItems();
     getStockLogs();
   });
+}
+
+async function initializeInventoryManagementFeature() {
+  await loadUserServices();
+
+  const hasWarehouse = hasService('WAREHOUSE');
+
+  console.log('Inventory:', hasWarehouse);
+
+  if (!hasWarehouse) {
+    showSubscriptionRequiredModal();
+    return;
+  }
+}
+
+function showSubscriptionRequiredModal() {
+  const main = document.querySelector('.main');
+  const subscriptionRequiredModal = document.querySelector(
+    '.subscriptionRequiredModal',
+  );
+
+  if (subscriptionRequiredModal)
+    subscriptionRequiredModal.classList.add('active');
+  if (main) main.classList.add('subscribe');
+}
+
+if (document.body.classList.contains('warehouse-page')) {
+  initializeInventoryManagementFeature();
 }
 
 export function openDeleteStockItemModal() {

@@ -29,7 +29,7 @@ export async function initAccountOverview() {
     document.getElementById('posShopDropdown-2')?.value;
 
   const adminDepositposCapitalShopDropdown = document.querySelector(
-    '#adminDepositposCapitalShopDropdown'
+    '#adminDepositposCapitalShopDropdown',
   )?.value;
 
   const adminShopSelection =
@@ -75,8 +75,10 @@ export function updatePosSummaryDashboardUi(shopBalances, adminShopSelection) {
   const selectedShopId = isStaff ? shopId : adminShopSelection;
 
   const balancePerShop = shopBalances.find(
-    (shop) => shop.id === Number(selectedShopId)
+    (shop) => shop.id === Number(selectedShopId),
   );
+
+  if (!balancePerShop) return;
 
   //   console.log('Selected Shop ID:', selectedShopId);
   console.log('Selected Shop Balance:', balancePerShop);
@@ -110,66 +112,66 @@ export function updatePosSummaryDashboardUi(shopBalances, adminShopSelection) {
   //   } = adminSummary;
 
   const totalPosCapital = document.getElementById(
-    isStaff ? 'totalPosCapital' : 'adminTotalPosCapital'
+    isStaff ? 'totalPosCapital' : 'adminTotalPosCapital',
   );
   const totaCashAtHand = document.getElementById(
-    isStaff ? 'totalCashAtHand' : 'adminTotalCashAtHand'
+    isStaff ? 'totalCashAtHand' : 'adminTotalCashAtHand',
   );
 
   const cashAtHand = document.getElementById(
-    isStaff ? 'cashAtHand' : 'adminCashAtHand'
+    isStaff ? 'cashAtHand' : 'adminCashAtHand',
   );
 
   const cashInMachine = document.getElementById(
-    isStaff ? 'cashInMachine' : 'adminCashInMachine'
+    isStaff ? 'cashInMachine' : 'adminCashInMachine',
   );
 
   const totalDeposits = document.getElementById(
-    isStaff ? 'totalDeposit' : 'adminTotalDeposit'
+    isStaff ? 'totalDeposit' : 'adminTotalDeposit',
   );
 
   const totalWithdrawals = document.getElementById(
-    isStaff ? 'totalWithdrawals' : 'adminTotalWithdrawals'
+    isStaff ? 'totalWithdrawals' : 'adminTotalWithdrawals',
   );
 
   const cashBillPayment = document.getElementById(
-    isStaff ? 'cashBillPayment' : 'adminCashBillPayment'
+    isStaff ? 'cashBillPayment' : 'adminCashBillPayment',
   );
 
   const totalPosCharges = document.getElementById(
-    isStaff ? 'totalPosCharges' : 'adminTotalPosCharges'
+    isStaff ? 'totalPosCharges' : 'adminTotalPosCharges',
   );
 
   const cashCharges = document.getElementById(
-    isStaff ? 'cashCharges' : 'adminCashCharges'
+    isStaff ? 'cashCharges' : 'adminCashCharges',
   );
   const machineCharges = document.getElementById(
-    isStaff ? 'machineCharges' : 'adminMachineCharges'
+    isStaff ? 'machineCharges' : 'adminMachineCharges',
   );
   const machineFee = document.getElementById(
-    isStaff ? 'totalMachineFee' : 'adminTotalMachineFee'
+    isStaff ? 'totalMachineFee' : 'adminTotalMachineFee',
   );
   const taxFee = document.getElementById(
-    isStaff ? 'totalTaxFee' : 'adminTotalTaxFee'
+    isStaff ? 'totalTaxFee' : 'adminTotalTaxFee',
   );
   const transferFe = document.getElementById(
-    isStaff ? 'totalTransferFee' : 'adminTotalTransferFee'
+    isStaff ? 'totalTransferFee' : 'adminTotalTransferFee',
   );
   const totalFees = document.getElementById(
-    isStaff ? 'totalFees' : 'adminTotalFees'
+    isStaff ? 'totalFees' : 'adminTotalFees',
   );
   const totalAdminWithdrawals = document.getElementById(
-    isStaff ? 'totalAdminWithdrawals' : 'totalAdminWithdrawals_admin'
+    isStaff ? 'totalAdminWithdrawals' : 'totalAdminWithdrawals_admin',
   );
   const totalAdminWithdrawalsFromCashInMachine = document.getElementById(
     isStaff
       ? 'totalAdminWithdrawalsFromCashInMachine'
-      : 'totalAdminWithdrawalsFromCashInMachine_admin'
+      : 'totalAdminWithdrawalsFromCashInMachine_admin',
   );
   const totalAdminWithdrawalsFromCashAtHand = document.getElementById(
     isStaff
       ? 'totalAdminWithdrawalsFromCashAtHand'
-      : 'totalAdminWithdrawalsFromCashAtHand_admin'
+      : 'totalAdminWithdrawalsFromCashAtHand_admin',
   );
   //   const adminWithdrawalsCash = document.getElementById(
   //     isStaff ? 'adminWithdrawalsCash' : 'adminWithdrawalsCash_admin'
@@ -211,17 +213,17 @@ export function updatePosSummaryDashboardUi(shopBalances, adminShopSelection) {
 
   if (totalAdminWithdrawals)
     totalAdminWithdrawals.innerHTML = formatAmountWithCommas(
-      total_admin_withdrawal_machine + total_admin_withdrawal_cash_at_hand || 0
+      total_admin_withdrawal_machine + total_admin_withdrawal_cash_at_hand || 0,
     );
 
   if (totalAdminWithdrawalsFromCashInMachine)
     totalAdminWithdrawalsFromCashInMachine.innerHTML = formatAmountWithCommas(
-      total_admin_withdrawal_machine || 0
+      total_admin_withdrawal_machine || 0,
     );
 
   if (totalAdminWithdrawalsFromCashAtHand)
     totalAdminWithdrawalsFromCashAtHand.innerHTML = formatAmountWithCommas(
-      total_admin_withdrawal_cash_at_hand || 0
+      total_admin_withdrawal_cash_at_hand || 0,
     );
 
   //   if (adminWithdrawalsCash)
@@ -241,7 +243,7 @@ export function updatePosSummaryDashboardUi(shopBalances, adminShopSelection) {
 
 export function updateCashInMachineUI(openingCash) {
   const cashInMachine = document.getElementById(
-    isStaff ? 'cashInMachine' : 'adminCashInMachine'
+    isStaff ? 'cashInMachine' : 'adminCashInMachine',
   );
 
   if (cashInMachine)

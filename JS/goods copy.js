@@ -42,7 +42,6 @@ import {
 import { addPosChargeForm } from './pos';
 import { showToast, closeModal, setupModalCloseButtons } from './script';
 import { populateShopDropdown } from './staff';
-import { hasService, loadUserServices } from './subscription.js';
 
 let isSubmitting = false;
 let allProducts = [];
@@ -78,37 +77,6 @@ if (isAdmin) {
   document.addEventListener('DOMContentLoaded', () => {
     getProductCategories();
   });
-}
-
-async function initializeInventoryManagementFeature() {
-  //   if (!isAdmin) return;
-
-  await loadUserServices();
-
-  const hasInventory = hasService('INVENTORY');
-  const hasEcommerce = hasService('ECOMMERCE');
-
-  console.log('Inventory:', hasInventory, 'Ecommerce:', hasEcommerce);
-
-  if (!hasInventory && !hasEcommerce) {
-    showSubscriptionRequiredModal();
-    return;
-  }
-}
-
-function showSubscriptionRequiredModal() {
-  const main = document.querySelector('.main');
-  const subscriptionRequiredModal = document.querySelector(
-    '.subscriptionRequiredModal',
-  );
-
-  if (subscriptionRequiredModal)
-    subscriptionRequiredModal.classList.add('active');
-  if (main) main.classList.add('subscribe');
-}
-
-if (document.body.classList.contains('inventory-management-page')) {
-  initializeInventoryManagementFeature();
 }
 
 export function openAddCategoryModalBtn() {

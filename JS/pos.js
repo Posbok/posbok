@@ -80,16 +80,29 @@ const staffPosContainer = document.querySelector('.staffPosContainer');
 // }
 
 async function initializeInventoryFeature() {
+  //   if (!isAdmin) return;
+
   await loadUserServices();
 
   console.log(hasService('POS'));
 
   if (!hasService('POS')) {
     showSubscriptionRequiredModal();
-    if (adminPosContainer) adminPosContainer.style.display = 'block';
-    if (staffPosContainer) {
-      staffPosContainer.innerHTML = '';
-      staffPosContainer.style.display = 'none';
+
+    if (isAdmin) {
+      if (adminPosContainer) adminPosContainer.style.display = 'block';
+      if (staffPosContainer) {
+        staffPosContainer.innerHTML = '';
+        staffPosContainer.style.display = 'none';
+      }
+      console.log('object Admin');
+    } else {
+      console.log('object');
+      if (adminPosContainer) adminPosContainer.style.display = 'none';
+      if (staffPosContainer) {
+        adminPosContainer.innerHTML = '';
+        staffPosContainer.style.display = 'block';
+      }
     }
 
     return;
