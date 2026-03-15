@@ -95,10 +95,21 @@ async function initializeSellFeature() {
 
   if (!hasService('INVENTORY')) {
     showSubscriptionRequiredModal();
-    if (adminSellContainer) adminSellContainer.style.display = 'block';
-    if (staffSellContainer) {
-      staffSellContainer.innerHTML = '';
-      staffSellContainer.style.display = 'none';
+    if (isAdmin) {
+      if (adminSellContainer) adminSellContainer.style.display = 'block';
+      if (staffSellContainer) {
+        staffSellContainer.innerHTML = '';
+        staffSellContainer.style.display = 'none';
+      }
+
+      loadShopDropdown();
+    } else {
+      if (adminSellContainer) {
+        adminSellContainer.innerHTML = '';
+        adminSellContainer.style.display = 'none';
+      }
+
+      if (staffSellContainer) staffSellContainer.style.display = 'block';
     }
 
     return;
@@ -127,6 +138,18 @@ function showSubscriptionRequiredModal() {
   const subscriptionRequiredModal = document.querySelector(
     '.subscriptionRequiredModal',
   );
+
+  const sellSubscriptionCta = document.querySelector('.sellSubscriptionCta');
+  if (isAdmin) {
+    sellSubscriptionCta.innerHTML = `
+   <button class="hero-btn-dark inventoryBtn "> <a href="/manage.html" class="button-link"></a>Subscribe
+                  Now</button>
+   `;
+  } else {
+    sellSubscriptionCta.innerHTML = `
+   <p class="heading-minitext mt-2">Contact Admin</p>
+   `;
+  }
 
   if (subscriptionRequiredModal)
     subscriptionRequiredModal.classList.add('active');
@@ -1048,6 +1071,9 @@ const sellNowBtn = document.querySelector(
   isAdmin ? '.adminSellNowBtn' : '.sellNowBtn',
 ); // Your new button
 
+console.log(isAdmin ? '.adminSellNowBtn' : '.sellNowBtn');
+console.log(sellNowBtn);
+
 const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
 // const quickSellMsg = document.querySelector('.quick-sell-msg');
 
@@ -1084,80 +1110,6 @@ export function renderQuickSellButton() {
 document.addEventListener('DOMContentLoaded', () => {
   renderQuickSellButton();
 });
-
-// renderQuickSellButton(); // Initial render
-
-// if (cart.length > 1) {
-//   sellNowBtn.setAttribute('aria-disabled', 'true');
-//   sellNowBtn.style.pointerEvents = 'none';
-//   sellNowBtn.disabled = true;
-//   sellNowBtn.style.cursor = 'not-allowed';
-// }
-
-// sellNowBtn?.addEventListener('click', () => {
-//   const cartSliderOverlay = document.querySelector('.cart-slider-overlay');
-//   const cartSlider = document.querySelector('.cart-slider-content');
-//   const sliderWrapper = document.querySelector('.slider-wrapper');
-//   // Add to cart first
-//   handleAddToCart(); // ensure this respects validations
-
-//   const updatedCart = JSON.parse(localStorage.getItem(cartKey)) || [];
-//   if (!selectedProduct || !selectedProduct.id) {
-//     showToast('error', '❗Please select a product first.');
-//     document.querySelector('button[data-category-id="all"]')?.click();
-//     return;
-//   }
-
-//   if (updatedCart.length !== 1) {
-//     showToast('error', '❗Quick sell requires exactly 1 item.');
-//     return;
-//   }
-
-//   if (updatedCart.length > 0 && updatedCart.length < 2) {
-//     // Open slider
-//     cartSlider.classList.add('open');
-//     cartSliderOverlay.classList.add('visible');
-
-//     // Jump to checkout view
-//     sliderWrapper.style.transform = 'translateX(-50%)';
-
-//     renderCartItemsFromStorage(); // optional: if you want to show cart summary in checkout
-//   }
-//   // Wait briefly to let localStorage/cart update`;
-//   setTimeout(() => {
-//     const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-//     const cartSliderOverlay = document.querySelector('.cart-slider-overlay');
-//     const cartSlider = document.querySelector('.cart-slider-content');
-//     const sliderWrapper = document.querySelector('.slider-wrapper');
-
-//     let soldProductQuantityInput = Number(soldProductQuantity.value);
-//     let soldProductPriceInput = Number(soldProductPrice.value);
-
-//     //  if (soldProductQuantityInput <= 0 || soldProductQuantityInput === '') {
-//     //    showToast('info', 'ℹ️ Qeeeeeeeeeuantity must be at least one');
-
-//     //    return;
-//     //  }
-
-//     //  soldProductName;
-//     //  soldProductPrice;
-//     //  soldProductQuantity;
-
-//     if (cart.length > 0 && cart.length < 2) {
-//       // Open slider
-//       cartSlider.classList.add('open');
-//       cartSliderOverlay.classList.add('visible');
-
-//       // Jump to checkout view
-//       sliderWrapper.style.transform = 'translateX(-50%)';
-
-//       renderCartItemsFromStorage(); // optional: if you want to show cart summary in checkout
-//     }
-//     //  else {
-//     //    sellNowBtn.disabled = true; // Disable button to prevent multiple clicks
-//     //  }
-//   }, 100); // Adjust timing if needed
-// });
 
 sellNowBtn?.addEventListener('click', () => {
   const cartSliderOverlay = document.querySelector('.cart-slider-overlay');

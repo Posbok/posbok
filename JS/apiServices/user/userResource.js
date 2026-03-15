@@ -558,11 +558,20 @@ export async function refreshUserProfile() {
       },
     });
 
-    const user = response.data.user;
+    const profileUser = response.data.user;
 
-    localStorage.setItem('userData', JSON.stringify(user));
+    // Get existing stored user data
+    const existingUser = JSON.parse(localStorage.getItem('userData')) || {};
 
-    return user;
+    // Merge profile data but preserve fields like shopId
+    const updatedUser = {
+      ...existingUser,
+      ...profileUser,
+    };
+
+    localStorage.setItem('userData', JSON.stringify(updatedUser));
+
+    return updatedUser;
   } catch (error) {
     console.error('Failed to refresh user profile:', error.message);
   }

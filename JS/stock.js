@@ -77,6 +77,20 @@ function showSubscriptionRequiredModal() {
     '.subscriptionRequiredModal',
   );
 
+  const warehouseSubscriptionCta = document.querySelector(
+    '.warehouseSubscriptionCta',
+  );
+  if (isAdmin) {
+    warehouseSubscriptionCta.innerHTML = `
+   <button class="hero-btn-dark inventoryBtn "> <a href="/manage.html" class="button-link"></a>Subscribe
+                  Now</button>
+   `;
+  } else {
+    warehouseSubscriptionCta.innerHTML = `
+   <p class="heading-minitext mt-2">Contact Admin</p>
+   `;
+  }
+
   if (subscriptionRequiredModal)
     subscriptionRequiredModal.classList.add('active');
   if (main) main.classList.add('subscribe');

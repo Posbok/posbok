@@ -41,6 +41,7 @@ import { hasService, loadUserServices } from './subscription.js';
 const userData = config.userData;
 const baseUrl = config.baseUrl;
 const parsedUserData = userData ? JSON.parse(userData) : null;
+const isAdmin = parsedUserData?.accountType === 'ADMIN';
 const servicePermission = parsedUserData?.servicePermission;
 
 let userShops = [];
@@ -71,6 +72,20 @@ function showSubscriptionRequiredModal() {
   const subscriptionRequiredModal = document.querySelector(
     '.subscriptionRequiredModal',
   );
+
+  const storefrontSubscriptionCta = document.querySelector(
+    '.storefrontSubscriptionCta',
+  );
+  if (isAdmin) {
+    storefrontSubscriptionCta.innerHTML = `
+   <button class="hero-btn-dark inventoryBtn "> <a href="/manage.html" class="button-link"></a>Subscribe
+                  Now</button>
+   `;
+  } else {
+    storefrontSubscriptionCta.innerHTML = `
+   <p class="heading-minitext mt-2">Contact Admin</p>
+   `;
+  }
 
   if (subscriptionRequiredModal)
     subscriptionRequiredModal.classList.add('active');

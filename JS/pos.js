@@ -50,7 +50,6 @@ import { getBusinessSettings } from './apiServices/business/businessResource.js'
 import { hasService, loadUserServices } from './subscription.js';
 
 const userData = config.userData;
-const dummyShopId = config.dummyShopId;
 
 const parsedUserData = userData ? JSON.parse(userData) : null;
 const isAdmin = parsedUserData?.accountType === 'ADMIN';
@@ -131,6 +130,18 @@ function showSubscriptionRequiredModal() {
   const subscriptionRequiredModal = document.querySelector(
     '.subscriptionRequiredModal',
   );
+
+  const posSubscriptionCta = document.querySelector('.posSubscriptionCta');
+  if (isAdmin) {
+    posSubscriptionCta.innerHTML = `
+   <button class="hero-btn-dark inventoryBtn "> <a href="/manage.html" class="button-link"></a>Subscribe
+                  Now</button>
+   `;
+  } else {
+    posSubscriptionCta.innerHTML = `
+   <p class="heading-minitext mt-2">Contact Admin</p>
+   `;
+  }
 
   if (subscriptionRequiredModal)
     subscriptionRequiredModal.classList.add('active');
