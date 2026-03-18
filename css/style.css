@@ -1228,6 +1228,7 @@ button:disabled:hover {
 .hero-btn-danger,
 .businessInitBtn,
 .adminSellProductCategoryBtn,
+.inventoryCategoryBtn,
 .sellProductCategoryBtn {
   position: relative;
   background-color: #6f9a32;
@@ -1252,6 +1253,7 @@ button:disabled:hover {
 .hero-btn-danger:not(:last-child),
 .businessInitBtn:not(:last-child),
 .adminSellProductCategoryBtn:not(:last-child),
+.inventoryCategoryBtn:not(:last-child),
 .sellProductCategoryBtn:not(:last-child) {
   margin-right: 1.5rem;
 }
@@ -1263,6 +1265,7 @@ button:disabled:hover {
   .hero-btn-danger:not(:last-child),
   .businessInitBtn:not(:last-child),
   .adminSellProductCategoryBtn:not(:last-child),
+  .inventoryCategoryBtn:not(:last-child),
   .sellProductCategoryBtn:not(:last-child) {
     margin-bottom: 1.5rem;
   }
@@ -1274,6 +1277,7 @@ button:disabled:hover {
 .hero-btn-danger:hover,
 .businessInitBtn:hover,
 .adminSellProductCategoryBtn:hover,
+.inventoryCategoryBtn:hover,
 .sellProductCategoryBtn:hover {
   transform: scale(1.03);
   box-shadow: inset 0 0 0 2px #7fb239;
@@ -1285,6 +1289,7 @@ button:disabled:hover {
 .hero-btn-danger:active,
 .businessInitBtn:active,
 .adminSellProductCategoryBtn:active,
+.inventoryCategoryBtn:active,
 .sellProductCategoryBtn:active {
   transform: scale(1);
   background-color: #537425;
@@ -1296,6 +1301,7 @@ button:disabled:hover {
 .hero-btn-danger .button-link,
 .businessInitBtn .button-link,
 .adminSellProductCategoryBtn .button-link,
+.inventoryCategoryBtn .button-link,
 .sellProductCategoryBtn .button-link {
   position: absolute;
   top: 0;
@@ -1327,46 +1333,106 @@ button:disabled:hover {
   display: none;
 }
 
+.adminSellProductCategory-section,
+.inventoryCategory-section,
+.sellProductCategory-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-top: 0.5rem;
+  white-space: nowrap;
+  padding-bottom: 0.3rem;
+  scrollbar-width: thin;
+  /* For Firefox */
+  scrollbar-color: #ccc transparent;
+}
+.adminSellProductCategory-section::-webkit-scrollbar,
+.inventoryCategory-section::-webkit-scrollbar,
+.sellProductCategory-section::-webkit-scrollbar {
+  height: 6px;
+}
+.adminSellProductCategory-section::-webkit-scrollbar-track,
+.inventoryCategory-section::-webkit-scrollbar-track,
+.sellProductCategory-section::-webkit-scrollbar-track {
+  background: transparent;
+}
+.adminSellProductCategory-section::-webkit-scrollbar-thumb,
+.inventoryCategory-section::-webkit-scrollbar-thumb,
+.sellProductCategory-section::-webkit-scrollbar-thumb {
+  background-color: #aaa;
+  border-radius: 4px;
+}
 .adminSellProductCategory-section .adminSellProductCategoryBtn,
+.adminSellProductCategory-section .inventoryCategoryBtn,
 .adminSellProductCategory-section .sellProductCategoryBtn,
+.inventoryCategory-section .adminSellProductCategoryBtn,
+.inventoryCategory-section .inventoryCategoryBtn,
+.inventoryCategory-section .sellProductCategoryBtn,
 .sellProductCategory-section .adminSellProductCategoryBtn,
+.sellProductCategory-section .inventoryCategoryBtn,
 .sellProductCategory-section .sellProductCategoryBtn {
   margin: 0;
   background-color: #fff;
   color: #6f9a32;
 }
 .adminSellProductCategory-section .adminSellProductCategoryBtn:hover,
+.adminSellProductCategory-section .inventoryCategoryBtn:hover,
 .adminSellProductCategory-section .sellProductCategoryBtn:hover,
+.inventoryCategory-section .adminSellProductCategoryBtn:hover,
+.inventoryCategory-section .inventoryCategoryBtn:hover,
+.inventoryCategory-section .sellProductCategoryBtn:hover,
 .sellProductCategory-section .adminSellProductCategoryBtn:hover,
+.sellProductCategory-section .inventoryCategoryBtn:hover,
 .sellProductCategory-section .sellProductCategoryBtn:hover {
   transform: scale(1.07);
   background-color: #eef1f6;
 }
 .adminSellProductCategory-section .adminSellProductCategoryBtn:active,
+.adminSellProductCategory-section .inventoryCategoryBtn:active,
 .adminSellProductCategory-section .sellProductCategoryBtn:active,
+.inventoryCategory-section .adminSellProductCategoryBtn:active,
+.inventoryCategory-section .inventoryCategoryBtn:active,
+.inventoryCategory-section .sellProductCategoryBtn:active,
 .sellProductCategory-section .adminSellProductCategoryBtn:active,
+.sellProductCategory-section .inventoryCategoryBtn:active,
 .sellProductCategory-section .sellProductCategoryBtn:active {
   transform: scale(1.04);
   background-color: #6f9a32;
   color: #fff;
 }
 .adminSellProductCategory-section .adminSellProductCategoryBtn.active,
+.adminSellProductCategory-section .inventoryCategoryBtn.active,
 .adminSellProductCategory-section .sellProductCategoryBtn.active,
+.inventoryCategory-section .adminSellProductCategoryBtn.active,
+.inventoryCategory-section .inventoryCategoryBtn.active,
+.inventoryCategory-section .sellProductCategoryBtn.active,
 .sellProductCategory-section .adminSellProductCategoryBtn.active,
+.sellProductCategory-section .inventoryCategoryBtn.active,
 .sellProductCategory-section .sellProductCategoryBtn.active {
   background-color: #6f9a32;
   color: #fff;
 }
 .adminSellProductCategory-section .adminSellProductCategoryBtn.active:hover,
+.adminSellProductCategory-section .inventoryCategoryBtn.active:hover,
 .adminSellProductCategory-section .sellProductCategoryBtn.active:hover,
+.inventoryCategory-section .adminSellProductCategoryBtn.active:hover,
+.inventoryCategory-section .inventoryCategoryBtn.active:hover,
+.inventoryCategory-section .sellProductCategoryBtn.active:hover,
 .sellProductCategory-section .adminSellProductCategoryBtn.active:hover,
+.sellProductCategory-section .inventoryCategoryBtn.active:hover,
 .sellProductCategory-section .sellProductCategoryBtn.active:hover {
   transform: scale(1.03);
   box-shadow: inset 0 0 0 2px #7fb239;
 }
 .adminSellProductCategory-section .adminSellProductCategoryBtn.active:active,
+.adminSellProductCategory-section .inventoryCategoryBtn.active:active,
 .adminSellProductCategory-section .sellProductCategoryBtn.active:active,
+.inventoryCategory-section .adminSellProductCategoryBtn.active:active,
+.inventoryCategory-section .inventoryCategoryBtn.active:active,
+.inventoryCategory-section .sellProductCategoryBtn.active:active,
 .sellProductCategory-section .adminSellProductCategoryBtn.active:active,
+.sellProductCategory-section .inventoryCategoryBtn.active:active,
 .sellProductCategory-section .sellProductCategoryBtn.active:active {
   transform: scale(1);
   background-color: #6f9a32;
@@ -2317,6 +2383,8 @@ body.authentication {
 }
 
 .sellProductCategory-section,
+.addExistingSellProductCategory-section,
+.inventoryCategory-section,
 .adminSellProductCategory-section {
   display: flex;
   align-items: center;
@@ -2330,14 +2398,20 @@ body.authentication {
   scrollbar-color: #ccc transparent;
 }
 .sellProductCategory-section::-webkit-scrollbar,
+.addExistingSellProductCategory-section::-webkit-scrollbar,
+.inventoryCategory-section::-webkit-scrollbar,
 .adminSellProductCategory-section::-webkit-scrollbar {
   height: 6px;
 }
 .sellProductCategory-section::-webkit-scrollbar-track,
+.addExistingSellProductCategory-section::-webkit-scrollbar-track,
+.inventoryCategory-section::-webkit-scrollbar-track,
 .adminSellProductCategory-section::-webkit-scrollbar-track {
   background: transparent;
 }
 .sellProductCategory-section::-webkit-scrollbar-thumb,
+.addExistingSellProductCategory-section::-webkit-scrollbar-thumb,
+.inventoryCategory-section::-webkit-scrollbar-thumb,
 .adminSellProductCategory-section::-webkit-scrollbar-thumb {
   background-color: #aaa;
   border-radius: 4px;

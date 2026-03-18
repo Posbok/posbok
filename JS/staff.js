@@ -29,6 +29,7 @@ import {
   showGlobalLoader,
 } from './helper/helper';
 import { closeModal, showToast } from './script';
+import { hasService, loadUserServices } from './subscription.js';
 
 const userData = config.userData;
 const baseUrl = config.baseUrl;
@@ -74,42 +75,63 @@ if (userData) {
 // const businessData = await fetchBusinessDetails();
 // console.log(businessData);
 
-export function setupCreateStaffForm() {
+export async function setupCreateStaffForm() {
   const form = document.querySelector('.createStaffModal');
 
   if (!form || form.dataset.bound === 'true') return;
 
   form.dataset.bound = 'true';
 
+  const businessServices = await loadUserServices();
+  const services = businessServices.map((s) => s.service_code);
+
+  console.log('services', services);
+
+  const hasInventory = hasService('INVENTORY');
+  const hasEcommerce = hasService('ECOMMERCE');
+  const hasWarehouse = hasService('WAREHOUSE');
+  const hasPos = hasService('POS');
+
   // 👇 Run once when modal opens to control which access types can be selected
   (async function applyAccessControlBasedOnBusinessPermission() {
     try {
-      const businessData = await fetchBusinessDetails();
-      const businessPermission = businessData.data.business_type;
+      console.log('Inventory:', hasInventory, 'Ecommerce:', hasEcommerce);
+
+      // if (!hasInventory && !hasEcommerce) {
+      //   return;
+      // }
+
+      // const businessData = await fetchBusinessDetails();
+      // const businessPermission = businessData.data.business_type;
 
       // Get radio buttons
       const posRadio = document.getElementById('staffPosCheckbox');
-      const sellRadio = document.getElementById('staffSellCheckbox');
-      const bothRadio = document.getElementById('staffPosAndSellCheckbox');
+      const inventoryRadio = document.getElementById('staffInventoryCheckbox');
+      const ecommerceRadio = document.getElementById('staffStorefrontCheckbox');
+      const warehouseRadio = document.getElementById('staffWarehouseCheckbox');
 
       // Enable all first
-      [posRadio, sellRadio, bothRadio].forEach((el) => {
-        el.disabled = false;
-        el.checked = false;
-      });
+      // Enable all first
+      [posRadio, inventoryRadio, ecommerceRadio, warehouseRadio].forEach(
+        (el) => {
+          el.disabled = false;
+        },
+      );
 
-      // Apply logic
-      if (businessPermission === 'POS_TRANSACTIONS') {
-        posRadio.checked = true;
-        sellRadio.disabled = true;
-        bothRadio.disabled = true;
-      } else if (businessPermission === 'INVENTORY_SALES') {
-        sellRadio.checked = true;
-        posRadio.disabled = true;
-        bothRadio.disabled = true;
-      } else if (businessPermission === 'BOTH') {
-        posRadio.checked = true; // Or leave all unchecked if no default
-      }
+      // Disable based on subscription
+      if (hasPos !== 'POS') posRadio.disabled = true;
+      if (hasInventory !== 'INVENTORY') inventoryRadio.disabled = true;
+      if (hasWarehouse !== 'WAREHOUSE') warehouseRadio.disabled = true;
+      if (hasEcommerce !== 'ECOMMERCE') ecommerceRadio.disabled = true;
+
+      const accessTypeCheckboxes = document.querySelectorAll(
+        'input[name="staffAccessType"]',
+      );
+
+      accessTypeCheckboxes.forEach((checkbox) => {
+        checkbox.disabled = !services.includes(checkbox.value);
+        //   checkbox.checked = services.includes(checkbox.value);
+      });
     } catch (err) {
       console.error('❌ Failed to load business permissions:', err);
     }
@@ -208,14 +230,26 @@ export function setupCreateStaffForm() {
 
       //  Access type checkboxes
       const accessTypeCheckboxes = document.querySelectorAll(
-        'input[name="accessType"]:checked',
+        'input[name="staffAccessType"]:checked',
       );
 
       const accessType = Array.from(accessTypeCheckboxes).map((cb) => cb.value);
-      const accessTypeValue = accessType[0] || null;
+      // const accessTypeValue = accessType[0] || null;
 
       const accessTimeStart = document.getElementById('start-time').value;
       const accessTimeEnd = document.getElementById('end-time').value;
+
+      const errorEl = document.getElementById('accessTypeError');
+
+      if (accessType.length === 0) {
+        showToast('fail', '❎ Please select at least one access type.');
+        errorEl.textContent = 'Please select at least one access type.';
+        errorEl.style.display = 'block';
+        hideGlobalLoader();
+        return;
+      } else {
+        errorEl.style.display = 'none';
+      }
 
       const staffDetails = {
         businessId: Number(businessId),
@@ -236,13 +270,13 @@ export function setupCreateStaffForm() {
         accountType: 'STAFF',
         accessTimeStart,
         accessTimeEnd,
-        servicePermission: accessTypeValue,
+        servicePermission: accessType,
       };
 
       const staffAssigningDetails = { shopId: Number(shopDropdown) };
 
-      // console.log('📦 Staff Details:', staffDetails);
-      // console.log('📦 Shop Details:', staffAssigningDetails);
+      console.log('📦 Staff Details:', staffDetails);
+      console.log('📦 Shop Details:', staffAssigningDetails);
 
       if (!dateOfBirth) {
         alert('Date of Birth is required.');
@@ -624,41 +658,57 @@ export function bindUpdateStaffFormListener() {
   });
 }
 
-export function setupUpdateStaffForm(user) {
+export async function setupUpdateStaffForm(user) {
   const form = document.querySelector('.adminUpdateUserDataModal');
   if (!form) return;
+
+  const businessServices = await loadUserServices();
+  const services = businessServices.map((s) => s.service_code);
+
+  console.log('services', services);
+
+  const hasInventory = hasService('INVENTORY');
+  const hasEcommerce = hasService('ECOMMERCE');
+  const hasWarehouse = hasService('WAREHOUSE');
+  const hasPos = hasService('POS');
 
   // 👇 Run once when modal opens to control which access types can be selected
   (async function applyAccessControlBasedOnBusinessPermission() {
     try {
-      const businessData = await fetchBusinessDetails();
-      const businessPermission = businessData.data.business_type;
+      console.log('Inventory:', hasInventory, 'Ecommerce:', hasEcommerce);
+
+      // if (!hasInventory && !hasEcommerce) {
+      //   return;
+      // }
+
+      // const businessData = await fetchBusinessDetails();
+      // const businessPermission = businessData.data.business_type;
 
       // Get radio buttons
       const posRadio = document.getElementById('updateStaffPosCheckbox');
-      const sellRadio = document.getElementById('updateStaffSellCheckbox');
-      const bothRadio = document.getElementById(
-        'updateStaffPosAndSellCheckbox',
+      const inventoryRadio = document.getElementById(
+        'updateStaffInventoryCheckbox',
+      );
+      const ecommerceRadio = document.getElementById(
+        'updateStaffStorefrontCheckbox',
+      );
+      const warehouseRadio = document.getElementById(
+        'updateStaffWarehouseCheckbox',
       );
 
       // Enable all first
-      [posRadio, sellRadio, bothRadio].forEach((el) => {
-        el.disabled = false;
-        el.checked = false;
-      });
+      // Enable all first
+      [posRadio, inventoryRadio, ecommerceRadio, warehouseRadio].forEach(
+        (el) => {
+          el.disabled = false;
+        },
+      );
 
-      // Apply logic
-      if (businessPermission === 'POS_TRANSACTIONS') {
-        posRadio.checked = true;
-        sellRadio.disabled = true;
-        bothRadio.disabled = true;
-      } else if (businessPermission === 'INVENTORY_SALES') {
-        sellRadio.checked = true;
-        posRadio.disabled = true;
-        bothRadio.disabled = true;
-      } else if (businessPermission === 'BOTH') {
-        posRadio.checked = true; // Or leave all unchecked if no default
-      }
+      // Disable based on subscription
+      if (hasPos !== 'POS') posRadio.disabled = true;
+      if (hasInventory !== 'INVENTORY') inventoryRadio.disabled = true;
+      if (hasWarehouse !== 'WAREHOUSE') warehouseRadio.disabled = true;
+      if (hasEcommerce !== 'ECOMMERCE') ecommerceRadio.disabled = true;
     } catch (err) {
       console.error('❌ Failed to load business permissions:', err);
     }
@@ -677,8 +727,10 @@ export function setupUpdateStaffForm(user) {
   const updateAccessTypeCheckboxes = document.querySelectorAll(
     'input[name="updateStaffAccessType"]',
   );
+
   updateAccessTypeCheckboxes.forEach((checkbox) => {
-    checkbox.checked = checkbox.value === user.servicePermission;
+    checkbox.disabled = !services.includes(checkbox.value);
+    checkbox.checked = services.includes(checkbox.value);
   });
 
   document.getElementById('update-start-time').value =

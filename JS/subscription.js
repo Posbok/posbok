@@ -483,6 +483,7 @@ export async function loadUserServices() {
     userServices = response.data;
 
     renderServiceUI();
+    return userServices;
   } catch (error) {
     console.error('Error loading services:', error);
     return [];

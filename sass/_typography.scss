@@ -490,6 +490,7 @@ button:disabled:hover {
 .hero-btn-danger,
 .businessInitBtn,
 .adminSellProductCategoryBtn,
+.inventoryCategoryBtn,
 .sellProductCategoryBtn {
    position: relative;
    background-color: $color-primary-600;
@@ -560,9 +561,38 @@ button:disabled:hover {
 }
 
 .adminSellProductCategory-section,
+.inventoryCategory-section,
 .sellProductCategory-section {
 
+   display: flex;
+   align-items: center;
+   gap: 1rem;
+   overflow-x: auto;
+   padding-top: .5rem;
+
+   white-space: nowrap;
+   padding-bottom: 0.3rem;
+
+   // Optional: make the scrollbar small and styled
+   scrollbar-width: thin;
+   /* For Firefox */
+   scrollbar-color: #ccc transparent;
+
+   &::-webkit-scrollbar {
+      height: 6px;
+   }
+
+   &::-webkit-scrollbar-track {
+      background: transparent;
+   }
+
+   &::-webkit-scrollbar-thumb {
+      background-color: #aaa;
+      border-radius: 4px;
+   }
+
    .adminSellProductCategoryBtn,
+   .inventoryCategoryBtn,
    .sellProductCategoryBtn {
       margin: 0;
 

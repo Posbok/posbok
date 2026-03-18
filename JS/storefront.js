@@ -127,18 +127,26 @@ document.addEventListener('DOMContentLoaded', function () {
     '.updateStorefrontDataContainer',
   );
 
-  if (updateStorefrontModalBtn) {
-    updateStorefrontModalBtn.addEventListener('click', async function () {
-      updateStorefrontDataContainer.classList.add('active');
-      main.classList.add('blur');
-      sidebar.classList.add('blur');
-      main.classList.add('no-scroll');
+  console.log('code got here');
 
-      const storefrontRes = await fetchStorefrontStatus();
-      populateUpdateStorefrontForm(storefrontRes.data);
+  if (isAdmin) {
+    if (updateStorefrontModalBtn) {
+      updateStorefrontModalBtn.addEventListener('click', async function () {
+        updateStorefrontDataContainer.classList.add('active');
+        main.classList.add('blur');
+        sidebar.classList.add('blur');
+        main.classList.add('no-scroll');
 
-      updateStorefrontForm();
-    });
+        const storefrontRes = await fetchStorefrontStatus();
+        populateUpdateStorefrontForm(storefrontRes.data);
+
+        updateStorefrontForm();
+      });
+    }
+  } else {
+    if (updateStorefrontModalBtn)
+      updateStorefrontModalBtn.style.display = 'none';
+    return;
   }
 });
 

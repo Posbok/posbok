@@ -57,7 +57,7 @@ if (loginForm) {
         // If staff, fetch and store their shop data
         console.log('🚨 Logged in user:', user);
         if (user.accountType === 'STAFF') {
-          console.log('code got here');
+          //  console.log('code got here');
           const shopKey = `shop_${user.id}`;
           const staffShopId = user.shopId;
           try {

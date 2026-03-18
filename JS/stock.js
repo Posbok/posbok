@@ -607,6 +607,17 @@ export function bindMoveStockFormListener() {
 
       try {
         showBtnLoader(moveStockModalBtn);
+
+        if (!hasService('INVENTORY')) {
+          console.log('There is no Inventory subscription');
+
+          showToast(
+            '❎info',
+            'Subscribe to Inventory to Move item to Inventory',
+          );
+          return;
+        }
+
         const movedStockData = await moveStockItem(moveStockItemDetails);
 
         if (!movedStockData) {
