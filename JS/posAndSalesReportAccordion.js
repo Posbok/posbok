@@ -29,6 +29,7 @@ import {
   formatDateTimeReadable,
   formatSaleStatus,
   formatTransactionType,
+  hasServiceAccess,
   hideBtnLoader,
   hideGlobalLoader,
   showBtnLoader,
@@ -46,6 +47,8 @@ const staffShopId = parsedUserData?.shopId;
 const staffUserId = parsedUserData?.id;
 const shopKey = `shop_${staffUserId}`;
 const servicePermission = parsedUserData?.servicePermission;
+
+console.log(servicePermission);
 
 export function openDeleteTransactionModal() {
   const main = document.querySelector('.main');
@@ -1635,10 +1638,7 @@ export async function renderPosTable({
   loadMoreButton,
   append = false,
 }) {
-  if (
-    servicePermission === 'POS_TRANSACTIONS' ||
-    servicePermission === 'BOTH'
-  ) {
+  if (hasServiceAccess(servicePermission, 'POS')) {
     const posTableBody = document.querySelector(tableBodyId);
 
     if (!posTableBody) {
@@ -1888,10 +1888,7 @@ export async function renderPosAnalyticsTable({
   tableBodyId,
   append = false,
 }) {
-  if (
-    servicePermission === 'POS_TRANSACTIONS' ||
-    servicePermission === 'BOTH'
-  ) {
+  if (hasServiceAccess(servicePermission, 'POS')) {
     const posAnalyticsTableBody = document.querySelector(tableBodyId);
 
     if (!posAnalyticsTableBody) {
@@ -1994,10 +1991,7 @@ export async function renderAdminWithdrawalsTable({
   loadMoreButton,
   append = false,
 }) {
-  if (
-    servicePermission === 'POS_TRANSACTIONS' ||
-    servicePermission === 'BOTH'
-  ) {
+  if (hasServiceAccess(servicePermission, 'POS')) {
     const adminWithdrawalsTableBody = document.querySelector(tableBodyId);
 
     if (!adminWithdrawalsTableBody) {
@@ -2128,10 +2122,7 @@ export async function renderBusinessDaySummariesTable({
   loadMoreButton,
   append = false,
 }) {
-  if (
-    servicePermission === 'POS_TRANSACTIONS' ||
-    servicePermission === 'BOTH'
-  ) {
+  if (hasServiceAccess(servicePermission, 'POS')) {
     const businessDaySummariesTableBody = document.querySelector(tableBodyId);
 
     if (!businessDaySummariesTableBody) {
@@ -2287,10 +2278,7 @@ export async function renderFinancialSummaryTable({
   tableBodyId,
   append = false,
 }) {
-  if (
-    servicePermission === 'POS_TRANSACTIONS' ||
-    servicePermission === 'BOTH'
-  ) {
+  if (hasServiceAccess(servicePermission, 'POS')) {
     const financialSummaryTableBody = document.querySelector(tableBodyId);
 
     if (!financialSummaryTableBody) {
@@ -2480,7 +2468,10 @@ export async function renderSalesTable({
   loadMoreButton,
   append = false,
 }) {
-  if (servicePermission === 'INVENTORY_SALES' || servicePermission === 'BOTH') {
+  if (
+    hasServiceAccess(servicePermission, 'INVENTORY') ||
+    hasServiceAccess(servicePermission, 'WAREHOUSE')
+  ) {
     //  console.log('🧪 Applied Filters:', filters);
 
     const salesTableBody = document.querySelector(tableBodyId);
@@ -2844,7 +2835,10 @@ function calculateProfitMetrics(transactions) {
 }
 
 export async function renderDailySummary(shopId, dailySummaryDate) {
-  if (servicePermission === 'INVENTORY_SALES' || servicePermission === 'BOTH') {
+  if (
+    hasServiceAccess(servicePermission, 'INVENTORY') ||
+    hasServiceAccess(servicePermission, 'WAREHOUSE')
+  ) {
     //  console.log(dailySummaryDate);
     const response = await getDailySalesSummary(shopId, dailySummaryDate);
 
@@ -3025,7 +3019,10 @@ export async function renderDailySummary(shopId, dailySummaryDate) {
 }
 
 export async function renderMonthlySummary(year, month, shopId) {
-  if (servicePermission === 'INVENTORY_SALES' || servicePermission === 'BOTH') {
+  if (
+    hasServiceAccess(servicePermission, 'INVENTORY') ||
+    hasServiceAccess(servicePermission, 'WAREHOUSE')
+  ) {
     const response = await getMonthlySalesSummary(year, month, shopId);
 
     //  console.log(response);

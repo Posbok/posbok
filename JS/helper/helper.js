@@ -834,13 +834,16 @@ export function formatActionType(value) {
 
 // Format Service Permission
 export function formatServicePermission(value) {
+  //   console.log('value', value);
   switch (value.toLowerCase()) {
-    case 'pos_transactions':
+    case 'POS':
       return 'POS Transactions';
-    case 'inventory_sales':
+    case 'INVENTORY':
       return 'Sales & Inventory';
-    case 'both':
-      return 'POS & Sales';
+    case 'WAREHOUSE':
+      return 'Warehouse';
+    case 'STOREFRONT':
+      return 'Storefront';
     default:
       return value;
   }
@@ -1790,4 +1793,8 @@ export function getDaySuffix(day) {
     default:
       return 'th';
   }
+}
+
+export function hasServiceAccess(permissions, service) {
+  return permissions.includes(service) || permissions.includes('BOTH');
 }

@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
     '.updateStorefrontDataContainer',
   );
 
-  console.log('code got here');
+  //   console.log('code got here');
 
   if (isAdmin) {
     if (updateStorefrontModalBtn) {

@@ -119,18 +119,27 @@ export async function setupCreateStaffForm() {
       );
 
       // Disable based on subscription
-      if (hasPos !== 'POS') posRadio.disabled = true;
-      if (hasInventory !== 'INVENTORY') inventoryRadio.disabled = true;
-      if (hasWarehouse !== 'WAREHOUSE') warehouseRadio.disabled = true;
-      if (hasEcommerce !== 'ECOMMERCE') ecommerceRadio.disabled = true;
+      if (!hasPos) posRadio.disabled = true;
+      if (!hasInventory) inventoryRadio.disabled = true;
+      if (!hasWarehouse) warehouseRadio.disabled = true;
+      if (!hasEcommerce) ecommerceRadio.disabled = true;
 
       const accessTypeCheckboxes = document.querySelectorAll(
         'input[name="staffAccessType"]',
       );
 
       accessTypeCheckboxes.forEach((checkbox) => {
-        checkbox.disabled = !services.includes(checkbox.value);
-        //   checkbox.checked = services.includes(checkbox.value);
+        const val = checkbox.value; // e.g., "STOREFRONT"
+
+        let isAllowed = services.includes(val);
+
+        // Manual Mapping: If this is the Storefront checkbox,
+        // allow it if the user has the 'ECOMMERCE' service code.
+        if (val === 'STOREFRONT' && services.includes('ECOMMERCE')) {
+          isAllowed = true;
+        }
+
+        checkbox.disabled = !isAllowed;
       });
     } catch (err) {
       console.error('❌ Failed to load business permissions:', err);
@@ -365,7 +374,7 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
   }
 
   staffData.forEach((staff, index) => {
-    //  console.log(staff);
+    console.log(staff);
     const row = document.createElement('tr');
     row.classList.add('table-body-row');
 
@@ -377,9 +386,9 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
         <td class="py-1 staffEmail">${staff.email}
           </td>
         <td class="py-1 staffAccountType">${staff.accountType}</td>
-        <td class="py-1 staffServicePermission">${formatServicePermission(
-          staff.servicePermission,
-        )}</td>
+        <td class="py-1 staffServicePermission"> ${staff.servicePermission
+          .map((service) => formatServicePermission(service))
+          .join(', ')}</td>
         <td class="py-1 staffshop">${staff.shop_name || 'No Shop Assigned'}</td>
         <td class="py-1 action-buttons">
           <button class="hero-btn-outline editStaffButton" data-staff-id="${
@@ -407,9 +416,11 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
     <td class="py-1 staffEmail">${staff.email}
       </td>
     <td class="py-1 staffAccountType">${staff.accountType}</td>
-    <td class="py-1 staffServicePermission">${formatServicePermission(
-      staff.servicePermission,
-    )}</td>
+
+    <td class="py-1 staffServicePermission"> ${staff.servicePermission
+      .map((service) => formatServicePermission(service))
+      .join(', ')}</td>
+
        <td class="py-1 staffshop">ADMIN</td>
     <td class="py-1 action-buttons">
       <button class="hero-btn-outline editStaffButton" disabled data-staff-id="${
@@ -613,18 +624,28 @@ export function bindUpdateStaffFormListener() {
       'updateStaffPhoneNumber',
     ).value;
 
+    // 2. Access type checkboxes (Collecting as an ARRAY to match Create Staff)
     const updateAccessTypeCheckboxes = document.querySelectorAll(
       'input[name="updateStaffAccessType"]:checked',
     );
+
+    // We keep this as an array: e.g., ["POS", "STOREFRONT"]
     const updateAccessType = Array.from(updateAccessTypeCheckboxes).map(
       (cb) => cb.value,
     );
-    const updateAccessTypeValue = updateAccessType[0] || null;
 
-    const updateAccessTimeStart =
-      document.getElementById('update-start-time').value;
-    const updateAccessTimeEnd =
-      document.getElementById('update-end-time').value;
+    // 3. Validation
+    if (updateAccessType.length === 0) {
+      showToast('fail', '❎ Please select at least one access type.');
+      hideGlobalLoader();
+      hideBtnLoader(updateUserDetailSubmitBtn);
+      return;
+    }
+
+    //  const updateAccessTimeStart =
+    //    document.getElementById('update-start-time').value;
+    //  const updateAccessTimeEnd =
+    //    document.getElementById('update-end-time').value;
 
     const staffUpdatedDetails = {
       firstName: updateStaffFirstName,
@@ -632,12 +653,12 @@ export function bindUpdateStaffFormListener() {
       address: updateStaffAddress,
       phoneNumber: updateStaffPhoneNumber,
       accountType: 'STAFF',
-      accessTimeStart: updateAccessTimeStart,
-      accessTimeEnd: updateAccessTimeEnd,
-      servicePermission: updateAccessTypeValue,
+      // accessTimeStart: updateAccessTimeStart,
+      // accessTimeEnd: updateAccessTimeEnd,
+      servicePermission: updateAccessType,
     };
 
-    //  console.log('📦 Staff Update:', { userId, ...staffUpdatedDetails });
+    console.log('📦 Staff Update:', { userId, ...staffUpdatedDetails });
 
     const updateUserDetailSubmitBtn = document.querySelector(
       '.updateUserDetailSubmitBtn',
@@ -648,6 +669,7 @@ export function bindUpdateStaffFormListener() {
       const data = await updateUser(userId, staffUpdatedDetails);
 
       if (data) {
+        console.log('user updated with:', data);
         hideBtnLoader(updateUserDetailSubmitBtn);
         closeModal();
       }
@@ -705,10 +727,10 @@ export async function setupUpdateStaffForm(user) {
       );
 
       // Disable based on subscription
-      if (hasPos !== 'POS') posRadio.disabled = true;
-      if (hasInventory !== 'INVENTORY') inventoryRadio.disabled = true;
-      if (hasWarehouse !== 'WAREHOUSE') warehouseRadio.disabled = true;
-      if (hasEcommerce !== 'ECOMMERCE') ecommerceRadio.disabled = true;
+      if (!hasPos) posRadio.disabled = true;
+      if (!hasInventory) inventoryRadio.disabled = true;
+      if (!hasWarehouse) warehouseRadio.disabled = true;
+      if (!hasEcommerce) ecommerceRadio.disabled = true;
     } catch (err) {
       console.error('❌ Failed to load business permissions:', err);
     }
@@ -716,6 +738,8 @@ export async function setupUpdateStaffForm(user) {
 
   // Save user.id in the form for later use
   form.dataset.userId = user.id;
+
+  console.log(user);
 
   // Fill form inputs
   document.getElementById('updateStaffFirstName').value = user.firstName || '';
@@ -728,14 +752,37 @@ export async function setupUpdateStaffForm(user) {
     'input[name="updateStaffAccessType"]',
   );
 
+  //   updateAccessTypeCheckboxes.forEach((checkbox) => {
+  //     checkbox.disabled = !services.includes(checkbox.value);
+  //     checkbox.checked = services.includes(checkbox.value);
+  //   });
+
+  const staffPermissions = user.servicePermission || []; // ['POS', 'INVENTORY']
+
   updateAccessTypeCheckboxes.forEach((checkbox) => {
-    checkbox.disabled = !services.includes(checkbox.value);
-    checkbox.checked = services.includes(checkbox.value);
+    const val = checkbox.value; // e.g., "STOREFRONT"
+
+    // --- LOGIC 1: ENABLE/DISABLE (Based on what the Business paid for) ---
+    // Enable if business has the service OR the 'ECOMMERCE' alias
+    const businessHasService =
+      services.includes(val) ||
+      (val === 'STOREFRONT' && services.includes('ECOMMERCE'));
+
+    checkbox.disabled = !businessHasService;
+
+    // --- LOGIC 2: CHECK/UNCHECK (Based on what the Staff actually has) ---
+    // Check if the staff already has this permission assigned
+    // We also check the 'ECOMMERCE' alias here in case the staff record has that string
+    const staffHasAccess =
+      staffPermissions.includes(val) ||
+      (val === 'STOREFRONT' && staffPermissions.includes('ECOMMERCE'));
+
+    checkbox.checked = staffHasAccess;
   });
 
-  document.getElementById('update-start-time').value =
-    user.accessTimeStart || '';
-  document.getElementById('update-end-time').value = user.accessTimeEnd || '';
+  //   document.getElementById('update-start-time').value =
+  //     user.accessTimeStart || '';
+  //   document.getElementById('update-end-time').value = user.accessTimeEnd || '';
 }
 
 export function bindDeleteStaffFormListener() {

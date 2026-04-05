@@ -62,7 +62,7 @@ export async function createShop(shopDetails) {
     if (document.querySelector('#assignStaffCheckbox').checked) {
       setTimeout(() => {
         const proceed = confirm(
-          'You chose to assign a staff to this shop. Would you like to do that now?'
+          'You chose to assign a staff to this shop. Would you like to do that now?',
         );
         if (proceed) {
           // Open staff creation modal or navigate to staff creation page
@@ -89,7 +89,7 @@ export async function fetchShopDetail(shopId) {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     //  console.log('Response received...');
@@ -151,7 +151,7 @@ export async function checkAndPromptCreateShop() {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     let userShops = [];
@@ -162,7 +162,7 @@ export async function checkAndPromptCreateShop() {
     if (fetchedData) {
       // hideGlobalLoader();
       userShops = fetchedData.data.filter(
-        (shop) => shop.business_id === businessId
+        (shop) => shop.business_id === businessId,
       );
 
       // console.log(userShops);
@@ -178,7 +178,7 @@ export async function checkAndPromptCreateShop() {
               headers: {
                 Authorization: `Bearer ${userToken}`,
               },
-            }
+            },
           );
 
           const staff = staffResponse?.data || [];
@@ -207,7 +207,7 @@ export async function checkAndPromptCreateShop() {
             // manager_name: staffNames || '—',
             // staffId: staffId,
           };
-        })
+        }),
       );
 
       // console.log('ShopResources.js enrichedShopData', enrichedShopData);
@@ -280,6 +280,8 @@ export function setupCreateShopForm() {
       const businessData = await fetchBusinessDetails();
       const businessPermission = businessData.data.business_type;
 
+      console.log(businessData);
+
       // Get radio buttons
       const posRadio = document.getElementById('posShopCheckbox');
       const sellRadio = document.getElementById('sellShopCheckbox');
@@ -316,10 +318,10 @@ export function setupCreateShopForm() {
       const shopAddressInput = document.querySelector('#shopAddress');
 
       const serviceTypeCheckboxes = document.querySelectorAll(
-        'input[name="serviceType"]:checked'
+        'input[name="serviceType"]:checked',
       );
       const serviceType = Array.from(serviceTypeCheckboxes).map(
-        (cb) => cb.value
+        (cb) => cb.value,
       );
       const serviceTypeValue = serviceType[0] || null;
 

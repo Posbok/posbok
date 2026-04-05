@@ -16,6 +16,7 @@ import {
   formatAmountWithCommasOnInput,
   formatSaleStatus,
   getAmountForSubmission,
+  hasServiceAccess,
   hideBtnLoader,
   hideGlobalLoader,
   populateBusinessShopDropdown,
@@ -34,6 +35,8 @@ const isAdmin = parsedUserData?.accountType === 'ADMIN';
 const isStaff = parsedUserData?.accountType === 'STAFF';
 const userId = parsedUserData?.id;
 const shopId = parsedUserData?.shopId;
+
+const staffServicePermission = parsedUserData?.servicePermission;
 
 const cartKey = `cart_${userId}`;
 
@@ -89,28 +92,33 @@ if (isStaff) {
 }
 
 async function initializeSellFeature() {
-  await loadUserServices();
+  isAdmin ? await loadUserServices() : '';
 
   console.log(hasService('INVENTORY'));
 
-  if (!hasService('INVENTORY')) {
+  if (isAdmin && !hasService('INVENTORY')) {
     showSubscriptionRequiredModal();
-    if (isAdmin) {
-      if (adminSellContainer) adminSellContainer.style.display = 'block';
-      if (staffSellContainer) {
-        staffSellContainer.innerHTML = '';
-        staffSellContainer.style.display = 'none';
-      }
 
-      loadShopDropdown();
-    } else {
-      if (adminSellContainer) {
-        adminSellContainer.innerHTML = '';
-        adminSellContainer.style.display = 'none';
-      }
-
-      if (staffSellContainer) staffSellContainer.style.display = 'block';
+    if (adminSellContainer) adminSellContainer.style.display = 'block';
+    if (staffSellContainer) {
+      staffSellContainer.innerHTML = '';
+      staffSellContainer.style.display = 'none';
     }
+
+    loadShopDropdown();
+
+    return;
+  }
+
+  if (isStaff && !hasServiceAccess(staffServicePermission, 'INVENTORY')) {
+    showSubscriptionRequiredModal();
+
+    if (adminSellContainer) {
+      adminSellContainer.innerHTML = '';
+      adminSellContainer.style.display = 'none';
+    }
+
+    if (staffSellContainer) staffSellContainer.style.display = 'block';
 
     return;
   }

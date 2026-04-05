@@ -33,6 +33,7 @@ import {
   formatFeeType,
   formatTransactionType,
   getAmountForSubmission,
+  hasServiceAccess,
   hideBtnLoader,
   hideGlobalLoader,
   populateBusinessShopDropdown,
@@ -56,10 +57,12 @@ const isAdmin = parsedUserData?.accountType === 'ADMIN';
 const isStaff = parsedUserData?.accountType === 'STAFF';
 const staffShopId = parsedUserData?.shopId;
 
+const staffServicePermission = parsedUserData?.servicePermission;
+
 if (isAdmin) {
   document.addEventListener('DOMContentLoaded', () => {
-    getPosChargeSettings();
-    getFeeSettings();
+    //  getPosChargeSettings();
+    //  getFeeSettings();
   });
 }
 
@@ -79,13 +82,11 @@ const staffPosContainer = document.querySelector('.staffPosContainer');
 // }
 
 async function initializeInventoryFeature() {
-  //   if (!isAdmin) return;
-
-  await loadUserServices();
+  isAdmin ? await loadUserServices() : '';
 
   console.log(hasService('POS'));
 
-  if (!hasService('POS')) {
+  if (isAdmin && !hasService('POS')) {
     showSubscriptionRequiredModal();
 
     if (isAdmin) {
@@ -94,14 +95,18 @@ async function initializeInventoryFeature() {
         staffPosContainer.innerHTML = '';
         staffPosContainer.style.display = 'none';
       }
-      console.log('object Admin');
-    } else {
-      console.log('object');
-      if (adminPosContainer) adminPosContainer.style.display = 'none';
-      if (staffPosContainer) {
-        adminPosContainer.innerHTML = '';
-        staffPosContainer.style.display = 'block';
-      }
+    }
+
+    return;
+  }
+
+  if (isStaff && !hasServiceAccess(staffServicePermission, 'POS')) {
+    showSubscriptionRequiredModal();
+
+    if (adminPosContainer) adminPosContainer.style.display = 'none';
+    if (staffPosContainer) {
+      adminPosContainer.innerHTML = '';
+      staffPosContainer.style.display = 'block';
     }
 
     return;
