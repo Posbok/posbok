@@ -328,6 +328,16 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 
 eval("\nif (typeof Object.assign !== \"function\") {\n    Object.assign = function (target) {\n        var args = [];\n        for (var _i = 1; _i < arguments.length; _i++) {\n            args[_i - 1] = arguments[_i];\n        }\n        if (!target) {\n            throw TypeError(\"Cannot convert undefined or null to object\");\n        }\n        var _loop_1 = function (source) {\n            if (source) {\n                Object.keys(source).forEach(function (key) { return (target[key] = source[key]); });\n            }\n        };\n        for (var _a = 0, args_1 = args; _a < args_1.length; _a++) {\n            var source = args_1[_a];\n            _loop_1(source);\n        }\n        return target;\n    };\n}\n\n\n//# sourceURL=webpack://posbok/./node_modules/flatpickr/dist/esm/utils/polyfills.js?");
 
+/***/ }),
+
+/***/ "./payment/callback/callback.js":
+/*!**************************************!*\
+  !*** ./payment/callback/callback.js ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../config */ \"./config.js\");\n/* harmony import */ var _JS_apiServices_utility_safeFetch__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../JS/apiServices/utility/safeFetch */ \"./JS/apiServices/utility/safeFetch.js\");\n/* harmony import */ var _JS_script__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../JS/script */ \"./JS/script.js\");\n// import { showToast } from '../../JS/script';\n\n\n\n\nconst baseUrl = _config__WEBPACK_IMPORTED_MODULE_0__[\"default\"].baseUrl;\nconst userToken = _config__WEBPACK_IMPORTED_MODULE_0__[\"default\"].token;\nconst userData = _config__WEBPACK_IMPORTED_MODULE_0__[\"default\"].userData;\nconst parsedUserData = userData ? JSON.parse(userData) : null;\nconst params = new URLSearchParams(window.location.search);\nconst shopId = params.get('shopId');\nconst from = params.get('from');\nconst isStaffProfilePage = window.location.href.includes('staff-profile');\nlet enrichedShopData = [];\n\n// import { redirectWithDelay } from '../../JS/script';\n\nasync function verifyPayment() {\n  //   const loader = document.getElementById('main-loader');\n  //   const statusText = document.getElementById('status-text');\n\n  //   // Start the timer immediately when verification starts\n  //   const timer = setTimeout(() => {\n  //     if (loader && loader.style.display !== 'none') {\n  //       statusText.innerHTML += `<br><button class=\"hero-btn-dark mt-2\" onclick=\"location.reload()\">Re-check Payment</button>`;\n  //     }\n  //   }, 10000);\n\n  try {\n    const params = new URLSearchParams(window.location.search);\n    const reference = params.get('reference') || localStorage.getItem('paystack_ref');\n    console.log(params, reference);\n    if (!reference) {\n      (0,_JS_script__WEBPACK_IMPORTED_MODULE_2__.showToast)('error', 'No payment reference found');\n      return;\n    }\n    const res = await (0,_JS_apiServices_utility_safeFetch__WEBPACK_IMPORTED_MODULE_1__.safeFetch)(`${baseUrl}/api/service-plans/payment/verify/${reference}`, {\n      method: 'GET',\n      headers: {\n        Authorization: `Bearer ${userToken}`\n      }\n    });\n    if (res.success && res.data.status === 'success') {\n      localStorage.removeItem('paystack_ref');\n      (0,_JS_script__WEBPACK_IMPORTED_MODULE_2__.showToast)('success', 'Payment successful. Subscription activated.');\n      (0,_JS_script__WEBPACK_IMPORTED_MODULE_2__.redirectWithDelay)('/dashboard', 2000);\n    } else {\n      (0,_JS_script__WEBPACK_IMPORTED_MODULE_2__.showToast)('error', `Payment ${res.data.status}`);\n    }\n  } catch (error) {\n    console.error('Payment verification failed:', error);\n    (0,_JS_script__WEBPACK_IMPORTED_MODULE_2__.showToast)('error', 'Payment verification failed');\n  }\n}\n\n// Since this is now a module, we trigger it here\n// document.addEventListener('DOMContentLoaded', verifyPayment);\nverifyPayment();\n\n//# sourceURL=webpack://posbok/./payment/callback/callback.js?");
+
 /***/ })
 
 /******/ 	});
@@ -401,8 +411,8 @@ eval("\nif (typeof Object.assign !== \"function\") {\n    Object.assign = functi
 /******/ 	
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __webpack_require__("./JS/superAdmin.js");
+/******/ 	// This entry module can't be inlined because the eval devtool is used.
+/******/ 	var __webpack_exports__ = __webpack_require__("./payment/callback/callback.js");
 /******/ 	
 /******/ })()
 ;

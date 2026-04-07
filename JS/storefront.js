@@ -36,10 +36,12 @@ import {
   setupStorefront,
   uploadStorefrontImages,
 } from './apiServices/storefront/storefrontResources.js';
+import { hasService, loadUserServices } from './subscription.js';
 
 const userData = config.userData;
 const baseUrl = config.baseUrl;
 const parsedUserData = userData ? JSON.parse(userData) : null;
+const isAdmin = parsedUserData?.accountType === 'ADMIN';
 const servicePermission = parsedUserData?.servicePermission;
 
 let userShops = [];
@@ -52,6 +54,47 @@ const adminStorefrontManagementPage = document.body.classList.contains(
 
 if (adminStorefrontManagementPage) {
   fetchStorefrontStatus();
+}
+
+async function initializeEcommerceFeature() {
+  await loadUserServices();
+
+  console.log(hasService('ECOMMERCE'));
+
+  if (!hasService('ECOMMERCE')) {
+    showSubscriptionRequiredModal();
+    return;
+  }
+}
+
+function showSubscriptionRequiredModal() {
+  const main = document.querySelector('.main');
+  const subscriptionRequiredModal = document.querySelector(
+    '.subscriptionRequiredModal',
+  );
+
+  const storefrontSubscriptionCta = document.querySelector(
+    '.storefrontSubscriptionCta',
+  );
+  if (isAdmin) {
+    storefrontSubscriptionCta.innerHTML = `
+   <button class="hero-btn-dark inventoryBtn "> <a href="/manage.html" class="button-link"></a>Subscribe
+                  Now</button>
+   `;
+  } else {
+    storefrontSubscriptionCta.innerHTML = `
+   <p class="heading-minitext mt-2">Contact Admin</p>
+   `;
+  }
+
+  if (subscriptionRequiredModal)
+    subscriptionRequiredModal.classList.add('active');
+  if (main) main.classList.add('subscribe');
+}
+
+if (document.body.classList.contains('adminStorefrontManagementPage')) {
+  adminStorefrontManagementPage;
+  initializeEcommerceFeature();
 }
 
 // JS for opening Create Storefront Modal
@@ -84,18 +127,26 @@ document.addEventListener('DOMContentLoaded', function () {
     '.updateStorefrontDataContainer',
   );
 
-  if (updateStorefrontModalBtn) {
-    updateStorefrontModalBtn.addEventListener('click', async function () {
-      updateStorefrontDataContainer.classList.add('active');
-      main.classList.add('blur');
-      sidebar.classList.add('blur');
-      main.classList.add('no-scroll');
+  //   console.log('code got here');
 
-      const storefrontRes = await fetchStorefrontStatus();
-      populateUpdateStorefrontForm(storefrontRes.data);
+  if (isAdmin) {
+    if (updateStorefrontModalBtn) {
+      updateStorefrontModalBtn.addEventListener('click', async function () {
+        updateStorefrontDataContainer.classList.add('active');
+        main.classList.add('blur');
+        sidebar.classList.add('blur');
+        main.classList.add('no-scroll');
 
-      updateStorefrontForm();
-    });
+        const storefrontRes = await fetchStorefrontStatus();
+        populateUpdateStorefrontForm(storefrontRes.data);
+
+        updateStorefrontForm();
+      });
+    }
+  } else {
+    if (updateStorefrontModalBtn)
+      updateStorefrontModalBtn.style.display = 'none';
+    return;
   }
 });
 
@@ -494,9 +545,9 @@ export function renderStorefront(storefront) {
   document.getElementById('whatsappNumber').textContent =
     storefront.whatsapp_number;
 
-  document.getElementById('latitude').textContent = storefront.latitude;
+  //   document.getElementById('latitude').textContent = storefront.latitude;
 
-  document.getElementById('longitude').textContent = storefront.longitude;
+  //   document.getElementById('longitude').textContent = storefront.longitude;
 
   document.getElementById('businessLogo').src =
     storefront.business_logo || imgFallback;
@@ -510,31 +561,31 @@ export function renderStorefront(storefront) {
   // initMap(storefront.latitude, storefront.longitude);
 
   // Leaflet Map Initialization for Storefront Location
-  if (storefrontMap) {
-    storefrontMap.remove();
-  }
+  //   if (storefrontMap) {
+  //     storefrontMap.remove();
+  //   }
 
   // Initialize new map
-  storefrontMap = L.map('storefront-map').setView(
-    [storefront.latitude, storefront.longitude],
-    13,
-  );
-  var marker = L.marker([
-    `${storefront.latitude}`,
-    `${storefront.longitude}`,
-  ]).addTo(storefrontMap);
+  //   storefrontMap = L.map('storefront-map').setView(
+  //     [storefront.latitude, storefront.longitude],
+  //     13,
+  //   );
+  //   var marker = L.marker([
+  //     `${storefront.latitude}`,
+  //     `${storefront.longitude}`,
+  //   ]).addTo(storefrontMap);
 
-  marker
-    .bindPopup(
-      `<b></b>${storefront.Business.business_name}<br>${storefront.address}`,
-    )
-    .openPopup();
+  //   marker
+  //     .bindPopup(
+  //       `<b></b>${storefront.Business.business_name}<br>${storefront.address}`,
+  //     )
+  //     .openPopup();
 
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution:
-      '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-  }).addTo(storefrontMap);
+  //   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  //     maxZoom: 19,
+  //     attribution:
+  //       '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  //   }).addTo(storefrontMap);
 }
 
 function populateUpdateStorefrontForm(storefront) {

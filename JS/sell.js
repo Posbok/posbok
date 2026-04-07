@@ -16,6 +16,7 @@ import {
   formatAmountWithCommasOnInput,
   formatSaleStatus,
   getAmountForSubmission,
+  hasServiceAccess,
   hideBtnLoader,
   hideGlobalLoader,
   populateBusinessShopDropdown,
@@ -23,6 +24,7 @@ import {
   showGlobalLoader,
 } from './helper/helper';
 import { closeModal, showToast } from './script';
+import { hasService, loadUserServices, userServices } from './subscription.js';
 
 const userData = config.userData;
 const dummyShopId = config.dummyShopId;
@@ -34,6 +36,8 @@ const isStaff = parsedUserData?.accountType === 'STAFF';
 const userId = parsedUserData?.id;
 const shopId = parsedUserData?.shopId;
 
+const staffServicePermission = parsedUserData?.servicePermission;
+
 const cartKey = `cart_${userId}`;
 
 let allProducts = [];
@@ -43,34 +47,36 @@ let selectedProduct = null;
 let totalCartAmount = 0;
 
 const searchSellProdutItem = document.getElementById(
-  isAdmin ? 'adminSearchSellProdutItem' : 'searchSellProdutItem'
+  isAdmin ? 'adminSearchSellProdutItem' : 'searchSellProdutItem',
 );
 
 const sellProductCategorySection = document.querySelector(
-  isAdmin ? '.adminSellProductCategory-section' : '.sellProductCategory-section'
+  isAdmin
+    ? '.adminSellProductCategory-section'
+    : '.sellProductCategory-section',
 );
 
 const sellProductName = document.querySelector(
-  isAdmin ? '.adminSellProductName' : '.sellProductName'
+  isAdmin ? '.adminSellProductName' : '.sellProductName',
 );
 const productInput = document.getElementById(
-  isAdmin ? 'adminProductInput' : 'productInput'
+  isAdmin ? 'adminProductInput' : 'productInput',
 );
 const autocompleteList = document.getElementById(
-  isAdmin ? 'adminAutocompleteList' : 'autocompleteList'
+  isAdmin ? 'adminAutocompleteList' : 'autocompleteList',
 );
 const productBoughtPrice = document.getElementById(
-  isAdmin ? 'adminProductBoughtPrice' : 'productBoughtPrice'
+  isAdmin ? 'adminProductBoughtPrice' : 'productBoughtPrice',
 );
 const itemSellingprice = document.getElementById(
-  isAdmin ? 'adminItemSellingPrice' : 'itemSellingPrice'
+  isAdmin ? 'adminItemSellingPrice' : 'itemSellingPrice',
 );
 const itemQuantityAvailable = document.getElementById(
-  isAdmin ? 'adminItemQuantityAvailable' : 'itemQuantityAvailable'
+  isAdmin ? 'adminItemQuantityAvailable' : 'itemQuantityAvailable',
 );
 
 const sellProductShopDropdown = document.getElementById(
-  'sellProductShopDropdown'
+  'sellProductShopDropdown',
 );
 
 const adminSellContainer = document.querySelector('.adminSellContainer');
@@ -85,31 +91,98 @@ if (isStaff) {
   //   displayAllCategories();
 }
 
-if (isAdmin && adminSellContainer) {
-  if (adminSellContainer) adminSellContainer.style.display = 'block';
-  if (staffSellContainer) staffSellContainer.innerHTML = '';
-  if (staffSellContainer) staffSellContainer.style.display = 'none';
+async function initializeSellFeature() {
+  isAdmin ? await loadUserServices() : '';
 
-  async function loadShopDropdown() {
-    try {
-      showGlobalLoader();
-      const { enrichedShopData } = await checkAndPromptCreateShop();
-      populateBusinessShopDropdown(enrichedShopData, 'sellProductShopDropdown');
+  console.log(hasService('INVENTORY'));
 
-      syncDropdownWithCartShop();
+  if (isAdmin && !hasService('INVENTORY')) {
+    showSubscriptionRequiredModal();
 
-      hideGlobalLoader();
-    } catch (err) {
-      hideGlobalLoader();
-      console.error('Failed to load dropdown:', err.message);
+    if (adminSellContainer) adminSellContainer.style.display = 'block';
+    if (staffSellContainer) {
+      staffSellContainer.innerHTML = '';
+      staffSellContainer.style.display = 'none';
     }
+
+    loadShopDropdown();
+
+    return;
   }
 
-  loadShopDropdown();
-} else {
-  if (adminSellContainer) adminSellContainer.innerHTML = '';
-  if (adminSellContainer) adminSellContainer.style.display = 'none';
-  if (staffSellContainer) staffSellContainer.style.display = 'block';
+  if (isStaff && !hasServiceAccess(staffServicePermission, 'INVENTORY')) {
+    showSubscriptionRequiredModal();
+
+    if (adminSellContainer) {
+      adminSellContainer.innerHTML = '';
+      adminSellContainer.style.display = 'none';
+    }
+
+    if (staffSellContainer) staffSellContainer.style.display = 'block';
+
+    return;
+  }
+
+  if (isAdmin) {
+    if (adminSellContainer) adminSellContainer.style.display = 'block';
+    if (staffSellContainer) {
+      staffSellContainer.innerHTML = '';
+      staffSellContainer.style.display = 'none';
+    }
+
+    loadShopDropdown();
+  } else {
+    if (adminSellContainer) {
+      adminSellContainer.innerHTML = '';
+      adminSellContainer.style.display = 'none';
+    }
+
+    if (staffSellContainer) staffSellContainer.style.display = 'block';
+  }
+}
+
+function showSubscriptionRequiredModal() {
+  const main = document.querySelector('.main');
+  const subscriptionRequiredModal = document.querySelector(
+    '.subscriptionRequiredModal',
+  );
+
+  const sellSubscriptionCta = document.querySelector('.sellSubscriptionCta');
+  if (isAdmin) {
+    sellSubscriptionCta.innerHTML = `
+   <button class="hero-btn-dark inventoryBtn "> <a href="/manage.html" class="button-link"></a>Subscribe
+                  Now</button>
+   `;
+  } else {
+    sellSubscriptionCta.innerHTML = `
+   <p class="heading-minitext mt-2">Contact Admin</p>
+   `;
+  }
+
+  if (subscriptionRequiredModal)
+    subscriptionRequiredModal.classList.add('active');
+  if (main) main.classList.add('subscribe');
+}
+
+async function loadShopDropdown() {
+  try {
+    showGlobalLoader();
+
+    const { enrichedShopData } = await checkAndPromptCreateShop();
+
+    populateBusinessShopDropdown(enrichedShopData, 'sellProductShopDropdown');
+
+    syncDropdownWithCartShop();
+
+    hideGlobalLoader();
+  } catch (err) {
+    hideGlobalLoader();
+    console.error('Failed to load dropdown:', err.message);
+  }
+}
+
+if (document.body.classList.contains('sale-page')) {
+  initializeSellFeature();
 }
 
 async function fetchAllProducts(shopId) {
@@ -145,7 +218,7 @@ async function fetchAllCategories() {
 
   try {
     const productCategoryData = await getProductCategories(
-      isAdmin ? sellProductShopDropdown.value : shopId
+      isAdmin ? sellProductShopDropdown.value : shopId,
     ); // Fetch Categories
 
     if (productCategoryData) {
@@ -164,10 +237,10 @@ async function fetchAllCategories() {
 }
 
 const adminSellProductSearchSection = document.querySelector(
-  '.adminSellProductSearch-section'
+  '.adminSellProductSearch-section',
 );
 const adminSellProductCategorySection = document.querySelector(
-  '.adminSellProductCategory-section'
+  '.adminSellProductCategory-section',
 );
 const adminSellProductName = document.querySelector('.adminSellProductName');
 const adminAutocompleteList = document.getElementById('adminAutocompleteList');
@@ -187,16 +260,16 @@ if (isAdmin && sellProductShopDropdown) {
     const selectedShopId = sellProductShopDropdown.value;
 
     const adminSellProductSearchSection = document.querySelector(
-      '.adminSellProductSearch-section'
+      '.adminSellProductSearch-section',
     );
     const adminSellProductCategorySection = document.querySelector(
-      '.adminSellProductCategory-section'
+      '.adminSellProductCategory-section',
     );
     const adminSellProductName = document.querySelector(
-      '.adminSellProductName'
+      '.adminSellProductName',
     );
     const adminAutocompleteList = document.getElementById(
-      'adminAutocompleteList'
+      'adminAutocompleteList',
     );
 
     if (!selectedShopId) {
@@ -294,7 +367,8 @@ async function displayAllProducts() {
         // Filter by selected category (if any)
         if (activeCategoryId !== null) {
           filteredProducts = filteredProducts.filter(
-            (product) => product.Product.ProductCategory.id === activeCategoryId
+            (product) =>
+              product.Product.ProductCategory.id === activeCategoryId,
           );
         }
 
@@ -336,7 +410,7 @@ async function displayAllProducts() {
 
       // Check if the input value is a valid barcode
       const matchedProduct = allProducts.find(
-        (p) => p.Product.barcode === scannedCode
+        (p) => p.Product.barcode === scannedCode,
       );
 
       if (matchedProduct) {
@@ -393,7 +467,7 @@ async function displayAllCategories() {
         filteredProducts = filteredProducts.filter(
           (product) =>
             product.Product.name.toLowerCase().includes(inputValue) ||
-            product.Product.description.toLowerCase().includes(inputValue)
+            product.Product.description.toLowerCase().includes(inputValue),
         );
       }
 
@@ -426,7 +500,7 @@ async function displayAllCategories() {
 
         let filteredProducts = allProducts.filter(
           //  (product) => product.Product.ProductCategory.id === categoryId
-          (product) => product.Product.ProductCategory.id === activeCategoryId
+          (product) => product.Product.ProductCategory.id === activeCategoryId,
         );
 
         const inputValue = searchSellProdutItem.value.toLowerCase().trim();
@@ -435,7 +509,7 @@ async function displayAllCategories() {
           filteredProducts = filteredProducts.filter(
             (product) =>
               product.Product.name.toLowerCase().includes(inputValue) ||
-              product.Product.description.toLowerCase().includes(inputValue)
+              product.Product.description.toLowerCase().includes(inputValue),
           );
         }
 
@@ -478,10 +552,10 @@ function updateAutocompleteList(products) {
 
         productInput.value = product.Product.name;
         productBoughtPrice.value = formatAmountWithCommas(
-          product.Product.purchase_price
+          product.Product.purchase_price,
         );
         itemSellingprice.value = formatAmountWithCommas(
-          product.Product.selling_price
+          product.Product.selling_price,
         );
         itemQuantityAvailable.value = product.quantity;
         autocompleteList.style.display = 'none';
@@ -590,13 +664,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // JS for Selling Products and adding to localStorage
 const soldProductName = document.getElementById(
-  isAdmin ? 'adminProductInput' : 'productInput'
+  isAdmin ? 'adminProductInput' : 'productInput',
 );
 const soldProductPrice = document.getElementById(
-  isAdmin ? 'adminSoldProductPrice' : 'soldProductPrice'
+  isAdmin ? 'adminSoldProductPrice' : 'soldProductPrice',
 );
 const soldProductQuantity = document.getElementById(
-  isAdmin ? 'adminSoldProductQuantity' : 'soldProductQuantity'
+  isAdmin ? 'adminSoldProductQuantity' : 'soldProductQuantity',
 );
 
 // const productBalancePrice = document.getElementById(
@@ -620,7 +694,7 @@ export function sellProductForm() {
       const paymentMethod = document.getElementById('paymentTypeOption').value;
       const amountPaid = document.getElementById('amount-paid').value;
       const soldProductMachineFee = document.getElementById(
-        'soldProductMachineFee'
+        'soldProductMachineFee',
       ).value;
       const soldProductTaxFee =
         document.getElementById('soldProductTaxFee').value;
@@ -716,7 +790,7 @@ function validateCartBeforeSale() {
     ) {
       showToast(
         'error',
-        `❌ Invalid quantity for ${item.soldProductNameInput}. Maximum allowed is ${item.availableQty}.`
+        `❌ Invalid quantity for ${item.soldProductNameInput}. Maximum allowed is ${item.availableQty}.`,
       );
       return false;
     }
@@ -728,7 +802,7 @@ function validateCartBeforeSale() {
     ) {
       showToast(
         'error',
-        `❌ Invalid cart item detected. Please remove and re-add it.`
+        `❌ Invalid cart item detected. Please remove and re-add it.`,
       );
       return false;
     }
@@ -740,7 +814,7 @@ function validateCartBeforeSale() {
     ) {
       showToast(
         'error',
-        `❌ Suspicious price for ${item.soldProductNameInput}.`
+        `❌ Suspicious price for ${item.soldProductNameInput}.`,
       );
       return false;
     }
@@ -754,7 +828,7 @@ sellProductForm();
 document.addEventListener(
   'DOMContentLoaded',
   updateCartCounter,
-  updateCartTotalUI
+  updateCartTotalUI,
 );
 
 function updateCartCounter() {
@@ -814,7 +888,7 @@ function handleAddToCart(productOverride = null, autoMode = false) {
   } else {
     soldProductNameInput = soldProductName.value;
     soldProductPriceInput = Number(
-      getAmountForSubmission(soldProductPrice.value)
+      getAmountForSubmission(soldProductPrice.value),
     );
     soldProductQuantityInput = Number(soldProductQuantity.value) || 1;
   }
@@ -849,7 +923,7 @@ function handleAddToCart(productOverride = null, autoMode = false) {
   if (selling < purchase) {
     showToast(
       'error',
-      `❎ Selling price is too low. Please enter a valid amount.`
+      `❎ Selling price is too low. Please enter a valid amount.`,
     );
     return;
   }
@@ -860,14 +934,14 @@ function handleAddToCart(productOverride = null, autoMode = false) {
     : parsedUserData.shopId;
   if (storedData.length > 0 && storedData[0].shopId !== shopId) {
     alert(
-      'Cannot add item from a different shop. Clear cart or switch back to original shop.'
+      'Cannot add item from a different shop. Clear cart or switch back to original shop.',
     );
     return;
   }
 
   // Check if product already in cart
   const existingIndex = storedData.findIndex(
-    (item) => item.productId === product.id
+    (item) => item.productId === product.id,
   );
   let availableQty;
 
@@ -894,7 +968,7 @@ function handleAddToCart(productOverride = null, autoMode = false) {
     if (totalDesiredQty > availableQty) {
       showToast(
         'info',
-        `ℹ️ Total quantity in cart (${totalDesiredQty}) exceeds available stock (${availableQty}).`
+        `ℹ️ Total quantity in cart (${totalDesiredQty}) exceeds available stock (${availableQty}).`,
       );
       return;
     }
@@ -907,7 +981,7 @@ function handleAddToCart(productOverride = null, autoMode = false) {
         Number(soldProductPriceInput)
       ) {
         const confirmUpdate = confirm(
-          `This product is already in the cart with a different price.\n\nOld Price: ₦${existingItem.soldProductPriceInput}\nNew Price: ₦${soldProductPriceInput}\n\nDo you want to update the price?`
+          `This product is already in the cart with a different price.\n\nOld Price: ₦${existingItem.soldProductPriceInput}\nNew Price: ₦${soldProductPriceInput}\n\nDo you want to update the price?`,
         );
 
         if (confirmUpdate) {
@@ -928,7 +1002,7 @@ function handleAddToCart(productOverride = null, autoMode = false) {
     if (soldProductQuantityInput > availableQty) {
       showToast(
         'info',
-        `ℹ️ Quantity exceeds available stock (${availableQty}).`
+        `ℹ️ Quantity exceeds available stock (${availableQty}).`,
       );
       return;
     }
@@ -952,7 +1026,7 @@ function handleAddToCart(productOverride = null, autoMode = false) {
   renderQuickSellButton();
   showToast(
     'success',
-    `✅ ${soldProductNameInput} added to cart successfully!`
+    `✅ ${soldProductNameInput} added to cart successfully!`,
   );
 
   // Reset inputs
@@ -971,7 +1045,7 @@ function handleAddToCart(productOverride = null, autoMode = false) {
 
 export function addProductToCart() {
   const adminAddToCartForm = document.querySelector(
-    isAdmin ? '.adminAddToCartForm' : '.addToCartForm'
+    isAdmin ? '.adminAddToCartForm' : '.addToCartForm',
   );
 
   if (!adminAddToCartForm || adminAddToCartForm.dataset.bound === 'true')
@@ -1002,8 +1076,11 @@ export function addProductToCart() {
 
 // Quick sell Logic
 const sellNowBtn = document.querySelector(
-  isAdmin ? '.adminSellNowBtn' : '.sellNowBtn'
+  isAdmin ? '.adminSellNowBtn' : '.sellNowBtn',
 ); // Your new button
+
+console.log(isAdmin ? '.adminSellNowBtn' : '.sellNowBtn');
+console.log(sellNowBtn);
 
 const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
 // const quickSellMsg = document.querySelector('.quick-sell-msg');
@@ -1042,80 +1119,6 @@ document.addEventListener('DOMContentLoaded', () => {
   renderQuickSellButton();
 });
 
-// renderQuickSellButton(); // Initial render
-
-// if (cart.length > 1) {
-//   sellNowBtn.setAttribute('aria-disabled', 'true');
-//   sellNowBtn.style.pointerEvents = 'none';
-//   sellNowBtn.disabled = true;
-//   sellNowBtn.style.cursor = 'not-allowed';
-// }
-
-// sellNowBtn?.addEventListener('click', () => {
-//   const cartSliderOverlay = document.querySelector('.cart-slider-overlay');
-//   const cartSlider = document.querySelector('.cart-slider-content');
-//   const sliderWrapper = document.querySelector('.slider-wrapper');
-//   // Add to cart first
-//   handleAddToCart(); // ensure this respects validations
-
-//   const updatedCart = JSON.parse(localStorage.getItem(cartKey)) || [];
-//   if (!selectedProduct || !selectedProduct.id) {
-//     showToast('error', '❗Please select a product first.');
-//     document.querySelector('button[data-category-id="all"]')?.click();
-//     return;
-//   }
-
-//   if (updatedCart.length !== 1) {
-//     showToast('error', '❗Quick sell requires exactly 1 item.');
-//     return;
-//   }
-
-//   if (updatedCart.length > 0 && updatedCart.length < 2) {
-//     // Open slider
-//     cartSlider.classList.add('open');
-//     cartSliderOverlay.classList.add('visible');
-
-//     // Jump to checkout view
-//     sliderWrapper.style.transform = 'translateX(-50%)';
-
-//     renderCartItemsFromStorage(); // optional: if you want to show cart summary in checkout
-//   }
-//   // Wait briefly to let localStorage/cart update`;
-//   setTimeout(() => {
-//     const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-//     const cartSliderOverlay = document.querySelector('.cart-slider-overlay');
-//     const cartSlider = document.querySelector('.cart-slider-content');
-//     const sliderWrapper = document.querySelector('.slider-wrapper');
-
-//     let soldProductQuantityInput = Number(soldProductQuantity.value);
-//     let soldProductPriceInput = Number(soldProductPrice.value);
-
-//     //  if (soldProductQuantityInput <= 0 || soldProductQuantityInput === '') {
-//     //    showToast('info', 'ℹ️ Qeeeeeeeeeuantity must be at least one');
-
-//     //    return;
-//     //  }
-
-//     //  soldProductName;
-//     //  soldProductPrice;
-//     //  soldProductQuantity;
-
-//     if (cart.length > 0 && cart.length < 2) {
-//       // Open slider
-//       cartSlider.classList.add('open');
-//       cartSliderOverlay.classList.add('visible');
-
-//       // Jump to checkout view
-//       sliderWrapper.style.transform = 'translateX(-50%)';
-
-//       renderCartItemsFromStorage(); // optional: if you want to show cart summary in checkout
-//     }
-//     //  else {
-//     //    sellNowBtn.disabled = true; // Disable button to prevent multiple clicks
-//     //  }
-//   }, 100); // Adjust timing if needed
-// });
-
 sellNowBtn?.addEventListener('click', () => {
   const cartSliderOverlay = document.querySelector('.cart-slider-overlay');
   const cartSlider = document.querySelector('.cart-slider-content');
@@ -1141,7 +1144,7 @@ sellNowBtn?.addEventListener('click', () => {
   if (selling < purchase) {
     showToast(
       'error',
-      `❎ Selling price is too low. Please enter a valid amount.`
+      `❎ Selling price is too low. Please enter a valid amount.`,
     );
     return;
   }
@@ -1342,7 +1345,7 @@ function attachCartListeners() {
       if (item.soldProductQuantityInput >= item.availableQty) {
         showToast(
           'info',
-          `ℹ️ Cannot exceed available stock (${item.availableQty}).`
+          `ℹ️ Cannot exceed available stock (${item.availableQty}).`,
         );
         return;
       }
@@ -1405,7 +1408,7 @@ function attachCartListeners() {
           'error',
           `Seling price cannot be lower than purchase price (₦${cart[
             index
-          ].purchasePrice.toLocaleString()}).`
+          ].purchasePrice.toLocaleString()}).`,
         );
         renderCartItemsFromStorage(); // reset UI
         return;
@@ -1499,7 +1502,7 @@ document
 
       if (selectedShopId && selectedShopId !== cartShopId) {
         const confirmed = confirm(
-          'Switching shop will clear your current cart. Do you want to proceed?'
+          'Switching shop will clear your current cart. Do you want to proceed?',
         );
 
         if (confirmed) {
@@ -1618,7 +1621,7 @@ async function updateSalesReceipt(soldData) {
     document.getElementById('soldDetailStaffName').textContent =
       `${Account?.first_name} ${Account?.last_name}` || 'N/A';
     document.getElementById('soldDetailDate').textContent = new Date(
-      sale_time
+      sale_time,
     ).toLocaleString('en-UK', {
       hour12: true,
       year: 'numeric',
@@ -1634,15 +1637,12 @@ async function updateSalesReceipt(soldData) {
     document.getElementById('soldDetailPaymentMethod').textContent =
       payment_method || 'N/A';
 
-    document.getElementById(
-      'soldDetailTotalAmount'
-    ).textContent = `₦${formatAmountWithCommas(total_amount)}`;
-    document.getElementById(
-      'soldDetailPaidAmount'
-    ).textContent = `₦${formatAmountWithCommas(amount_paid)}`;
-    document.getElementById(
-      'soldDetailBalanceAmount'
-    ).textContent = `₦${formatAmountWithCommas(balance)}`;
+    document.getElementById('soldDetailTotalAmount').textContent =
+      `₦${formatAmountWithCommas(total_amount)}`;
+    document.getElementById('soldDetailPaidAmount').textContent =
+      `₦${formatAmountWithCommas(amount_paid)}`;
+    document.getElementById('soldDetailBalanceAmount').textContent =
+      `₦${formatAmountWithCommas(balance)}`;
 
     document.getElementById('soldDetailStatus').textContent =
       formatSaleStatus(status);
@@ -1658,10 +1658,10 @@ async function updateSalesReceipt(soldData) {
                <td class="py-1">${item.Product.name}</td>
                              <td class="py-1">${item.quantity}</td>
                              <td class="py-1">₦${formatAmountWithCommas(
-                               item.selling_price
+                               item.selling_price,
                              )}</td>
                              <td class="py-1">${formatAmountWithCommas(
-                               item.quantity * item.selling_price
+                               item.quantity * item.selling_price,
                              )}</td>
 
                        `;
@@ -1712,7 +1712,7 @@ async function updateSalesReceipt(soldData) {
 
       container.innerHTML = renderReceiptPrintHTML(
         saleDetails.data,
-        shopData?.data
+        shopData?.data,
       );
 
       container.style.display = 'block'; // temporarily show
@@ -1866,11 +1866,11 @@ function renderReceiptPrintHTML(saleDetails, shopDetails) {
       <hr class="mb-1" />
       <p>Receipt: ${saleDetails.receipt_number}</p>
       <p>Customer: ${saleDetails.customer_name} - ${
-    saleDetails.customer_phone
-  }</p>
+        saleDetails.customer_phone
+      }</p>
       <p>Staff: ${saleDetails.Account?.first_name} ${
-    saleDetails.Account?.last_name
-  }</p>
+        saleDetails.Account?.last_name
+      }</p>
       <p  class="mb-1" >Date: ${new Date(saleDetails.sale_time).toLocaleString(
         'en-UK',
         {
@@ -1881,7 +1881,7 @@ function renderReceiptPrintHTML(saleDetails, shopDetails) {
           hour: 'numeric',
           minute: '2-digit',
           second: '2-digit',
-        }
+        },
       )}</p>
       <hr />
 <table class="mb-1" style="width: 100%; table-layout: fixed; word-wrap: break-word; font-size: 10px;">
@@ -1900,25 +1900,25 @@ function renderReceiptPrintHTML(saleDetails, shopDetails) {
           <td style="word-break: break-word;">${item.Product.name}</td>
           <td>${item.quantity}</td>
           <td><span style="text-decoration:line-through;">N</span>${formatAmountWithCommas(
-            item.selling_price
+            item.selling_price,
           )}</td>
           <td><span style="text-decoration:line-through;">N</span>${formatAmountWithCommas(
-            item.quantity * item.selling_price
+            item.quantity * item.selling_price,
           )}</td>
         </tr>
-      `
+      `,
     ).join('')}
   </tbody>
 </table>
       <hr />
       <p>Total:<span style="text-decoration:line-through;">N</span>${formatAmountWithCommas(
-        saleDetails.total_amount
+        saleDetails.total_amount,
       )}</p>
       <p>Paid:<span style="text-decoration:line-through;">N</span>${formatAmountWithCommas(
-        saleDetails.amount_paid
+        saleDetails.amount_paid,
       )}</p>
       <p>Balance:<span style="text-decoration:line-through;">N</span>${formatAmountWithCommas(
-        saleDetails.balance
+        saleDetails.balance,
       )}</p>
       <p>Payment Method:${saleDetails.payment_method}</p>
       <p>Status: ${formatSaleStatus(saleDetails.status)}</p>

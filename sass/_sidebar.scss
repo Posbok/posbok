@@ -126,15 +126,15 @@
       border-bottom: .5px solid $color-primary-light;
 
       @media only screen and (max-width:$bp-big) {
-         font-size: 1.8rem;
+         font-size: 1.3rem;
       }
 
-      @media only screen and (max-width:$bp-small) {
-         font-size: 1.5rem;
+      @media only screen and (max-width:$bp-mid) {
+         font-size: 1.3rem;
       }
 
       @media only screen and (max-width:$bp-small-extra) {
-         // font-size: 1.3rem;
+         font-size: 1.3rem;
       }
 
       &_item {
@@ -200,8 +200,9 @@
             .icon {
                margin-right: 1rem;
 
-               @media only screen and (max-width:$bp-small) {
-                  margin-right: .5rem;
+               @media only screen and (max-width:$bp-big) {
+                  margin-right: 0;
+                  margin-bottom: 0.5rem;
                }
             }
          }

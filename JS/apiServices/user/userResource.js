@@ -93,7 +93,7 @@ export async function updateUserProfile(updateProfileDetails) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(updateProfileDetails),
-      }
+      },
     );
 
     if (updateUserProfileData) {
@@ -123,7 +123,7 @@ export async function updateUserProfilePassword(updateProfileDetails) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(updateProfileDetails),
-      }
+      },
     );
 
     if (updateUserProfilePasswordData) {
@@ -154,7 +154,7 @@ export async function fetchStaffDetail(staffId) {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     //  console.log('Response received...');
@@ -263,9 +263,11 @@ export async function checkAndPromptCreateStaff() {
     const data = await response.json();
     const allStaffs = data.data.users || [];
 
+    console.log('data', data);
+
     // Filter out admins
     const nonAdminStaff = allStaffs.filter(
-      (staff) => staff.accountType !== 'ADMIN'
+      (staff) => staff.accountType !== 'ADMIN',
     );
 
     // If we’re on staff-profile and there is only one staff (admin)
@@ -287,8 +289,8 @@ export async function checkAndPromptCreateStaff() {
     }
 
     // Populate the table with all business staff
-    //  console.log('allStaffs', allStaffs);
-    //  console.log('enrichedShopData', enrichedShopData);
+    console.log('allStaffs', allStaffs);
+    console.log('enrichedShopData', enrichedShopData);
     showGlobalLoader();
     populateStaffTable(allStaffs, enrichedShopData);
     populateBusinessStaffDropdown(allStaffs);
@@ -297,8 +299,8 @@ export async function checkAndPromptCreateStaff() {
       throw new Error(data.message || 'Something went wrong');
     }
 
-    //  console.log('allStaff', allStaffs);
-    //  console.log('enrichedShopData', enrichedShopData);
+    console.log('allStaff', allStaffs);
+    console.log('enrichedShopData', enrichedShopData);
 
     return data;
   } catch (error) {
@@ -437,7 +439,7 @@ export async function assignUserToShop(user_id, staffAssigningDetails) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(staffAssigningDetails),
-      }
+      },
     );
 
     if (assignUserToShopData) {
@@ -524,7 +526,7 @@ export async function removeStaffFromShop(user_id, shop_id) {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     if (fetchedData) {
@@ -540,5 +542,39 @@ export async function removeStaffFromShop(user_id, shop_id) {
     console.error('Error removing Staff from shop', error);
     showToast('error', '❌ Failed to remove Staff from shop');
     throw error;
+  }
+}
+
+export async function refreshUserProfile() {
+  const token = localStorage.getItem('accessToken');
+
+  //   console.log('Code execution reached ');
+
+  if (!token) return;
+
+  try {
+    const response = await safeFetch(`${baseUrl}/api/users/profile`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const profileUser = response.data.user;
+
+    // Get existing stored user data
+    const existingUser = JSON.parse(localStorage.getItem('userData')) || {};
+
+    // Merge profile data but preserve fields like shopId
+    const updatedUser = {
+      ...existingUser,
+      ...profileUser,
+    };
+
+    localStorage.setItem('userData', JSON.stringify(updatedUser));
+
+    return updatedUser;
+  } catch (error) {
+    console.error('Failed to refresh user profile:', error.message);
   }
 }

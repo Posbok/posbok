@@ -33,6 +33,7 @@ import {
   formatFeeType,
   formatTransactionType,
   getAmountForSubmission,
+  hasServiceAccess,
   hideBtnLoader,
   hideGlobalLoader,
   populateBusinessShopDropdown,
@@ -47,71 +48,126 @@ import {
   updateCashInMachineUI,
 } from './apiServices/account/accountOverview.js';
 import { getBusinessSettings } from './apiServices/business/businessResource.js';
+import { hasService, loadUserServices } from './subscription.js';
 
 const userData = config.userData;
-const dummyShopId = config.dummyShopId;
 
 const parsedUserData = userData ? JSON.parse(userData) : null;
 const isAdmin = parsedUserData?.accountType === 'ADMIN';
 const isStaff = parsedUserData?.accountType === 'STAFF';
 const staffShopId = parsedUserData?.shopId;
 
+const staffServicePermission = parsedUserData?.servicePermission;
+
 if (isAdmin) {
   document.addEventListener('DOMContentLoaded', () => {
-    getPosChargeSettings();
-    getFeeSettings();
+    //  getPosChargeSettings();
+    //  getFeeSettings();
   });
 }
 
 const adminPosContainer = document.querySelector('.adminPosContainer');
-
 const staffPosContainer = document.querySelector('.staffPosContainer');
 
-// if ((isAdmin && adminPosContainer) || staffPosContainer) {
+// if (isAdmin && adminPosContainer) {
 //   if (adminPosContainer) adminPosContainer.style.display = 'block';
+//   if (staffPosContainer) staffPosContainer.innerHTML = '';
 //   if (staffPosContainer) staffPosContainer.style.display = 'none';
-
-//   async function loadShopDropdown() {
-//     try {
-//       showGlobalLoader();
-//       const { enrichedShopData } = await checkAndPromptCreateShop();
-//       populateBusinessShopDropdown(enrichedShopData, 'posShopDropdown');
-//       hideGlobalLoader();
-//     } catch (err) {
-//       hideGlobalLoader();
-//       console.error('Failed to load dropdown:', err.message);
-//     }
-//   }
 
 //   loadShopDropdown();
 // } else {
+//   if (adminPosContainer) adminPosContainer.innerHTML = '';
 //   if (adminPosContainer) adminPosContainer.style.display = 'none';
 //   if (staffPosContainer) staffPosContainer.style.display = 'block';
 // }
 
-if (isAdmin && adminPosContainer) {
-  if (adminPosContainer) adminPosContainer.style.display = 'block';
-  if (staffPosContainer) staffPosContainer.innerHTML = '';
-  if (staffPosContainer) staffPosContainer.style.display = 'none';
+async function initializeInventoryFeature() {
+  isAdmin ? await loadUserServices() : '';
 
-  async function loadShopDropdown() {
-    try {
-      showGlobalLoader();
-      const { enrichedShopData } = await checkAndPromptCreateShop();
-      populateBusinessShopDropdown(enrichedShopData, 'posShopDropdown');
-      populateBusinessShopDropdown(enrichedShopData, 'posShopDropdown-2');
-      hideGlobalLoader();
-    } catch (err) {
-      hideGlobalLoader();
-      console.error('Failed to load dropdown:', err.message);
+  console.log(hasService('POS'));
+
+  if (isAdmin && !hasService('POS')) {
+    showSubscriptionRequiredModal();
+
+    if (isAdmin) {
+      if (adminPosContainer) adminPosContainer.style.display = 'block';
+      if (staffPosContainer) {
+        staffPosContainer.innerHTML = '';
+        staffPosContainer.style.display = 'none';
+      }
     }
+
+    return;
   }
 
-  loadShopDropdown();
-} else {
-  if (adminPosContainer) adminPosContainer.innerHTML = '';
-  if (adminPosContainer) adminPosContainer.style.display = 'none';
-  if (staffPosContainer) staffPosContainer.style.display = 'block';
+  if (isStaff && !hasServiceAccess(staffServicePermission, 'POS')) {
+    showSubscriptionRequiredModal();
+
+    if (adminPosContainer) adminPosContainer.style.display = 'none';
+    if (staffPosContainer) {
+      adminPosContainer.innerHTML = '';
+      staffPosContainer.style.display = 'block';
+    }
+
+    return;
+  }
+
+  if (isAdmin) {
+    if (adminPosContainer) adminPosContainer.style.display = 'block';
+    if (staffPosContainer) {
+      staffPosContainer.innerHTML = '';
+      staffPosContainer.style.display = 'none';
+    }
+
+    loadShopDropdown();
+  } else {
+    if (adminPosContainer) {
+      adminPosContainer.innerHTML = '';
+      adminPosContainer.style.display = 'none';
+    }
+
+    if (staffPosContainer) staffPosContainer.style.display = 'block';
+  }
+}
+
+function showSubscriptionRequiredModal() {
+  const main = document.querySelector('.main');
+  const subscriptionRequiredModal = document.querySelector(
+    '.subscriptionRequiredModal',
+  );
+
+  const posSubscriptionCta = document.querySelector('.posSubscriptionCta');
+  if (isAdmin) {
+    posSubscriptionCta.innerHTML = `
+   <button class="hero-btn-dark inventoryBtn "> <a href="/manage.html" class="button-link"></a>Subscribe
+                  Now</button>
+   `;
+  } else {
+    posSubscriptionCta.innerHTML = `
+   <p class="heading-minitext mt-2">Contact Admin</p>
+   `;
+  }
+
+  if (subscriptionRequiredModal)
+    subscriptionRequiredModal.classList.add('active');
+  if (main) main.classList.add('subscribe');
+}
+
+async function loadShopDropdown() {
+  try {
+    showGlobalLoader();
+    const { enrichedShopData } = await checkAndPromptCreateShop();
+    populateBusinessShopDropdown(enrichedShopData, 'posShopDropdown');
+    populateBusinessShopDropdown(enrichedShopData, 'posShopDropdown-2');
+    hideGlobalLoader();
+  } catch (err) {
+    hideGlobalLoader();
+    console.error('Failed to load dropdown:', err.message);
+  }
+}
+
+if (document.body.classList.contains('pos-page')) {
+  initializeInventoryFeature();
 }
 
 // JavaScript for POS Form
@@ -958,10 +1014,10 @@ export async function handleAdminWithdrawalFormSubmit() {
       );
 
       try {
-        console.log(
-          '📦 Admin Withdrawal Transaction Details:',
-          adminWithdrawalDetails,
-        );
+        //   console.log(
+        //     '📦 Admin Withdrawal Transaction Details:',
+        //     adminWithdrawalDetails,
+        //   );
         showBtnLoader(adminWithdrawalSubmitButton);
 
         const businessDayVerified =

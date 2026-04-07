@@ -42,6 +42,7 @@ import {
 import { addPosChargeForm } from './pos';
 import { showToast, closeModal, setupModalCloseButtons } from './script';
 import { populateShopDropdown } from './staff';
+import { hasService, loadUserServices } from './subscription.js';
 
 let isSubmitting = false;
 let allProducts = [];
@@ -77,6 +78,37 @@ if (isAdmin) {
   document.addEventListener('DOMContentLoaded', () => {
     getProductCategories();
   });
+}
+
+async function initializeInventoryManagementFeature() {
+  //   if (!isAdmin) return;
+
+  await loadUserServices();
+
+  const hasInventory = hasService('INVENTORY');
+  const hasEcommerce = hasService('ECOMMERCE');
+
+  console.log('Inventory:', hasInventory, 'Ecommerce:', hasEcommerce);
+
+  if (!hasInventory && !hasEcommerce) {
+    showSubscriptionRequiredModal();
+    return;
+  }
+}
+
+function showSubscriptionRequiredModal() {
+  const main = document.querySelector('.main');
+  const subscriptionRequiredModal = document.querySelector(
+    '.subscriptionRequiredModal',
+  );
+
+  if (subscriptionRequiredModal)
+    subscriptionRequiredModal.classList.add('active');
+  if (main) main.classList.add('subscribe');
+}
+
+if (document.body.classList.contains('inventory-management-page')) {
+  initializeInventoryManagementFeature();
 }
 
 export function openAddCategoryModalBtn() {
@@ -1411,198 +1443,6 @@ function updateAutocompleteList(products) {
   }
 }
 
-//  Update Product
-// export function bindUpdateProductFormListener() {
-//   const form = document.querySelector('.updateProductModal');
-//   if (!form) return;
-
-//   //   console.log(form);
-
-//   if (form) {
-//     form.addEventListener('submit', async function (e) {
-//       e.preventDefault();
-
-//       const productId = form.dataset.productId;
-//       const shopId = form.dataset.shopId;
-
-//       if (!productId) {
-//         showToast('fail', '❎ No Product selected for update.');
-//         return;
-//       }
-
-//       if (!shopId) {
-//         showToast('fail', '❎ No shop selected for update.');
-//         return;
-//       }
-
-//       const updateProductCategory = document.querySelector(
-//         '#updateProductCategory',
-//       ).value;
-//       const updateProductName =
-//         document.querySelector('#updateProductName').value;
-//       const updateProductDescription = document.querySelector(
-//         '#updateProductDescription',
-//       ).value;
-//       // const updateItemDetails = document.querySelector(
-//       //   '#updateProductDetails',
-//       // ).value;
-//       const updateProductSku =
-//         document.querySelector('#updateProductSku').value;
-//       const updateProductBoughtPrice = document.querySelector(
-//         '#updateProductBoughtPrice',
-//       ).value;
-//       const updateProductSellingPrice = document.querySelector(
-//         '#updateProductSellingPrice',
-//       ).value;
-//       const updateProductQuantity = document.querySelector(
-//         '#updateProductQuantity',
-//       ).value;
-
-//       const updateProductExpiryDate =
-//         document.querySelector('#updateExpiryDate').value;
-
-//       const updateLowStockQuantity = document.querySelector(
-//         '#updateLowStockQuantityQuantity',
-//       ).value;
-
-//       const updateSupposedPrice = document.querySelector(
-//         '#updateSupposedPrice',
-//       ).value;
-
-//       //  Publish Status checkboxes
-//       const updatePublishStatusCheckboxes = document.querySelectorAll(
-//         'input[name="updatePublishStatus"]:checked',
-//       );
-
-//       const updatePublishStatus = Array.from(updatePublishStatusCheckboxes).map(
-//         (cb) => cb.value,
-//       );
-//       const updatePublishStatusValue = updatePublishStatus[0] || null;
-
-//       //  Display Quantity checkboxes
-//       const updateDisplayQuantitytatusCheckboxes = document.querySelectorAll(
-//         'input[name="updateDisplayQuantityStatus"]:checked',
-//       );
-
-//       const displayQuantitytatus = Array.from(
-//         updateDisplayQuantitytatusCheckboxes,
-//       ).map((cb) => cb.value);
-
-//       const updateDisplayQuantitytatusValue = displayQuantitytatus[0] || null;
-
-//       let finalUpdateSku_Barcode =
-//         updateProductSku !== '' ? updateProductSku : generateSKU(businessName);
-
-//       const updateProductDetails = {
-//         categoryId: updateProductCategory,
-//         name: updateProductName,
-//         description: updateProductDescription,
-//         sku: finalUpdateSku_Barcode,
-//         purchasePrice: Number(getAmountForSubmission(updateProductBoughtPrice)),
-//         sellingPrice: Number(getAmountForSubmission(updateProductSellingPrice)),
-//         //
-//         expiryDate: updateProductExpiryDate,
-//         lowStockQuantity: Number(updateLowStockQuantity),
-//         supposedPrice: Number(getAmountForSubmission(updateSupposedPrice)),
-//         isPublished: updatePublishStatusValue,
-//         displayQuantity: updateDisplayQuantitytatusValue,
-//         //   productDetails: updateItemDetails,
-//       };
-
-//       const updateInventoryDetails = {
-//         quantity: Number(updateProductQuantity),
-//       };
-
-//       console.log(
-//         'Updating Product Detail with:',
-//         updateProductDetails,
-//         productId,
-//       );
-
-//       const updateProductModalBtn = document.querySelector(
-//         '.updateProductModalBtn',
-//       );
-
-//       try {
-//         showBtnLoader(updateProductModalBtn);
-//         const updatedProductData = await updateProduct(
-//           productId,
-//           updateProductDetails,
-//           shopId,
-//         );
-
-//         if (!updatedProductData) {
-//           console.error('fail', updatedProductData.message);
-//           return;
-//         }
-
-//         //   console.log('Adding Products with:', addProductDetails);
-
-//         try {
-//           const inventoryData = await updateProductInventory(
-//             updateInventoryDetails,
-//             shopId,
-//             productId,
-//           );
-
-//           const filters = getInventoryLogFilters('admin', shopId);
-
-//           if (inventoryData) {
-//             showToast(
-//               'success',
-//               `✅ ${inventoryData.message} with SKU: ${updatedProductData.data.sku}`,
-//             );
-//             closeModal();
-//             clearFormInputs();
-//             await renderProductInventoryTable(shopId);
-//             await renderInventoryLogTable({
-//               filters,
-//               shopId,
-//               tableBody: `#inventoryLogBody-${shopId}`,
-//             });
-//           }
-
-//           const imageFormData = new FormData();
-
-//           const imageInputs = [
-//             form.updateProductImage_1,
-//             form.updateProductImage_2,
-//             form.updateProductImage_3,
-//             form.updateProductImage_4,
-//           ];
-
-//           imageInputs.forEach((input) => {
-//             if (input?.files?.length) {
-//               imageFormData.append('images', input.files[0]);
-//             }
-//           });
-
-//           if (imageFormData.has('images')) {
-//             await uploadProductImages(imageFormData, productId);
-//           }
-//         } catch (inventoryDataErr) {
-//           showToast(
-//             'fail',
-//             `❎ ${inventoryDataErr.message || 'Failed to Update inventory'}`,
-//           );
-//           console.error(
-//             'Error During Inventory Updating:',
-//             inventoryDataErr.message,
-//           );
-//         }
-//         hideBtnLoader(updateProductModalBtn);
-//         //   hideGlobalLoader();
-//       } catch (err) {
-//         hideBtnLoader(updateProductModalBtn);
-
-//         console.error('Error Updating product:', err);
-//         showToast('fail', `❎ ${err.message}`);
-//         return;
-//       }
-//     });
-//   }
-// }
-
 export function bindUpdateProductFormListener() {
   const form = document.querySelector('.updateProductModal');
   if (!form || form.dataset.bound === 'true') return;
@@ -2196,27 +2036,6 @@ export function updateCategoryForm(categoryDetail) {
 
 document.addEventListener('DOMContentLoaded', () => {});
 
-// function getFilters(role, shopId) {
-//   const suffix = role === 'admin' ? `${role}_${shopId}` : role;
-
-//   return {
-//     startDate:
-//       document.getElementById(`startDateFilter_${suffix}`)?.value || '',
-//     endDate: document.getElementById(`endDateFilter_${suffix}`)?.value || '',
-//     type: document.getElementById(`typeFilter_${suffix}`)?.value || '',
-//     status: document.getElementById(`statusFilter_${suffix}`)?.value || '',
-//   };
-// }
-
-// function resetFilters(role, shopId) {
-//   const suffix = role === 'admin' ? `${role}_${shopId}` : role;
-
-//   document.getElementById(`startDateFilter_${suffix}`).value = '';
-//   document.getElementById(`endDateFilter_${suffix}`).value = '';
-//   document.getElementById(`typeFilter_${suffix}`).value = '';
-//   document.getElementById(`statusFilter_${suffix}`).value = '';
-// }
-
 const adminAccordionContainer = document.querySelector(
   '.adminAccordionContainer',
 );
@@ -2258,30 +2077,44 @@ if (isAdmin && adminAccordionContainer && container) {
 
     container.innerHTML = '';
 
-    enrichedShopData.forEach((shop, index) => {
+    const allCategories = await fetchAllCategories();
+    console.log('All categories fetched:', allCategories);
+    console.log('Total shops to render:', enrichedShopData.length);
+    console.log('Shops data:', enrichedShopData);
+
+    //  enrichedShopData.forEach(async (shop, index) => {
+    for (const shop of enrichedShopData) {
+      console.log('Rendering shop:', shop.id, shop.shop_name); // 👈 does this log 3 times?
+
+      const inventoryTableHtml = getAdminInventoryTableHtml(
+        shop,
+        allCategories,
+      );
+      const inventoryLogHtml = getAdminInventoryLogHtml(shop);
+
       const accordion = document.createElement('section');
-      //  shopPageTracker[shop.id] = 1;
       const shopId = shop.id;
 
-      // console.log(shop);
-
-      let isLoading = false;
-
       accordion.className = 'accordion-section';
-      accordion.innerHTML = `        <button class="accordion-toggle card heading-text" data-shop-id="${shopId}">
-                       <h2 class="heading-subtext">
-                          ${shop.shop_name}
-                       </h2>
-                       <i class="fa-solid icon fa-chevron-down"></i>
-                    </button>
-                        <div class="accordion-content">
-                        ${getAdminInventoryTableHtml(shop)}
-                        ${getAdminInventoryLogHtml(shop)}
-             
-       
-        </div>`;
+      accordion.innerHTML = `
+    <button class="accordion-toggle card heading-text" data-shop-id="${shopId}">
+      <h2 class="heading-subtext">${shop.shop_name}</h2>
+      <i class="fa-solid icon fa-chevron-down"></i>
+    </button>
+    <div class="accordion-content">
+      ${inventoryTableHtml}
+      ${inventoryLogHtml}
+    </div>
+  `;
+
+      console.log('Accordion created for shop:', shopId);
       if (container) container.appendChild(accordion);
       if (container) container.dataset.shopId;
+
+      console.log(
+        'Accordion appended. Container children count:',
+        container.children.length,
+      ); // 👈 should increase each time
 
       // console.log(accordion);
 
@@ -2289,34 +2122,35 @@ if (isAdmin && adminAccordionContainer && container) {
         `searchProdutInventory_${shopId}`,
       );
 
-      searchProductInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase();
-        const products = shopProductMap[shopId] || [];
+      if (searchProductInput)
+        searchProductInput.addEventListener('input', (e) => {
+          const query = e.target.value.toLowerCase();
+          const products = shopProductMap[shopId] || [];
 
-        //   console.log(query);
+          //   console.log(query);
 
-        const filteredProducts = products.filter((item) => {
-          const product = item.Product;
+          const filteredProducts = products.filter((item) => {
+            const product = item.Product;
 
-          if (!product) return false;
+            if (!product) return false;
 
-          const name = product.name?.toLowerCase() || '';
-          const desc = product.description?.toLowerCase() || '';
-          const sku = product.sku?.toString()?.toLowerCase() || '';
-          const barcode = product.barcode?.toLowerCase() || '';
+            const name = product.name?.toLowerCase() || '';
+            const desc = product.description?.toLowerCase() || '';
+            const sku = product.sku?.toString()?.toLowerCase() || '';
+            const barcode = product.barcode?.toLowerCase() || '';
 
-          return (
-            name.includes(query) ||
-            desc.includes(query) ||
-            sku.includes(query) ||
-            barcode.includes(query)
-          );
+            return (
+              name.includes(query) ||
+              desc.includes(query) ||
+              sku.includes(query) ||
+              barcode.includes(query)
+            );
+          });
+
+          renderFilteredProducts(shopId, filteredProducts);
+
+          console.log(filteredProducts);
         });
-
-        renderFilteredProducts(shopId, filteredProducts);
-
-        console.log(filteredProducts);
-      });
 
       setupInventoryLogFilters({
         shopId: shop.id,
@@ -2326,9 +2160,35 @@ if (isAdmin && adminAccordionContainer && container) {
 
       // const filters = getFilters('admin', shop.id);
       // currentFiltersByShop[shop.id] = filters;
-    });
+    }
 
     container.addEventListener('click', async function (e) {
+      // ✅ Handle category button clicks FIRST
+      const btn = e.target.closest('.inventoryCategoryBtn');
+      if (btn) {
+        const shopId = btn.dataset.shopId;
+        const categoryId = btn.dataset.categoryId;
+
+        document
+          .querySelectorAll(
+            `#inventoryCategory-${shopId} .inventoryCategoryBtn`,
+          )
+          .forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const products = shopProductMap[shopId] || [];
+        const filtered =
+          categoryId === 'all'
+            ? products
+            : products.filter(
+                (item) =>
+                  item.Product.ProductCategory.id === parseInt(categoryId),
+              );
+
+        renderFilteredProducts(shopId, filtered);
+        return; // stop here
+      }
+
       const toggleBtn = e.target.closest('.accordion-toggle');
       if (!toggleBtn) return;
       const section = toggleBtn.closest('.accordion-section');
@@ -2365,6 +2225,9 @@ if (isAdmin && adminAccordionContainer && container) {
       const shopInventorySection = document.getElementById(
         `shop-report-${shopId}`,
       );
+      const shopLogSection = document.getElementById(
+        `shop-log-report-${shopId}`,
+      );
 
       if (
         shopInventorySection &&
@@ -2379,6 +2242,7 @@ if (isAdmin && adminAccordionContainer && container) {
         });
 
         shopInventorySection.dataset.loaded = 'true';
+        //   if (shopLogSection) shopLogSection.dataset.loaded = 'true';
       }
 
       // Toggle accordion
@@ -2575,7 +2439,7 @@ function renderFilteredProducts(shopId, productList) {
           getProductImages(productId),
         ]);
 
-        //  console.log('Product detail received successfully:', ProductDetail);
+        console.log('Product detail received successfully:', ProductDetail);
 
         // Call function to prefill modal inputs
         if (ProductDetail?.success === true) {
@@ -2830,32 +2694,73 @@ export async function renderProductInventoryTable(shopId) {
     const totalProductsCountElement = document.querySelector(
       `.totalProductsCount_${shopId}`,
     );
-    const totalProductsWorthElement = document.querySelector(
-      `.totalProductsWorth_${shopId}`,
+    const totalProductsCostElement = document.querySelector(
+      `.totalProductsCost_${shopId}`,
     );
     const totalProductsProfitsElement = document.querySelector(
       `.totalProductsProfits_${shopId}`,
     );
+    const totalProductsWorthElement = document.querySelector(
+      `.totalProductsWorth_${shopId}`,
+    );
 
     const totalProductsCount = productInventories?.length || 0;
 
-    const totalProductsWorth = productInventories?.reduce(
+    //  const totalProductsCost = productInventories?.reduce(
+    //    (acc, item) => acc + item.Product.purchase_price * item.quantity,
+    //    0,
+    //  );
+
+    //  const totalProductSellingPrice = productInventories?.reduce(
+    //    (acc, item) => acc + item.Product.selling_price * item.quantity,
+    //    0,
+    //  );
+
+    //  const totalProductProfits = totalProductSellingPrice - totalProductsCost;
+
+    //  const totalProductWorth = totalProductSellingPrice;
+    //  //   + totalProductsCost;
+
+    // 1. Filter out items with 0 or missing purchase price for financial calcs
+    const validFinancialItems =
+      productInventories?.filter((item) => item.Product.purchase_price > 0) ||
+      [];
+
+    // 2. Total Cost (Only for valid items)
+    const totalProductsCost = validFinancialItems.reduce(
       (acc, item) => acc + item.Product.purchase_price * item.quantity,
       0,
     );
 
-    const totalProductSellingPrice = productInventories?.reduce(
+    // 3. Total Selling Price of the VALID items (for Profit calculation)
+    const validSellingPriceForProfit = validFinancialItems.reduce(
       (acc, item) => acc + item.Product.selling_price * item.quantity,
       0,
     );
 
-    const totalProductProfits = totalProductSellingPrice - totalProductsWorth;
+    console.log('Length of Valid items', validFinancialItems.length);
+
+    // 4. Profit (Now accurate because it ignores 0-cost items)
+    const totalProductProfits = validSellingPriceForProfit - totalProductsCost;
+
+    // 5. Total Shop Worth (Keep this using ALL items as you requested)
+    const totalProductWorth = productInventories?.reduce(
+      (acc, item) => acc + item.Product.selling_price * item.quantity,
+      0,
+    );
 
     totalProductsCountElement.textContent = totalProductsCount;
-    totalProductsWorthElement.textContent =
-      `₦` + formatAmountWithCommas(totalProductsWorth);
+
+    totalProductsCostElement.textContent =
+      `₦` + formatAmountWithCommas(totalProductsCost);
+
     totalProductsProfitsElement.textContent =
-      `₦` + formatAmountWithCommas(totalProductProfits);
+      `₦` +
+      formatAmountWithCommas(totalProductProfits) +
+      ` (${validFinancialItems.length} Valid items included)`;
+
+    totalProductsWorthElement.textContent =
+      `₦` + formatAmountWithCommas(totalProductWorth);
 
     //  console.log(totalProductProfits, totalProductsWorth, totalProductsCount);
 
@@ -3048,7 +2953,7 @@ export async function renderProductInventoryTable(shopId) {
             getProductImages(productId),
           ]);
 
-          //  console.log('Product detail received successfully:', ProductDetail);
+          console.log('Product detail received successfully:', ProductDetail);
 
           // Call function to prefill modal inputs
           if (ProductDetail?.success === true) {
@@ -3179,7 +3084,30 @@ export async function renderInventoryLogTable({ filters, shopId }) {
   }
 }
 
-export function getAdminInventoryTableHtml(shop) {
+// It now accepts shopId and returns an HTML string of buttons
+function buildInventoryCategoryButtonsHtml(shopId, allCategories) {
+  let html = `
+    <button class="inventoryCategoryBtn " type="button" 
+            data-category-id="all" data-shop-id="${shopId}">All</button>
+  `;
+
+  allCategories.forEach((category) => {
+    html += `
+      <button class="inventoryCategoryBtn" type="button"
+              data-category-id="${category.id}" 
+              data-shop-id="${shopId}">${category.name}</button>
+    `;
+  });
+
+  return html;
+}
+
+export function getAdminInventoryTableHtml(shop, allCategories) {
+  const categoryButtonsHtml = buildInventoryCategoryButtonsHtml(
+    shop.id,
+    allCategories,
+  );
+
   return `
          <div id="shop-report-${shop.id}" class="reports card" data-loaded="false">
          <div class="reports ">
@@ -3197,14 +3125,23 @@ export function getAdminInventoryTableHtml(shop) {
                   </div>
                </div>
 
+             <div class="inventoryCategory-section" id="inventoryCategory-${shop.id}">
+        ${categoryButtonsHtml}   <!-- ✅ injected directly -->
+      </div>
+
+         </div>
+
                <div>
                   <h2 class="heading-subtext ">Total Products: <span class="totalProductsCount_${shop.id}">0</span></h2>
 
-                  <h2 class="heading-subtext ">Total Products Worth: <span
-                        class="totalProductsWorth_${shop.id}">0</span></h2>
-
-                  <h2 class="heading-subtext ">Total Estimated Profits: <span
+                  <h2 class="heading-subtext ">Total Products Cost: <span
+                        class="totalProductsCost_${shop.id}">0</span></h2>
+                        
+                        <h2 class="heading-subtext ">Total Estimated Profits: <span
                         class="totalProductsProfits_${shop.id}">0</span></h2>
+                        
+                        <h2 class="heading-subtext ">Total Inventory Worth: <span
+                              class="totalProductsWorth_${shop.id}">0</span></h2>
 
                </div>
 
@@ -3237,7 +3174,6 @@ export function getAdminInventoryTableHtml(shop) {
                </div>
             </div>
          </div>
-      </div>
 
    `;
 }
@@ -3247,7 +3183,7 @@ export function getAdminInventoryLogHtml(shop) {
      
          <!-- Inventory Log Table HTML starts Here -->
      
-   <div id="shop-report-${shop.id}" class="reports card" data-loaded="false">
+   <div id="shop-log-report-${shop.id}" class="reports card" data-loaded="false">
 
          <div class="reports">
             <div class="reports-method">

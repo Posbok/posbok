@@ -39,7 +39,7 @@
    <link rel="manifest" href="/site.webmanifest">
 </head>
 
-<body class="container">
+<body class="container sale-page">
 
    <nav class="sidebar collapsed">
       <div class="sidebar-fixed">
@@ -58,8 +58,8 @@
 
          <ul class="side-nav">
             <a href="/pos.html" class="side-nav_link" id="posNav">
-               <li class="side-nav_item ">
-                  <i class="fas fa-exchange-alt icon"></i>
+               <li class="side-nav_item">
+                  <i class="fas fa-exchange-alt icon" title="POS Transaction"></i>
                   <span>POS</span>
                </li>
             </a>
@@ -68,35 +68,35 @@
          <ul class="side-nav">
             <a href="/sell.html" class="side-nav_link" id="sellNav">
                <li class="side-nav_item active">
-                  <i class="fas fa-cart-shopping icon"></i>
+                  <i class="fas fa-cart-shopping icon" title="Sales Transaction"></i>
                   <span>SELL</span>
                </li>
             </a>
          </ul>
 
-         <!-- <ul class="side-nav">
-            <a href="/charging.html" class="side-nav_link">
-               <li class="side-nav_item">
-                  <i class="fas fa-bolt icon"></i>
-                  <span>CHARGING</span>
+         <ul class="side-nav">
+            <a href="/warehouse-management.html" class="side-nav_link" id="warehouseNav">
+               <li class="side-nav_item ">
+                  <i class="fa-solid fa-warehouse icon" title="Warehouse Management"></i>
+                  <span>WAREHOUSE</span>
                </li>
             </a>
          </ul>
 
          <ul class="side-nav">
-            <a href="/simRegistration.html" class="side-nav_link">
+            <a href="/storefront-management.html" class="side-nav_link" id="storefrontNav">
                <li class="side-nav_item ">
-                  <i class="fas fa-sim-card icon"></i>
-                  <span class="simReg-long">SIM REGISTRATION</span>
-                  <span class="simReg-short">SIM REG.</span>
+                  <i class="fa-solid fa-store icon" title="StoreFront Management"></i>
+                  <span>STORE FRONT</span>
                </li>
             </a>
-         </ul> -->
+         </ul>
+
 
          <ul class="side-nav">
             <a href="/reports.html" class="side-nav_link" id="reportsNav">
                <li class="side-nav_item ">
-                  <i class="fas fa-chart-pie icon"></i>
+                  <i class="fas fa-chart-pie icon" title="Reports"></i>
                   <span>REPORTS</span>
                </li>
             </a>
@@ -105,7 +105,7 @@
          <ul class="side-nav">
             <a href="/manage.html" class="side-nav_link" id="manageNav">
                <li class="side-nav_item ">
-                  <i class="fa-solid fa-users-gear icon"></i>
+                  <i class="fa-solid fa-users-gear icon" title="System Management"></i>
                   <span>MANAGE</span>
                </li>
             </a>
@@ -148,7 +148,7 @@
 
       <!-- Admin Sell Form -->
       <div class="adminSellContainer admin-view card adminSellProduct">
-         <form class="sell-product-form adminAddToCartForm" name="sell-product">
+         <form class="sell-product-form adminAddToCartForm " name="sell-product">
 
             <div>
                <h1 class="heading-text">Admin: Sell Item</h1>
@@ -333,7 +333,7 @@
 
                <div class="naira-input-container">
                   <input id="soldProductPrice" type="text" placeholder="Enter Sold Price" name="soldProductPrice"
-                     oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
+                     oninput="this.value=this.value.replace(/[^0-9]/g,'')">
                   <span class="naira">&#x20A6;</span>
                </div>
             </div>
@@ -342,7 +342,7 @@
                <label for="soldProductQuantity">Quantity</label>
 
                <input id="soldProductQuantity" type="text" placeholder="Enter Quantity" name="soldProductQuantity"
-                  oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
+                  oninput="this.value=this.value.replace(/[^0-9]/g,'')">
             </div>
 
             <div class="center-button mt-2" style="display: flex; align-items: center; gap: 1.5rem;">
@@ -902,6 +902,7 @@
    <div id="receiptPrintPDF"></div>
 
 
+
    <!-- Sold Items Report Modals -->
    <form class="modal-form soldDetailModal soldDetailModalContainer" name="modal">
       <div class="card saleDetails modal">
@@ -916,7 +917,7 @@
 
                <!-- <div class="modalBody"> -->
                <!-- <h2 class="heading-minitext mb-1 "><strong>Shop Name:</strong> <span id="soldDetailShop"></span>
-               </h2> -->
+                  </h2> -->
                <h2 class="heading-minitext mb-1 "><strong>Receipt:</strong> <span id="soldDetailReceiptNumber"></span>
                </h2>
                <h2 class="heading-minitext mb-1"><strong>Customer:</strong> <span id="soldDetailCustomerName"></span>
@@ -938,18 +939,18 @@
                      <tbody>
                         <!-- JS injects rows here -->
                         <!-- <tr class="table-body-row ">
-                           <td class="py-1">Iphone Charger</td>
-                           <td class="py-1">2</td>
-                           <td class="py-1">₦500</td>
-                           <td class="py-1">₦1000</td>
-                        </tr>
-
-                        <tr class="table-body-row ">
-                           <td class="py-1">Oriamo Powerbank</td>
-                           <td class="py-1">1</td>
-                           <td class="py-1">₦200</td>
-                           <td class="py-1">₦200</td>
-                        </tr> -->
+                              <td class="py-1">Iphone Charger</td>
+                              <td class="py-1">2</td>
+                              <td class="py-1">₦500</td>
+                              <td class="py-1">₦1000</td>
+                           </tr>
+   
+                           <tr class="table-body-row ">
+                              <td class="py-1">Oriamo Powerbank</td>
+                              <td class="py-1">1</td>
+                              <td class="py-1">₦200</td>
+                              <td class="py-1">₦200</td>
+                           </tr> -->
                      </tbody>
                   </table>
                </div>
@@ -992,6 +993,22 @@
       </div>
    </form>
 
+   <!-- Subscribe Expired Modals -->
+   <form class="modal-form soldDetailModal subscriptionRequiredModalContainer" name="modal">
+      <div class="card subscriptionRequiredModal modal ">
+
+         <div class="reports-method ">
+            <h1 class="heading-subtext center-text mt-2">You don't have access to this service!</h1>
+            <h2 class="heading-minitext center-text mt-1">Kindly Subscribe to Inventory Service to continue using this
+               Feature.
+            </h2>
+
+            <div class=" sellSubscriptionCta center-button">
+
+            </div>
+         </div>
+      </div>
+   </form>
 </body>
 
 </html>

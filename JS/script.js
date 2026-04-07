@@ -12,6 +12,7 @@ import {
   checkAndPromptCreateStaff,
   fetchProfileDetails,
   openCreateStaffModal,
+  refreshUserProfile,
   updateUserProfile,
   updateUserProfilePassword,
 } from './apiServices/user/userResource.js';
@@ -55,6 +56,7 @@ import {
   getbusinessNotices,
 } from './superAdmin/superAdminResources.js';
 import { getFirst20Words } from './superAdminNotices.js';
+import { getActiveSubscriptionPlans } from './apiServices/subscription/subscriptionResource.js';
 
 const userData = config.userData;
 const dummyShopId = config.dummyShopId;
@@ -598,7 +600,7 @@ async function renderBusinessDayButtons() {
   if (isStaff) {
     const businessDay = await getCurrentBusinessDay(isStaff ? shopId : '');
     //  console.log('new Business Day:', businessDay.data);
-    console.log('COde got here');
+    //  console.log('COde got here');
 
     //  console.log(openingCash);
 
@@ -1840,6 +1842,8 @@ const storefrontNav = document.querySelector('.storefrontBtn');
 const posManagementNav = document.querySelector('.posManagementBtn');
 
 // Stop everything if no user is logged in
+// UI Rendering
+
 if (!userData) {
   //   console.log('❎❎❎❎ No user data found');
 } else {
@@ -1867,7 +1871,7 @@ if (!userData) {
       businessNameDisplay.textContent = parsedUserData.businessName;
   }
 
-  // Account Type - services display
+  // Account Type - services display - UI
 
   // Extract only the current page name (without .html or parameters)
   const currentPath = window.location.pathname;
@@ -1893,47 +1897,48 @@ if (!userData) {
   );
 
   if (restrictedServiceAccess) {
-    window.location.href = 'index.html';
+    //  window.location.href = 'index.html';
+    console.log('Currently in an unauthorized place normally');
   }
 
   if (isStaff) {
-    // First, hide all tabs by default
-    if (sellIndexTab) sellIndexTab.style.display = 'none';
-    if (posIndexTab) posIndexTab.style.display = 'none';
-    if (reportIndexTab) reportIndexTab.style.display = 'none';
+    // //  First, hide all tabs by default
+    //  if (sellIndexTab) sellIndexTab.style.display = 'none';
+    //  if (posIndexTab) posIndexTab.style.display = 'none';
+    //  if (reportIndexTab) reportIndexTab.style.display = 'none';
 
-    if (sellNav) sellNav.style.display = 'none';
-    if (posNav) posNav.style.display = 'none';
-    if (reportsNav) reportsNav.style.display = 'none';
+    //  if (sellNav) sellNav.style.display = 'none';
+    //  if (posNav) posNav.style.display = 'none';
+    //  if (reportsNav) reportsNav.style.display = 'none';
 
-    // Show only what's allowed based on servicePermission
-    if (
-      servicePermission === 'POS_TRANSACTIONS' ||
-      servicePermission === 'BOTH'
-    ) {
-      if (posIndexTab) posIndexTab.style.display = 'block';
-      if (posNav) posNav.style.display = 'block';
+    //  // Show only what's allowed based on servicePermission
+    //  if (
+    //    servicePermission === 'POS_TRANSACTIONS' ||
+    //    servicePermission === 'BOTH'
+    //  ) {
+    //    if (posIndexTab) posIndexTab.style.display = 'block';
+    //    if (posNav) posNav.style.display = 'block';
 
-      // if (posDepositButton) posDepositButton.style.display = 'block';
-    }
+    //    // if (posDepositButton) posDepositButton.style.display = 'block';
+    //  }
 
-    if (
-      servicePermission === 'INVENTORY_SALES' ||
-      servicePermission === 'BOTH'
-    ) {
-      if (sellIndexTab) sellIndexTab.style.display = 'block';
-      if (sellNav) sellNav.style.display = 'block';
-    }
+    //  if (
+    //    servicePermission === 'INVENTORY_SALES' ||
+    //    servicePermission === 'BOTH'
+    //  ) {
+    //    if (sellIndexTab) sellIndexTab.style.display = 'block';
+    //    if (sellNav) sellNav.style.display = 'block';
+    //  }
 
-    // Show report tab only if either service is active
-    if (
-      servicePermission === 'POS_TRANSACTIONS' ||
-      servicePermission === 'INVENTORY_SALES' ||
-      servicePermission === 'BOTH'
-    ) {
-      if (reportIndexTab) reportIndexTab.style.display = 'block';
-      if (reportsNav) reportsNav.style.display = 'block';
-    }
+    //  // Show report tab only if either service is active
+    //  if (
+    //    servicePermission === 'POS_TRANSACTIONS' ||
+    //    servicePermission === 'INVENTORY_SALES' ||
+    //    servicePermission === 'BOTH'
+    //  ) {
+    //    if (reportIndexTab) reportIndexTab.style.display = 'block';
+    //    if (reportsNav) reportsNav.style.display = 'block';
+    //  }
 
     // Hide manage tab completely for staff
     if (manageIndexTab) manageIndexTab.style.display = 'none';
@@ -1970,13 +1975,13 @@ if (!userData) {
       servicePermission === 'POS_TRANSACTIONS' ||
       servicePermission === 'BOTH'
     ) {
-      if (posIndexTab) posIndexTab.style.display = 'block';
-      if (posNav) posNav.style.display = 'block';
-      if (posManagementNav) posManagementNav.classList.remove('hidden');
+      // if (posIndexTab) posIndexTab.style.display = 'block';
+      // if (posNav) posNav.style.display = 'block';
+      // if (posManagementNav) posManagementNav.classList.remove('hidden');
     } else {
-      if (posIndexTab) posIndexTab.style.display = 'none';
-      if (posNav) posNav.style.display = 'none';
-      if (posManagementNav) posManagementNav.classList.add('hidden');
+      // if (posIndexTab) posIndexTab.style.display = 'none';
+      // if (posNav) posNav.style.display = 'none';
+      // if (posManagementNav) posManagementNav.classList.add('hidden');
     }
 
     // Conditionally show Sell tab
@@ -1984,21 +1989,21 @@ if (!userData) {
       servicePermission === 'INVENTORY_SALES' ||
       servicePermission === 'BOTH'
     ) {
-      if (sellIndexTab) sellIndexTab.style.display = 'block';
-      if (sellNav) sellNav.style.display = 'block';
-      if (invetoryNav) invetoryNav.classList.remove('hidden');
-      if (warehouseNav) warehouseNav.classList.remove('hidden');
+      // if (sellIndexTab) sellIndexTab.style.display = 'block';
+      // if (sellNav) sellNav.style.display = 'block';
+      // if (invetoryNav) invetoryNav.classList.remove('hidden');
+      // if (warehouseNav) warehouseNav.classList.remove('hidden');
     } else {
-      if (sellIndexTab) sellIndexTab.style.display = 'none';
-      if (sellNav) sellNav.style.display = 'none';
-      if (invetoryNav) invetoryNav.classList.add('hidden');
-      if (warehouseNav) warehouseNav.classList.add('hidden');
+      // if (sellIndexTab) sellIndexTab.style.display = 'none';
+      // if (sellNav) sellNav.style.display = 'none';
+      // if (invetoryNav) invetoryNav.classList.add('hidden');
+      // if (warehouseNav) warehouseNav.classList.add('hidden');
     }
 
     if (servicePermission === 'BOTH') {
-      if (posManagementNav) posManagementNav.classList.remove('hidden');
-      if (invetoryNav) invetoryNav.classList.remove('hidden');
-      if (warehouseNav) warehouseNav.classList.remove('hidden');
+      // if (posManagementNav) posManagementNav.classList.remove('hidden');
+      // if (invetoryNav) invetoryNav.classList.remove('hidden');
+      // if (warehouseNav) warehouseNav.classList.remove('hidden');
     }
 
     const restrictedAdminPages = ['super-admin'];
@@ -2043,7 +2048,7 @@ if (!userData) {
 }
 
 if (isAdmin) {
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', async () => {
     // Setup for Shops
     setupCreateShopForm();
     setupModalCloseButtons();
@@ -2062,7 +2067,7 @@ if (isAdmin) {
       ?.addEventListener('click', openCreateStaffModal);
 
     if (userData) {
-      checkAndPromptCreateStaff();
+      await checkAndPromptCreateStaff();
     }
 
     //Admin api calls
@@ -2399,3 +2404,10 @@ export function displayfullNotice(noticeId) {
   timeEl.textContent = new Date(selected.created_at).toLocaleTimeString();
   dateEl.textContent = new Date(selected.created_at).toLocaleDateString();
 }
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await refreshUserProfile();
+  //   await getActiveSubscriptionPlans();
+  //   getActiveSubscriptionPlans();
+  //   initializeUI(); // your existing UI rendering
+});

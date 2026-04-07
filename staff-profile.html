@@ -64,8 +64,8 @@
 
          <ul class="side-nav">
             <a href="/pos.html" class="side-nav_link" id="posNav">
-               <li class="side-nav_item ">
-                  <i class="fas fa-exchange-alt icon"></i>
+               <li class="side-nav_item">
+                  <i class="fas fa-exchange-alt icon" title="POS Transaction"></i>
                   <span>POS</span>
                </li>
             </a>
@@ -74,35 +74,35 @@
          <ul class="side-nav">
             <a href="/sell.html" class="side-nav_link" id="sellNav">
                <li class="side-nav_item ">
-                  <i class="fas fa-cart-shopping icon"></i>
+                  <i class="fas fa-cart-shopping icon" title="Sales Transaction"></i>
                   <span>SELL</span>
                </li>
             </a>
          </ul>
 
-         <!-- <ul class="side-nav">
-            <a href="/charging.html" class="side-nav_link">
-               <li class="side-nav_item">
-                  <i class="fas fa-bolt icon"></i>
-                  <span>CHARGING</span>
+         <ul class="side-nav">
+            <a href="/warehouse-management.html" class="side-nav_link" id="warehouseNav">
+               <li class="side-nav_item ">
+                  <i class="fa-solid fa-warehouse icon" title="Warehouse Management"></i>
+                  <span>WAREHOUSE</span>
                </li>
             </a>
          </ul>
 
          <ul class="side-nav">
-            <a href="/simRegistration.html" class="side-nav_link">
+            <a href="/storefront-management.html" class="side-nav_link" id="storefrontNav">
                <li class="side-nav_item ">
-                  <i class="fas fa-sim-card icon"></i>
-                  <span class="simReg-long">SIM REGISTRATION</span>
-                  <span class="simReg-short">SIM REG.</span>
+                  <i class="fa-solid fa-store icon" title="StoreFront Management"></i>
+                  <span>STORE FRONT</span>
                </li>
             </a>
-         </ul> -->
+         </ul>
+
 
          <ul class="side-nav">
             <a href="/reports.html" class="side-nav_link" id="reportsNav">
                <li class="side-nav_item ">
-                  <i class="fas fa-chart-pie icon"></i>
+                  <i class="fas fa-chart-pie icon" title="Reports"></i>
                   <span>REPORTS</span>
                </li>
             </a>
@@ -111,7 +111,7 @@
          <ul class="side-nav">
             <a href="/manage.html" class="side-nav_link" id="manageNav">
                <li class="side-nav_item active">
-                  <i class="fa-solid fa-users-gear icon"></i>
+                  <i class="fa-solid fa-users-gear icon" title="System Management"></i>
                   <span>MANAGE</span>
                </li>
             </a>
@@ -152,23 +152,23 @@
             <div class="adminHeader">
                <h2 class="heading-subtext" style=""> Quick Actions </h2>
 
-               <!-- <button class="hero-btn-dark posManagementBtn hidden"> <a href="pos-management.html"
+               <!-- <button class="hero-btn-dark posManagementBtn "> <a href="pos-management.html"
                      class="button-link"></a>Pos
                   Management</button> -->
 
-               <button class="hero-btn-dark inventoryBtn hidden"> <a href="inventory.html"
-                     class="button-link"></a>Inventory</button>
+               <button class="hero-btn-dark inventoryBtn "> <a href="inventory.html" class="button-link"></a>Inventory
+                  Management</button>
 
 
                <button class="hero-btn-dark"> <a href="shop-management.html" class="button-link"></a>Shop
                   Management</button>
 
-               <button class="hero-btn-dark warehouseBtn hidden"> <a href="warehouse-management.html"
+               <!-- <button class="hero-btn-dark warehouseBtn "> <a href="warehouse-management.html"
                      class="button-link"></a>Warehouse
                   Management</button>
 
                <button class="hero-btn-dark storefrontBtn"> <a href="storefront-management.html"
-                     class="button-link"></a>Storefront Management</button>
+                     class="button-link"></a>Storefront Management</button> -->
 
                <button class="hero-btn-dark"> <a href="manage.html" class="button-link"></a>Manage</button>
 
@@ -271,6 +271,8 @@
       <div class="spinner"></div>
    </div>
 
+
+   <!-- Create Staff -->
    <form class="modal-form createStaffModal" id="createStaffModal" name="add-user" netlify>
       <div class="card addUser modal ">
          <div>
@@ -444,23 +446,30 @@
 
          <!-- Staff Access Service -->
          <div class="addUser-form_input mb-1">
-            <label for="accessType" class="heading-subtext">Access Type</label>
+            <label for="staffAccessType" class="heading-subtext">Access Type</label>
+
 
             <div class="checkbox">
                <div class="checkbox-container mb-1">
-                  <input id="staffPosCheckbox" type="radio" name="accessType" value="POS_TRANSACTIONS">
+                  <input id="staffPosCheckbox" type="checkbox" name="staffAccessType" value="POS">
                   <label for="staffPosCheckbox">POS</label>
                </div>
 
                <div class="checkbox-container mb-1">
-                  <input id="staffSellCheckbox" type="radio" name="accessType" value="INVENTORY_SALES" disabled>
-                  <label for="staffSellCheckbox">SELL</label>
+                  <input id="staffInventoryCheckbox" type="checkbox" name="staffAccessType" value="INVENTORY">
+                  <label for="staffInventoryCheckbox">INVENTORY</label>
                </div>
 
                <div class="checkbox-container mb-1">
-                  <input id="staffPosAndSellCheckbox" type="radio" name="accessType" value="BOTH" disabled>
-                  <label for="staffPosAndSellCheckbox">POS & SELL</label>
+                  <input id="staffWarehouseCheckbox" type="checkbox" name="staffAccessType" value="WAREHOUSE">
+                  <label for="staffWarehouseCheckbox">WAREHOUSE</label>
                </div>
+
+               <div class="checkbox-container mb-1">
+                  <input id="staffStorefrontCheckbox" type="checkbox" name="staffAccessType" value="STOREFRONT">
+                  <label for="staffStorefrontCheckbox">STOREFRONT</label>
+               </div>
+               <p id="accessTypeError" class="error-text" style="display:none; color: red;"></p>
             </div>
          </div>
 
@@ -548,10 +557,23 @@
       </div>
    </form>
 
+   <!-- Update Staff Information -->
    <form class="modal-form adminUpdateUserDataModal" name="modal">
       <div class="card adminUpdateUserData modal ">
          <div>
             <h1 class="heading-text">Update User Data</h1>
+         </div>
+
+         <!-- Assign to shop -->
+         <div class="modal-form_input">
+            <label for="staffRoleDropdown">Staff Role</label>
+
+            <select id="staffRoleDropdown" class="form-control">
+               <option value="">Select a Role</option>
+               <option value="ADMIN">Admin</option>
+               <option id="roleOptionStaff" value="STAFF">Staff</option>
+
+            </select>
          </div>
 
          <!-- FIrst name -->
@@ -584,7 +606,7 @@
          </div>
 
          <!--  Staff Access Time -->
-         <div class="addUser-form_input flex-gap-2">
+         <!-- <div class="addUser-form_input flex-gap-2">
             <div class="double-input mb-2 mt-2">
                <label for="update-start-time">Access Time</label>
 
@@ -593,10 +615,8 @@
                      <label for="update-start-time">Start</label>
                      <input id="update-start-time" type="time" name="update-start-time" class="mr-2" required>
                   </div>
-                  <!-- </div> -->
 
-                  <!-- <div class="addUser-form_input"> -->
-                  <!-- <label for="end-time">Access End Time</label> -->
+
 
                   <div class="mb-1">
                      <label for="update-end-time">End</label>
@@ -604,7 +624,7 @@
                   </div>
                </div>
             </div>
-         </div>
+         </div> -->
 
          <!-- Staff Access Service -->
          <div class="addUser-form_input mb-1">
@@ -612,18 +632,26 @@
 
             <div class="checkbox">
                <div class="checkbox-container mb-1">
-                  <input id="updateStaffPosCheckbox" type="radio" name="updateStaffAccessType" value="POS_TRANSACTIONS">
+                  <input id="updateStaffPosCheckbox" type="checkbox" name="updateStaffAccessType" value="POS">
                   <label for="updateStaffPosCheckbox">POS</label>
                </div>
 
                <div class="checkbox-container mb-1">
-                  <input id="updateStaffSellCheckbox" type="radio" name="updateStaffAccessType" value="INVENTORY_SALES">
-                  <label for="updateStaffSellCheckbox">SELL</label>
+                  <input id="updateStaffInventoryCheckbox" type="checkbox" name="updateStaffAccessType"
+                     value="INVENTORY">
+                  <label for="updateStaffInventoryCheckbox">INVENTORY</label>
                </div>
 
                <div class="checkbox-container mb-1">
-                  <input id="updateStaffPosAndSellCheckbox" type="radio" name="updateStaffAccessType" value="BOTH">
-                  <label for="updateStaffPosAndSellCheckbox">POS & SELL</label>
+                  <input id="updateStaffWarehouseCheckbox" type="checkbox" name="updateStaffAccessType"
+                     value="WAREHOUSE">
+                  <label for="updateStaffWarehouseCheckbox">WAREHOUSE</label>
+               </div>
+
+               <div class="checkbox-container mb-1">
+                  <input id="updateStaffStorefrontCheckbox" type="checkbox" name="updateStaffAccessType"
+                     value="STOREFRONT">
+                  <label for="updateStaffStorefrontCheckbox">STOREFRONT</label>
                </div>
             </div>
          </div>

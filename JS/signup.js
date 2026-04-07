@@ -25,7 +25,7 @@ if (createbusinessForm) {
     const businessName = document.getElementById('businessName').value;
     const businessAddress = document.getElementById('businessAddress').value;
     const businessPhoneNumber = document.getElementById(
-      'businessPhoneNumber'
+      'businessPhoneNumber',
     ).value;
     const businessState = document.getElementById('businessState').value;
     const cacRegNo = document.getElementById('cacRegNo').value;
@@ -34,13 +34,13 @@ if (createbusinessForm) {
     const businessStaffSize =
       document.getElementById('businessStaffSize').value;
 
-    const businessTypeCheckboxes = document.querySelectorAll(
-      'input[name="businessType"]:checked'
-    );
-    const businessType = Array.from(businessTypeCheckboxes).map(
-      (cb) => cb.value
-    );
-    const businessTypeValue = businessType[0] || null;
+    //  const businessTypeCheckboxes = document.querySelectorAll(
+    //    'input[name="businessType"]:checked'
+    //  );
+    //  const businessType = Array.from(businessTypeCheckboxes).map(
+    //    (cb) => cb.value
+    //  );
+    //  const businessTypeValue = businessType[0] || null;
 
     //  const versionPreferenceCheckboxes = document.querySelectorAll(
     //    'input[name="versionPreference"]:checked'
@@ -65,7 +65,8 @@ if (createbusinessForm) {
       cacRegNo,
       // taxId,
       // nin,
-      businessType: businessTypeValue,
+      // businessType: businessTypeValue,
+      businessType: ['POS', 'STOREFRONT', 'INVENTORY', 'WAREHOUSE'],
       staffSize: businessStaffSize,
       // versionPreference: versionPreferenceValue,
     };
@@ -147,9 +148,8 @@ if (signupForm) {
   const businessType = parseBusinessData?.data.business_type;
 
   parseBusinessData
-    ? (document.querySelector(
-        '.adminBusinessName'
-      ).textContent = `Admin Account Creation (${parseBusinessData?.data.business_name})`)
+    ? (document.querySelector('.adminBusinessName').textContent =
+        `Admin Account Creation (${parseBusinessData?.data.business_name})`)
     : `Admin Account Creation `;
 
   signupForm.addEventListener('submit', function (e) {
@@ -197,7 +197,7 @@ if (signupForm) {
       //   address: guarantorAddress,
       // },
       accountType: 'ADMIN',
-      servicePermission: businessType,
+      servicePermission: ['POS', 'STOREFRONT', 'INVENTORY', 'WAREHOUSE'],
     };
 
     //  console.log('📦 Admin Details:', adminDetails);
@@ -210,7 +210,7 @@ if (signupForm) {
     if (!businessId) {
       showToast(
         'fail',
-        '❎ No Business ID! Kindly create a Business before creating an Admin'
+        '❎ No Business ID! Kindly create a Business before creating an Admin',
       );
       redirectWithDelay('Create Business Page', 'createbusiness.html', 500);
       return;

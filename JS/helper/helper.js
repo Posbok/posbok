@@ -104,6 +104,9 @@ export function clearFormInputs() {
   );
 
   const moderateReviewModal = document.querySelector('.moderateReviewModal');
+  const subscriptionServiceCard = document.querySelector(
+    '.subscriptionServiceCard',
+  );
 
   //   Clear Search Input
   const searchProductInput = document.querySelector('.searchProductInput');
@@ -115,6 +118,25 @@ export function clearFormInputs() {
   if (searchStockProdutItem) searchStockProdutItem.value = '';
 
   // Clear Form Implementations
+
+  if (subscriptionServiceCard) {
+    subscriptionServiceCard
+      .querySelectorAll('input, textarea, select')
+      .forEach((el) => {
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          el.checked = false;
+        } else {
+          el.value = '';
+        }
+      });
+
+    const quoteSummary = document.querySelector('.quote-summary');
+
+    quoteSummary.innerHTML = `<p class="heading-minitext">Select a service to see pricing</p>
+         <div class="discount-note ">
+                  Choose more services to Enjoy massive discount per service
+               </div>`;
+  }
 
   if (moderateReviewModal) {
     moderateReviewModal
@@ -677,6 +699,22 @@ export function formatAmountWithCommasOnInput(input) {
 }
 
 // Format dashboard Field type
+export function formatSubscriptionChannel(value) {
+  if (!value) return '-';
+
+  switch (value.toLowerCase()) {
+    case 'card':
+      return 'Card';
+
+    case 'bank_transfer':
+      return 'Bank Transfer';
+
+    default:
+      return value;
+  }
+}
+
+// Format dashboard Field type
 export function formatAdminWithdrawalType(value) {
   switch (value.toLowerCase()) {
     case 'cash_in_machine':
@@ -796,13 +834,16 @@ export function formatActionType(value) {
 
 // Format Service Permission
 export function formatServicePermission(value) {
+  //   console.log('value', value);
   switch (value.toLowerCase()) {
-    case 'pos_transactions':
+    case 'POS':
       return 'POS Transactions';
-    case 'inventory_sales':
+    case 'INVENTORY':
       return 'Sales & Inventory';
-    case 'both':
-      return 'POS & Sales';
+    case 'WAREHOUSE':
+      return 'Warehouse';
+    case 'STOREFRONT':
+      return 'Storefront';
     default:
       return value;
   }
@@ -1752,4 +1793,8 @@ export function getDaySuffix(day) {
     default:
       return 'th';
   }
+}
+
+export function hasServiceAccess(permissions, service) {
+  return permissions.includes(service) || permissions.includes('BOTH');
 }

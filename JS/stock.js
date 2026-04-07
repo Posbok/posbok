@@ -37,6 +37,7 @@ import { checkAndPromptCreateShop } from './apiServices/shop/shopResource.js';
 
 import { checkAndPromptCreateStaff } from './apiServices/user/userResource.js';
 import { getProductCategories } from './apiServices/inventory/inventoryResources.js';
+import { hasService, loadUserServices } from './subscription.js';
 
 const userData = config.userData;
 const dummyShopId = config.dummyShopId; // Dummy user data for testing
@@ -55,6 +56,48 @@ if (isAdmin) {
     getStockItems();
     getStockLogs();
   });
+}
+
+async function initializeInventoryManagementFeature() {
+  await loadUserServices();
+
+  const hasWarehouse = hasService('WAREHOUSE');
+
+  console.log('Inventory:', hasWarehouse);
+
+  if (!hasWarehouse) {
+    showSubscriptionRequiredModal();
+    return;
+  }
+}
+
+function showSubscriptionRequiredModal() {
+  const main = document.querySelector('.main');
+  const subscriptionRequiredModal = document.querySelector(
+    '.subscriptionRequiredModal',
+  );
+
+  const warehouseSubscriptionCta = document.querySelector(
+    '.warehouseSubscriptionCta',
+  );
+  if (isAdmin) {
+    warehouseSubscriptionCta.innerHTML = `
+   <button class="hero-btn-dark inventoryBtn "> <a href="/manage.html" class="button-link"></a>Subscribe
+                  Now</button>
+   `;
+  } else {
+    warehouseSubscriptionCta.innerHTML = `
+   <p class="heading-minitext mt-2">Contact Admin</p>
+   `;
+  }
+
+  if (subscriptionRequiredModal)
+    subscriptionRequiredModal.classList.add('active');
+  if (main) main.classList.add('subscribe');
+}
+
+if (document.body.classList.contains('warehouse-page')) {
+  initializeInventoryManagementFeature();
 }
 
 export function openDeleteStockItemModal() {
@@ -564,6 +607,17 @@ export function bindMoveStockFormListener() {
 
       try {
         showBtnLoader(moveStockModalBtn);
+
+        if (!hasService('INVENTORY')) {
+          console.log('There is no Inventory subscription');
+
+          showToast(
+            '❎info',
+            'Subscribe to Inventory to Move item to Inventory',
+          );
+          return;
+        }
+
         const movedStockData = await moveStockItem(moveStockItemDetails);
 
         if (!movedStockData) {

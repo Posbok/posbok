@@ -26,6 +26,9 @@
 
    <script defer src="https://unpkg.com/smoothscroll-polyfill@0.4.4/dist/smoothscroll.min.js"></script>
 
+   <!-- Paystack -->
+   <script src="https://js.paystack.co/v1/inline.js"></script>
+
    <!-- <script defer type="module" src="JS/script.js"></script>
    <script defer type="module" src="JS/reports.js"></script> -->
    <!-- <script defer type="module" src="JS/goods.js"></script> -->
@@ -33,6 +36,7 @@
 
    <!-- <script src="/dist/main.bundle.js" defer></script> -->
    <script src="/dist/business.bundle.js" defer></script>
+   <script src="/dist/subscription.bundle.js" defer></script>
    <!-- <script src="dist/reports.bundle.js" defer></script> -->
 
    <title>POSBOK &mdash; Business Management</title>
@@ -61,8 +65,8 @@
 
          <ul class="side-nav">
             <a href="/pos.html" class="side-nav_link" id="posNav">
-               <li class="side-nav_item ">
-                  <i class="fas fa-exchange-alt icon"></i>
+               <li class="side-nav_item">
+                  <i class="fas fa-exchange-alt icon" title="POS Transaction"></i>
                   <span>POS</span>
                </li>
             </a>
@@ -71,35 +75,35 @@
          <ul class="side-nav">
             <a href="/sell.html" class="side-nav_link" id="sellNav">
                <li class="side-nav_item ">
-                  <i class="fas fa-cart-shopping icon"></i>
+                  <i class="fas fa-cart-shopping icon" title="Sales Transaction"></i>
                   <span>SELL</span>
                </li>
             </a>
          </ul>
 
-         <!-- <ul class="side-nav">
-            <a href="/charging.html" class="side-nav_link">
-               <li class="side-nav_item">
-                  <i class="fas fa-bolt icon"></i>
-                  <span>CHARGING</span>
+         <ul class="side-nav">
+            <a href="/warehouse-management.html" class="side-nav_link" id="warehouseNav">
+               <li class="side-nav_item ">
+                  <i class="fa-solid fa-warehouse icon" title="Warehouse Management"></i>
+                  <span>WAREHOUSE</span>
                </li>
             </a>
          </ul>
 
          <ul class="side-nav">
-            <a href="/simRegistration.html" class="side-nav_link">
+            <a href="/storefront-management.html" class="side-nav_link" id="storefrontNav">
                <li class="side-nav_item ">
-                  <i class="fas fa-sim-card icon"></i>
-                  <span class="simReg-long">SIM REGISTRATION</span>
-                  <span class="simReg-short">SIM REG.</span>
+                  <i class="fa-solid fa-store icon" title="StoreFront Management"></i>
+                  <span>STORE FRONT</span>
                </li>
             </a>
-         </ul> -->
+         </ul>
+
 
          <ul class="side-nav">
             <a href="/reports.html" class="side-nav_link" id="reportsNav">
                <li class="side-nav_item ">
-                  <i class="fas fa-chart-pie icon"></i>
+                  <i class="fas fa-chart-pie icon" title="Reports"></i>
                   <span>REPORTS</span>
                </li>
             </a>
@@ -108,7 +112,7 @@
          <ul class="side-nav">
             <a href="/manage.html" class="side-nav_link" id="manageNav">
                <li class="side-nav_item active">
-                  <i class="fa-solid fa-users-gear icon"></i>
+                  <i class="fa-solid fa-users-gear icon" title="System Management"></i>
                   <span>MANAGE</span>
                </li>
             </a>
@@ -151,12 +155,12 @@
             <div class="adminHeader">
                <h2 class="heading-subtext" style=""> Quick Actions </h2>
 
-               <!-- <button class="hero-btn-dark posManagementBtn hidden"> <a href="pos-management.html"
+               <!-- <button class="hero-btn-dark posManagementBtn "> <a href="pos-management.html"
                      class="button-link"></a>Pos
                   Management</button> -->
 
-               <button class="hero-btn-dark inventoryBtn hidden"> <a href="inventory.html"
-                     class="button-link"></a>Inventory</button>
+               <button class="hero-btn-dark inventoryBtn "> <a href="inventory.html" class="button-link"></a>Inventory
+                  Management</button>
 
 
                <button class="hero-btn-dark"> <a href="staff-profile.html" class="button-link"></a>Staff
@@ -165,12 +169,12 @@
                <button class="hero-btn-dark"> <a href="shop-management.html" class="button-link"></a>Shop
                   Management</button>
 
-               <button class="hero-btn-dark warehouseBtn hidden"> <a href="warehouse-management.html"
+               <!-- <button class="hero-btn-dark warehouseBtn "> <a href="warehouse-management.html"
                      class="button-link"></a>Warehouse
                   Management</button>
 
                <button class="hero-btn-dark storefrontBtn"> <a href="storefront-management.html"
-                     class="button-link"></a>Storefront Management</button>
+                     class="button-link"></a>Storefront Management</button> -->
 
             </div>
 
@@ -240,6 +244,280 @@
                </label>
             </div> -->
          </div>
+
+      </section>
+
+      <section class="subscription-page card">
+
+         <header class="subscription-header center-text">
+            <h1 class="heading-text">Subscription & Billing</h1>
+            <p class="heading-subtext center-text">Manage your POSBOK services, billing cycle, and payment history.</p>
+         </header>
+
+
+         <!-- CURRENT SUBSCRIPTION -->
+         <div class="subscription-card">
+
+            <div class="subscription-header">
+               <h2 class="card-title heading-subtext">Current Subscription</h2>
+               <div id="statusBadge" class="status-badge">Status</div>
+            </div>
+
+
+            <!-- ACTIVE STATE -->
+            <!-- <div id="activeState" class="plan-state hidden">
+
+               <div class="plan-info-grid">
+
+                  <div class="info-item">
+                     <span class="label">Billing Cycle</span>
+                     <span id="billingCycle" class="value">-</span>
+                  </div>
+
+                  <div class="info-item">
+                     <span class="label">Next Billing</span>
+                     <span id="nextBillingDate" class="value">-</span>
+                  </div>
+
+                  <div class="info-item">
+                     <span class="label">Days Remaining</span>
+                     <span id="daysRemaining" class="value">-</span>
+                  </div>
+
+               </div>
+
+
+               <div class="active-services">
+                  <h3 class="heading-minitext">Active Services</h3>
+                  <div id="servicesContainer" class="services-chips"></div>
+               </div>
+
+            </div> -->
+
+
+            <!-- SUBSCRIPTIONS WILL RENDER HERE -->
+            <div id="subscriptionsContainer" class="subscriptions-container">
+
+               <!-- Example subscription item (JS will generate these) -->
+               <!--
+      <div class="service-subscription">
+
+         <div class="service-header">
+            <h3 class="heading-minitext service-title">POS Only</h3>
+            <span class="service-status active">Active</span>
+         </div>
+
+         <div class="service-info">
+
+            <div class="service-info-item">
+               <span class="label">Billing Cycle</span>
+               <span class="value">Monthly</span>
+            </div>
+
+            <div class="service-info-item">
+               <span class="label">Next Billing</span>
+               <span class="value">25 March 2026</span>
+            </div>
+
+            <div class="service-info-item">
+               <span class="label">Days Remaining</span>
+               <span class="value">29 days</span>
+            </div>
+
+         </div>
+
+      </div>
+      -->
+
+            </div>
+
+            <!-- TRIAL STATE -->
+            <div id="trialState" class="plan-state hidden">
+
+               <p class="heading-minitext">
+                  Your free trial expires in
+                  <strong id="trialDays">7 days</strong>.
+               </p>
+
+               <p class="heading-minitext">
+                  Select a subscription plan when trial ends
+               </p>
+
+            </div>
+
+
+            <!-- EXPIRED STATE -->
+            <div id="expiredState" class="plan-state hidden">
+
+               <p class="heading-subtext">
+                  Your subscription has expired.
+               </p>
+
+               <p class="heading-minitext">
+                  Renew subscription below
+               </p>
+
+
+
+            </div>
+
+
+            <!-- NO PLAN -->
+            <div id="noPlanState" class="plan-state hidden">
+
+               <p class="heading-subtext">
+                  You currently have no active subscription.
+               </p>
+
+               <p class="heading-minitext">
+                  Choose a subscription plan below
+               </p>
+
+            </div>
+
+         </div>
+
+         <!-- SERVICE SELECTION -->
+         <div class="subscription-card ">
+
+            <h2 class="card-title heading-subtext">Choose Services</h2>
+
+            <div class="billing-cycle center-text mb-4">
+
+               <label class="checkbox-container">
+                  <input type="radio" name="billingCycle" value="monthly" checked>
+                  Monthly Billing
+               </label>
+
+               <label class="checkbox-container">
+                  <input type="radio" name="billingCycle" value="yearly">
+                  Yearly Billing
+               </label>
+
+            </div>
+
+
+            <div class="service-grid subscriptionServiceCard">
+
+               <label class="service-option checkbox-container">
+                  <input type="checkbox" value="POS">
+                  <div class="service-content">
+                     <h4>POS Only</h4>
+                     <p class="price">₦3,500 / month</p>
+                  </div>
+               </label>
+
+
+               <label class="service-option checkbox-container">
+                  <input type="checkbox" value="INVENTORY">
+                  <div class="service-content">
+                     <h4>Inventory (Sales)</h4>
+                     <p class="price">₦4,000 / month</p>
+                  </div>
+               </label>
+
+
+               <label class="service-option checkbox-container">
+                  <input type="checkbox" value="WAREHOUSE">
+                  <div class="service-content">
+                     <h4>Warehouse</h4>
+                     <p class="price">₦5,000 / month</p>
+                  </div>
+               </label>
+
+
+               <label class="service-option checkbox-container">
+                  <input type="checkbox" value="ECOMMERCE">
+                  <div class="service-content">
+                     <h4>E-Commerce</h4>
+                     <p class="price">₦5,000 / month</p>
+                  </div>
+               </label>
+
+            </div>
+
+         </div>
+
+         <!-- PRICE SUMMARY -->
+         <form class="subscription-card" id="subscriptionForm">
+
+            <h2 class="card-title heading-subtext">Price Summary</h2>
+
+            <div class="quote-summary">
+
+               <!-- <div class="quote-item">
+                  <span class="heading-minitext">POS Only</span>
+                  <span class="heading-minitext">₦2,500</span>
+               </div>
+
+               <div class="quote-item">
+                  <span class="heading-minitext">Inventory</span>
+                  <span class="heading-minitext">₦3,000</span>
+               </div>
+
+               <div class="discount-note ">
+                  2 services selected — Enjoy ₦1,000 discount per service
+               </div>
+
+               <div class="quote-total">
+                  <span class="heading-minitext">Total</span>
+                  <span class="heading-minitext">₦5,500</span>
+               </div>
+
+               <button class="pay-button hero-btn-dark">
+                  Pay ₦5,500 with Paystack
+               </button>
+
+               <div class="center-button">
+                  <button class="hero-btn-dark mb-2 pay-button  pay-button   has-spinner" id="payNowBtn" type="submit">
+                     <span class="btn-text">Pay ${formatCurrency(quote.total_price)} with Paystack</span>
+                     <span class="btn-spinner hidden"></span>
+                  </button>
+               
+               </div> -->
+
+
+
+            </div>
+
+         </form>
+
+         <!-- PAYMENT HISTORY -->
+         <div class="subscription-crd card payment">
+            <div class="payment-method">
+
+
+               <h2 class="card-title heading-subtext">Payment History</h2>
+
+               <div class="payment-table-container">
+                  <table class="payment-table">
+
+                     <thead>
+                        <tr class="table-header-row">
+                           <th class="py-1">S/N</th>
+                           <th class="py-1">Date</th>
+                           <th class="py-1">Services</th>
+                           <th class="py-1">Amount</th>
+                           <th class="py-1">Status</th>
+                           <th class="py-1">Channel</th>
+                        </tr>
+                     </thead>
+
+                     <tbody id="paymentHistoryTableBody"></tbody>
+
+                  </table>
+
+
+                  <div class="center-button mt-2">
+                     <button id="loadMorePaymentsBtn" class="hero-btn-dark">
+                        Load More
+                     </button>
+                  </div>
+
+               </div>
+            </div>
+         </div>
+
 
       </section>
 
@@ -690,6 +968,46 @@
 
    </div>
 
+
+   <!-- Subscribe Expired Modals -->
+   <form class="modal-form soldDetailModal subscriptionRequiredModalContainer" name="modal">
+      <div class="card subscriptionRequiredModal modal active" style="border: 2px solid #ff4d4d;">
+         <div class="reports-method">
+            <div class="center-text mt-2">
+               <i class="fa-solid fa-triangle-exclamation" style="font-size: 3rem; color: #ff4d4d;"></i>
+            </div>
+
+            <h1 class="heading-subtext center-text mt-2" style="color: #d32f2f;">IMPORTANT MAINTENANCE NOTICE</h1>
+
+            <div class="warning-box"
+               style="background-color: #fff3f3; padding: 15px; border-radius: 8px; margin: 15px 0;">
+               <h2 class="heading-minitext center-text" style="line-height: 1.6; color: #333;">
+                  Our subscription system is currently undergoing <strong>critical maintenance</strong>.
+                  <br><br>
+                  <span style="color: #d32f2f; font-weight: bold;">PLEASE DO NOT ATTEMPT TO MAKE ANY PAYMENTS AT THIS
+                     TIME.</span>
+                  <br><br>
+                  We are currently in <strong>Test Mode</strong>. Any payments made now may not be processed correctly
+                  and could lead to account discrepancies.
+               </h2>
+            </div>
+
+            <p class="center-text" style="font-size: 0.9rem; color: #666;">
+               We are working to restore full functionality. Access to features will be granted manually or
+               automatically once the system is stable.
+               <br>Thank you for your patience.
+            </p>
+
+            <div class="warehouseSubscriptionCta center-button mt-2">
+               <button type="button" class="hero-btn-danger closeModal">I
+                  Understand</button>
+            </div>
+         </div>
+
+         <div class="close closeModal">&times;</div>
+      </div>
+   </form>
+
    <div id="toast" class="toast">
       <h4 class="toast-message heading-subtext center-text mb-2">This is a toast message!</h4>
 
@@ -702,5 +1020,31 @@
       <div class="spinner"></div>
    </div>
 </body>
+
+<script>
+   // Function to show the modal
+   function showMaintenanceWarning() {
+      const modalContainer = document.querySelector('.subscriptionRequiredModalContainer');
+      const modalContent = document.querySelector('.subscriptionRequiredModal');
+
+      if (modalContainer && modalContent) {
+         modalContainer.style.display = 'flex'; // Or whatever show logic you use
+         modalContent.classList.add('active');
+      }
+   }
+
+   // Call this immediately when the page loads
+   document.addEventListener('DOMContentLoaded', () => {
+      showMaintenanceWarning();
+   });
+
+   // Ensure the close button actually works
+   document.querySelectorAll('.closeModal').forEach(btn => {
+      btn.addEventListener('click', () => {
+         const modalContainer = document.querySelector('.subscriptionRequiredModalContainer');
+         modalContainer.style.display = 'none';
+      });
+   });
+</script>
 
 </html>

@@ -402,7 +402,7 @@ eval("\nif (typeof Object.assign !== \"function\") {\n    Object.assign = functi
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __webpack_require__("./JS/superAdmin.js");
+/******/ 	var __webpack_exports__ = __webpack_require__("./JS/subscription.js");
 /******/ 	
 /******/ })()
 ;

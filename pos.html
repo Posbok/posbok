@@ -60,7 +60,7 @@
          <ul class="side-nav">
             <a href="/pos.html" class="side-nav_link" id="posNav">
                <li class="side-nav_item active">
-                  <i class="fas fa-exchange-alt icon"></i>
+                  <i class="fas fa-exchange-alt icon" title="POS Transaction"></i>
                   <span>POS</span>
                </li>
             </a>
@@ -69,35 +69,35 @@
          <ul class="side-nav">
             <a href="/sell.html" class="side-nav_link" id="sellNav">
                <li class="side-nav_item ">
-                  <i class="fas fa-cart-shopping icon"></i>
+                  <i class="fas fa-cart-shopping icon" title="Sales Transaction"></i>
                   <span>SELL</span>
                </li>
             </a>
          </ul>
 
-         <!-- <ul class="side-nav">
-            <a href="/charging.html" class="side-nav_link">
+         <ul class="side-nav">
+            <a href="/warehouse-management.html" class="side-nav_link" id="warehouseNav">
                <li class="side-nav_item ">
-                  <i class="fas fa-bolt icon"></i>
-                  <span>CHARGING</span>
+                  <i class="fa-solid fa-warehouse icon" title="Warehouse Management"></i>
+                  <span>WAREHOUSE</span>
                </li>
             </a>
          </ul>
 
          <ul class="side-nav">
-            <a href="/simRegistration.html" class="side-nav_link">
+            <a href="/storefront-management.html" class="side-nav_link" id="storefrontNav">
                <li class="side-nav_item ">
-                  <i class="fas fa-sim-card icon"></i>
-                  <span class="simReg-long">SIM REGISTRATION</span>
-                  <span class="simReg-short">SIM REG.</span>
+                  <i class="fa-solid fa-store icon" title="StoreFront Management"></i>
+                  <span>STORE FRONT</span>
                </li>
             </a>
-         </ul> -->
+         </ul>
+
 
          <ul class="side-nav">
             <a href="/reports.html" class="side-nav_link" id="reportsNav">
                <li class="side-nav_item ">
-                  <i class="fas fa-chart-pie icon"></i>
+                  <i class="fas fa-chart-pie icon" title="Reports"></i>
                   <span>REPORTS</span>
                </li>
             </a>
@@ -106,7 +106,7 @@
          <ul class="side-nav">
             <a href="/manage.html" class="side-nav_link" id="manageNav">
                <li class="side-nav_item ">
-                  <i class="fa-solid fa-users-gear icon"></i>
+                  <i class="fa-solid fa-users-gear icon" title="System Management"></i>
                   <span>MANAGE</span>
                </li>
             </a>
@@ -1424,6 +1424,24 @@
 
 
    </div>
+
+
+   <!-- Subscribe Expired Modals -->
+   <form class="modal-form soldDetailModal subscriptionRequiredModalContainer" name="modal">
+      <div class="card subscriptionRequiredModal modal ">
+
+         <div class="reports-method ">
+            <h1 class="heading-subtext center-text mt-2">You don't have access to this service!</h1>
+            <h2 class="heading-minitext center-text mt-1">Kindly Subscribe to POS Service to continue using this
+               Feature.
+            </h2>
+
+            <div class=" posSubscriptionCta center-button">
+
+            </div>
+         </div>
+      </div>
+   </form>
 
 
 </body>
