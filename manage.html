@@ -968,6 +968,46 @@
 
    </div>
 
+
+   <!-- Subscribe Expired Modals -->
+   <form class="modal-form soldDetailModal subscriptionRequiredModalContainer" name="modal">
+      <div class="card subscriptionRequiredModal modal active" style="border: 2px solid #ff4d4d;">
+         <div class="reports-method">
+            <div class="center-text mt-2">
+               <i class="fa-solid fa-triangle-exclamation" style="font-size: 3rem; color: #ff4d4d;"></i>
+            </div>
+
+            <h1 class="heading-subtext center-text mt-2" style="color: #d32f2f;">IMPORTANT MAINTENANCE NOTICE</h1>
+
+            <div class="warning-box"
+               style="background-color: #fff3f3; padding: 15px; border-radius: 8px; margin: 15px 0;">
+               <h2 class="heading-minitext center-text" style="line-height: 1.6; color: #333;">
+                  Our subscription system is currently undergoing <strong>critical maintenance</strong>.
+                  <br><br>
+                  <span style="color: #d32f2f; font-weight: bold;">PLEASE DO NOT ATTEMPT TO MAKE ANY PAYMENTS AT THIS
+                     TIME.</span>
+                  <br><br>
+                  We are currently in <strong>Test Mode</strong>. Any payments made now may not be processed correctly
+                  and could lead to account discrepancies.
+               </h2>
+            </div>
+
+            <p class="center-text" style="font-size: 0.9rem; color: #666;">
+               We are working to restore full functionality. Access to features will be granted manually or
+               automatically once the system is stable.
+               <br>Thank you for your patience.
+            </p>
+
+            <div class="warehouseSubscriptionCta center-button mt-2">
+               <button type="button" class="hero-btn-danger closeModal">I
+                  Understand</button>
+            </div>
+         </div>
+
+         <div class="close closeModal">&times;</div>
+      </div>
+   </form>
+
    <div id="toast" class="toast">
       <h4 class="toast-message heading-subtext center-text mb-2">This is a toast message!</h4>
 
@@ -980,5 +1020,31 @@
       <div class="spinner"></div>
    </div>
 </body>
+
+<script>
+   // Function to show the modal
+   function showMaintenanceWarning() {
+      const modalContainer = document.querySelector('.subscriptionRequiredModalContainer');
+      const modalContent = document.querySelector('.subscriptionRequiredModal');
+
+      if (modalContainer && modalContent) {
+         modalContainer.style.display = 'flex'; // Or whatever show logic you use
+         modalContent.classList.add('active');
+      }
+   }
+
+   // Call this immediately when the page loads
+   document.addEventListener('DOMContentLoaded', () => {
+      showMaintenanceWarning();
+   });
+
+   // Ensure the close button actually works
+   document.querySelectorAll('.closeModal').forEach(btn => {
+      btn.addEventListener('click', () => {
+         const modalContainer = document.querySelector('.subscriptionRequiredModalContainer');
+         modalContainer.style.display = 'none';
+      });
+   });
+</script>
 
 </html>
