@@ -36,6 +36,9 @@ const baseUrl = config.baseUrl;
 const parsedUserData = userData ? JSON.parse(userData) : null;
 const servicePermission = parsedUserData?.servicePermission;
 
+const isAdmin = parsedUserData?.accountType === 'ADMIN';
+const isStaff = parsedUserData?.accountType === 'STAFF';
+
 let userShops = [];
 let enrichedShopData = [];
 let businessId = null;
@@ -378,7 +381,17 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
     const row = document.createElement('tr');
     row.classList.add('table-body-row');
 
-    if (row && staff.accountType === 'STAFF') {
+    // Find the smallest ID in the current staff list
+    const staffIds = staffData.map((s) => s.id);
+    const ownerId = Math.min(...staffIds);
+
+    // Dynamic Check: Is this the person with the lowest ID?
+    const isOwner = staff.id === ownerId;
+
+    console.log('staff', staff);
+
+    //  if (row && staff.accountType === 'STAFF') {
+    if (!isOwner) {
       row.innerHTML = `
         <td class="py-1 staffSerialNumber">${index + 1}</td>
         <td class="py-1 staffName">${staff.firstName} ${staff.lastName}</td>
@@ -410,36 +423,36 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
       `;
     } else {
       row.innerHTML = `
-    <td class="py-1 staffSerialNumber">${index + 1}</td>
-    <td class="py-1 staffName">${staff.firstName} ${staff.lastName}</td>
-    <td class="py-1 staffPhoneNumber">${staff.phoneNumber}</td>
-    <td class="py-1 staffEmail">${staff.email}
-      </td>
-    <td class="py-1 staffAccountType">${staff.accountType}</td>
+     <td class="py-1 staffSerialNumber">${index + 1}</td>
+     <td class="py-1 staffName">${staff.firstName} ${staff.lastName}</td>
+     <td class="py-1 staffPhoneNumber">${staff.phoneNumber}</td>
+     <td class="py-1 staffEmail">${staff.email}
+       </td>
+     <td class="py-1 staffAccountType">${staff.accountType}</td>
 
-    <td class="py-1 staffServicePermission"> ${staff.servicePermission
-      .map((service) => formatServicePermission(service))
-      .join(', ')}</td>
+     <td class="py-1 staffServicePermission"> ${staff.servicePermission
+       .map((service) => formatServicePermission(service))
+       .join(', ')}</td>
 
-       <td class="py-1 staffshop">ADMIN</td>
-    <td class="py-1 action-buttons">
-      <button class="hero-btn-outline editStaffButton" disabled data-staff-id="${
-        staff.id
-      }">
-        <i class="fa-solid fa-pen-to-square"></i>
-      </button>
-      <button class="hero-btn-outline adminDeleteStaffButtonModal" disabled data-staff-id="${
-        staff.id
-      }">
-        <i class="fa-solid fa-trash-can"></i>
-      </button>
-        <button class="hero-btn-outline manageShopButton" disabled data-staff-id="${
-          staff.id
-        }">
-          <i class="fa-solid fa-shop"></i> <!-- Shop manage icon -->
-        </button>
-    </td>
-  `;
+        <td class="py-1 staffshop">All Shop Access</td>
+     <td class="py-1 action-buttons">
+       <button class="hero-btn-outline editStaffButton" data-staff-id="${
+         staff.id
+       }">
+         <i class="fa-solid fa-pen-to-square"></i>
+       </button>
+       </td>
+       `;
+      // <button class="hero-btn-outline adminDeleteStaffButtonModal" data-staff-id="${
+      //   staff.id
+      // }">
+      //   <i class="fa-solid fa-trash-can"></i>
+      // </button>
+      //   <button class="hero-btn-outline manageShopButton" data-staff-id="${
+      //     staff.id
+      //   }">
+      //     <i class="fa-solid fa-shop"></i> <!-- Shop manage icon -->
+      //   </button>
     }
 
     if (tbody) tbody.appendChild(row);
@@ -451,62 +464,68 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
 
     //  console.log(deleteBtnModal);
 
-    deleteBtnModal.addEventListener('click', async () => {
-      showGlobalLoader();
-      const staffId = deleteBtnModal.dataset.staffId;
+    if (deleteBtnModal) {
+      deleteBtnModal.addEventListener('click', async () => {
+        showGlobalLoader();
+        const staffId = deleteBtnModal.dataset.staffId;
 
-      const deleteStaffContainer = document.querySelector(
-        '.deleteStaffContainer',
-      );
+        const deleteStaffContainer = document.querySelector(
+          '.deleteStaffContainer',
+        );
 
-      if (deleteStaffContainer) {
-        // Store staffId in modal container for reference
-        deleteStaffContainer.dataset.staffId = staffId;
+        if (deleteStaffContainer) {
+          // Store staffId in modal container for reference
+          deleteStaffContainer.dataset.staffId = staffId;
 
-        // Fetch Staff detail
-        const staffDetail = await fetchStaffDetail(staffId);
+          // Fetch Staff detail
+          const staffDetail = await fetchStaffDetail(staffId);
 
-        //   console.log('staffDetail', staffDetail);
+          //   console.log('staffDetail', staffDetail);
 
-        // Call function to prefill modal inputs
-        if (staffDetail?.data) {
-          hideGlobalLoader();
-          openDeleteStaffModal(); // Show modal after data is ready
-          deleteStaffForm(staffDetail.data);
-        } else {
-          hideGlobalLoader();
-          showToast('fail', '❌ Failed to fetch Staff details.');
+          // Call function to prefill modal inputs
+          if (staffDetail?.data) {
+            hideGlobalLoader();
+            openDeleteStaffModal(); // Show modal after data is ready
+            deleteStaffForm(staffDetail.data);
+          } else {
+            hideGlobalLoader();
+            showToast('fail', '❌ Failed to fetch Staff details.');
+          }
         }
-      }
-    });
+      });
+    }
 
     const updateStaffBtn = row.querySelector('.editStaffButton');
-    updateStaffBtn?.addEventListener('click', async () => {
-      showGlobalLoader();
-      const staffId = updateStaffBtn.dataset.staffId;
 
-      const adminUpdateUserDataContainer = document.querySelector(
-        '.adminUpdateUserData',
-      );
+    if (updateStaffBtn) {
+      updateStaffBtn?.addEventListener('click', async () => {
+        console.log('Clicked');
+        showGlobalLoader();
+        const staffId = updateStaffBtn.dataset.staffId;
 
-      if (adminUpdateUserDataContainer) {
-        // Store staffId in modal container for reference
-        adminUpdateUserDataContainer.dataset.staffId = staffId;
+        const adminUpdateUserDataContainer = document.querySelector(
+          '.adminUpdateUserData',
+        );
 
-        // Fetch staff detail
-        const staffDetail = await fetchStaffDetail(staffId);
+        if (adminUpdateUserDataContainer) {
+          // Store staffId in modal container for reference
+          adminUpdateUserDataContainer.dataset.staffId = staffId;
 
-        // Call function to prefill modal inputs
-        if (staffDetail?.data?.user) {
-          hideGlobalLoader();
-          openUpdateStaffModal(); // Show modal after data is ready
-          setupUpdateStaffForm(staffDetail.data.user);
-        } else {
-          hideGlobalLoader();
-          showToast('fail', '❌ Failed to fetch staff details.');
+          // Fetch staff detail
+          const staffDetail = await fetchStaffDetail(staffId);
+
+          // Call function to prefill modal inputs
+          if (staffDetail?.data?.user) {
+            hideGlobalLoader();
+            openUpdateStaffModal(); // Show modal after data is ready
+            setupUpdateStaffForm(staffDetail.data.user);
+          } else {
+            hideGlobalLoader();
+            showToast('fail', '❌ Failed to fetch staff details.');
+          }
         }
-      }
-    });
+      });
+    }
 
     const manageStaffBtn = row.querySelector('.manageShopButton');
     manageStaffBtn?.addEventListener('click', async () => {
@@ -612,6 +631,8 @@ export function bindUpdateStaffFormListener() {
       return;
     }
 
+    const staffRoleDropdown = document.getElementById('staffRoleDropdown');
+
     const updateStaffLastName = document.getElementById(
       'updateStaffLastName',
     ).value;
@@ -652,7 +673,8 @@ export function bindUpdateStaffFormListener() {
       lastName: updateStaffLastName,
       address: updateStaffAddress,
       phoneNumber: updateStaffPhoneNumber,
-      accountType: 'STAFF',
+      // accountType: 'STAFF',
+      accountType: staffRoleDropdown.value,
       // accessTimeStart: updateAccessTimeStart,
       // accessTimeEnd: updateAccessTimeEnd,
       servicePermission: updateAccessType,
@@ -683,6 +705,9 @@ export function bindUpdateStaffFormListener() {
 export async function setupUpdateStaffForm(user) {
   const form = document.querySelector('.adminUpdateUserDataModal');
   if (!form) return;
+
+  const staffRoleDropdown = document.getElementById('staffRoleDropdown');
+  const staffOption = document.getElementById('roleOptionStaff');
 
   const businessServices = await loadUserServices();
   const services = businessServices.map((s) => s.service_code);
@@ -751,6 +776,17 @@ export async function setupUpdateStaffForm(user) {
   const updateAccessTypeCheckboxes = document.querySelectorAll(
     'input[name="updateStaffAccessType"]',
   );
+
+  if (user.accountType === 'ADMIN') {
+    // If they are currently an Admin, hide the Staff option
+    // and lock the dropdown to ADMIN
+    //  staffOption.style.display = 'none';
+    staffRoleDropdown.value = 'ADMIN';
+  } else {
+    // If they are currently Staff, show both options
+    staffOption.style.display = 'block';
+    staffRoleDropdown.value = 'STAFF';
+  }
 
   //   updateAccessTypeCheckboxes.forEach((checkbox) => {
   //     checkbox.disabled = !services.includes(checkbox.value);
