@@ -376,14 +376,14 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
     return;
   }
 
+  // Find the smallest ID in the current staff list
+  const staffIds = staffData.map((s) => s.id);
+  const ownerId = Math.min(...staffIds);
+
   staffData.forEach((staff, index) => {
     //  console.log(staff);
     const row = document.createElement('tr');
     row.classList.add('table-body-row');
-
-    // Find the smallest ID in the current staff list
-    const staffIds = staffData.map((s) => s.id);
-    const ownerId = Math.min(...staffIds);
 
     // Dynamic Check: Is this the person with the lowest ID?
     const isOwner = staff.id === ownerId;
@@ -518,7 +518,10 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
           if (staffDetail?.data?.user) {
             hideGlobalLoader();
             openUpdateStaffModal(); // Show modal after data is ready
-            setupUpdateStaffForm(staffDetail.data.user);
+            // setupUpdateStaffForm(staffDetail.data.user);
+
+            const isThisTheOwner = staffDetail.data.user.id === ownerId;
+            setupUpdateStaffForm(staffDetail.data.user, isThisTheOwner);
           } else {
             hideGlobalLoader();
             showToast('fail', '❌ Failed to fetch staff details.');
@@ -702,7 +705,7 @@ export function bindUpdateStaffFormListener() {
   });
 }
 
-export async function setupUpdateStaffForm(user) {
+export async function setupUpdateStaffForm(user, isOwner = false) {
   const form = document.querySelector('.adminUpdateUserDataModal');
   if (!form) return;
 
@@ -777,15 +780,33 @@ export async function setupUpdateStaffForm(user) {
     'input[name="updateStaffAccessType"]',
   );
 
-  if (user.accountType === 'ADMIN') {
-    // If they are currently an Admin, hide the Staff option
-    // and lock the dropdown to ADMIN
-    //  staffOption.style.display = 'none';
+  //   if (user.accountType === 'ADMIN') {
+  //     // If they are currently an Admin, hide the Staff option
+  //     // and lock the dropdown to ADMIN
+  //     //  staffOption.style.display = 'none';
+  //     staffRoleDropdown.value = 'ADMIN';
+  //   } else {
+  //     // If they are currently Staff, show both options
+  //     staffOption.style.display = 'block';
+  //     staffRoleDropdown.value = 'STAFF';
+  //   }
+
+  if (isOwner) {
+    // 1. If it's the owner, they MUST be an ADMIN
     staffRoleDropdown.value = 'ADMIN';
+
+    // 2. Hide the "Staff" option so they can't even select it
+    staffOption.style.display = 'none';
+
+    // 3. Disable the dropdown just to be 100% safe
+    staffRoleDropdown.disabled = true;
+
+    console.log('Admin Protection: Staff option hidden for Owner account.');
   } else {
-    // If they are currently Staff, show both options
+    // 4. For everyone else, show both options and enable the dropdown
     staffOption.style.display = 'block';
-    staffRoleDropdown.value = 'STAFF';
+    staffRoleDropdown.disabled = false;
+    staffRoleDropdown.value = user.accountType; // e.g., 'STAFF' or 'ADMIN'
   }
 
   //   updateAccessTypeCheckboxes.forEach((checkbox) => {
