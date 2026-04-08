@@ -21,6 +21,19 @@ export async function loginUser(userDetails) {
     const data = await response.json();
 
     if (!response.ok) {
+      const data = await response.json();
+
+      if (data.message && data.message.includes('ECONNREFUSED')) {
+        console.warn("Silenced backend 'ECONNREFUSED' error.");
+        showToast(
+          'warning',
+          'Server is down or unreachable. Please try again later.',
+        );
+        // Return a neutral object so the calling code doesn't crash
+        // trying to read properties of undefined
+        return { data: null, status: 'silenced' };
+      }
+
       // throw new Error(`HTTP error! status: ${response.status}`);
       throw new Error(data.message || 'Something went wrong');
     }
