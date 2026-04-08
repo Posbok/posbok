@@ -663,10 +663,10 @@ export function bindUpdateStaffFormListener() {
       return;
     }
 
-    const updateAccessTimeStart =
-      document.getElementById('update-start-time').value;
-    const updateAccessTimeEnd =
-      document.getElementById('update-end-time').value;
+    //  const updateAccessTimeStart =
+    //    document.getElementById('update-start-time').value;
+    //  const updateAccessTimeEnd =
+    //    document.getElementById('update-end-time').value;
 
     const staffUpdatedDetails = {
       firstName: updateStaffFirstName,
@@ -675,8 +675,8 @@ export function bindUpdateStaffFormListener() {
       phoneNumber: updateStaffPhoneNumber,
       // accountType: 'STAFF',
       accountType: staffRoleDropdown.value,
-      accessTimeStart: updateAccessTimeStart,
-      accessTimeEnd: updateAccessTimeEnd,
+      // accessTimeStart: updateAccessTimeStart,
+      // accessTimeEnd: updateAccessTimeEnd,
       servicePermission: updateAccessType,
     };
 
