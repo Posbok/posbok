@@ -263,7 +263,7 @@ export async function checkAndPromptCreateStaff() {
     const data = await response.json();
     const allStaffs = data.data.users || [];
 
-    console.log('data', data);
+    //  console.log('data', data);
 
     // Filter out admins
     const nonAdminStaff = allStaffs.filter(
@@ -289,8 +289,8 @@ export async function checkAndPromptCreateStaff() {
     }
 
     // Populate the table with all business staff
-    console.log('allStaffs', allStaffs);
-    console.log('enrichedShopData', enrichedShopData);
+    //  console.log('allStaffs', allStaffs);
+    //  console.log('enrichedShopData', enrichedShopData);
     showGlobalLoader();
     populateStaffTable(allStaffs, enrichedShopData);
     populateBusinessStaffDropdown(allStaffs);
@@ -299,8 +299,8 @@ export async function checkAndPromptCreateStaff() {
       throw new Error(data.message || 'Something went wrong');
     }
 
-    console.log('allStaff', allStaffs);
-    console.log('enrichedShopData', enrichedShopData);
+    //  console.log('allStaff', allStaffs);
+    //  console.log('enrichedShopData', enrichedShopData);
 
     return data;
   } catch (error) {

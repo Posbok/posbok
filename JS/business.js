@@ -180,7 +180,7 @@ document
     showGlobalLoader();
     const businessData = await fetchBusinessDetails();
 
-    console.log(businessData);
+    //  console.log(businessData);
 
     if (!businessData) {
       //  showToast('error', ' ⛔ Failed to fetch business details');

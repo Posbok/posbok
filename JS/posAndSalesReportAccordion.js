@@ -1461,6 +1461,7 @@ export function getAdminPosAnalyticsList(
   min_amount,
   max_amount,
 ) {
+  console.log('count', count);
   return `
       <td class="py-1">${period}</td>
       <td class="py-1">${transaction_type}</td>
@@ -1971,6 +1972,8 @@ export async function renderPosAnalyticsTable({
           max_amount,
         );
 
+        console.log('count', count);
+
         posAnalyticsTableBody.appendChild(row);
       });
     } catch (error) {
@@ -2403,6 +2406,7 @@ export async function renderFinancialSummaryTable({
 
       if (summaryRows && summaryRows.length > 0) {
         summaryRows.forEach((item) => {
+          console.log(item);
           const row = document.createElement('tr');
           row.className = 'table-body-row';
           row.innerHTML = `
@@ -3025,10 +3029,28 @@ export async function renderMonthlySummary(year, month, shopId) {
   ) {
     const response = await getMonthlySalesSummary(year, month, shopId);
 
-    //  console.log(response);
+    console.log('COunt - check here', response);
 
-    if (!response) {
+    console.log(!response);
+    console.log(response === undefined);
+
+    if (!response || !response.data || response === undefined) {
       console.warn('No Monthly data available');
+      return;
+    }
+
+    if (!response.data.dailyData) {
+      console.warn('No daily data available for monthly summary');
+      return;
+    }
+
+    if (!response.data.paymentMethods) {
+      console.warn('No payment methods data available for monthly summary');
+      return;
+    }
+
+    if (!response.data.month || !response.data.year) {
+      console.warn('Month or Year data missing for monthly summary');
       return;
     }
 

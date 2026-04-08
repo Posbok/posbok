@@ -280,7 +280,7 @@ export function setupCreateShopForm() {
       const businessData = await fetchBusinessDetails();
       const businessPermission = businessData.data.business_type;
 
-      console.log(businessData);
+      // console.log(businessData);
 
       // Get radio buttons
       const posRadio = document.getElementById('posShopCheckbox');

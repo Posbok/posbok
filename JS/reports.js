@@ -1350,11 +1350,11 @@ if (isAdmin) {
 
   if (container)
     container.addEventListener('click', async function (e) {
-      console.log('Container was clicked');
-      console.log(
-        hasServiceAccess(servicePermission, 'INVENTORY') ||
-          hasServiceAccess(servicePermission, 'WAREHOUSE'),
-      );
+      // console.log('Container was clicked');
+      // console.log(
+      //   hasServiceAccess(servicePermission, 'INVENTORY') ||
+      //     hasServiceAccess(servicePermission, 'WAREHOUSE'),
+      // );
 
       const toggleBtn = e.target.closest('.accordion-toggle');
       if (!toggleBtn) return;

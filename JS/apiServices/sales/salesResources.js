@@ -34,7 +34,7 @@ export async function createSale(saleDetails) {
 
 export async function updatePartialPayment(
   updatePartialPaymentDetails,
-  saleId
+  saleId,
 ) {
   try {
     //  console.log('Sending POST request...');
@@ -146,7 +146,7 @@ export async function getAllSales({
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     //  console.log(`/api/sales?${queryParams.toString()}`);
@@ -197,7 +197,7 @@ export async function getSalesByStaff(staffId) {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     //  console.log('selectedStaffData received...');
@@ -221,7 +221,7 @@ export async function getSalesByProduct(ProductId) {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     //  console.log('selectedProductData received...');
@@ -245,7 +245,7 @@ export async function getDailySalesSummary(shopId, date) {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     //  console.log(
@@ -273,7 +273,7 @@ export async function getMonthlySalesSummary(year, month, shopId) {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
     );
 
     //  console.log(
@@ -283,10 +283,15 @@ export async function getMonthlySalesSummary(year, month, shopId) {
     //  console.log('monthlySalesSummaryData received...');
 
     //  console.log('monthlySalesSummaryData:', monthlySalesSummaryData);
+
     hideGlobalLoader();
     return monthlySalesSummaryData;
   } catch (error) {
     hideGlobalLoader();
+    //  if (error.message.includes("reading 'count'")) {
+    //    console.warn("Silencing the 'count' undefined error.");
+    //    return; // This stops the catch block from showing a Toast
+    //  }
     console.error('Error fetching Products:', error.message);
   }
 }

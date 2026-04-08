@@ -377,7 +377,7 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
   }
 
   staffData.forEach((staff, index) => {
-    console.log(staff);
+    //  console.log(staff);
     const row = document.createElement('tr');
     row.classList.add('table-body-row');
 
@@ -388,7 +388,7 @@ export function populateStaffTable(staffData = [], enrichedShopData = []) {
     // Dynamic Check: Is this the person with the lowest ID?
     const isOwner = staff.id === ownerId;
 
-    console.log('staff', staff);
+    //  console.log('staff', staff);
 
     //  if (row && staff.accountType === 'STAFF') {
     if (!isOwner) {
@@ -663,10 +663,10 @@ export function bindUpdateStaffFormListener() {
       return;
     }
 
-    //  const updateAccessTimeStart =
-    //    document.getElementById('update-start-time').value;
-    //  const updateAccessTimeEnd =
-    //    document.getElementById('update-end-time').value;
+    const updateAccessTimeStart =
+      document.getElementById('update-start-time').value;
+    const updateAccessTimeEnd =
+      document.getElementById('update-end-time').value;
 
     const staffUpdatedDetails = {
       firstName: updateStaffFirstName,
@@ -675,8 +675,8 @@ export function bindUpdateStaffFormListener() {
       phoneNumber: updateStaffPhoneNumber,
       // accountType: 'STAFF',
       accountType: staffRoleDropdown.value,
-      // accessTimeStart: updateAccessTimeStart,
-      // accessTimeEnd: updateAccessTimeEnd,
+      accessTimeStart: updateAccessTimeStart,
+      accessTimeEnd: updateAccessTimeEnd,
       servicePermission: updateAccessType,
     };
 
