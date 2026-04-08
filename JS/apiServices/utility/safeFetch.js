@@ -9,12 +9,14 @@ export async function safeFetch(url, options) {
 
     if (!response.ok) {
       const data = await response.json();
+
       if (data.message && data.message.includes("reading 'count'")) {
         console.warn("Silenced backend 'count' error.");
         // Return a neutral object so the calling code doesn't crash
         // trying to read properties of undefined
         return { data: null, status: 'silenced' };
       }
+
       // hideGlobalLoader();
       throw new Error(data.message || `HTTP error! status: ${response.status}`);
     }
@@ -44,17 +46,7 @@ export async function safeFetch(url, options) {
       showToast('error', `❌ ${error.message}`);
     }
 
-    // Error during fetch: Error: Cannot read properties of undefined (reading 'count')
-
-    //  if (
-    //    error.message.includes(
-    //      "Cannot read properties of undefined (reading 'count')",
-    //    )
-    //  ) {
-    //    return;
-    //  }
-
-    if (e) throw error; // Return null in case of error
+    throw error; // Return null in case of error
   }
 }
 
