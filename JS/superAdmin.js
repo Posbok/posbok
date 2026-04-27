@@ -1211,6 +1211,10 @@ function renderBusinessesTable(data) {
 
     allBusinessesTableBody.appendChild(row);
 
+    row.addEventListener('click', async (e) => {
+      renderBusinessDetailsById(e, row, businessId);
+    });
+
     // Activate Business Subscription
     const activateBusinessButton = row.querySelector('.activateBusinessButton');
 
