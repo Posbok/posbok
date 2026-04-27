@@ -276,38 +276,34 @@ export function setupCreateShopForm() {
   form.dataset.bound = 'true';
 
   (async function applyAccessControlBasedOnBusinessPermission() {
-    try {
-      const businessData = await fetchBusinessDetails();
-      const businessPermission = businessData.data.business_type;
-
-      // console.log(businessData);
-
-      // Get radio buttons
-      const posRadio = document.getElementById('posShopCheckbox');
-      const sellRadio = document.getElementById('sellShopCheckbox');
-      const bothRadio = document.getElementById('posAndSellShopCheckbox');
-
-      // Enable all first
-      [posRadio, sellRadio, bothRadio].forEach((el) => {
-        el.disabled = false;
-        el.checked = false;
-      });
-
-      // Apply logic
-      if (businessPermission === 'POS_TRANSACTIONS') {
-        posRadio.checked = true;
-        sellRadio.disabled = true;
-        bothRadio.disabled = true;
-      } else if (businessPermission === 'INVENTORY_SALES') {
-        sellRadio.checked = true;
-        posRadio.disabled = true;
-        bothRadio.disabled = true;
-      } else if (businessPermission === 'BOTH') {
-        posRadio.checked = true; // Or leave all unchecked if no default
-      }
-    } catch (err) {
-      console.error('❌ Failed to load business permissions:', err);
-    }
+    //  try {
+    //    const businessData = await fetchBusinessDetails();
+    //    const businessPermission = businessData.data.business_type;
+    //    // console.log(businessData);
+    //    // Get radio buttons
+    //    const posRadio = document.getElementById('posShopCheckbox');
+    //    const sellRadio = document.getElementById('sellShopCheckbox');
+    //    const bothRadio = document.getElementById('posAndSellShopCheckbox');
+    //    // Enable all first
+    //    [posRadio, sellRadio, bothRadio].forEach((el) => {
+    //      el.disabled = false;
+    //      el.checked = false;
+    //    });
+    //    // Apply logic
+    //    if (businessPermission === 'POS_TRANSACTIONS') {
+    //      posRadio.checked = true;
+    //      sellRadio.disabled = true;
+    //      bothRadio.disabled = true;
+    //    } else if (businessPermission === 'INVENTORY_SALES') {
+    //      sellRadio.checked = true;
+    //      posRadio.disabled = true;
+    //      bothRadio.disabled = true;
+    //    } else if (businessPermission === 'BOTH') {
+    //      posRadio.checked = true; // Or leave all unchecked if no default
+    //    }
+    //  } catch (err) {
+    //    console.error('❌ Failed to load business permissions:', err);
+    //  }
   })();
 
   if (form) {
@@ -318,18 +314,19 @@ export function setupCreateShopForm() {
       const shopAddressInput = document.querySelector('#shopAddress');
 
       const serviceTypeCheckboxes = document.querySelectorAll(
-        'input[name="serviceType"]:checked',
+        'input[name="createShopAccessType"]:checked',
       );
       const serviceType = Array.from(serviceTypeCheckboxes).map(
         (cb) => cb.value,
       );
-      const serviceTypeValue = serviceType[0] || null;
 
       const shopDetails = {
         shopName: shopNameInput.value,
         location: shopAddressInput.value,
-        serviceType: serviceTypeValue,
+        serviceType: serviceType,
       };
+
+      console.log(shopDetails);
 
       try {
         showGlobalLoader();

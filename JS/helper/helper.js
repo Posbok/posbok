@@ -844,6 +844,8 @@ export function formatServicePermission(value) {
       return 'Warehouse';
     case 'STOREFRONT':
       return 'Storefront';
+    case 'none':
+      return 'No Service';
     default:
       return value;
   }
@@ -1354,12 +1356,26 @@ export function populateBusinessShopDropdown(
 
   dropdown.innerHTML = `<option value="">Select a shop</option>`;
 
+  console.log(shopList);
+
   shopList.forEach((shop) => {
     const option = document.createElement('option');
     option.value = shop.id;
     option.textContent = `${shop.shop_name} - ${shop.location}`;
     dropdown.appendChild(option);
   });
+
+  // Auto-select logic
+  if (shopList.length === 1) {
+    dropdown.value = shopList[0].id;
+
+    dropdown.dispatchEvent(new Event('change'));
+
+    // Optional: lock it (UX decision)
+    dropdown.disabled = true;
+  } else {
+    dropdown.disabled = false;
+  }
 }
 
 export function populateBusinessStaffDropdown(

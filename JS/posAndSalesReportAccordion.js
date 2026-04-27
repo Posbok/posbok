@@ -814,7 +814,7 @@ export function getAdminSalesReportHtml(shop) {
 
 </div>
 
-               <div class="sales-summary">
+               <div class="sales-summary mb-2">
                   <div class="summary-card">
                      <h3>Total Sales</h3>
                      <p class="amount" id="staffTotal-sales_admin_${shop.id}">₦0</p>
@@ -840,6 +840,9 @@ export function getAdminSalesReportHtml(shop) {
                      <p class="amount" id="staffTotal-profit_admin_${shop.id}">₦0</p>
                   </div>
                </div>
+
+  
+                 <h2 class="filter-heading heading-subtext mb-2  mt-4"> List of Staff Sales (Filtered)</h2>
 
                    <div class="reports-table-container">
 

@@ -119,7 +119,7 @@ export async function activateBusinessSubscription(
   try {
     //  showGlobalLoader();
     const activateBusinessData = await safeFetch(
-      `${baseUrl}/api/super-admin/activate-subscription`,
+      `${baseUrl}/api/service-plans/activate`,
       {
         method: 'POST',
         headers: {

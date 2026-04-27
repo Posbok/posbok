@@ -85,13 +85,11 @@ function setupAllBusinessesFilters({
   // Reset Filters
   resetBtn.addEventListener('click', () => {
     const role = 'admin';
-    const searchInput = document.getElementById('businessSearchInput');
 
     resetBusinessStatusFilter();
     const filters = getBusinessStatusFilters();
     Object.assign(currentFilter, filters);
     businessesArray = [];
-    searchInput.value = '';
 
     populateAllBusinessesTableFn({
       page: 1,
@@ -212,7 +210,7 @@ export function bindActivateBusinessFormListener() {
 
       if (accessType.length === 0) {
         showToast('fail', '❎ Please select at least one access type.');
-        hideGlobalLoader();
+         hideGlobalLoader();
         return;
       }
 
@@ -1081,104 +1079,76 @@ export async function populateAllBusinessesTable({
     }
     allBusinessesTableBody.innerHTML = '';
 
-    renderBusinessesTable(businessesArray);
+    businessesArray.forEach((businessData, index) => {
+      // console.log(businessData);
+      const {
+        address,
+        id: businessId,
+        business_name,
+        business_type,
+        created_at,
+        is_active,
+        manager,
+        phone_number,
+        shop_count,
+        staff_size,
+        state_of_operation,
+        version_preference,
+      } = businessData;
 
-    const searchInput = document.getElementById('businessSearchInput');
+      const { email, first_name, last_name } = manager || {};
 
-    if (searchInput) {
-      searchInput.addEventListener('input', () => {
-        const query = searchInput.value.toLowerCase().trim();
+      //  const {
+      //    created_at: shopCreationDate,
+      //    id: shopId,
+      //    location: shopLocation,
+      //    name: shopName,
+      //  } = businessData.shop.forEach();
 
-        const filtered = businessesArray.filter((business) => {
-          const name = business.business_name?.toLowerCase() || '';
-          const phone = business.phone_number?.toLowerCase() || '';
-          const email = business.manager?.email?.toLowerCase() || '';
+      const {
+        days_remaining,
+        last_updated,
+        status: subscriptionStatus,
+        subscription_end,
+      } = businessData.subscription;
 
-          return (
-            name.includes(query) ||
-            phone.includes(query) ||
-            email.includes(query)
-          );
-        });
+      //  console.log(first_name, last_name);
 
-        renderBusinessesTable(filtered);
-      });
-    }
+      const row = document.createElement('tr');
+      row.classList.add('table-body-row');
+      //  row.classList.add(
+      //    item.quantity < 1
+      //      ? 'finishedStockRow'
+      //      : item.quantity >= 1 && item.quantity <= 10
+      //      ? 'nearFinishedStockRow'
+      //      : 'inStockRow'
+      //  );
+      row.dataset.businessId = businessId;
 
-    // Handle Load More button visibility
-    if (currentPage >= totalPages && hasNextPage) {
-      loadMoreButton.style.display = 'none';
-    } else {
-      loadMoreButton.style.display = 'block';
-    }
+      if (row)
+        row.innerHTML = `
+        <td class="py-1 businessSerialNumber">${index + 1}</td>
+        <td class="py-1 businessName">${business_name}</td>
+         <td class="py-1 businessType">${business_type
+           .map((service) => formatServicePermission(service))
+           .join(', ')}</td>
+         <td class="py-1 businessSubscriptionStatus">${subscriptionStatus}</td>
+         <td class="py-1 businessSubscriptionStatus">${
+           is_active ? 'Active' : 'Not Active'
+         }</td>
+          <td class="py-1 businessShopCount">${shop_count}</td>
 
-    if (!hasNextPage) {
-      loadMoreButton.style.display = 'none';
-    }
-  } catch (error) {
-    console.error('Error rendering All Businesses:', error);
-    allBusinessesTableBody.innerHTML =
-      '<tr><td colspan="12" class="table-error-text">Error loading All Businesses.</td></tr>';
-  }
-}
+          <td class="py-1 businessStaffSize">${staff_size}</td>
 
-function renderBusinessesTable(data) {
-  const allBusinessesTableBody = document.querySelector(
-    '.allBusinessesTableBody',
-  );
+          <td class="py-1 businessPhoneNumber">${phone_number}</td>
+          <td class="py-1 businessPhoneNumber">${email || 'N/A'}</td>
+          <td class="py-1 businessStateofOperation">${state_of_operation}</td>
+          <td class="py-1 businessaddress">${address}</td>
+          <td class="py-1 businessDateCreated">${formatDateTimeReadable(
+            created_at,
+          )}</td>
 
-  if (!allBusinessesTableBody) return;
-
-  allBusinessesTableBody.innerHTML = '';
-
-  if (!data.length) {
-    const emptyRow = document.createElement('tr');
-    emptyRow.innerHTML = `
-      <td colspan="13" class="table-error-text">No Businesses Found.</td>
-    `;
-    allBusinessesTableBody.appendChild(emptyRow);
-    return;
-  }
-
-  data.forEach((businessData, index) => {
-    const {
-      address,
-      id: businessId,
-      business_name,
-      business_type,
-      created_at,
-      is_active,
-      manager,
-      phone_number,
-      shop_count,
-      staff_size,
-      state_of_operation,
-    } = businessData;
-
-    const { email } = manager || {};
-
-    const { status: subscriptionStatus } = businessData.subscription;
-
-    const row = document.createElement('tr');
-    row.classList.add('table-body-row');
-    row.dataset.businessId = businessId;
-
-    row.innerHTML = `
-      <td class="py-1">${index + 1}</td>
-      <td class="py-1">${business_name}</td>
-      <td class="py-1">${business_type
-        .map((service) => formatServicePermission(service))
-        .join(', ')}</td>
-      <td class="py-1">${subscriptionStatus}</td>
-      <td class="py-1">${is_active ? 'Active' : 'Not Active'}</td>
-      <td class="py-1">${shop_count}</td>
-      <td class="py-1">${staff_size}</td>
-      <td class="py-1">${phone_number}</td>
-      <td class="py-1">${email || 'N/A'}</td>
-      <td class="py-1">${state_of_operation}</td>
-      <td class="py-1">${address}</td>
-      <td class="py-1">${formatDateTimeReadable(created_at)}</td>
-      <td class="py-1 action-buttons">
+                               <td class="py-1 action-buttons">
                         <button class="hero-btn-outline openBusinessDetailsButton" data-business-id="${businessId}" title="View Business">
                            <i class="fa-solid fa-eye"></i>
                         </button>
@@ -1207,210 +1177,242 @@ function renderBusinessesTable(data) {
                            <i class="fa-solid fa-trash"></i>
                         </button>
                      </td>
-    `;
+         `;
 
-    allBusinessesTableBody.appendChild(row);
+      //     <td class="py-1 itemStatus">${
+      //    item.quantity === 0
+      //      ? (item.status = 'Out of Stock')
+      //      : item.quantity >= 1 && item.quantity <= 10
+      //      ? 'Low Stock'
+      //      : 'In Stock'
+      //  }</td>
 
-    // Activate Business Subscription
-    const activateBusinessButton = row.querySelector('.activateBusinessButton');
+      row.addEventListener('click', async (e) => {
+        renderBusinessDetailsById(e, row, businessId);
+      });
 
-    activateBusinessButton?.addEventListener('click', async (e) => {
-      e.stopPropagation();
-      showGlobalLoader();
+      if (allBusinessesTableBody) allBusinessesTableBody.appendChild(row);
 
-      const businessId = activateBusinessButton.dataset.businessId;
-
-      const activateBusinessContainer = document.querySelector(
-        '.activateBusinessContainer',
+      // Activate Business Subscription
+      const activateBusinessButton = row.querySelector(
+        '.activateBusinessButton',
       );
 
-      if (activateBusinessContainer) {
-        // Store businessId in modal container for reference
-        activateBusinessContainer.dataset.businessId = businessId;
+      activateBusinessButton?.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        showGlobalLoader();
 
-        // Fetch Shop detail
-        const businessDetail = await getBusinessDetailById(businessId);
+        const businessId = activateBusinessButton.dataset.businessId;
 
-        //   console.log('productDetail', productDetail);
+        const activateBusinessContainer = document.querySelector(
+          '.activateBusinessContainer',
+        );
 
-        // Call function to prefill modal inputs
-        if (businessDetail?.data) {
-          hideGlobalLoader();
-          openActivateBusinessSubscriptionModal(); // Show modal after data is ready
-          activateBusinessForm(businessDetail.data);
-        } else {
-          hideGlobalLoader();
-          showToast('fail', '❌ Failed to fetch Business details.');
+        if (activateBusinessContainer) {
+          // Store businessId in modal container for reference
+          activateBusinessContainer.dataset.businessId = businessId;
+
+          // Fetch Shop detail
+          const businessDetail = await getBusinessDetailById(businessId);
+
+          //   console.log('productDetail', productDetail);
+
+          // Call function to prefill modal inputs
+          if (businessDetail?.data) {
+            hideGlobalLoader();
+            openActivateBusinessSubscriptionModal(); // Show modal after data is ready
+            activateBusinessForm(businessDetail.data);
+          } else {
+            hideGlobalLoader();
+            showToast('fail', '❌ Failed to fetch Business details.');
+          }
         }
-      }
-    });
+      });
 
-    // Restrict Business
-    const restrictBusinessButton = row.querySelector('.restrictBusinessButton');
-
-    restrictBusinessButton?.addEventListener('click', async (e) => {
-      e.stopPropagation();
-      showGlobalLoader();
-
-      const businessId = restrictBusinessButton.dataset.businessId;
-
-      const restrictBusinessContainer = document.querySelector(
-        '.restrictBusinessContainer',
+      // Restrict Business
+      const restrictBusinessButton = row.querySelector(
+        '.restrictBusinessButton',
       );
 
-      if (restrictBusinessContainer) {
-        // Store businessId in modal container for reference
-        restrictBusinessContainer.dataset.businessId = businessId;
+      restrictBusinessButton?.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        showGlobalLoader();
 
-        // Fetch Shop detail
-        const businessDetail = await getBusinessDetailById(businessId);
+        const businessId = restrictBusinessButton.dataset.businessId;
 
-        // Call function to prefill modal inputs
-        if (businessDetail?.data) {
-          hideGlobalLoader();
-          openRestrictBusinessModal(); // Show modal after data is ready
-          restrictBusinessForm(businessDetail.data);
-        } else {
-          hideGlobalLoader();
-          showToast('fail', '❌ Failed to fetch Business details.');
+        const restrictBusinessContainer = document.querySelector(
+          '.restrictBusinessContainer',
+        );
+
+        if (restrictBusinessContainer) {
+          // Store businessId in modal container for reference
+          restrictBusinessContainer.dataset.businessId = businessId;
+
+          // Fetch Shop detail
+          const businessDetail = await getBusinessDetailById(businessId);
+
+          // Call function to prefill modal inputs
+          if (businessDetail?.data) {
+            hideGlobalLoader();
+            openRestrictBusinessModal(); // Show modal after data is ready
+            restrictBusinessForm(businessDetail.data);
+          } else {
+            hideGlobalLoader();
+            showToast('fail', '❌ Failed to fetch Business details.');
+          }
         }
-      }
-    });
+      });
 
-    // Unrestrict Business
-    const unrestrictBusinessButton = row.querySelector(
-      '.unrestrictBusinessButton',
-    );
-
-    unrestrictBusinessButton?.addEventListener('click', async (e) => {
-      e.stopPropagation();
-      showGlobalLoader();
-
-      const businessId = unrestrictBusinessButton.dataset.businessId;
-
-      const unrestrictBusinessContainer = document.querySelector(
-        '.unrestrictBusinessContainer',
+      // Unrestrict Business
+      const unrestrictBusinessButton = row.querySelector(
+        '.unrestrictBusinessButton',
       );
 
-      if (unrestrictBusinessContainer) {
-        // Store businessId in modal container for reference
-        unrestrictBusinessContainer.dataset.businessId = businessId;
+      unrestrictBusinessButton?.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        showGlobalLoader();
 
-        // Fetch Shop detail
-        const businessDetail = await getBusinessDetailById(businessId);
+        const businessId = unrestrictBusinessButton.dataset.businessId;
 
-        // Call function to prefill modal inputs
-        if (businessDetail?.data) {
-          hideGlobalLoader();
-          openUnrestrictBusinessModal(); // Show modal after data is ready
-          unrestrictBusinessForm(businessDetail.data);
-        } else {
-          hideGlobalLoader();
-          showToast('fail', '❌ Failed to fetch Business details.');
+        const unrestrictBusinessContainer = document.querySelector(
+          '.unrestrictBusinessContainer',
+        );
+
+        if (unrestrictBusinessContainer) {
+          // Store businessId in modal container for reference
+          unrestrictBusinessContainer.dataset.businessId = businessId;
+
+          // Fetch Shop detail
+          const businessDetail = await getBusinessDetailById(businessId);
+
+          // Call function to prefill modal inputs
+          if (businessDetail?.data) {
+            hideGlobalLoader();
+            openUnrestrictBusinessModal(); // Show modal after data is ready
+            unrestrictBusinessForm(businessDetail.data);
+          } else {
+            hideGlobalLoader();
+            showToast('fail', '❌ Failed to fetch Business details.');
+          }
         }
-      }
+      });
+
+      // Notify Business
+      const notifyBusinessButton = row.querySelector('.notifyBusinessButton');
+
+      notifyBusinessButton?.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        showGlobalLoader();
+
+        const businessId = notifyBusinessButton.dataset.businessId;
+
+        const notifyBusinessContainer = document.querySelector(
+          '.notifyBusinessContainer',
+        );
+
+        if (notifyBusinessContainer) {
+          // Store businessId in modal container for reference
+          notifyBusinessContainer.dataset.businessId = businessId;
+
+          // Fetch Shop detail
+          const businessDetail = await getBusinessDetailById(businessId);
+
+          // Call function to prefill modal inputs
+          if (businessDetail?.data) {
+            hideGlobalLoader();
+            openNotifyBusinessModal(); // Show modal after data is ready
+            notifyBusinessForm(businessDetail.data);
+          } else {
+            hideGlobalLoader();
+            showToast('fail', '❌ Failed to fetch Business details.');
+          }
+        }
+      });
+
+      // Delete Business
+      const deleteBusinessButton = row.querySelector('.deleteBusinessButton');
+
+      deleteBusinessButton?.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        showGlobalLoader();
+
+        console.log('clicked');
+
+        const businessId = deleteBusinessButton.dataset.businessId;
+
+        const deleteBusinessContainer = document.querySelector(
+          '.deleteBusinessContainer',
+        );
+
+        if (deleteBusinessContainer) {
+          // Store businessId in modal container for reference
+          deleteBusinessContainer.dataset.businessId = businessId;
+
+          // Fetch Shop detail
+          const businessDetail = await getBusinessDetailById(businessId);
+
+          // Call function to prefill modal inputs
+          if (businessDetail?.data) {
+            hideGlobalLoader();
+            openDeleteBusinessModal(); // Show modal after data is ready
+            deleteBusinessForm(businessDetail.data);
+          } else {
+            hideGlobalLoader();
+            showToast('fail', '❌ Failed to fetch Business details.');
+          }
+        }
+      });
+
+      // Update Business
+      const updateBusinessButton = row.querySelector('.updateBusinessButton');
+
+      updateBusinessButton?.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        showGlobalLoader();
+
+        const businessId = updateBusinessButton.dataset.businessId;
+
+        const updateBusinessContainer = document.querySelector(
+          '.updateBusinessDataContainer',
+        );
+
+        if (updateBusinessContainer) {
+          // Store businessId in modal container for reference
+          updateBusinessContainer.dataset.businessId = businessId;
+
+          // Fetch Shop detail
+          const businessDetail = await getBusinessDetailById(businessId);
+
+          console.log('businessDetail', businessDetail);
+
+          // Call function to prefill modal inputs
+          if (businessDetail?.data) {
+            hideGlobalLoader();
+            openUpdateBusinessModal(); // Show modal after data is ready
+            updateBusinessForm(businessDetail.data);
+          } else {
+            hideGlobalLoader();
+            showToast('fail', '❌ Failed to fetch Business details.');
+          }
+        }
+      });
     });
 
-    // Notify Business
-    const notifyBusinessButton = row.querySelector('.notifyBusinessButton');
+    // Handle Load More button visibility
+    if (currentPage >= totalPages && hasNextPage) {
+      loadMoreButton.style.display = 'none';
+    } else {
+      loadMoreButton.style.display = 'block';
+    }
 
-    notifyBusinessButton?.addEventListener('click', async (e) => {
-      e.stopPropagation();
-      showGlobalLoader();
-
-      const businessId = notifyBusinessButton.dataset.businessId;
-
-      const notifyBusinessContainer = document.querySelector(
-        '.notifyBusinessContainer',
-      );
-
-      if (notifyBusinessContainer) {
-        // Store businessId in modal container for reference
-        notifyBusinessContainer.dataset.businessId = businessId;
-
-        // Fetch Shop detail
-        const businessDetail = await getBusinessDetailById(businessId);
-
-        // Call function to prefill modal inputs
-        if (businessDetail?.data) {
-          hideGlobalLoader();
-          openNotifyBusinessModal(); // Show modal after data is ready
-          notifyBusinessForm(businessDetail.data);
-        } else {
-          hideGlobalLoader();
-          showToast('fail', '❌ Failed to fetch Business details.');
-        }
-      }
-    });
-
-    // Delete Business
-    const deleteBusinessButton = row.querySelector('.deleteBusinessButton');
-
-    deleteBusinessButton?.addEventListener('click', async (e) => {
-      e.stopPropagation();
-      showGlobalLoader();
-
-      console.log('clicked');
-
-      const businessId = deleteBusinessButton.dataset.businessId;
-
-      const deleteBusinessContainer = document.querySelector(
-        '.deleteBusinessContainer',
-      );
-
-      if (deleteBusinessContainer) {
-        // Store businessId in modal container for reference
-        deleteBusinessContainer.dataset.businessId = businessId;
-
-        // Fetch Shop detail
-        const businessDetail = await getBusinessDetailById(businessId);
-
-        // Call function to prefill modal inputs
-        if (businessDetail?.data) {
-          hideGlobalLoader();
-          openDeleteBusinessModal(); // Show modal after data is ready
-          deleteBusinessForm(businessDetail.data);
-        } else {
-          hideGlobalLoader();
-          showToast('fail', '❌ Failed to fetch Business details.');
-        }
-      }
-    });
-
-    // Update Business
-    const updateBusinessButton = row.querySelector('.updateBusinessButton');
-
-    updateBusinessButton?.addEventListener('click', async (e) => {
-      e.stopPropagation();
-      showGlobalLoader();
-
-      const businessId = updateBusinessButton.dataset.businessId;
-
-      const updateBusinessContainer = document.querySelector(
-        '.updateBusinessDataContainer',
-      );
-
-      if (updateBusinessContainer) {
-        // Store businessId in modal container for reference
-        updateBusinessContainer.dataset.businessId = businessId;
-
-        // Fetch Shop detail
-        const businessDetail = await getBusinessDetailById(businessId);
-
-        console.log('businessDetail', businessDetail);
-
-        // Call function to prefill modal inputs
-        if (businessDetail?.data) {
-          hideGlobalLoader();
-          openUpdateBusinessModal(); // Show modal after data is ready
-          updateBusinessForm(businessDetail.data);
-        } else {
-          hideGlobalLoader();
-          showToast('fail', '❌ Failed to fetch Business details.');
-        }
-      }
-    });
-  });
+    if (!hasNextPage) {
+      loadMoreButton.style.display = 'none';
+    }
+  } catch (error) {
+    console.error('Error rendering All Businesses:', error);
+    allBusinessesTableBody.innerHTML =
+      '<tr><td colspan="12" class="table-error-text">Error loading All Businesses.</td></tr>';
+  }
 }
 
 export async function renderBusinessDetailsById(e, row) {

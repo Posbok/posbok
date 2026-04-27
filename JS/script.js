@@ -57,6 +57,7 @@ import {
 } from './superAdmin/superAdminResources.js';
 import { getFirst20Words } from './superAdminNotices.js';
 import { getActiveSubscriptionPlans } from './apiServices/subscription/subscriptionResource.js';
+import { hasService, loadUserServices } from './subscription.js';
 
 const userData = config.userData;
 const dummyShopId = config.dummyShopId;
@@ -323,7 +324,7 @@ export async function renderUserprofileDetails() {
   document.getElementById('userProfilelga').value = lga;
   document.getElementById('userProfileAccountType').value = accountType;
   document.getElementById('userProfileServicePermission').value =
-    servicePermission === 'BOTH' ? 'POS & SALES' : servicePermission;
+    servicePermission;
   document.getElementById('userProfileBusinessName').value = businessName;
 
   hideGlobalLoader();
@@ -588,7 +589,10 @@ async function renderBusinessDayButtons() {
     '.adminOpenPosCapitalAmount',
   );
 
-  if (servicePermission === 'INVENTORY_SALES') {
+  const hasInventory = hasService('INVENTORY');
+  const hasEcommerce = hasService('ECOMMERCE');
+
+  if (hasInventory && hasEcommerce) {
     if (openPosCapitalAmountLabel)
       openPosCapitalAmountLabel.innerText = 'Cash in Shop';
     if (adminOpenPosCapitalAmount)
@@ -1830,16 +1834,20 @@ const sellIndexTab = document.getElementById('sellIndexTab');
 const posIndexTab = document.getElementById('posIndexTab');
 const reportIndexTab = document.getElementById('reportIndexTab');
 const manageIndexTab = document.getElementById('manageIndexTab');
+const warehouseIndexTab = document.getElementById('warehouseIndexTab');
+const storefrontIndexTab = document.getElementById('storefrontIndexTab');
 
 const sellNav = document.getElementById('sellNav');
 const posNav = document.getElementById('posNav');
 const reportsNav = document.getElementById('reportsNav');
+const warehouseNav = document.getElementById('warehouseNav');
+const storefrontNav = document.getElementById('storefrontNav');
 const manageNav = document.getElementById('manageNav');
 
-const invetoryNav = document.querySelector('.inventoryBtn');
-const warehouseNav = document.querySelector('.warehouseBtn');
-const storefrontNav = document.querySelector('.storefrontBtn');
-const posManagementNav = document.querySelector('.posManagementBtn');
+// const invetoryNav = document.querySelector('.inventoryBtn');
+// const warehouseNav = document.querySelector('.warehouseBtn');
+// const storefrontNav = document.querySelector('.storefrontBtn');
+// const posManagementNav = document.querySelector('.posManagementBtn');
 
 // Stop everything if no user is logged in
 // UI Rendering
@@ -1882,8 +1890,9 @@ if (!userData) {
 
   // Step 2: Define permission-restricted pages
   const permissionRestrictedPages = {
-    pos: ['POS_TRANSACTIONS', 'BOTH'],
-    sell: ['INVENTORY_SALES', 'BOTH'],
+    pos: ['POS'],
+    sell: ['INVENTORY', 'ECOMMERCE'],
+    warehouse: ['WAREHOUSE'],
     superAdmin: ['SUPER_ADMIN', 'BOTH'],
   };
 
@@ -1944,13 +1953,20 @@ if (!userData) {
     if (manageIndexTab) manageIndexTab.style.display = 'none';
     if (manageNav) manageNav.style.display = 'none';
 
+    if (warehouseIndexTab) warehouseIndexTab.style.display = 'none';
+    if (warehouseNav) warehouseNav.style.display = 'none';
+
+    if (storefrontIndexTab) storefrontIndexTab.style.display = 'none';
+    if (storefrontNav) storefrontNav.style.display = 'none';
+
     // Prevent staff from opening restricted pages directly
     const restrictedStaffPages = [
       'manage',
       'staff-profile',
       // 'pos-management',
       'shop-management',
-      'stock-management',
+      'warehouse-management',
+      'storefront-management',
       'super-admin',
       'inventory',
     ];
@@ -2130,26 +2146,64 @@ if (useBusinessInfoCheckbox) {
 
     if (useBusinessInfoCheckbox.checked) {
       showGlobalLoader();
+      console.log('code got here');
       const businessData = await fetchBusinessDetails();
+
+      // console.log(businessData);
+      const services = businessData?.data?.business_type || [];
+
+      console.log('services', services);
+
+      const hasService = (service) => services.includes(service);
+
+      const hasInventory = hasService('INVENTORY');
+      const hasEcommerce = hasService('STOREFRONT');
+      const hasWarehouse = hasService('WAREHOUSE');
+      const hasPos = hasService('POS');
+
+      console.log('Inventory:', hasInventory, 'Ecommerce:', hasEcommerce);
 
       shopNameInput.value = businessData.data.business_name || '';
       shopAddressInput.value = businessData.data.address || '';
 
-      // Clear all checkboxes first
-      serviceTypeCheckboxes.forEach((checkbox) => (checkbox.checked = false));
-
       // Match and check the appropriate checkbox
-      const serviceType = businessData.data.business_type;
-      const matchedCheckbox = [...serviceTypeCheckboxes].find(
-        (checkbox) => checkbox.value === serviceType,
+      // Get radio buttons
+      const posRadio = document.getElementById('createShopPosCheckbox');
+      const inventoryRadio = document.getElementById(
+        'createShopInventoryCheckbox',
       );
-      if (matchedCheckbox) matchedCheckbox.checked = true;
+      const ecommerceRadio = document.getElementById(
+        'createShopStorefrontCheckbox',
+      );
+      const warehouseRadio = document.getElementById(
+        'createShopWarehouseCheckbox',
+      );
+
+      // Enable all first
+      [posRadio, inventoryRadio, ecommerceRadio, warehouseRadio].forEach(
+        (el) => {
+          el.disabled = false;
+        },
+      );
+
+      // Disable based on subscription
+      if (!hasPos) posRadio.disabled = true;
+      if (!hasInventory) inventoryRadio.disabled = true;
+      if (!hasWarehouse) warehouseRadio.disabled = true;
+      if (!hasEcommerce) ecommerceRadio.disabled = true;
+
+      if (hasPos) posRadio.checked = true;
+      if (hasInventory) inventoryRadio.checked = true;
+      if (hasWarehouse) warehouseRadio.checked = true;
+      if (hasEcommerce) ecommerceRadio.checked = true;
 
       hideGlobalLoader();
     } else {
       // Clear inputs and checkboxes
       shopNameInput.value = '';
       shopAddressInput.value = '';
+
+      // Clear all checkboxes and disable them
       serviceTypeCheckboxes.forEach((checkbox) => (checkbox.checked = false));
     }
   });

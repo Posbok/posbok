@@ -188,8 +188,13 @@
             </div>
 
 
+            <div class="pos-method-form_input mb-2 pl-1 pr-1">
+               <label for="businessSearchInput">Search Business:</label>
+               <input type="text" id="businessSearchInput" placeholder="Search by name, email or phone..." />
+            </div>
             <!-- <h1 class="heading-subtext">Filter Businesses</h1> -->
             <div class="filter-section mb-2">
+
 
                <div class="pos-method-form_input ">
 
@@ -305,13 +310,73 @@
          <h1 class="business-name-text center-text heading-subtext">
          </h1>
 
+         <!-- Service Type -->
+         <div class="modal-form_input mb-1">
+            <label for="activateSubcriptionAccessType" class="heading-subtext">Service Type</label>
 
-         <div class="modal-form_input">
-            <label for="subscriptionDuration">Subscription Duration</label>
+            <div class="checkbox">
+               <div class="checkbox-container mb-1">
+                  <input id="PosCheckbox" type="checkbox" name="activateSubcriptionAccessType" value="POS">
+                  <label for="PosCheckbox">POS</label>
+               </div>
 
-            <input id="subscriptionDuration" type="number" pattern="[0-9]" inputmode="numeric"
-               placeholder="Number of Days" name="subscriptionDuration" required>
+               <div class="checkbox-container mb-1">
+                  <input id="InventoryCheckbox" type="checkbox" name="activateSubcriptionAccessType" value="INVENTORY">
+                  <label for="InventoryCheckbox">INVENTORY</label>
+               </div>
+
+               <div class="checkbox-container mb-1">
+                  <input id="WarehouseCheckbox" type="checkbox" name="activateSubcriptionAccessType" value="WAREHOUSE">
+                  <label for="WarehouseCheckbox">WAREHOUSE</label>
+               </div>
+
+               <div class="checkbox-container mb-1">
+                  <input id="StorefrontCheckbox" type="checkbox" name="activateSubcriptionAccessType" value="ECOMMERCE">
+                  <label for="StorefrontCheckbox">STOREFRONT</label>
+               </div>
+            </div>
          </div>
+
+
+
+         <div class="modal-form_input mb-1">
+            <label for="subscriptionDuration" class="heading-subtext">Subscription Duration</label>
+
+            <div class="checkbox">
+               <div class="checkbox-container">
+                  <input id="monthlyCheckbox" type="radio" name="subscriptionDuration" value="monthly">
+                  <label for="monthlyCheckbox">Monthly</label>
+               </div>
+
+               <div class="checkbox-container">
+                  <input id="yearlyCheckbox" type="radio" name="subscriptionDuration" value="yearly">
+                  <label for="yearlyCheckbox">Yearly</label>
+               </div>
+            </div>
+
+         </div>
+
+         <!-- Version Preference -->
+         <!-- <div class="signup-form_input  mb-1">
+                  <label for="versionPreference" class="heading-subtext">Version Preference</label>
+
+                  <div class="checkbox">
+                     <div class="checkbox-container">
+                        <input id="webCheckbox" type="radio" name="versionPreference" value="WEB">
+                        <label for="webCheckbox">Web</label>
+                     </div>
+
+                     <div class="checkbox-container">
+                        <input id="mobileCheckbox" type="radio" name="versionPreference" value="MOBILE">
+                        <label for="mobileCheckbox">Mobile</label>
+                     </div>
+
+                     <div class="checkbox-container">
+                        <input id="standaloneCheckbox" type="radio" name="versionPreference" value="STANDALONE">
+                        <label for="standaloneCheckbox">Standalone</label>
+                     </div>
+                  </div>
+               </div> -->
 
          <div class="confirmation-btn_container">
 

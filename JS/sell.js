@@ -255,6 +255,49 @@ document.addEventListener('DOMContentLoaded', () => {
   if (adminAutocompleteList) adminAutocompleteList.style.display = 'none';
 });
 
+// Implemented Auto selection of shops
+// if (isAdmin && sellProductShopDropdown) {
+//   sellProductShopDropdown?.addEventListener('change', () => {
+//     const selectedShopId = sellProductShopDropdown.value;
+
+//     const adminSellProductSearchSection = document.querySelector(
+//       '.adminSellProductSearch-section',
+//     );
+//     const adminSellProductCategorySection = document.querySelector(
+//       '.adminSellProductCategory-section',
+//     );
+//     const adminSellProductName = document.querySelector(
+//       '.adminSellProductName',
+//     );
+//     const adminAutocompleteList = document.getElementById(
+//       'adminAutocompleteList',
+//     );
+
+//     if (!selectedShopId) {
+//       // Hide sections if no shop selected
+//       if (adminSellProductSearchSection)
+//         adminSellProductSearchSection.style.display = 'none';
+//       if (adminSellProductCategorySection)
+//         adminSellProductCategorySection.style.display = 'none';
+//       if (adminSellProductName) adminSellProductName.style.display = 'none';
+//       if (adminAutocompleteList) adminAutocompleteList.style.display = 'none';
+//       return; // Stop execution if shop is empty
+//     }
+
+//     // Show sections
+//     if (adminSellProductSearchSection)
+//       adminSellProductSearchSection.style.display = 'block';
+//     if (adminSellProductCategorySection)
+//       adminSellProductCategorySection.style.display = 'flex';
+//     //  if (adminSellProductName) adminSellProductName.style.display = 'block';
+//     //  if (adminAutocompleteList) adminAutocompleteList.style.display = 'block';
+
+//     // Re-fetch products and categories
+//     displayAllProducts();
+//     displayAllCategories();
+//   });
+// }
+
 if (isAdmin && sellProductShopDropdown) {
   sellProductShopDropdown?.addEventListener('change', () => {
     const selectedShopId = sellProductShopDropdown.value;
