@@ -493,7 +493,7 @@ export async function loadUserServices() {
 function renderServiceUI() {
   const services = userServices.map((s) => s.service_code);
 
-  console.log('User Services:', services);
+  //   console.log('User Services:', services);
 
   if (services.includes('POS')) {
     document.querySelectorAll('.pos-feature').forEach((el) => {

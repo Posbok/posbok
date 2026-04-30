@@ -1302,8 +1302,13 @@ export function closeModal() {
   const adminViewBusinessData = document.querySelector(
     '.adminViewBusinessData',
   );
+  const moderateRequest = document.querySelector('.moderateRequest');
 
   //
+
+  if (moderateRequest) {
+    moderateRequest.classList.remove('active');
+  }
 
   if (adminViewBusinessData) {
     adminViewBusinessData.classList.remove('active');

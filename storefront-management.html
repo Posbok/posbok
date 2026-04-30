@@ -215,7 +215,7 @@
 
 
             <div class="storefront-tabs mt-2">
-               <button class="storefront-tab-btn active" data-tab="overviewTab">
+               <button class="storefront-tab-btn " data-tab="overviewTab">
                   Overview
                </button>
 
@@ -224,7 +224,7 @@
                   <span class="tab-badge" id="pendingReviewsCount">0</span>
                </button>
 
-               <button class="storefront-tab-btn" data-tab="requestsTab">
+               <button class="storefront-tab-btn active" data-tab="requestsTab">
                   Purchase Requests
                </button>
 
@@ -234,7 +234,7 @@
             </div>
 
 
-            <div class="storefront-tab-content active" id="overviewTab">
+            <div class="storefront-tab-content " id="overviewTab">
                <div class="storefront-header">
                   <div>
                      <span class="heading-subtext muted-text">
@@ -426,9 +426,28 @@
                </div>
             </div>
 
-            <div class="storefront-tab-content" id="requestsTab">
-               <h3 class="card-title">Purchase Requests</h3>
-               <p class="muted-text heading-minitext">Coming soon</p>
+            <div class="storefront-tab-content active" id="requestsTab">
+               <h2 class="card-title heading-subtext">Purchase Requests</h2>
+               <div id="purchaseRequestsContainer">
+
+                  <!-- <div class="requests-header">
+                     <div class="requests-filters">
+                        <button class="request-filter-btn active" data-filter="all">All</button>
+                        <button class="request-filter-btn" data-filter="pending">Pending</button>
+                        <button class="request-filter-btn" data-filter="accepted">Accepted</button>
+                        <button class="request-filter-btn" data-filter="rejected">Rejected</button>
+                     </div>
+                  </div> -->
+
+                  <div id="purchaseRequestsList" class="requests-list mt-3"></div>
+
+                  <div id="loadMoreRequestsDiv" class="center-button mt-2">
+                     <button id="requestsLoadMoreButton" class="hero-btn-dark load-more-button">
+                        Load More
+                     </button>
+                  </div>
+
+               </div>
             </div>
 
             <div class="storefront-tab-content" id="analyticsTab">
@@ -855,15 +874,67 @@
          </div>
 
          <div class="modal-form_input">
-            <label for="moderateAdminResponse">Admin Response</label>
+            <label for="moderateAdminResponse">Shop Response</label>
 
-            <textarea id="moderateAdminResponse" type="text" placeholder="Admin Response" name="moderateAdminResponse"
+            <textarea id="moderateAdminResponse" type="text" placeholder="Shop Response" name="moderateAdminResponse"
                rows="4" cols="50" required></textarea>
          </div>
 
          <div class="center-button">
             <button class="hero-btn-dark moderateReviewModalBtn" id="moderateReviewModalBtn">
                <span class="btn-text">update Review</span>
+               <span class="btn-spinner hidden"></span>
+            </button>
+         </div>
+
+         <div class="close closeModal" id="">&times;</div>
+      </div>
+   </form>
+
+   <!-- Moderate Request -->
+   <form class="modal-form moderateRequestModal" name="moderateRequest">
+      <div class="card moderateRequest modal ">
+         <div class="mt-2">
+            <h1 class="heading-text">Moderate Request for <span class="buyerName"></span></h1>
+         </div>
+
+         <div class="modal-form_input mb-1">
+            <label for="moderateRequest" class="heading-subtext"> Request Status</label>
+
+            <div class="checkbox">
+               <div class="checkbox-container">
+                  <input id="moderateRequestAccept" type="radio" name="moderateRequest" value="accepted">
+                  <label for="moderateRequestAccept">Accept</label>
+               </div>
+
+               <div class="checkbox-container">
+                  <input id="moderateRequestReject" type="radio" name="moderateRequest" value="rejected">
+                  <label for="moderateRequestReject">Reject</label>
+               </div>
+
+               <div class="checkbox-container">
+                  <input id="moderateRequestCompleted" type="radio" name="moderateRequest" value="completed">
+                  <label for="moderateRequestCompleted">Completed</label>
+               </div>
+
+               <div class="checkbox-container">
+                  <input id="moderateRequestCancelled" type="radio" name="moderateRequest" value="cancelled">
+                  <label for="moderateRequestCancelled">Cancelled</label>
+               </div>
+
+            </div>
+         </div>
+
+         <div class="modal-form_input">
+            <label for="moderatePurchaseRequestAdminResponse">Shop Response</label>
+
+            <textarea id="moderatePurchaseRequestAdminResponse" type="text" placeholder="Shop Response"
+               name="moderatePurchaseRequestAdminResponse" rows="4" cols="50" required></textarea>
+         </div>
+
+         <div class="center-button">
+            <button class="hero-btn-dark moderateRequestModalBtn" id="moderateRequestModalBtn">
+               <span class="btn-text">update Request</span>
                <span class="btn-spinner hidden"></span>
             </button>
          </div>

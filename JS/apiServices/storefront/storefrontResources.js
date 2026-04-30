@@ -43,7 +43,7 @@ export async function fetchStorefrontStatus() {
     });
 
     //  console.log('Response received...');
-    console.log(fetchedData);
+    //  console.log(fetchedData);
     hideGlobalLoader();
 
     if (fetchedData && fetchedData.data === null) {
@@ -168,11 +168,42 @@ export async function getProductReviews(status = 'all', page = 1, limit = 50) {
 
     hideGlobalLoader();
 
-    console.log(productReviewsData);
+    //  console.log(productReviewsData);
     return productReviewsData;
   } catch (error) {
     hideGlobalLoader();
     console.error('Error fetching Reviews:', error.message);
+  }
+}
+
+//  Purchase Requests
+
+export async function getProductRequest(status = 'all', page = 1, limit = 1) {
+  try {
+    showGlobalLoader();
+
+    console.log(
+      `${baseUrl}/api/storefront/purchase-requests?&page=${page}&limit=${limit}`,
+    );
+
+    const productRequestData = await safeFetch(
+      // `${baseUrl}/api/storefront/purchase-requestsl?status=${status}&page=${page}&limit=${limit}`,
+      `${baseUrl}/api/storefront/purchase-requests?&page=${page}&limit=${limit}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      },
+    );
+
+    hideGlobalLoader();
+
+    //  console.log(productRequestData);
+    return productRequestData;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error fetching Request:', error.message);
   }
 }
 
@@ -238,7 +269,42 @@ export async function moderateReview(reviewId, moderateReviewDetails) {
   } catch (error) {
     hideGlobalLoader();
     //  console.error('Error deleting Notice', error);
-    showToast('error', '❌ Failed to Mark Notice As Read');
+    showToast('error', '❌ Failed to Moderate Review');
+    throw error;
+  }
+}
+
+export async function moderateRequest(requestId, moderateRequestDetails) {
+  try {
+    //  console.log('Sending POST request...');
+
+    showGlobalLoader();
+
+    const fetchedData = await safeFetch(
+      `${baseUrl}/api/storefront/purchase-requests/${requestId}/respond`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(moderateRequestDetails),
+      },
+    );
+
+    if (fetchedData) {
+      console.log('Request moderated successfully:', fetchedData);
+      // showToast('success', `✅ ${fetchedData.message}`);
+      // await renderProductInventoryTable(shopId); // Refresh list or update UI
+      // await loadStorefrontReviews();
+      hideGlobalLoader();
+    }
+
+    return fetchedData;
+  } catch (error) {
+    hideGlobalLoader();
+    //  console.error('Error deleting Notice', error);
+    showToast('error', '❌ Failed to Moderate Request');
     throw error;
   }
 }

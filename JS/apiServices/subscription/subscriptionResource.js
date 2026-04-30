@@ -112,7 +112,7 @@ export async function getActiveSubscriptionPlans() {
     );
 
     //  console.log('Response received...');
-    console.log(fetchedData);
+    //  console.log(fetchedData);
     hideGlobalLoader();
 
     return fetchedData;

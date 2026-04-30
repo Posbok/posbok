@@ -3093,7 +3093,8 @@ body.authentication {
 }
 
 .storefront-tab-btn,
-.review-filter-btn {
+.review-filter-btn,
+.request-filter-btn {
   padding: 8px 14px;
   border-radius: 6px;
   border: 1px solid #ddd;
@@ -3104,7 +3105,8 @@ body.authentication {
 }
 
 .storefront-tab-btn.active,
-.review-filter-btn.active {
+.review-filter-btn.active,
+.request-filter-btn.active {
   background: #6f9a32;
   color: #fff;
 }
@@ -3191,6 +3193,122 @@ body.authentication {
 .review-card .review-status.pending {
   background: rgba(250, 204, 21, 0.15);
   color: #131b09;
+}
+
+.request-card {
+  background-color: #6f9a32;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.request-card.accepted {
+  border-left: 4px solid #7fb239;
+  background-color: #dcf5e0;
+  color: #131b09 !important;
+}
+.request-card.rejected {
+  border-left: 4px solid #ec1a23;
+  background-color: #fef4f4;
+  color: #131b09 !important;
+}
+.request-card.completed {
+  border-left: 4px solid rgb(85.6574468085, 120.0553191489, 38.4446808511);
+  background-color: rgba(34, 197, 94, 0.08);
+  color: #131b09 !important;
+}
+.request-card.completed .request-title {
+  font-weight: 600;
+  color: #131b09 !important;
+}
+.request-card.completed {
+  /* Request text */
+}
+.request-card.completed .request-text {
+  line-height: 1.5;
+  color: #131b09 !important;
+  margin: 0.4rem 0 0.6rem;
+}
+.request-card.completed {
+  /* Meta */
+}
+.request-card.completed .request-meta {
+  color: #131b09 !important;
+  margin-bottom: 0.75rem;
+}
+.request-card.cancelled {
+  border-left: 4px solid #9ca3af;
+  background-color: #f9fafb;
+  color: #131b09 !important;
+}
+.request-card.cancelled .request-title {
+  font-weight: 600;
+  color: #131b09 !important;
+}
+.request-card.cancelled {
+  /* Request text */
+}
+.request-card.cancelled .request-text {
+  line-height: 1.5;
+  color: #131b09 !important;
+  margin: 0.4rem 0 0.6rem;
+}
+.request-card.cancelled {
+  /* Meta */
+}
+.request-card.cancelled .request-meta {
+  color: #131b09 !important;
+  margin-bottom: 0.75rem;
+}
+.request-card.pending {
+  border-left: 4px solid #f59e0b;
+  background-color: rgba(245, 158, 11, 0.08);
+}
+.request-card .request-status.accepted {
+  background: #b9da8b;
+  color: #131b09;
+}
+.request-card .request-status.rejected {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ec1a23;
+}
+.request-card .request-status.completed {
+  background: rgba(34, 197, 94, 0.15);
+  color: rgb(58.0957446809, 81.4255319149, 26.0744680851);
+}
+.request-card .request-status.cancelled {
+  background: rgba(156, 163, 175, 0.2);
+  color: #6b7280;
+}
+.request-card .request-status.pending {
+  background: rgba(245, 158, 11, 0.15);
+  color: #b45309;
+}
+
+.request-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.request-status {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.request-items ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+
+.request-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
 }
 
 .review-card:hover {

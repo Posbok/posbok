@@ -31,7 +31,9 @@ import {
 import { closeModal, showToast } from './script';
 import {
   fetchStorefrontStatus,
+  getProductRequest,
   getProductReviews,
+  moderateRequest,
   moderateReview,
   setupStorefront,
   uploadStorefrontImages,
@@ -59,7 +61,7 @@ if (adminStorefrontManagementPage) {
 async function initializeEcommerceFeature() {
   await loadUserServices();
 
-  console.log(hasService('ECOMMERCE'));
+  //   console.log(hasService('ECOMMERCE'));
 
   if (!hasService('ECOMMERCE')) {
     showSubscriptionRequiredModal();
@@ -692,6 +694,7 @@ export async function loadStorefrontReviews(page = 1, append = false) {
 
   if (!response?.data?.reviews) return;
 
+  //   console.log(response);
   const reviews = response.data.reviews;
   const pagination = response.data.pagination;
 
@@ -722,6 +725,47 @@ export async function loadStorefrontReviews(page = 1, append = false) {
   }
 }
 
+let storefrontRequests = [];
+let currentRequestFilter = 'all';
+let currentRequestPage = 1;
+let totalRequestPages = 1;
+
+export async function loadStorefrontRequests(page = 1, append = false) {
+  const response = await getProductRequest(currentReviewFilter, page, 1);
+  console.log('Purchase Requests', response);
+
+  if (!response?.data?.requests) return;
+
+  const requests = response.data.requests;
+  const pagination = response.data.pagination;
+
+  totalRequestPages = pagination.totalPages;
+  currentRequestPage = pagination.currentPage;
+
+  if (append) {
+    storefrontRequests = [...storefrontRequests, ...requests]; // append new requests
+  } else {
+    storefrontRequests = requests; // replace on first load or filter change
+  }
+
+  //   updatePendingBadge(storefrontRequests);
+  //   fetchPendingRequestCount();
+  renderPurchaseRequests(storefrontRequests, currentReviewFilter);
+
+  // Show/hide Load More button
+  const loadMoreBtn = document.getElementById('requestsLoadMoreButton');
+  if (loadMoreBtn) {
+    if (currentRequestPage < totalRequestPages) {
+      loadMoreBtn.style.display = 'block';
+      loadMoreBtn.onclick = () =>
+        loadStorefrontRequests(currentRequestPage + 1, true);
+    } else {
+      loadMoreBtn.style.display = 'none';
+      loadMoreBtn.onclick = null;
+    }
+  }
+}
+
 const isSuperAdmin = parsedUserData?.accountType === 'SUPER_ADMIN';
 const superAdminStorefrontPage = document.body.classList.contains(
   'superAdminStorefrontPage',
@@ -729,6 +773,7 @@ const superAdminStorefrontPage = document.body.classList.contains(
 
 if (!isSuperAdmin && !superAdminStorefrontPage) {
   document.addEventListener('DOMContentLoaded', () => loadStorefrontReviews());
+  document.addEventListener('DOMContentLoaded', () => loadStorefrontRequests());
 }
 
 function getReviewStatus(review) {
@@ -820,6 +865,128 @@ export function renderReviews(reviews, filter = 'all') {
   });
 }
 
+export function renderPurchaseRequests(requests, filter = 'all') {
+  const container = document.getElementById('purchaseRequestsList');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  let filtered = requests;
+
+  if (filter !== 'all') {
+    filtered = requests.filter((r) => r.status === filter);
+  }
+
+  if (!filtered.length) {
+    container.innerHTML = `
+      <p class="muted-text heading-minitext">
+        No purchase requests found.
+      </p>
+    `;
+    return;
+  }
+
+  filtered.forEach((req) => {
+    const card = document.createElement('div');
+    card.className = `request-card ${req.status}`;
+    card.dataset.requestId = req.id;
+
+    const itemsPreview = req.items
+      .map(
+        (item) =>
+          `<li style="font-size: 13px;">Product #${item.product_id} &mdash; ${item.quantity} × ₦${item.price}</li>`,
+      )
+      .join('');
+
+    const responder = req.Responder
+      ? `${req.Responder.first_name} ${req.Responder.last_name}`
+      : 'N/A';
+
+    card.innerHTML = `
+      <div class="request-header">
+        <div>
+          <h2 class="request-title heading-subtext">${req.customer_name}</h2>
+          <p class="muted-text heading-minitext">
+            ${req.customer_email} · ${req.customer_phone}
+          </p>
+        </div>
+
+        <span class="request-status ${req.status}">
+          ${req.status.toUpperCase()}
+        </span>
+      </div>
+
+      <div class="request-body">
+        <p class="muted-text heading-minitext">
+          Location: ${req.customer_location}
+        </p>
+
+        <p class="request-message heading-minitext">
+        <strong>${req.message || 'No message provided'}</strong>
+        </p>
+
+                <p class="request-message heading-minitext">
+       <span>Created: ${new Date(req.created_at).toLocaleDateString()}</span>
+        </p>
+
+        <div class="request-items mt-1">
+          <h4 class="heading-minitext">Items</h4>
+          <ul>${itemsPreview}</ul>
+        </div>
+
+        <div class="request-total mt-1 mb-1"  style="font-size: 13px; font-weight: 600;"> <strong>
+          Total: ₦${req.total_amount.toLocaleString()} </strong>
+        </div>
+
+        <h3 class="heading-subtext">Shop Response</h3>
+
+        <p class="request-response heading-minitext">
+       <span style=" font-weight: 500;">Status:</span>   ${req.status.toUpperCase() || 'No response yet'}
+        </p>
+
+        <p class="request-response heading-minitext">
+       <span style=" font-weight: 500;">Response:</span>   ${req.shop_response || 'No response yet'}
+        </p>
+
+        <div class="request-meta muted-text heading-minitext">
+         
+      <span style=" font-weight: 500;">Responded by:</span> ${responder}
+        </div>
+      </div>
+
+
+
+        <div class="request-actions">
+        <button
+          class="openModerateRequestModal hero-btn-dark_square"
+          data-request-id="${req.id}"
+          data-request-buyer="${req.customer_name}">
+          Moderate
+        </button>
+      </div>
+    `;
+
+    container.appendChild(card);
+
+    // ACTION BINDINGS
+    const moderateRequestBtn = card.querySelector('.openModerateRequestModal');
+
+    moderateRequestBtn.addEventListener('click', () => {
+      const requestId = moderateRequestBtn.dataset.requestId;
+      const requestBuyer = moderateRequestBtn.dataset.requestBuyer;
+
+      const modal = document.querySelector('.moderateRequestModal');
+      if (!modal) return;
+
+      modal.dataset.requestId = requestId;
+      modal.dataset.requestBuyer = requestBuyer;
+
+      moderateRequestForm();
+      openModerateRequestButton();
+    });
+  });
+}
+
 export function openModerateReviewButton() {
   const main = document.querySelector('.main');
   const sidebar = document.querySelector('.sidebar');
@@ -830,6 +997,19 @@ export function openModerateReviewButton() {
   if (main) main.classList.add('blur');
   if (sidebar) sidebar.classList.add('blur');
 }
+
+export function openModerateRequestButton() {
+  const main = document.querySelector('.main');
+  const sidebar = document.querySelector('.sidebar');
+  const moderateRequestsContainer = document.querySelector('.moderateRequest');
+
+  if (moderateRequestsContainer)
+    moderateRequestsContainer.classList.add('active');
+  if (main) main.classList.add('blur');
+  if (sidebar) sidebar.classList.add('blur');
+}
+
+// Review Moderation
 
 export function moderateReviewForm(categoryDetail) {
   //   console.log('Category Detail:', CategoryDetail);
@@ -936,8 +1116,99 @@ export function bindModerateReviewFormListener() {
   }
 }
 
+// Purchase Request Moderation
+export function moderateRequestForm() {
+  const form = document.querySelector('.moderateRequestModal');
+  if (!form) return;
+
+  const requestId = form.dataset.requestId;
+  const requestBuyer = form.dataset.requestBuyer;
+
+  if (!form || form.dataset.bound === 'true') return;
+  form.dataset.bound = 'true';
+
+  document.querySelector('.buyerName').innerHTML = requestBuyer;
+}
+
+export function bindModerateRequestFormListener() {
+  const form = document.querySelector('.moderateRequestModal');
+  if (!form) return;
+
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const requestId = form.dataset.requestId;
+
+      if (!requestId) {
+        showToast('fail', '❎ No Request selected for Moderation.');
+        return;
+      }
+
+      const selectedOption = document.querySelector(
+        'input[name="moderateRequest"]:checked',
+      );
+
+      if (!selectedOption) {
+        showToast('fail', '❎ Please select Approve, Reject or Pending.');
+        return;
+      }
+
+      const moderatePurchaseRequestAdminResponse = document
+        .querySelector('#moderatePurchaseRequestAdminResponse')
+        .value.trim();
+
+      console.log(moderatePurchaseRequestAdminResponse);
+
+      const moderateRequestDetails = {
+        status: selectedOption.value, // expected values: accepted, rejected, completed, cancelled
+        response: moderatePurchaseRequestAdminResponse,
+      };
+
+      console.log(
+        'Updating Request Approval Detail with:',
+        moderateRequestDetails,
+        requestId,
+      );
+
+      const moderateRequestModalBtn = document.querySelector(
+        '.moderateRequestModalBtn',
+      );
+
+      try {
+        showBtnLoader(moderateRequestModalBtn);
+        const moderateRequestData = await moderateRequest(
+          requestId,
+          moderateRequestDetails,
+        );
+
+        if (!moderateRequestData) {
+          console.error('fail', moderateRequestData.message);
+          //  showToast('fail', `❎ ${moderateRequestData.message}`);
+          return;
+        }
+
+        closeModal();
+        showToast('success', `✅ ${moderateRequestData.message}`);
+        hideBtnLoader(moderateRequestModalBtn);
+        await loadStorefrontRequests(); // Refresh requests list to reflect changes
+        //   hideGlobalLoader();
+      } catch (err) {
+        hideBtnLoader(moderateRequestModalBtn);
+
+        console.error('Error Moderating Requests:', err);
+        showToast('fail', `❎ ${err.message}`);
+        return;
+      } finally {
+        hideBtnLoader(moderateRequestModalBtn);
+      }
+    });
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   bindModerateReviewFormListener();
+  bindModerateRequestFormListener();
 });
 
 // Review badge
@@ -979,7 +1250,13 @@ document.addEventListener('click', function (e) {
   if (activeTab) activeTab.classList.add('active');
 
   if (targetTab === 'reviewsTab') {
+    console.log('Review tag clicked');
     loadStorefrontReviews();
+  }
+
+  if (targetTab === 'requestsTab') {
+    console.log('Request tag clicked');
+    loadStorefrontRequests();
   }
 });
 
@@ -996,6 +1273,22 @@ document.addEventListener('click', function (e) {
   currentReviewFilter = filterBtn.dataset.filter;
   currentReviewPage = 1; // reset page on filter change
   loadStorefrontReviews(1, false);
+});
+
+// Purchase request filter
+
+document.querySelectorAll('.request-filter-btn').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    document
+      .querySelectorAll('.request-filter-btn')
+      .forEach((b) => b.classList.remove('active'));
+
+    btn.classList.add('active');
+
+    currentRequestFilter = btn.dataset.filter;
+
+    loadStorefrontRequests(1, false);
+  });
 });
 
 // Business Logo Size Check on Update Storefront Form

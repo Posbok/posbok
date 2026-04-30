@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "flatpickr": "^4.6.13",
-    "html2pdf.js": "^0.10.3"
+    "html2pdf.js": "^0.10.3",
+    "jsprintmanager": "^8.0.0"
   }
 }

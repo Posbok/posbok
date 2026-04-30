@@ -1768,8 +1768,9 @@ async function updateSalesReceipt(soldData) {
       const opt = {
         margin: 0,
         filename: `receipt-${Date.now()}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
+        //   image: { type: 'jpeg', quality: 0.98 },
+        image: { type: 'png', quality: 1 },
+        html2canvas: { scale: 3 },
         pagebreak: { avoid: 'tr', mode: ['css', 'legacy'] },
         jsPDF: {
           unit: 'mm',
@@ -1901,7 +1902,7 @@ function renderReceiptPrintHTML(saleDetails, shopDetails) {
   //   console.log('shopDetails', shopDetails);
 
   return `
-    <div style="font-family: monospace; font-size: 10px; width: 58mm; padding: 5px;">
+    <div style="font-family: monospace; font-size: 11px; width: 58mm; padding: 5px; color: #000;">
       <h3 style="text-align: center;">${shopDetails?.shop_name || ''}</h3>
       <p style="text-align: center;" class="mb-1">${
         shopDetails?.location || ''
