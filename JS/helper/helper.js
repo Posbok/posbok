@@ -107,6 +107,7 @@ export function clearFormInputs() {
   const subscriptionServiceCard = document.querySelector(
     '.subscriptionServiceCard',
   );
+  const addStockModal = document.querySelector('.addStockModal');
 
   //   Clear Search Input
   const searchProductInput = document.querySelector('.searchProductInput');
@@ -118,6 +119,16 @@ export function clearFormInputs() {
   if (searchStockProdutItem) searchStockProdutItem.value = '';
 
   // Clear Form Implementations
+
+  if (addStockModal) {
+    addStockModal.querySelectorAll('input, textarea, select').forEach((el) => {
+      if (el.type === 'checkbox' || el.type === 'radio') {
+        el.checked = false;
+      } else {
+        el.value = '';
+      }
+    });
+  }
 
   if (subscriptionServiceCard) {
     subscriptionServiceCard

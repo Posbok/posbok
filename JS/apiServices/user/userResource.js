@@ -2,6 +2,7 @@ import config from '../../../config.js';
 import {
   clearFormInputs,
   hideGlobalLoader,
+  populateBusinessShopDropdown,
   populateBusinessStaffDropdown,
   showGlobalLoader,
 } from '../../helper/helper.js';
@@ -12,7 +13,10 @@ import {
 } from '../../script.js';
 import { populateStaffTable } from '../../staff.js';
 import { fetchBusinessDetails } from '../business/businessResource.js';
-import { checkAndPromptCreateShop } from '../shop/shopResource.js';
+import {
+  checkAndPromptCreateShop,
+  initializeShopDropdownForModal,
+} from '../shop/shopResource.js';
 import { safeFetch } from '../utility/safeFetch.js';
 
 const baseUrl = config.baseUrl;
@@ -350,14 +354,24 @@ export async function checkAndPromptCreateStaff() {
   //   }
 }
 
-export function openCreateStaffModal() {
-  const main = document.querySelector('.main');
-  const sidebar = document.querySelector('.sidebar');
-  const createStaffContainer = document.querySelector('.addUser');
+export async function openCreateStaffModal() {
+  try {
+    showGlobalLoader(); // optional but recommended
 
-  if (createStaffContainer) createStaffContainer.classList.add('active');
-  if (main) main.classList.add('blur');
-  if (sidebar) sidebar.classList.add('blur');
+    await initializeShopDropdownForModal();
+
+    const main = document.querySelector('.main');
+    const sidebar = document.querySelector('.sidebar');
+    const createStaffContainer = document.querySelector('.addUser');
+
+    if (createStaffContainer) createStaffContainer.classList.add('active');
+    if (main) main.classList.add('blur');
+    if (sidebar) sidebar.classList.add('blur');
+  } catch (err) {
+    console.error(err);
+  } finally {
+    hideGlobalLoader();
+  }
 }
 
 export function openUpdateStaffModal() {

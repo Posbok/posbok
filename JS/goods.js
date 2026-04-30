@@ -21,7 +21,10 @@ import {
   uploadProductImages,
 } from './apiServices/inventory/inventoryResources';
 
-import { checkAndPromptCreateShop } from './apiServices/shop/shopResource';
+import {
+  checkAndPromptCreateShop,
+  initializeShopDropdownForModal,
+} from './apiServices/shop/shopResource';
 
 import {
   clearFormInputs,
@@ -36,13 +39,17 @@ import {
   getBarcodeFormat,
   hideBtnLoader,
   hideGlobalLoader,
+  populateBusinessShopDropdown,
   showBtnLoader,
   showGlobalLoader,
 } from './helper/helper';
 import { addPosChargeForm } from './pos';
 import { showToast, closeModal, setupModalCloseButtons } from './script';
-import { populateShopDropdown } from './staff';
 import { hasService, loadUserServices } from './subscription.js';
+import {
+  getAdminInventoryLogHtml,
+  getAdminInventoryTableHtml,
+} from './goodsFunctionExport.js';
 
 let isSubmitting = false;
 let allProducts = [];
@@ -124,29 +131,61 @@ export function openAddCategoryModalBtn() {
   addProductCategoryForm();
 }
 
-export function openAddProductModalBtn() {
-  const main = document.querySelector('.main');
-  const sidebar = document.querySelector('.sidebar');
-  const addProductContainer = document.querySelector('.addProduct');
+export async function openAddProductModalBtn() {
+  try {
+    showGlobalLoader(); // optional but recommended
 
-  if (addProductContainer) addProductContainer.classList.add('active');
-  if (main) main.classList.add('blur');
-  if (sidebar) sidebar.classList.add('blur');
+    await initializeShopDropdownForModal();
+
+    const main = document.querySelector('.main');
+    const sidebar = document.querySelector('.sidebar');
+    const addProductContainer = document.querySelector('.addProduct');
+
+    if (addProductContainer) addProductContainer.classList.add('active');
+    if (main) main.classList.add('blur');
+    if (sidebar) sidebar.classList.add('blur');
+  } catch (err) {
+    console.error(err);
+  } finally {
+    hideGlobalLoader();
+  }
 
   createProductForm();
 }
 
-export function openAddExistingProductModalBtn() {
-  const main = document.querySelector('.main');
-  const sidebar = document.querySelector('.sidebar');
-  const addExistingProductContainer = document.querySelector(
-    '.addExistingProduct',
-  );
+// export function openAddExistingProductModalBtn() {
+//   initializeShopDropdownForModal();
 
-  if (addExistingProductContainer)
-    addExistingProductContainer.classList.add('active');
-  if (main) main.classList.add('blur');
-  if (sidebar) sidebar.classList.add('blur');
+//   const main = document.querySelector('.main');
+//   const sidebar = document.querySelector('.sidebar');
+//   const addExistingProductContainer = document.querySelector(
+//     '.addExistingProduct',
+//   );
+
+//   if (addExistingProductContainer)
+//     addExistingProductContainer.classList.add('active');
+//   if (main) main.classList.add('blur');
+//   if (sidebar) sidebar.classList.add('blur');
+// }
+
+export async function openAddExistingProductModalBtn() {
+  try {
+    showGlobalLoader(); // optional but recommended
+
+    await initializeShopDropdownForModal();
+
+    const main = document.querySelector('.main');
+    const sidebar = document.querySelector('.sidebar');
+    const container = document.querySelector('.addExistingProduct');
+
+    container?.classList.add('active');
+    main?.classList.add('blur');
+    sidebar?.classList.add('blur');
+  } catch (err) {
+    console.error(err);
+  } finally {
+    hideGlobalLoader();
+  }
 }
 
 export function openUpdateProductButton() {
@@ -292,19 +331,29 @@ function setupInventoryLogFilters({
 }
 
 // Export StockTaking Data
-export function openExportStockTakingDataModal() {
-  const main = document.querySelector('.main');
-  const sidebar = document.querySelector('.sidebar');
-  const exportStockTakingDataContainer = document.querySelector(
-    '.exportStockTakingData',
-  );
+export async function openExportStockTakingDataModal() {
+  try {
+    showGlobalLoader(); // optional but recommended
 
-  if (exportStockTakingDataContainer)
-    exportStockTakingDataContainer.classList.add('active');
-  if (main) main.classList.add('blur');
-  if (sidebar) sidebar.classList.add('blur');
+    await initializeShopDropdownForModal();
 
-  exportBusinessDataForm();
+    const main = document.querySelector('.main');
+    const sidebar = document.querySelector('.sidebar');
+    const exportStockTakingDataContainer = document.querySelector(
+      '.exportStockTakingData',
+    );
+
+    if (exportStockTakingDataContainer)
+      exportStockTakingDataContainer.classList.add('active');
+    if (main) main.classList.add('blur');
+    if (sidebar) sidebar.classList.add('blur');
+
+    exportBusinessDataForm();
+  } catch (err) {
+    console.error(err);
+  } finally {
+    hideGlobalLoader();
+  }
 }
 
 export function exportBusinessDataForm() {
@@ -560,58 +609,92 @@ export function populateCategoryTable(productCategoriesData) {
   });
 }
 
-export function populateGoodsShopDropdown(shopList = []) {
-  const inventoryShopDropdown = document.getElementById(
-    'inventoryShopDropdown',
-  );
-
-  const addExistingProductShopDropdown = document.getElementById(
-    'addExistingProductShopDropdown',
-  );
-
-  const stockTakingShopDropdown = document.getElementById(
-    'stockTakingShopDropdown',
-  );
-
-  if (inventoryShopDropdown) {
-    inventoryShopDropdown.innerHTML = `<option value="">Select a shop</option>`;
-
-    shopList.forEach((shop) => {
-      const option = document.createElement('option');
-      option.value = shop.id;
-      option.textContent = `${shop.shop_name} - ${shop.location}`;
-      inventoryShopDropdown.appendChild(option);
-    });
-  } else {
-    return;
+if (isAdmin) {
+  async function loadShopDropdown() {
+    try {
+      showGlobalLoader();
+      const { enrichedShopData } = await checkAndPromptCreateShop();
+      populateBusinessShopDropdown(enrichedShopData, 'inventoryShopDropdown');
+      populateBusinessShopDropdown(
+        enrichedShopData,
+        'addExistingProductShopDropdown',
+      );
+      populateBusinessShopDropdown(enrichedShopData, 'stockTakingShopDropdown');
+      hideGlobalLoader();
+    } catch (err) {
+      hideGlobalLoader();
+      console.error('Failed to load dropdown:', err.message);
+    }
   }
 
-  if (addExistingProductShopDropdown) {
-    addExistingProductShopDropdown.innerHTML = `<option value="">Select a shop</option>`;
-
-    shopList.forEach((shop) => {
-      const option = document.createElement('option');
-      option.value = shop.id;
-      option.textContent = `${shop.shop_name} - ${shop.location}`;
-      addExistingProductShopDropdown.appendChild(option);
-    });
-  } else {
-    return;
-  }
-
-  if (stockTakingShopDropdown) {
-    stockTakingShopDropdown.innerHTML = `<option value="">Select a shop</option>`;
-
-    shopList.forEach((shop) => {
-      const option = document.createElement('option');
-      option.value = shop.id;
-      option.textContent = `${shop.shop_name} - ${shop.location}`;
-      stockTakingShopDropdown.appendChild(option);
-    });
-  } else {
-    return;
-  }
+  loadShopDropdown();
 }
+
+// export function populateGoodsShopDropdown(shopList = []) {
+//   const inventoryShopDropdown = document.getElementById(
+//     'inventoryShopDropdown',
+//   );
+
+//   const addExistingProductShopDropdown = document.getElementById(
+//     'addExistingProductShopDropdown',
+//   );
+
+//   const stockTakingShopDropdown = document.getElementById(
+//     'stockTakingShopDropdown',
+//   );
+
+//   if (inventoryShopDropdown) {
+//     inventoryShopDropdown.innerHTML = `<option value="">Select a shop</option>`;
+
+//     shopList.forEach((shop) => {
+//       const option = document.createElement('option');
+//       option.value = shop.id;
+//       option.textContent = `${shop.shop_name} - ${shop.location}`;
+//       inventoryShopDropdown.appendChild(option);
+//     });
+//   } else {
+//     return;
+//   }
+
+//   if (addExistingProductShopDropdown) {
+//     addExistingProductShopDropdown.innerHTML = `<option value="">Select a shop</option>`;
+
+//     shopList.forEach((shop) => {
+//       const option = document.createElement('option');
+//       option.value = shop.id;
+//       option.textContent = `${shop.shop_name} - ${shop.location}`;
+//       addExistingProductShopDropdown.appendChild(option);
+//     });
+
+//    } else {
+//       return;
+//    }
+
+//    // Auto-select logic
+//    if (shopList.length === 1) {
+//      addExistingProductShopDropdown.value = shopList[0].id;
+
+//      addExistingProductShopDropdown.dispatchEvent(new Event('change'));
+
+//      // Optional: lock it (UX decision)
+//      addExistingProductShopDropdown.disabled = true;
+//    } else {
+//      addExistingProductShopDropdown.disabled = false;
+//    }
+
+//   if (stockTakingShopDropdown) {
+//     stockTakingShopDropdown.innerHTML = `<option value="">Select a shop</option>`;
+
+//     shopList.forEach((shop) => {
+//       const option = document.createElement('option');
+//       option.value = shop.id;
+//       option.textContent = `${shop.shop_name} - ${shop.location}`;
+//       stockTakingShopDropdown.appendChild(option);
+//     });
+//   } else {
+//     return;
+//   }
+// }
 
 export function populateCategoriesDropdown(categoriesData = []) {
   const categoryList = categoriesData.data;
@@ -1049,9 +1132,11 @@ export function bindAddExistingProductFormListener() {
           );
 
           if (inventoryData) {
+            // console.log(updatedProductData);
+
             showToast(
               'success',
-              `✅ ${inventoryData.message} with SKU: ${updatedProductData.data.sku}`,
+              `✅ ${inventoryData.message} with SKU: ${updatedProductData.data.barcode}`,
             );
             closeModal();
             clearFormInputs();
@@ -1251,7 +1336,7 @@ async function displayAllCategories() {
     //  console.log(`Total Categories fetched:`, allCategories);
 
     const allBtn = document.createElement('button');
-    allBtn.classList.add('sellProductCategoryBtn');
+    allBtn.classList.add('sellProductCategoryBtn', 'force-mb-0');
     allBtn.type = 'button';
     allBtn.textContent = 'All';
     allBtn.dataset.categoryId = 'all';
@@ -3085,7 +3170,7 @@ export async function renderInventoryLogTable({ filters, shopId }) {
 }
 
 // It now accepts shopId and returns an HTML string of buttons
-function buildInventoryCategoryButtonsHtml(shopId, allCategories) {
+export function buildInventoryCategoryButtonsHtml(shopId, allCategories) {
   let html = `
     <button class="inventoryCategoryBtn " type="button" 
             data-category-id="all" data-shop-id="${shopId}">All</button>
@@ -3100,152 +3185,6 @@ function buildInventoryCategoryButtonsHtml(shopId, allCategories) {
   });
 
   return html;
-}
-
-export function getAdminInventoryTableHtml(shop, allCategories) {
-  const categoryButtonsHtml = buildInventoryCategoryButtonsHtml(
-    shop.id,
-    allCategories,
-  );
-
-  return `
-         <div id="shop-report-${shop.id}" class="reports card" data-loaded="false">
-         <div class="reports ">
-            <div class="reports-method">
-               <h2 class="heading-text mb-2">
-                  Shop inventory
-               </h2>
-
-                           <div class="search-section_${shop.id} mb-4">
-
-                  <div class="inventory-method-form_input ml-1 mr-1">
-                     <label for="searchProdutInventory_${shop.id}">Search Products:</label>
-                     <input type="search" id="searchProdutInventory_${shop.id}" class="searchProductInput"
-                        placeholder="Search Product Name or Description ">
-                  </div>
-               </div>
-
-             <div class="inventoryCategory-section" id="inventoryCategory-${shop.id}">
-        ${categoryButtonsHtml}   <!-- ✅ injected directly -->
-      </div>
-
-         </div>
-
-               <div>
-                  <h2 class="heading-subtext ">Total Products: <span class="totalProductsCount_${shop.id}">0</span></h2>
-
-                  <h2 class="heading-subtext ">Total Products Cost: <span
-                        class="totalProductsCost_${shop.id}">0</span></h2>
-                        
-                        <h2 class="heading-subtext ">Total Estimated Profits: <span
-                        class="totalProductsProfits_${shop.id}">0</span></h2>
-                        
-                        <h2 class="heading-subtext ">Total Inventory Worth: <span
-                              class="totalProductsWorth_${shop.id}">0</span></h2>
-
-               </div>
-
-   
-
-               <div class="table-header">
-                  <!-- <h2 class="heading-subtext"> inventory </h2> -->
-               </div>
-
-               <div class="reports-table-container">
-                  <table class="reports-table inventoryTableDisplay_admin_${shop.id}">
-                     <thead>
-                        <tr class="table-header-row">
-                           <th class="py-1">S/N</th>
-                           <th class="py-1">Product Name</th>
-                           <th class="py-1">Product Description</th>
-                           <th class="py-1">Product Category</th>
-                           <th class="py-1">SKU</th>
-                           <th class="py-1">Barcode</th>
-                           <th class="py-1">Buying Price</th>
-                           <th class="py-1">Quantity</th>
-                           <th class="py-1">Selling Price</th>
-                           <th class="py-1">Action</th>
-                        </tr>
-                     </thead>
-                     <tbody id="inventory-tbody-${shop.id}">
-                     </tbody>
-                  </table>
-
-               </div>
-            </div>
-         </div>
-
-   `;
-}
-
-export function getAdminInventoryLogHtml(shop) {
-  return `
-     
-         <!-- Inventory Log Table HTML starts Here -->
-     
-   <div id="shop-log-report-${shop.id}" class="reports card" data-loaded="false">
-
-         <div class="reports">
-            <div class="reports-method">
-               <h2 class="heading-text mb-2">
-                  Inventory Log
-               </h2>
-
-               <h2 class="filter-heading heading-subtext mb-2">Filter Inventory Log </h2>
-
-               <div class="filter-section mb-2">
-
-                  <div class="pos-method-form_input">
-                     <label for="inventoryLogDateFrom_admin_${shop.id}">Start Date:</label>
-
-                     <input type="date" id="inventoryLogDateFrom_admin_${shop.id}">
-                  </div>
-
-                  <div class="pos-method-form_input">
-                     <label for="inventoryLogDateTo_admin_${shop.id}">End Date:</label>
-
-                     <input type="date" id="inventoryLogDateTo_admin_${shop.id}">
-                  </div>
-
-                  <div class="filter-buttons">
-                     <button id="applyInventoryLogFiltersBtn_admin_${shop.id}" class="hero-btn-dark">Apply
-                        Filters</button>
-                     <button id="resetInventoryLogFiltersBtn_${shop.id}" class="hero-btn-outline">Reset</button>
-                  </div>
-
-               </div>
-
-               <div class="transaction-breakdown">
-
-
-                  <div class="reports-table-container mt-4">
-                     <table class="reports-table inventoryLog_admin_${shop.id}">
-                        <thead>
-                           <tr class="table-header-row">
-                              <th class="py-1">S/N</th>
-                              <th class="py-1">Item Name</th>
-                              <th class="py-1">Quantity</th>
-                              <th class="py-1">Selling Price</th>
-                              <th class="py-1">Action Type</th>
-                              <th class="py-1">Performed By</th>
-                              <th class="py-1">Date/Time</th>
-                           </tr>
-                        </thead>
-
-                        <tbody id="inventoryLogBody-${shop.id}">
-
-                        </tbody>
-
-                     </table>
-                  </div>
-
-               </div>
-
-            </div>
-         </div>
-      </div>
-         <!-- Inventory Log Table HTML Ends Here -->
-   `;
 }
 
 // This listens for ANY file change on the entire page

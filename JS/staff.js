@@ -605,6 +605,18 @@ export function populateShopDropdown(shopList = [], preselectedShopId = '') {
     if (staffManageShopDropdown) staffManageShopDropdown.appendChild(option2);
   });
 
+  // Auto-select logic
+  if (shopList.length === 1) {
+    dropdown.value = shopList[0].id;
+
+    dropdown.dispatchEvent(new Event('change'));
+
+    // Optional: lock it (UX decision)
+    dropdown.disabled = true;
+  } else {
+    dropdown.disabled = false;
+  }
+
   //   shopList.forEach((shop) => {
   //     const option = document.createElement('option');
   //     option.value = shop.id;

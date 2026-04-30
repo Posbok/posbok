@@ -1,5 +1,4 @@
 import config from '../../../config.js';
-import { populateGoodsShopDropdown } from '../../goods.js';
 import {
   hideGlobalLoader,
   populateBusinessShopDropdown,
@@ -214,7 +213,6 @@ export async function checkAndPromptCreateShop() {
 
       populateShopsTable(enrichedShopData);
       populateShopDropdown(enrichedShopData, Number(preselectedShopId));
-      populateGoodsShopDropdown(enrichedShopData);
       populateBusinessShopDropdown(enrichedShopData);
       // populateUserShop(userShops);
 
@@ -448,5 +446,28 @@ export async function updateShop(shop_id, shopUpdatedDetails) {
     console.error('Error Updating Shop Info', error);
     showToast('error', '❌ Failed to Update Shop info');
     throw error;
+  }
+}
+
+// HTML generator functions to Always show shops when modal button is clicked - Shop Dropdown shopDropdown
+
+export async function initializeShopDropdownForModal() {
+  try {
+    const { enrichedShopData } = await checkAndPromptCreateShop();
+
+    populateBusinessShopDropdown(enrichedShopData, 'shopDropdown');
+    populateBusinessShopDropdown(
+      enrichedShopData,
+      'addExistingProductShopDropdown',
+    );
+    populateBusinessShopDropdown(enrichedShopData, 'inventoryShopDropdown');
+    populateBusinessShopDropdown(enrichedShopData, 'stockTakingShopDropdown');
+    populateBusinessShopDropdown(
+      enrichedShopData,
+      'stockinventoryShopDropdown',
+    );
+    populateBusinessShopDropdown(enrichedShopData, 'restockShopDropdown');
+  } catch (err) {
+    console.error('Dropdown init failed:', err.message);
   }
 }

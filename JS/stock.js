@@ -33,7 +33,10 @@ import {
   showGlobalLoader,
 } from './helper/helper';
 import { showToast, closeModal, setupModalCloseButtons } from './script';
-import { checkAndPromptCreateShop } from './apiServices/shop/shopResource.js';
+import {
+  checkAndPromptCreateShop,
+  initializeShopDropdownForModal,
+} from './apiServices/shop/shopResource.js';
 
 import { checkAndPromptCreateStaff } from './apiServices/user/userResource.js';
 import { getProductCategories } from './apiServices/inventory/inventoryResources.js';
@@ -665,28 +668,48 @@ export function openAddStockCategoryModalBtn() {
   addStockCategoryForm();
 }
 
-export function openAddStockModalBtn() {
-  const main = document.querySelector('.main');
-  const sidebar = document.querySelector('.sidebar');
-  const addStockItemContainer = document.querySelector('.addStock');
+export async function openAddStockModalBtn() {
+  try {
+    showGlobalLoader(); // optional but recommended
 
-  if (addStockItemContainer) addStockItemContainer.classList.add('active');
-  if (main) main.classList.add('blur');
-  if (sidebar) sidebar.classList.add('blur');
+    await initializeShopDropdownForModal();
 
-  addStockItemForm();
+    const main = document.querySelector('.main');
+    const sidebar = document.querySelector('.sidebar');
+    const addStockItemContainer = document.querySelector('.addStock');
+
+    if (addStockItemContainer) addStockItemContainer.classList.add('active');
+    if (main) main.classList.add('blur');
+    if (sidebar) sidebar.classList.add('blur');
+
+    addStockItemForm();
+  } catch (err) {
+    console.error(err);
+  } finally {
+    hideGlobalLoader();
+  }
 }
 
-export function openRestockProductModalBtn() {
-  const main = document.querySelector('.main');
-  const sidebar = document.querySelector('.sidebar');
-  const restockItemContainer = document.querySelector('.restock');
+export async function openRestockProductModalBtn() {
+  try {
+    showGlobalLoader(); // optional but recommended
 
-  if (restockItemContainer) restockItemContainer.classList.add('active');
-  if (main) main.classList.add('blur');
-  if (sidebar) sidebar.classList.add('blur');
+    await initializeShopDropdownForModal();
 
-  restockProductForm();
+    const main = document.querySelector('.main');
+    const sidebar = document.querySelector('.sidebar');
+    const restockItemContainer = document.querySelector('.restock');
+
+    if (restockItemContainer) restockItemContainer.classList.add('active');
+    if (main) main.classList.add('blur');
+    if (sidebar) sidebar.classList.add('blur');
+
+    restockProductForm();
+  } catch (err) {
+    console.error(err);
+  } finally {
+    hideGlobalLoader();
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -1341,6 +1364,7 @@ export function addStockItemForm() {
           console.log('stockItemData', stockItemData);
           hideBtnLoader(addStockItemSubmitBtn);
           closeModal();
+          clearFormInputs();
         }
 
         closeModal(); // close modal after success

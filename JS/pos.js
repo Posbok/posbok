@@ -40,7 +40,6 @@ import {
   showBtnLoader,
   showGlobalLoader,
 } from './helper/helper.js';
-import { populateGoodsShopDropdown } from './goods.js';
 import { checkAndPromptCreateShop } from './apiServices/shop/shopResource.js';
 import {
   initAccountOverview,
