@@ -3092,6 +3092,7 @@ body.authentication {
   margin-bottom: 16px;
 }
 
+.analytics-tab,
 .storefront-tab-btn,
 .review-filter-btn,
 .request-filter-btn {
@@ -3104,6 +3105,7 @@ body.authentication {
   flex: 0 0 auto;
 }
 
+.analytics-tab.active,
 .storefront-tab-btn.active,
 .review-filter-btn.active,
 .request-filter-btn.active {
@@ -3126,6 +3128,52 @@ body.authentication {
   font-size: 11px;
   background: #d9534f;
   color: #fff;
+}
+
+.analytics-dashboard .analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+.analytics-dashboard .analytics-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid #eee;
+  transition: 0.2s ease;
+}
+.analytics-dashboard .analytics-card .analytics-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+}
+.analytics-dashboard .analytics-card .analytics-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.analytics-dashboard .analytics-card .analytics-icon {
+  font-size: 14px;
+  color: #7fb239;
+  /* your lemon green */
+}
+.analytics-dashboard .analytics-card {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 6px;
+}
+.analytics-dashboard .analytics-card:hover .analytics-icon {
+  transform: scale(1.1);
+  transition: 0.2s ease;
+}
+.analytics-dashboard .analytics-value {
+  font-size: 22px;
+  font-weight: 600;
+  color: #111827;
+}
+.analytics-dashboard .analytics-tabs {
+  display: flex;
+  gap: 8px;
 }
 
 /* Review Card */

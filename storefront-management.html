@@ -209,13 +209,27 @@
          <!-- STOREFRONT INFO -->
          <div class="availableStoreInfo hidden" id="availableStoreInfo">
 
+            <h1 class="heading-text mt-3">Storefront Analytics</h1>
+
+            <div class="analytics-dashboard">
+
+               <!-- Period Tabs -->
+               <div class="analytics-tabs">
+                  <button class="analytics-tab active" data-days="1">Today</button>
+                  <button class="analytics-tab" data-days="7">7 Days</button>
+                  <button class="analytics-tab" data-days="14">14 Days</button>
+                  <button class="analytics-tab" data-days="30">30 Days</button>
+               </div>
+
+               <!-- Metrics Grid -->
+               <div id="analyticsGrid" class="analytics-grid mt-2"></div>
+
+            </div>
 
             <h1 class="heading-text mt-3">Storefront Management</h1>
 
-
-
             <div class="storefront-tabs mt-2">
-               <button class="storefront-tab-btn " data-tab="overviewTab">
+               <button class="storefront-tab-btn active" data-tab="overviewTab">
                   Overview
                </button>
 
@@ -224,7 +238,7 @@
                   <span class="tab-badge" id="pendingReviewsCount">0</span>
                </button>
 
-               <button class="storefront-tab-btn active" data-tab="requestsTab">
+               <button class="storefront-tab-btn " data-tab="requestsTab">
                   Purchase Requests
                </button>
 
@@ -234,7 +248,7 @@
             </div>
 
 
-            <div class="storefront-tab-content " id="overviewTab">
+            <div class="storefront-tab-content active" id="overviewTab">
                <div class="storefront-header">
                   <div>
                      <span class="heading-subtext muted-text">
@@ -426,7 +440,7 @@
                </div>
             </div>
 
-            <div class="storefront-tab-content active" id="requestsTab">
+            <div class="storefront-tab-content " id="requestsTab">
                <h2 class="card-title heading-subtext">Purchase Requests</h2>
                <div id="purchaseRequestsContainer">
 

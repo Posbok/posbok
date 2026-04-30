@@ -182,10 +182,6 @@ export async function getProductRequest(status = 'all', page = 1, limit = 1) {
   try {
     showGlobalLoader();
 
-    console.log(
-      `${baseUrl}/api/storefront/purchase-requests?&page=${page}&limit=${limit}`,
-    );
-
     const productRequestData = await safeFetch(
       // `${baseUrl}/api/storefront/purchase-requestsl?status=${status}&page=${page}&limit=${limit}`,
       `${baseUrl}/api/storefront/purchase-requests?&page=${page}&limit=${limit}`,
@@ -306,5 +302,29 @@ export async function moderateRequest(requestId, moderateRequestDetails) {
     //  console.error('Error deleting Notice', error);
     showToast('error', '❌ Failed to Moderate Request');
     throw error;
+  }
+}
+
+export async function getDashboardAnalytics(days = 14) {
+  try {
+    showGlobalLoader();
+
+    const data = await safeFetch(
+      `${baseUrl}/api/analytics/dashboard?days=${days}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      },
+    );
+
+    console.log(data);
+
+    hideGlobalLoader();
+    return data;
+  } catch (error) {
+    hideGlobalLoader();
+    console.error('Error fetching analytics:', error.message);
   }
 }

@@ -31,6 +31,7 @@ import {
 import { closeModal, showToast } from './script';
 import {
   fetchStorefrontStatus,
+  getDashboardAnalytics,
   getProductRequest,
   getProductReviews,
   moderateRequest,
@@ -682,6 +683,112 @@ export function initializeStorefront() {
   document.getElementById('availableStoreInfo').classList.add('hidden');
 }
 
+// Dashboard
+
+// export function renderAnalyticsDashboard(data) {
+//   const container = document.getElementById('analyticsGrid');
+//   if (!container) return;
+
+//   container.innerHTML = '';
+
+//   const metrics = [
+//     { label: 'Page Views', value: data.pageViews },
+//     { label: 'Product Views', value: data.productViews },
+//     { label: 'Cart Additions', value: data.cartAdditions },
+//     { label: 'Purchase Requests', value: data.purchaseRequests },
+//     { label: 'Searches', value: data.searches },
+//     { label: 'Unique Visitors', value: data.uniqueVisitors },
+//     { label: 'Conversion Rate', value: data.conversionRate },
+//     { label: 'Average Rating', value: data.averageRating },
+//     { label: 'Total Reviews', value: data.totalReviews },
+//   ];
+
+//   metrics.forEach((metric) => {
+//     const card = document.createElement('div');
+//     card.className = 'analytics-card';
+
+//     card.innerHTML = `
+//       <h4 class="analytics-label">${metric.label}</h4>
+//       <p class="analytics-value">${metric.value}</p>
+//     `;
+
+//     container.appendChild(card);
+//   });
+// }
+
+const metricIcons = {
+  'Page Views': 'fa-eye',
+  'Product Views': 'fa-box-open',
+  'Cart Additions': 'fa-cart-plus',
+  'Purchase Requests': 'fa-file-invoice',
+  Searches: 'fa-magnifying-glass',
+  'Unique Visitors': 'fa-users',
+  'Conversion Rate': 'fa-chart-line',
+  'Average Rating': 'fa-star',
+  'Total Reviews': 'fa-comments',
+};
+
+export function renderAnalyticsDashboard(data) {
+  const container = document.getElementById('analyticsGrid');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  const metrics = [
+    { label: 'Page Views', value: data.pageViews },
+    { label: 'Product Views', value: data.productViews },
+    { label: 'Cart Additions', value: data.cartAdditions },
+    { label: 'Purchase Requests', value: data.purchaseRequests },
+    { label: 'Searches', value: data.searches },
+    { label: 'Unique Visitors', value: data.uniqueVisitors },
+    { label: 'Conversion Rate', value: data.conversionRate },
+    { label: 'Average Rating', value: data.averageRating },
+    { label: 'Total Reviews', value: data.totalReviews },
+  ];
+
+  metrics.forEach((metric) => {
+    const iconClass = metricIcons[metric.label] || 'fa-chart-bar';
+
+    const card = document.createElement('div');
+    card.className = 'analytics-card';
+
+    card.innerHTML = `
+      <div class="analytics-card-header">
+        <i class="fa-solid ${iconClass} analytics-icon"></i>
+        <h4 class="analytics-label">${metric.label}</h4>
+      </div>
+
+      <p class="analytics-value">${metric.value}</p>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+export async function loadAnalytics(days = 14) {
+  const res = await getDashboardAnalytics(days);
+
+  console.log(res);
+
+  if (!res || !res.data) return;
+
+  renderAnalyticsDashboard(res.data);
+}
+
+document.querySelectorAll('.analytics-tab').forEach((tab) => {
+  tab.addEventListener('click', async () => {
+    document
+      .querySelectorAll('.analytics-tab')
+      .forEach((t) => t.classList.remove('active'));
+
+    tab.classList.add('active');
+
+    const days = Number(tab.dataset.days);
+
+    await loadAnalytics(days);
+  });
+});
+
 // Fetch Storefront Info
 
 let storefrontReviews = [];
@@ -731,7 +838,7 @@ let currentRequestPage = 1;
 let totalRequestPages = 1;
 
 export async function loadStorefrontRequests(page = 1, append = false) {
-  const response = await getProductRequest(currentReviewFilter, page, 1);
+  const response = await getProductRequest(currentReviewFilter, page, 50);
   console.log('Purchase Requests', response);
 
   if (!response?.data?.requests) return;
@@ -772,6 +879,7 @@ const superAdminStorefrontPage = document.body.classList.contains(
 );
 
 if (!isSuperAdmin && !superAdminStorefrontPage) {
+  document.addEventListener('DOMContentLoaded', () => loadAnalytics(1));
   document.addEventListener('DOMContentLoaded', () => loadStorefrontReviews());
   document.addEventListener('DOMContentLoaded', () => loadStorefrontRequests());
 }

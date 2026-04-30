@@ -117,6 +117,7 @@
 }
 
 
+.analytics-tab,
 .storefront-tab-btn,
 .review-filter-btn,
 .request-filter-btn {
@@ -129,6 +130,7 @@
    flex: 0 0 auto;
 }
 
+.analytics-tab.active,
 .storefront-tab-btn.active,
 .review-filter-btn.active,
 .request-filter-btn.active {
@@ -152,6 +154,89 @@
    background: #d9534f;
    color: #fff;
 }
+
+
+// Storefront Dashboard
+
+.analytics-dashboard {
+
+
+
+   .analytics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+   }
+
+   .analytics-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid #eee;
+      transition: 0.2s ease;
+
+
+
+      .analytics-card:hover {
+         transform: translateY(-2px);
+         box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+      }
+
+      .analytics-card-header {
+         display: flex;
+         align-items: center;
+         gap: 8px;
+         margin-bottom: 6px;
+      }
+
+      .analytics-icon {
+         font-size: 14px;
+         color: $color-primary;
+         /* your lemon green */
+      }
+
+
+
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 6px;
+   }
+
+   .analytics-card:hover .analytics-icon {
+      transform: scale(1.1);
+      transition: 0.2s ease;
+   }
+
+   .analytics-value {
+      font-size: 22px;
+      font-weight: 600;
+      color: #111827;
+   }
+
+   .analytics-tabs {
+      display: flex;
+      gap: 8px;
+   }
+
+   // .analytics-tab {
+   //    padding: 6px 12px;
+   //    border-radius: 20px;
+   //    border: 1px solid #ddd;
+   //    background: transparent;
+   //    cursor: pointer;
+   // }
+
+   // .analytics-tab.active {
+   //    background: $color-primary-50;
+   //    border-color: $color-primary;
+   // }
+}
+
+
+
+
+
+.analytics-label {}
 
 
 /* Review Card */
