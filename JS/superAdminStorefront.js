@@ -500,7 +500,7 @@ export async function populateAllStorefrontTable({
             }</td>                   
        <td class="sf-store-slug">
   <a
-    href="https://posbok-storefront.vercel.app/${store_slug}"
+    href="https://posbok.com/${store_slug}"
     target="_blank"
     rel="noopener noreferrer"
     class="sf-storefront-link"
@@ -760,7 +760,7 @@ function renderStorefrontRows(dataArray) {
       <td class="sf-serial-number">${index + 1}</td>
       <td class="sf-business-name">${Business.business_name}</td>
       <td class="sf-store-slug">
-        <a href="https://posbok-storefront.vercel.app/${store_slug}" target="_blank" rel="noopener noreferrer" class="sf-storefront-link" title="Open storefront in new tab">
+        <a href="https://posbok.com/${store_slug}" target="_blank" rel="noopener noreferrer" class="sf-storefront-link" title="Open storefront in new tab">
           ${store_slug}
         </a>
       </td>
@@ -785,6 +785,12 @@ function renderStorefrontRows(dataArray) {
 
     // ── Row click ──
     row.addEventListener('click', (e) => {
+      // If clicked element is a link or inside a link → ignore
+      if (e.target.closest('a')) return;
+
+      // If clicked element is a button → ignore (extra safety)
+      if (e.target.closest('button')) return;
+
       renderStorefrontDetailsById(e, row);
     });
 

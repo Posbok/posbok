@@ -46,6 +46,24 @@ export async function safeFetch(url, options) {
       showToast('error', `❌ ${error.message}`);
     }
 
+    // Check for Invalid token error
+    if (error.message.includes('Invalid token')) {
+      showToast('Info', 'Session expired. Please log in again.');
+      // hideGlobalLoader();
+    } else {
+      // hideGlobalLoader();
+      showToast('error', `❌ ${error.message}`);
+    }
+
+    // Check for Token expired error
+    if (error.message.includes('Token Expired')) {
+      showToast('Info', 'Session expired. Please log in again.');
+      // hideGlobalLoader();
+    } else {
+      // hideGlobalLoader();
+      showToast('error', `❌ ${error.message}`);
+    }
+
     throw error; // Return null in case of error
   }
 }

@@ -486,7 +486,7 @@ export function renderStorefront(storefront) {
 
   const imgFallback = '/img/placeholder.png';
 
-  const baseStoreUrl = 'https://posbok-storefront.vercel.app/';
+  const baseStoreUrl = 'https://posbok.com/';
 
   const storeUrlEl = document.getElementById('storeUrl');
   const fullStoreUrl = `${baseStoreUrl}${storefront.store_slug}`;
