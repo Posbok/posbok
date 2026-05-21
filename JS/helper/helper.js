@@ -1367,7 +1367,7 @@ export function populateBusinessShopDropdown(
 
   dropdown.innerHTML = `<option value="">Select a shop</option>`;
 
-  console.log(shopList);
+  //   console.log(shopList);
 
   shopList.forEach((shop) => {
     const option = document.createElement('option');

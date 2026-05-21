@@ -66,7 +66,7 @@ async function initializeInventoryManagementFeature() {
 
   const hasWarehouse = hasService('WAREHOUSE');
 
-  console.log('Inventory:', hasWarehouse);
+  //   console.log('Inventory:', hasWarehouse);
 
   if (!hasWarehouse) {
     showSubscriptionRequiredModal();

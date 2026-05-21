@@ -2166,7 +2166,7 @@ if (useBusinessInfoCheckbox) {
       const hasWarehouse = hasService('WAREHOUSE');
       const hasPos = hasService('POS');
 
-      console.log('Inventory:', hasInventory, 'Ecommerce:', hasEcommerce);
+      // console.log('Inventory:', hasInventory, 'Ecommerce:', hasEcommerce);
 
       shopNameInput.value = businessData.data.business_name || '';
       shopAddressInput.value = businessData.data.address || '';

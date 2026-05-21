@@ -95,7 +95,7 @@ async function initializeInventoryManagementFeature() {
   const hasInventory = hasService('INVENTORY');
   const hasEcommerce = hasService('ECOMMERCE');
 
-  console.log('Inventory:', hasInventory, 'Ecommerce:', hasEcommerce);
+  //   console.log('Inventory:', hasInventory, 'Ecommerce:', hasEcommerce);
 
   if (!hasInventory && !hasEcommerce) {
     showSubscriptionRequiredModal();
@@ -2163,13 +2163,14 @@ if (isAdmin && adminAccordionContainer && container) {
     container.innerHTML = '';
 
     const allCategories = await fetchAllCategories();
-    console.log('All categories fetched:', allCategories);
-    console.log('Total shops to render:', enrichedShopData.length);
-    console.log('Shops data:', enrichedShopData);
+
+    //  console.log('All categories fetched:', allCategories);
+    //  console.log('Total shops to render:', enrichedShopData.length);
+    //  console.log('Shops data:', enrichedShopData);
 
     //  enrichedShopData.forEach(async (shop, index) => {
     for (const shop of enrichedShopData) {
-      console.log('Rendering shop:', shop.id, shop.shop_name); // 👈 does this log 3 times?
+      // console.log('Rendering shop:', shop.id, shop.shop_name); // 👈 does this log 3 times?
 
       const inventoryTableHtml = getAdminInventoryTableHtml(
         shop,
@@ -2192,14 +2193,14 @@ if (isAdmin && adminAccordionContainer && container) {
     </div>
   `;
 
-      console.log('Accordion created for shop:', shopId);
+      // console.log('Accordion created for shop:', shopId);
       if (container) container.appendChild(accordion);
       if (container) container.dataset.shopId;
 
-      console.log(
-        'Accordion appended. Container children count:',
-        container.children.length,
-      ); // 👈 should increase each time
+      // console.log(
+      //   'Accordion appended. Container children count:',
+      //   container.children.length,
+      // ); // 👈 should increase each time
 
       // console.log(accordion);
 
@@ -2357,6 +2358,7 @@ function renderFilteredProducts(shopId, productList) {
   inventoryTableBody.innerHTML = ''; // Clear old
 
   productList.forEach((productInventory, index) => {
+    console.log(productInventory);
     const {
       id,
       product_id,
@@ -2428,7 +2430,7 @@ function renderFilteredProducts(shopId, productList) {
     row.addEventListener('click', async (e) => {
       // console.log('Row was clicked');
       showGlobalLoader();
-      viewProductInfo(e, row, product_id);
+      viewProductInfo(e, row, product_id, shopId);
     });
     inventoryTableBody.appendChild(row);
 
@@ -2541,7 +2543,7 @@ function renderFilteredProducts(shopId, productList) {
   });
 }
 
-export async function viewProductInfo(e, row) {
+export async function viewProductInfo(e, row, product_id, shopId) {
   e.preventDefault();
   showGlobalLoader();
 
@@ -2585,7 +2587,18 @@ export async function viewProductInfo(e, row) {
     const product = productDetails.data;
     const imagesData = productImages.data;
 
-    //  console.log(product.name);
+    const matchingInventory = product.inventory?.find(
+      (inv) => Number(inv.shop_id) === Number(shopId),
+    );
+
+    const productQuantity = matchingInventory?.quantity ?? 0;
+    const inventoryShopName =
+      matchingInventory?.Shop?.shop_name || 'Unknown Shop';
+
+    console.log(product);
+    console.log(productQuantity);
+    console.log(inventoryShopName);
+    console.log('SHop Id: ', shopId);
 
     document.querySelector('.productInfoName').innerText = product.name;
     document.querySelector('.productSku').innerText = `SKU: ${product.sku}`;
@@ -2596,7 +2609,11 @@ export async function viewProductInfo(e, row) {
     document.querySelector('.productDescriptionInfo').innerText =
       product.description || '—';
 
+    //  document.querySelector('.productQuantity').innerText = productQuantity || '0';
     document.querySelector('.productUnit').innerText = product.unit || '—';
+
+    document.querySelector('.productQuantityInfo').innerText =
+      productQuantity || '—';
 
     document.querySelector('.productPurchasePrice').innerText =
       formatAmountWithCommas(product.purchase_price);
@@ -2823,7 +2840,7 @@ export async function renderProductInventoryTable(shopId) {
       0,
     );
 
-    console.log('Length of Valid items', validFinancialItems.length);
+    //  console.log('Length of Valid items', validFinancialItems.length);
 
     // 4. Profit (Now accurate because it ignores 0-cost items)
     const totalProductProfits = validSellingPriceForProfit - totalProductsCost;
@@ -2931,7 +2948,7 @@ export async function renderProductInventoryTable(shopId) {
       row.addEventListener('click', async (e) => {
         //   console.log('Row was clicked');
         showGlobalLoader();
-        viewProductInfo(e, row, product_id);
+        viewProductInfo(e, row, product_id, shopId);
       });
 
       inventoryTableBody.appendChild(row);

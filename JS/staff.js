@@ -98,7 +98,7 @@ export async function setupCreateStaffForm() {
   // 👇 Run once when modal opens to control which access types can be selected
   (async function applyAccessControlBasedOnBusinessPermission() {
     try {
-      console.log('Inventory:', hasInventory, 'Ecommerce:', hasEcommerce);
+      // console.log('Inventory:', hasInventory, 'Ecommerce:', hasEcommerce);
 
       // if (!hasInventory && !hasEcommerce) {
       //   return;
@@ -737,7 +737,7 @@ export async function setupUpdateStaffForm(user, isOwner = false) {
   // 👇 Run once when modal opens to control which access types can be selected
   (async function applyAccessControlBasedOnBusinessPermission() {
     try {
-      console.log('Inventory:', hasInventory, 'Ecommerce:', hasEcommerce);
+      // console.log('Inventory:', hasInventory, 'Ecommerce:', hasEcommerce);
 
       // if (!hasInventory && !hasEcommerce) {
       //   return;
